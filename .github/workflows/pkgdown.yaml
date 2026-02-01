@@ -38,7 +38,13 @@ jobs:
           needs: website
 
       - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+        run: |
+          options(
+            pkgdown.internet = TRUE,
+            download.file.method = "libcurl",
+            download.file.extra = "-L --retry 5 --retry-delay 5"
+          )
+          pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
         shell: Rscript {0}
 
       - name: Deploy to GitHub pages 🚀
