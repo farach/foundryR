@@ -27,3 +27,6 @@ tests/testthat/_snaps/
 
 # Environment
 .Renviron.local
+
+# Claude Code
+.claude/

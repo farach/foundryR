@@ -1,3 +1,7 @@
+# ============================================================================
+# Input Validation Tests
+# ============================================================================
+
 test_that("foundry_embed handles empty input", {
   result <- foundry_embed(character(), model = "test")
 
@@ -15,6 +19,10 @@ test_that("foundry_embed requires model", {
 
   expect_error(foundry_embed("Hello"), "Embedding model/deployment name is required")
 })
+
+# ============================================================================
+# Similarity Function Tests
+# ============================================================================
 
 test_that("foundry_similarity requires data frame", {
   expect_error(foundry_similarity("not a df"), "must be a data frame")
@@ -75,7 +83,51 @@ test_that("foundry_similarity filters NULL embeddings", {
   expect_equal(result$text_2, "c")
 })
 
-# Integration test
+# ============================================================================
+# Mocked API Tests
+# ============================================================================
+
+test_that("foundry_embed returns tibble with mocked response", {
+  setup_mock_env()
+  fixture <- load_fixture("embed", "response.json")
+  mock_request(fixture)
+
+  result <- foundry_embed("Hello world", model = "text-embedding-ada-002")
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 1)
+  expect_equal(result$text, "Hello world")
+  expect_true(is.list(result$embedding))
+  expect_true(length(result$embedding[[1]]) > 0)
+})
+
+test_that("foundry_embed returns correct column types", {
+  setup_mock_env()
+  fixture <- load_fixture("embed", "response.json")
+  mock_request(fixture)
+
+  result <- foundry_embed("Test", model = "text-embedding-ada-002")
+
+  expect_type(result$text, "character")
+  expect_type(result$embedding, "list")
+  expect_type(result$n_dims, "integer")
+  expect_type(result$embedding[[1]], "double")
+})
+
+test_that("foundry_embed n_dims matches embedding length", {
+  setup_mock_env()
+  fixture <- load_fixture("embed", "response.json")
+  mock_request(fixture)
+
+  result <- foundry_embed("Test", model = "text-embedding-ada-002")
+
+  expect_equal(result$n_dims, length(result$embedding[[1]]))
+})
+
+# ============================================================================
+# Integration Test (requires real credentials)
+# ============================================================================
+
 test_that("foundry_embed returns tibble with real API", {
   skip_on_cran()
   skip_if_no_auth()
