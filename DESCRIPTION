@@ -1,0 +1,34 @@
+Package: foundryR
+Title: Tidy Interface to Azure AI Foundry
+Version: 0.0.0.9000
+Authors@R:
+    person("Alex", "Farach", , "alexfarach@example.com", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: Provides a tidy, API-first interface to Microsoft Azure AI Foundry.
+    All functions return tibbles and integrate seamlessly with tidyverse and
+    tidymodels workflows. Supports chat completions, text embeddings, and
+    semantic similarity operations using Azure-hosted models including GPT,
+    Claude, Llama, Mistral, DeepSeek, and Cohere.
+License: MIT + file LICENSE
+URL: https://github.com/farach/foundryR
+BugReports: https://github.com/farach/foundryR/issues
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+    cli,
+    dplyr,
+    glue,
+    httr2 (>= 1.0.0),
+    magrittr,
+    purrr,
+    rlang,
+    tibble
+Suggests:
+    arrow,
+    httptest2,
+    recipes,
+    testthat (>= 3.0.0),
+    tidymodels,
+    withr
+Config/testthat/edition: 3

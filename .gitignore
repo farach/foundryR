@@ -1,0 +1,29 @@
+# R artifacts
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Package build artifacts
+*.tar.gz
+*.Rcheck/
+inst/doc
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation
+docs/
+
+# Test artifacts
+tests/testthat/_snaps/
+
+# Environment
+.Renviron.local
