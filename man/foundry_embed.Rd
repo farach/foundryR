@@ -38,6 +38,19 @@ Generate embedding vectors for one or more text inputs using an Azure AI
 Foundry deployed embedding model. Returns a tibble with the input text
 and corresponding embedding vectors stored as a list-column.
 }
+\details{
+\strong{Important}: The \code{model} parameter must be a deployment of an \strong{embedding model},
+not a chat model. Common embedding models include:
+\itemize{
+\item \code{text-embedding-ada-002}
+\item \code{text-embedding-3-small}
+\item \code{text-embedding-3-large}
+}
+
+Chat models (GPT-4, Claude, Llama, etc.) cannot generate embeddings.
+If you only have chat models deployed, you'll need to deploy an embedding
+model in Azure AI Foundry first.
+}
 \examples{
 \dontrun{
 # Single text

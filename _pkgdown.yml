@@ -22,6 +22,8 @@ reference:
       - foundry_set_key
       - foundry_set_endpoint
       - foundry_get_endpoint
+      - foundry_set_content_safety_key
+      - foundry_set_content_safety_endpoint
 
   - title: Chat Completions
     desc: Interact with chat models
@@ -32,7 +34,16 @@ reference:
     desc: Generate and work with text embeddings
     contents:
       - foundry_embed
+      - foundry_embed_batch
       - foundry_similarity
+      - step_foundry_embed
+
+  - title: Content Safety
+    desc: Content moderation and responsible AI features
+    contents:
+      - foundry_moderate
+      - foundry_groundedness
+      - foundry_shield
 
   - title: Models
     desc: Discover available deployments
