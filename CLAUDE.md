@@ -276,35 +276,32 @@ skip_if(Sys.getenv("AZURE_FOUNDRY_ENDPOINT") == "", "No endpoint")
 - [x] Vignettes: getting-started, embeddings
 - [x] Support for `max_completion_tokens` (newer models)
 
-### Phase 2.5: Responsible AI & Evaluation (v0.3.0) - NEXT
+### Phase 2.5: Responsible AI & Evaluation (v0.3.0) - COMPLETE
 
 Foundry-differentiated features not available in huggingfaceR:
 
-- [ ] `foundry_moderate()` - Content safety moderation
-  - Analyze text/images for harmful content (hate, violence, self-harm, sexual)
-  - Return severity scores (0-7) and labels (safe/low/medium/high)
-  - Detect prompt injection and jailbreak attempts
+- [x] `foundry_moderate()` - Content safety moderation
+  - Analyze text for harmful content (hate, violence, self-harm, sexual)
+  - Return severity scores (0-6) and labels (safe/low/medium/high)
   - API: Azure AI Content Safety
 
-- [ ] `foundry_groundedness()` - Hallucination detection
-  - Check if claims are grounded in source documents
-  - Identify ungrounded segments
-  - API: Azure AI Content Safety - Groundedness Detection
+- [x] `foundry_groundedness()` - Hallucination detection
+  - Check if LLM responses are grounded in source documents
+  - Identify ungrounded segments and percentage
+  - API: Azure AI Content Safety - Groundedness Detection (preview)
 
-- [ ] `foundry_evaluate()` - Model output evaluation
-  - Quality metrics (coherence, fluency, relevance)
-  - Safety metrics (same categories as moderate)
-  - RAG metrics (groundedness, retrieval relevance)
-  - API: Azure AI Foundry Evaluation API
+- [x] `foundry_shield()` - Prompt injection detection
+  - Detect jailbreak attempts in user prompts
+  - Detect embedded attacks in documents (RAG scenarios)
+  - API: Azure AI Content Safety - Prompt Shields
 
-**API References:**
-- Content Safety: https://learn.microsoft.com/en-us/azure/ai-services/content-safety/
-- Groundedness: https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/groundedness
-- Evaluation: https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/evaluation-approach-gen-ai
+- [ ] `foundry_evaluate()` - Deferred to future
+  - Quality metrics require Entra ID auth and batch API
+  - Consider implementing custom LLM-judge approach later
 
-**Open Questions:**
-- Do Content Safety APIs use the same endpoint/auth or require separate resource?
-- Should `foundry_evaluate()` be one function with `metrics` param or separate functions?
+**Resolved Questions:**
+- Content Safety uses SEPARATE Azure resource with different endpoint/key
+- Environment variables: `AZURE_CONTENT_SAFETY_ENDPOINT`, `AZURE_CONTENT_SAFETY_KEY`
 
 ### Phase 3: Polish (v1.0.0)
 
