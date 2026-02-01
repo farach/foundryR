@@ -11,6 +11,7 @@ foundry_chat(
   history = NULL,
   temperature = NULL,
   max_tokens = NULL,
+  max_completion_tokens = NULL,
   top_p = NULL,
   frequency_penalty = NULL,
   presence_penalty = NULL,
@@ -34,7 +35,11 @@ each with \code{role} and \code{content} fields.}
 \item{temperature}{Numeric. Sampling temperature between 0 and 2. Higher values
 make output more random, lower values more deterministic. Default: 1.}
 
-\item{max_tokens}{Integer. Maximum number of tokens in the response.}
+\item{max_tokens}{Integer. Maximum tokens in response (legacy parameter, use
+\code{max_completion_tokens} for newer models).}
+
+\item{max_completion_tokens}{Integer. Maximum tokens in response. Preferred
+parameter for newer models (gpt-4o, etc.). Takes precedence over \code{max_tokens}.}
 
 \item{top_p}{Numeric. Nucleus sampling parameter between 0 and 1. Default: 1.}
 
@@ -78,12 +83,12 @@ foundry_chat(
   model = "gpt-4"
 )
 
-# With parameters
+# With parameters (use max_completion_tokens for newer models)
 foundry_chat(
   "Write a haiku about data science",
   model = "gpt-4",
   temperature = 0.9,
-  max_tokens = 100
+  max_completion_tokens = 100
 )
 
 # With conversation history
