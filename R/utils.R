@@ -120,3 +120,59 @@ foundry_perform <- function(req) {
   resp <- httr2::req_perform(req)
   httr2::resp_body_json(resp)
 }
+
+
+#' Warn if Model Looks Like a Chat Model
+#'
+#' Internal function to warn users if they appear to be using a chat model
+#' for embedding operations.
+#'
+#' @param model Character. The model/deployment name.
+#' @param calling_fn Character. The function name for the warning message.
+#'
+#' @return NULL (invisibly). Called for side effect of warning.
+#' @keywords internal
+warn_if_chat_model <- function(model, calling_fn = "foundry_embed") {
+  # Common chat model patterns (case-insensitive)
+  chat_patterns <- c(
+    "gpt-",
+    "gpt4",
+    "gpt3",
+    "gpt5",
+    "claude",
+    "llama",
+    "mistral",
+    "mixtral",
+    "gemini",
+    "palm",
+    "command",
+    "chat",
+    "turbo",
+    "davinci",
+    "curie",
+    "babbage"
+  )
+
+ # Check if model name matches any chat pattern
+  model_lower <- tolower(model)
+  is_likely_chat <- any(vapply(chat_patterns, function(p) {
+    grepl(p, model_lower, fixed = TRUE)
+  }, logical(1)))
+
+  # Also check it's NOT an embedding model
+  embed_patterns <- c("embed", "ada-002", "e5-", "bge-")
+  is_likely_embed <- any(vapply(embed_patterns, function(p) {
+    grepl(p, model_lower, fixed = TRUE)
+  }, logical(1)))
+
+  if (is_likely_chat && !is_likely_embed) {
+    cli::cli_warn(c(
+      "!" = "Model {.val {model}} looks like a chat model, not an embedding model.",
+      "i" = "Embedding requires a dedicated embedding model deployment (e.g., {.val text-embedding-ada-002}, {.val text-embedding-3-small}).",
+      "i" = "Chat models like GPT-4, Claude, and Llama cannot generate embeddings.",
+      "i" = "Deploy an embedding model in Azure AI Foundry, then use that deployment name."
+    ))
+  }
+
+  invisible(NULL)
+}

@@ -19,6 +19,17 @@
 #'     \item{n_dims}{Integer. The dimensionality of the embedding.}
 #'   }
 #'
+#' @details
+#' **Important**: The `model` parameter must be a deployment of an **embedding model**,
+#' not a chat model. Common embedding models include:
+#' - `text-embedding-ada-002`
+#' - `text-embedding-3-small`
+#' - `text-embedding-3-large`
+#'
+#' Chat models (GPT-4, Claude, Llama, etc.) cannot generate embeddings.
+#' If you only have chat models deployed, you'll need to deploy an embedding
+#' model in Azure AI Foundry first.
+#'
 #' @export
 #'
 #' @examples
@@ -49,6 +60,10 @@ foundry_embed <- function(text,
       ))
     }
   }
+
+  # Warn if model name looks like a chat model
+
+  warn_if_chat_model(model, "foundry_embed")
 
   # Handle empty input
   if (length(text) == 0) {
