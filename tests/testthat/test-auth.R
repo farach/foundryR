@@ -1,7 +1,7 @@
 test_that("foundry_set_key sets environment variable", {
   withr::local_envvar(AZURE_FOUNDRY_KEY = "")
 
-  expect_silent(foundry_set_key("test-key-123"))
+  suppressMessages(foundry_set_key("test-key-123"))
   expect_equal(Sys.getenv("AZURE_FOUNDRY_KEY"), "test-key-123")
 })
 

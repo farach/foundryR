@@ -37,6 +37,10 @@ reference:
       - foundry_embed_batch
       - foundry_similarity
       - step_foundry_embed
+      - bake.step_foundry_embed
+      - prep.step_foundry_embed
+      - print.step_foundry_embed
+      - required_pkgs.step_foundry_embed
 
   - title: Content Safety
     desc: Content moderation and responsible AI features
@@ -44,6 +48,14 @@ reference:
       - foundry_moderate
       - foundry_groundedness
       - foundry_shield
+
+  - title: Image Generation
+    desc: Generate images with DALL-E models
+    contents:
+      - foundry_image
+      - foundry_save_image
+      - foundry_set_image_endpoint
+      - foundry_set_image_key
 
   - title: Models
     desc: Discover available deployments

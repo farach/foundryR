@@ -12,6 +12,8 @@
 - **Enterprise-ready**: Designed for Azure environments with compliance/governance needs
 - **Multiple models**: Works with GPT, Claude, Llama, Mistral, DeepSeek, Cohere, and more
 - **Content Safety**: Built-in content moderation, hallucination detection, and prompt injection detection via Azure AI Content Safety
+- **Image Generation**: Create images with DALL-E models
+- **tidymodels Integration**: Recipe step for embedding text columns
 
 ## Prerequisites
 
@@ -256,30 +258,6 @@ foundry_chat("Hello", model = "my-gpt4", api_version = "2024-10-21")
 # or for preview features:
 foundry_chat("Hello", model = "my-gpt4", api_version = "2025-01-01-preview")
 ```
-
-## Roadmap
-
-**Phase 1 - Core Inference (Complete)**
-- [x] Authentication (`foundry_set_key()`, `foundry_set_endpoint()`)
-- [x] Setup validation (`foundry_check_setup()`)
-- [x] Chat completions (`foundry_chat()`)
-- [x] Text embeddings (`foundry_embed()`)
-- [x] Similarity computation (`foundry_similarity()`)
-
-**Phase 2 - tidymodels & Batch (Complete)**
-- [x] Batch embeddings (`foundry_embed_batch()`)
-- [x] tidymodels integration (`step_foundry_embed()`)
-- [x] Vignettes and documentation
-
-**Phase 2.5 - Responsible AI (Next)**
-- [ ] Content moderation (`foundry_moderate()`)
-- [ ] Groundedness/hallucination detection (`foundry_groundedness()`)
-- [ ] Model evaluation (`foundry_evaluate()`)
-
-**Phase 3 - Advanced**
-- [ ] Entra ID authentication
-- [ ] Streaming responses
-- [ ] Image generation
 
 ## Related Projects
 

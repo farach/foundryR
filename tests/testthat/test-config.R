@@ -1,14 +1,14 @@
 test_that("foundry_set_endpoint sets environment variable", {
   withr::local_envvar(AZURE_FOUNDRY_ENDPOINT = "")
 
-  expect_silent(foundry_set_endpoint("https://test.openai.azure.com"))
+  suppressMessages(foundry_set_endpoint("https://test.openai.azure.com"))
   expect_equal(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), "https://test.openai.azure.com")
 })
 
 test_that("foundry_set_endpoint removes trailing slash", {
   withr::local_envvar(AZURE_FOUNDRY_ENDPOINT = "")
 
-  foundry_set_endpoint("https://test.openai.azure.com/")
+  suppressMessages(foundry_set_endpoint("https://test.openai.azure.com/"))
   expect_equal(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), "https://test.openai.azure.com")
 })
 
