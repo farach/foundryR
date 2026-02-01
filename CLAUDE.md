@@ -255,35 +255,65 @@ skip_if(Sys.getenv("AZURE_FOUNDRY_ENDPOINT") == "", "No endpoint")
 
 ## Development Milestones
 
-### Phase 1: MVP (v0.1.0)
+### Phase 1: MVP (v0.1.0) - COMPLETE
 
-- [ ] Package skeleton (DESCRIPTION, NAMESPACE)
-- [ ] Authentication module (`foundry_set_key()`, `foundry_get_key()`)
-- [ ] Configuration (`foundry_set_endpoint()`)
-- [ ] Core request builder (internal)
-- [ ] `foundry_chat()` - single message
-- [ ] `foundry_embed()` - single/batch text
-- [ ] Basic tests with httptest2 mocks
-- [ ] README with quickstart
+- [x] Package skeleton (DESCRIPTION, NAMESPACE)
+- [x] Authentication module (`foundry_set_key()`, `foundry_get_key()`)
+- [x] Configuration (`foundry_set_endpoint()`, `foundry_check_setup()`)
+- [x] Core request builder (internal)
+- [x] `foundry_chat()` - single message with history support
+- [x] `foundry_embed()` - single/batch text
+- [x] `foundry_models()` - deployment validation
+- [x] Basic tests
+- [x] README with prerequisites and quickstart
 
-### Phase 2: Completeness (v0.2.0)
+### Phase 2: tidymodels & Batch Processing (v0.2.0) - COMPLETE
 
-- [ ] `foundry_models()` - list deployments
-- [ ] `foundry_chat()` - conversation history support
-- [ ] `foundry_embed_batch()` - parallel requests
-- [ ] `foundry_similarity()` - cosine similarity helper
-- [ ] `step_foundry_embed()` - tidymodels integration
-- [ ] Vignettes: getting-started, embeddings
-- [ ] pkgdown site
+- [x] `foundry_embed_batch()` - parallel requests with progress
+- [x] `foundry_similarity()` - cosine similarity helper
+- [x] `step_foundry_embed()` - tidymodels recipe integration
+- [x] `warn_if_chat_model()` - helpful warnings for model type mismatch
+- [x] Vignettes: getting-started, embeddings
+- [x] Support for `max_completion_tokens` (newer models)
+
+### Phase 2.5: Responsible AI & Evaluation (v0.3.0) - NEXT
+
+Foundry-differentiated features not available in huggingfaceR:
+
+- [ ] `foundry_moderate()` - Content safety moderation
+  - Analyze text/images for harmful content (hate, violence, self-harm, sexual)
+  - Return severity scores (0-7) and labels (safe/low/medium/high)
+  - Detect prompt injection and jailbreak attempts
+  - API: Azure AI Content Safety
+
+- [ ] `foundry_groundedness()` - Hallucination detection
+  - Check if claims are grounded in source documents
+  - Identify ungrounded segments
+  - API: Azure AI Content Safety - Groundedness Detection
+
+- [ ] `foundry_evaluate()` - Model output evaluation
+  - Quality metrics (coherence, fluency, relevance)
+  - Safety metrics (same categories as moderate)
+  - RAG metrics (groundedness, retrieval relevance)
+  - API: Azure AI Foundry Evaluation API
+
+**API References:**
+- Content Safety: https://learn.microsoft.com/en-us/azure/ai-services/content-safety/
+- Groundedness: https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/groundedness
+- Evaluation: https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/evaluation-approach-gen-ai
+
+**Open Questions:**
+- Do Content Safety APIs use the same endpoint/auth or require separate resource?
+- Should `foundry_evaluate()` be one function with `metrics` param or separate functions?
 
 ### Phase 3: Polish (v1.0.0)
 
 - [ ] Comprehensive error messages
 - [ ] Rate limiting / retry logic
-- [ ] Content filter handling
+- [ ] pkgdown site
 - [ ] Entra ID authentication (via AzureAuth)
 - [ ] CRAN submission preparation
-- [ ] Full test coverage
+- [ ] Full test coverage with httptest2 mocks
 
 ### Future (v1.x+)
 
