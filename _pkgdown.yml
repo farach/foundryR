@@ -1,0 +1,45 @@
+url: https://farach.github.io/foundryR/
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [search, github]
+  components:
+    github:
+      icon: fa-github
+      href: https://github.com/farach/foundryR
+      aria-label: GitHub
+
+reference:
+  - title: Authentication & Configuration
+    desc: Set up your Azure AI Foundry credentials
+    contents:
+      - foundry_check_setup
+      - foundry_set_key
+      - foundry_set_endpoint
+      - foundry_get_endpoint
+
+  - title: Chat Completions
+    desc: Interact with chat models
+    contents:
+      - foundry_chat
+
+  - title: Embeddings
+    desc: Generate and work with text embeddings
+    contents:
+      - foundry_embed
+      - foundry_similarity
+
+  - title: Models
+    desc: Discover available deployments
+    contents:
+      - foundry_models
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with
