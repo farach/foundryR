@@ -115,11 +115,10 @@ if (chat_model == "") {
     result
   }))
 
-  run_test("foundry_chat - with parameters", quote({
+  run_test("foundry_chat - with max_completion_tokens", quote({
     result <- foundry_chat(
       "Say hello in a creative way",
       model = chat_model,
-      temperature = 0.9,
       max_completion_tokens = 100
     )
     stopifnot(!is.na(result$content))
@@ -238,11 +237,13 @@ if (cs_endpoint == "") {
 
   run_test("foundry_moderate - safe content", quote({
     result <- foundry_moderate("I love R programming! It's great for data science.")
-    stopifnot(nrow(result) == 1)
-    stopifnot(!is.na(result$hate_severity))
-    stopifnot(!is.na(result$violence_severity))
+    # Returns 4 rows (one per category: Hate, Sexual, SelfHarm, Violence)
+    stopifnot(nrow(result) == 4)
+    stopifnot("category" %in% names(result))
+    stopifnot("severity" %in% names(result))
+    stopifnot(all(!is.na(result$severity)))
     # Safe content should have low scores
-    stopifnot(result$hate_severity <= 2)
+    stopifnot(all(result$severity <= 2))
     result
   }))
 
@@ -253,18 +254,22 @@ if (cs_endpoint == "") {
       "I respectfully disagree with that opinion"
     )
     result <- foundry_moderate(texts)
-    stopifnot(nrow(result) == 3)
-    stopifnot(all(!is.na(result$hate_severity)))
+    # 3 texts × 4 categories = 12 rows
+    stopifnot(nrow(result) == 12)
+    stopifnot(all(!is.na(result$severity)))
     result
   }))
 
-  run_test("foundry_groundedness - grounded response", quote({
+  run_test("foundry_groundedness - grounded response (QnA)", quote({
     source_doc <- "foundryR is an R package for Azure AI Foundry. It was created by Alex Farach and is available on GitHub."
     ai_response <- "foundryR is an R package created by Alex Farach for Azure AI Foundry."
+    user_query <- "What is foundryR and who created it?"
 
     result <- foundry_groundedness(
       text = ai_response,
-      grounding_sources = source_doc
+      grounding_sources = source_doc,
+      query = user_query,
+      task = "QnA"
     )
     stopifnot(nrow(result) == 1)
     stopifnot(!is.na(result$grounded))
@@ -273,17 +278,18 @@ if (cs_endpoint == "") {
     result
   }))
 
-  run_test("foundry_groundedness - with hallucination", quote({
-    source_doc <- "foundryR provides functions for chat and embeddings."
-    ai_response <- "foundryR was released in 2015 and has millions of downloads."
+  run_test("foundry_groundedness - summarization task", quote({
+    source_doc <- "foundryR provides functions for chat and embeddings. It integrates with tidymodels."
+    ai_response <- "foundryR offers chat, embeddings, and tidymodels integration."
 
     result <- foundry_groundedness(
       text = ai_response,
-      grounding_sources = source_doc
+      grounding_sources = source_doc,
+      task = "Summarization"  # No query needed for summarization
     )
     stopifnot(!is.na(result$grounded))
-    cat("\nExpected: grounded = FALSE (contains hallucinated info)\n")
-    cat("Actual grounded:", result$grounded, "\n")
+    cat("\nGrounded:", result$grounded, "\n")
+    cat("Grounded %:", result$grounded_pct, "\n")
     result
   }))
 
@@ -297,10 +303,11 @@ if (cs_endpoint == "") {
 
   run_test("foundry_shield - with documents (RAG scenario)", quote({
     result <- foundry_shield(
-      text = "Please summarize this document for me",
+      user_prompt = "Please summarize this document for me",
       documents = "This is a legitimate document about R programming best practices."
     )
-    stopifnot(!is.na(result$attack_detected))
+    stopifnot(nrow(result) == 2)  # user_prompt + 1 document
+    stopifnot(all(!is.na(result$attack_detected)))
     result
   }))
 }
