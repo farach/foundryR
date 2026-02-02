@@ -161,40 +161,142 @@ a, .nav-link, .btn {
   transition: all 0.15s ease;
 }
 
-/* Dark mode adjustments */
+/* Dark mode adjustments - supports both manual toggle and auto detection */
+/* Manual toggle via pkgdown light-switch */
+[data-bs-theme="dark"] {
+  --bs-body-bg: #0d1117;
+  --bs-body-color: #c9d1d9;
+  --bs-link-color: #58a6ff;
+  --bs-link-hover-color: #79b8ff;
+  --foundry-code-bg: #161b22;
+  --foundry-border-color: #30363d;
+  --foundry-muted-color: #8b949e;
+}
+
+[data-bs-theme="dark"] body {
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+[data-bs-theme="dark"] a {
+  color: #58a6ff;
+}
+
+[data-bs-theme="dark"] a:hover {
+  color: #79b8ff;
+}
+
+[data-bs-theme="dark"] pre {
+  background-color: #161b22;
+  border-color: #30363d;
+}
+
+[data-bs-theme="dark"] pre code {
+  color: #c9d1d9;
+}
+
+[data-bs-theme="dark"] :not(pre) > code {
+  background-color: rgba(88, 166, 255, 0.15);
+  color: #58a6ff;
+}
+
+[data-bs-theme="dark"] th {
+  background-color: #161b22;
+  border-color: #30363d;
+  color: #c9d1d9;
+}
+
+[data-bs-theme="dark"] td {
+  border-color: #30363d;
+}
+
+[data-bs-theme="dark"] tr:hover {
+  background-color: #161b22;
+}
+
+[data-bs-theme="dark"] footer {
+  background-color: #161b22;
+  border-color: #30363d;
+}
+
+[data-bs-theme="dark"] .contents h2 {
+  color: #58a6ff;
+  border-bottom-color: #30363d;
+}
+
+[data-bs-theme="dark"] .section-title {
+  border-bottom-color: #58a6ff;
+}
+
+[data-bs-theme="dark"] .callout {
+  background: rgba(88, 166, 255, 0.08);
+  border-left-color: #58a6ff;
+}
+
+[data-bs-theme="dark"] .contents .nav-link {
+  color: #c9d1d9;
+}
+
+[data-bs-theme="dark"] .contents .nav-link:hover,
+[data-bs-theme="dark"] .contents .nav-link.active {
+  color: #58a6ff;
+}
+
+[data-bs-theme="dark"] .page-home .lead {
+  color: #8b949e;
+}
+
+[data-bs-theme="dark"] .ref-description {
+  color: #8b949e;
+}
+
+[data-bs-theme="dark"] .navbar {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Syntax highlighting adjustments for dark mode */
+[data-bs-theme="dark"] .sourceCode .kw { color: #ff7b72; }  /* keywords */
+[data-bs-theme="dark"] .sourceCode .dt { color: #79c0ff; }  /* data types */
+[data-bs-theme="dark"] .sourceCode .dv { color: #79c0ff; }  /* decimal values */
+[data-bs-theme="dark"] .sourceCode .st { color: #a5d6ff; }  /* strings */
+[data-bs-theme="dark"] .sourceCode .co { color: #8b949e; }  /* comments */
+[data-bs-theme="dark"] .sourceCode .fu { color: #d2a8ff; }  /* functions */
+[data-bs-theme="dark"] .sourceCode .op { color: #c9d1d9; }  /* operators */
+
+/* Auto-detection fallback for browsers without manual toggle support */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-bs-theme="light"]) {
     --bs-body-bg: #0d1117;
     --bs-body-color: #c9d1d9;
   }
 
-  pre {
+  :root:not([data-bs-theme="light"]) pre {
     background-color: #161b22;
     border-color: #30363d;
   }
 
-  pre code {
+  :root:not([data-bs-theme="light"]) pre code {
     color: #c9d1d9;
   }
 
-  :not(pre) > code {
-    background-color: rgba(0, 120, 212, 0.2);
+  :root:not([data-bs-theme="light"]) :not(pre) > code {
+    background-color: rgba(88, 166, 255, 0.15);
   }
 
-  th {
+  :root:not([data-bs-theme="light"]) th {
     background-color: #161b22;
     border-color: #30363d;
   }
 
-  td {
+  :root:not([data-bs-theme="light"]) td {
     border-color: #30363d;
   }
 
-  tr:hover {
+  :root:not([data-bs-theme="light"]) tr:hover {
     background-color: #161b22;
   }
 
-  footer {
+  :root:not([data-bs-theme="light"]) footer {
     background-color: #161b22;
     border-color: #30363d;
   }

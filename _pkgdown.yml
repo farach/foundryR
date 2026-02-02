@@ -1,8 +1,12 @@
 url: https://farach.github.io/foundryR/
 
 template:
+  package: foundryR
+
+
   bootstrap: 5
   bootswatch: cosmo
+  light-switch: true
   bslib:
     primary: "#0078D4"
     border-radius: 0.25rem
@@ -35,7 +39,7 @@ navbar:
   type: dark
   structure:
     left: [intro, reference, articles, news]
-    right: [search, github]
+    right: [search, lightswitch, github]
   components:
     intro:
       text: Get Started
