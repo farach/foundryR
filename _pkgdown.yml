@@ -2,40 +2,100 @@ url: https://farach.github.io/foundryR/
 
 template:
   bootstrap: 5
-  bootswatch: flatly
+  bootswatch: cosmo
+  bslib:
+    primary: "#0078D4"
+    border-radius: 0.25rem
+    btn-border-radius: 0.25rem
+  includes:
+    in_header: |
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  assets: pkgdown
+
+home:
+  title: foundryR - Tidy Interface to Azure AI Foundry
+  description: >
+    A tidy, API-first R interface to Microsoft Azure AI Foundry.
+    Build AI-powered applications with chat completions, embeddings,
+    content safety, and image generation - all returning tibbles.
+  sidebar:
+    structure: [links, license, community, citation, authors, dev]
+    components:
+      links:
+        title: Links
+        text: |
+          - [Azure AI Foundry](https://azure.microsoft.com/products/ai-foundry/)
+          - [Azure OpenAI Documentation](https://learn.microsoft.com/azure/ai-services/openai/)
+          - [Azure AI Content Safety](https://azure.microsoft.com/products/ai-services/ai-content-safety/)
 
 navbar:
+  bg: primary
+  type: dark
   structure:
-    left: [intro, reference, articles]
+    left: [intro, reference, articles, news]
     right: [search, github]
   components:
+    intro:
+      text: Get Started
+      href: articles/getting-started.html
+    articles:
+      text: Articles
+      menu:
+        - text: "Core Functionality"
+        - text: Getting Started
+          href: articles/getting-started.html
+        - text: Text Embeddings
+          href: articles/embeddings.html
+        - text: "---"
+        - text: "Responsible AI"
+        - text: Content Safety
+          href: articles/content-safety.html
+        - text: "---"
+        - text: "Advanced Topics"
+        - text: Image Generation
+          href: articles/image-generation.html
+        - text: tidymodels Integration
+          href: articles/tidymodels.html
     github:
       icon: fa-github
       href: https://github.com/farach/foundryR
-      aria-label: GitHub
+      aria-label: GitHub repository
 
 reference:
-  - title: Authentication & Configuration
-    desc: Set up your Azure AI Foundry credentials
+  - title: Setup & Configuration
+    desc: >
+      Configure your Azure AI Foundry credentials and verify your setup.
+      These functions manage authentication for all API calls.
     contents:
       - foundry_check_setup
       - foundry_set_key
       - foundry_set_endpoint
       - foundry_get_endpoint
-      - foundry_set_content_safety_key
-      - foundry_set_content_safety_endpoint
 
   - title: Chat Completions
-    desc: Interact with chat models
+    desc: >
+
+      Interact with large language models like GPT-4, Claude, Llama, and more.
+      Send messages and receive AI-generated responses as tidy tibbles.
     contents:
       - foundry_chat
 
-  - title: Embeddings
-    desc: Generate and work with text embeddings
+  - title: Text Embeddings
+    desc: >
+      Generate vector embeddings for semantic search, clustering, and
+      machine learning. Includes batch processing and similarity computation.
     contents:
       - foundry_embed
       - foundry_embed_batch
       - foundry_similarity
+
+  - title: tidymodels Integration
+    desc: >
+      Seamlessly integrate text embeddings into your tidymodels workflows
+      using recipe steps.
+    contents:
       - step_foundry_embed
       - bake.step_foundry_embed
       - prep.step_foundry_embed
@@ -43,26 +103,56 @@ reference:
       - required_pkgs.step_foundry_embed
 
   - title: Content Safety
-    desc: Content moderation and responsible AI features
+    desc: >
+      Azure AI Content Safety features for responsible AI deployment.
+      Moderate content, detect hallucinations, and protect against prompt injection.
     contents:
       - foundry_moderate
       - foundry_groundedness
       - foundry_shield
+      - foundry_set_content_safety_key
+      - foundry_set_content_safety_endpoint
 
   - title: Image Generation
-    desc: Generate images with DALL-E models
+    desc: >
+      Create images with DALL-E models. Generate, customize, and save
+      AI-generated artwork and visualizations.
     contents:
       - foundry_image
       - foundry_save_image
       - foundry_set_image_endpoint
       - foundry_set_image_key
 
-  - title: Models
-    desc: Discover available deployments
+  - title: Model Discovery
+    desc: >
+      Explore available model deployments in your Azure AI Foundry resource.
     contents:
       - foundry_models
 
+articles:
+  - title: Core Functionality
+    navbar: ~
+    contents:
+      - getting-started
+      - embeddings
+
+  - title: Responsible AI
+    navbar: ~
+    contents:
+      - content-safety
+
+  - title: Advanced Topics
+    navbar: ~
+    contents:
+      - image-generation
+      - tidymodels
+
 footer:
   structure:
-    left: developed_by
-    right: built_with
+    left: [package]
+    right: [built_with, azure]
+  components:
+    package: >
+      foundryR is developed by [Alex Farach](https://github.com/farach)
+    azure: >
+      Powered by [Azure AI Foundry](https://azure.microsoft.com/products/ai-foundry/)
