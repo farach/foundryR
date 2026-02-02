@@ -62,6 +62,10 @@ navbar:
           href: articles/image-generation.html
         - text: tidymodels Integration
           href: articles/tidymodels.html
+        - text: "---"
+        - text: "Integrations"
+        - text: onet2r Integration
+          href: articles/onet2r-integration.html
     github:
       icon: fa-github
       href: https://github.com/farach/foundryR
@@ -150,6 +154,11 @@ articles:
     contents:
       - image-generation
       - tidymodels
+
+  - title: Integrations
+    navbar: ~
+    contents:
+      - onet2r-integration
 
 footer:
   structure:

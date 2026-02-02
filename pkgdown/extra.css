@@ -1,57 +1,127 @@
-/* foundryR - Azure-inspired styling */
+/* foundryR - Azure-inspired styling with WCAG 2.1 AA compliant contrast */
 
-/* Typography */
+/* ============================================
+   CSS Custom Properties for Light Mode (Default)
+   ============================================ */
+:root,
+[data-bs-theme="light"] {
+  --foundry-body-bg: #ffffff;
+  --foundry-body-color: #1f2328;
+  --foundry-link-color: #0969da;
+  --foundry-link-hover-color: #0550ae;
+  --foundry-code-bg: #f6f8fa;
+  --foundry-code-color: #1f2328;
+  --foundry-inline-code-bg: rgba(9, 105, 218, 0.1);
+  --foundry-inline-code-color: #0550ae;
+  --foundry-border-color: #d0d7de;
+  --foundry-muted-color: #59636e;
+  --foundry-heading-color: #1f2328;
+  --foundry-table-header-bg: #f6f8fa;
+  --foundry-table-hover-bg: #f6f8fa;
+  --foundry-footer-bg: #f6f8fa;
+  --foundry-callout-bg: rgba(9, 105, 218, 0.08);
+  --foundry-accent-color: #0969da;
+  --foundry-navbar-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   CSS Custom Properties for Dark Mode
+   ============================================ */
+[data-bs-theme="dark"] {
+  --foundry-body-bg: #0d1117;
+  --foundry-body-color: #e6edf3;
+  --foundry-link-color: #58a6ff;
+  --foundry-link-hover-color: #79b8ff;
+  --foundry-code-bg: #161b22;
+  --foundry-code-color: #e6edf3;
+  --foundry-inline-code-bg: rgba(88, 166, 255, 0.15);
+  --foundry-inline-code-color: #79c0ff;
+  --foundry-border-color: #30363d;
+  --foundry-muted-color: #8b949e;
+  --foundry-heading-color: #e6edf3;
+  --foundry-table-header-bg: #161b22;
+  --foundry-table-hover-bg: #161b22;
+  --foundry-footer-bg: #161b22;
+  --foundry-callout-bg: rgba(88, 166, 255, 0.08);
+  --foundry-accent-color: #58a6ff;
+  --foundry-navbar-shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   Base Typography
+   ============================================ */
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   line-height: 1.6;
+  background-color: var(--foundry-body-bg);
+  color: var(--foundry-body-color);
 }
 
 code, pre {
   font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
 }
 
-/* Headings */
+/* ============================================
+   Headings
+   ============================================ */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   letter-spacing: -0.01em;
+  color: var(--foundry-heading-color);
 }
 
 .page-header h1 {
   font-weight: 700;
 }
 
-/* Azure color accents */
+/* ============================================
+   Links - WCAG AA compliant colors
+   Light mode: #0969da on white = 4.7:1 contrast ratio
+   Dark mode: #58a6ff on #0d1117 = 7.4:1 contrast ratio
+   ============================================ */
 a {
-  color: #0078D4;
+  color: var(--foundry-link-color);
+  text-decoration: none;
+  transition: color 0.15s ease;
 }
 
 a:hover {
-  color: #005a9e;
+  color: var(--foundry-link-hover-color);
+  text-decoration: underline;
 }
 
-/* Code blocks */
+/* Ensure visited links still have good contrast */
+a:visited {
+  color: var(--foundry-link-color);
+}
+
+/* ============================================
+   Code Blocks
+   ============================================ */
 pre {
-  background-color: #f6f8fa;
-  border: 1px solid #e1e4e8;
+  background-color: var(--foundry-code-bg);
+  border: 1px solid var(--foundry-border-color);
   border-radius: 6px;
 }
 
 pre code {
-  color: #24292e;
+  color: var(--foundry-code-color);
 }
 
 /* Inline code */
 :not(pre) > code {
-  background-color: rgba(0, 120, 212, 0.08);
-  color: #0078D4;
+  background-color: var(--foundry-inline-code-bg);
+  color: var(--foundry-inline-code-color);
   padding: 0.2em 0.4em;
   border-radius: 3px;
   font-size: 0.9em;
 }
 
-/* Navbar enhancements */
+/* ============================================
+   Navbar - Readable in both modes
+   ============================================ */
 .navbar {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px var(--foundry-navbar-shadow);
 }
 
 .navbar-brand {
@@ -59,9 +129,53 @@ pre code {
   letter-spacing: -0.02em;
 }
 
-/* Reference page cards */
+/* Primary navbar (dark background with white text) */
+.navbar.bg-primary {
+  background-color: #0078D4 !important;
+}
+
+.navbar.bg-primary .navbar-brand,
+.navbar.bg-primary .nav-link,
+.navbar.bg-primary .navbar-text {
+  color: #ffffff !important;
+}
+
+.navbar.bg-primary .nav-link:hover,
+.navbar.bg-primary .nav-link:focus {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.navbar.bg-primary .nav-link.active {
+  color: #ffffff !important;
+  font-weight: 500;
+}
+
+/* Dropdown menus in navbar */
+.navbar .dropdown-menu {
+  background-color: var(--foundry-body-bg);
+  border-color: var(--foundry-border-color);
+}
+
+.navbar .dropdown-item {
+  color: var(--foundry-body-color);
+}
+
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+  background-color: var(--foundry-table-hover-bg);
+  color: var(--foundry-link-color);
+}
+
+/* Light switch button styling */
+.navbar .nav-link .bi {
+  color: #ffffff;
+}
+
+/* ============================================
+   Reference Page Cards
+   ============================================ */
 .section-title {
-  border-bottom: 2px solid #0078D4;
+  border-bottom: 2px solid var(--foundry-accent-color);
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
 }
@@ -72,23 +186,30 @@ pre code {
   font-weight: 500;
 }
 
-/* Article cards */
+/* ============================================
+   Article Cards
+   ============================================ */
 .contents h2 {
-  color: #0078D4;
-  border-bottom: 1px solid #e1e4e8;
+  color: var(--foundry-accent-color);
+  border-bottom: 1px solid var(--foundry-border-color);
   padding-bottom: 0.5rem;
 }
 
-/* Callout boxes */
+/* ============================================
+   Callout Boxes
+   ============================================ */
 .callout {
-  border-left: 4px solid #0078D4;
-  background: rgba(0, 120, 212, 0.05);
+  border-left: 4px solid var(--foundry-accent-color);
+  background: var(--foundry-callout-bg);
   padding: 1rem;
   margin: 1rem 0;
   border-radius: 0 4px 4px 0;
+  color: var(--foundry-body-color);
 }
 
-/* Tables */
+/* ============================================
+   Tables
+   ============================================ */
 table {
   border-collapse: collapse;
   width: 100%;
@@ -96,213 +217,167 @@ table {
 }
 
 th {
-  background-color: #f6f8fa;
+  background-color: var(--foundry-table-header-bg);
   font-weight: 600;
   text-align: left;
   padding: 0.75rem;
-  border-bottom: 2px solid #e1e4e8;
+  border-bottom: 2px solid var(--foundry-border-color);
+  color: var(--foundry-body-color);
 }
 
 td {
   padding: 0.75rem;
-  border-bottom: 1px solid #e1e4e8;
+  border-bottom: 1px solid var(--foundry-border-color);
+  color: var(--foundry-body-color);
 }
 
 tr:hover {
-  background-color: #f6f8fa;
+  background-color: var(--foundry-table-hover-bg);
 }
 
-/* Badges/pills */
+/* ============================================
+   Badges/Pills
+   ============================================ */
 .badge {
   font-weight: 500;
   letter-spacing: 0.02em;
 }
 
-/* Footer */
+/* ============================================
+   Footer
+   ============================================ */
 footer {
-  border-top: 1px solid #e1e4e8;
-  background-color: #f6f8fa;
+  border-top: 1px solid var(--foundry-border-color);
+  background-color: var(--foundry-footer-bg);
+  color: var(--foundry-body-color);
 }
 
-/* Sidebar links */
+footer a {
+  color: var(--foundry-link-color);
+}
+
+footer a:hover {
+  color: var(--foundry-link-hover-color);
+}
+
+/* ============================================
+   Sidebar Links
+   ============================================ */
 .contents .nav-link {
-  color: #24292e;
+  color: var(--foundry-body-color);
   transition: color 0.15s ease;
 }
 
 .contents .nav-link:hover {
-  color: #0078D4;
+  color: var(--foundry-link-color);
 }
 
 .contents .nav-link.active {
-  color: #0078D4;
+  color: var(--foundry-accent-color);
   font-weight: 500;
 }
 
-/* Search */
+/* ============================================
+   Search
+   ============================================ */
 .search-input {
   border-radius: 6px;
+  background-color: var(--foundry-body-bg);
+  color: var(--foundry-body-color);
+  border-color: var(--foundry-border-color);
 }
 
-/* Home page */
+.search-input:focus {
+  border-color: var(--foundry-accent-color);
+}
+
+/* ============================================
+   Home Page
+   Muted text contrast: #59636e on white = 5.9:1
+   ============================================ */
 .page-home .lead {
   font-size: 1.25rem;
-  color: #586069;
+  color: var(--foundry-muted-color);
 }
 
 /* Reference description styling */
 .ref-description {
-  color: #586069;
+  color: var(--foundry-muted-color);
   font-size: 0.95rem;
 }
 
-/* Smooth transitions */
+/* ============================================
+   Smooth Transitions
+   ============================================ */
 a, .nav-link, .btn {
   transition: all 0.15s ease;
 }
 
-/* Dark mode adjustments - supports both manual toggle and auto detection */
-/* Manual toggle via pkgdown light-switch */
-[data-bs-theme="dark"] {
-  --bs-body-bg: #0d1117;
-  --bs-body-color: #c9d1d9;
-  --bs-link-color: #58a6ff;
-  --bs-link-hover-color: #79b8ff;
-  --foundry-code-bg: #161b22;
-  --foundry-border-color: #30363d;
-  --foundry-muted-color: #8b949e;
-}
+/* ============================================
+   Syntax Highlighting - Light Mode
+   All colors tested for WCAG AA compliance on #f6f8fa background
+   ============================================ */
+.sourceCode .kw { color: #cf222e; }  /* keywords - red */
+.sourceCode .dt { color: #0550ae; }  /* data types - blue */
+.sourceCode .dv { color: #0550ae; }  /* decimal values - blue */
+.sourceCode .st { color: #0a3069; }  /* strings - dark blue */
+.sourceCode .co { color: #59636e; }  /* comments - gray (5.9:1 contrast) */
+.sourceCode .fu { color: #8250df; }  /* functions - purple */
+.sourceCode .op { color: #1f2328; }  /* operators - near black */
+.sourceCode .cn { color: #0550ae; }  /* constants */
+.sourceCode .sc { color: #0a3069; }  /* special characters */
 
-[data-bs-theme="dark"] body {
-  background-color: var(--bs-body-bg);
-  color: var(--bs-body-color);
-}
-
-[data-bs-theme="dark"] a {
-  color: #58a6ff;
-}
-
-[data-bs-theme="dark"] a:hover {
-  color: #79b8ff;
-}
-
-[data-bs-theme="dark"] pre {
-  background-color: #161b22;
-  border-color: #30363d;
-}
-
-[data-bs-theme="dark"] pre code {
-  color: #c9d1d9;
-}
-
-[data-bs-theme="dark"] :not(pre) > code {
-  background-color: rgba(88, 166, 255, 0.15);
-  color: #58a6ff;
-}
-
-[data-bs-theme="dark"] th {
-  background-color: #161b22;
-  border-color: #30363d;
-  color: #c9d1d9;
-}
-
-[data-bs-theme="dark"] td {
-  border-color: #30363d;
-}
-
-[data-bs-theme="dark"] tr:hover {
-  background-color: #161b22;
-}
-
-[data-bs-theme="dark"] footer {
-  background-color: #161b22;
-  border-color: #30363d;
-}
-
-[data-bs-theme="dark"] .contents h2 {
-  color: #58a6ff;
-  border-bottom-color: #30363d;
-}
-
-[data-bs-theme="dark"] .section-title {
-  border-bottom-color: #58a6ff;
-}
-
-[data-bs-theme="dark"] .callout {
-  background: rgba(88, 166, 255, 0.08);
-  border-left-color: #58a6ff;
-}
-
-[data-bs-theme="dark"] .contents .nav-link {
-  color: #c9d1d9;
-}
-
-[data-bs-theme="dark"] .contents .nav-link:hover,
-[data-bs-theme="dark"] .contents .nav-link.active {
-  color: #58a6ff;
-}
-
-[data-bs-theme="dark"] .page-home .lead {
-  color: #8b949e;
-}
-
-[data-bs-theme="dark"] .ref-description {
-  color: #8b949e;
-}
-
-[data-bs-theme="dark"] .navbar {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-/* Syntax highlighting adjustments for dark mode */
+/* ============================================
+   Syntax Highlighting - Dark Mode
+   All colors tested for WCAG AA compliance on #161b22 background
+   ============================================ */
 [data-bs-theme="dark"] .sourceCode .kw { color: #ff7b72; }  /* keywords */
 [data-bs-theme="dark"] .sourceCode .dt { color: #79c0ff; }  /* data types */
 [data-bs-theme="dark"] .sourceCode .dv { color: #79c0ff; }  /* decimal values */
 [data-bs-theme="dark"] .sourceCode .st { color: #a5d6ff; }  /* strings */
 [data-bs-theme="dark"] .sourceCode .co { color: #8b949e; }  /* comments */
 [data-bs-theme="dark"] .sourceCode .fu { color: #d2a8ff; }  /* functions */
-[data-bs-theme="dark"] .sourceCode .op { color: #c9d1d9; }  /* operators */
+[data-bs-theme="dark"] .sourceCode .op { color: #e6edf3; }  /* operators */
+[data-bs-theme="dark"] .sourceCode .cn { color: #79c0ff; }  /* constants */
+[data-bs-theme="dark"] .sourceCode .sc { color: #a5d6ff; }  /* special characters */
 
-/* Auto-detection fallback for browsers without manual toggle support */
+/* ============================================
+   Auto-detection fallback for prefers-color-scheme
+   Only applies when data-bs-theme is not explicitly set
+   ============================================ */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-bs-theme="light"]) {
-    --bs-body-bg: #0d1117;
-    --bs-body-color: #c9d1d9;
+  :root:not([data-bs-theme="light"]):not([data-bs-theme="dark"]) {
+    --foundry-body-bg: #0d1117;
+    --foundry-body-color: #e6edf3;
+    --foundry-link-color: #58a6ff;
+    --foundry-link-hover-color: #79b8ff;
+    --foundry-code-bg: #161b22;
+    --foundry-code-color: #e6edf3;
+    --foundry-inline-code-bg: rgba(88, 166, 255, 0.15);
+    --foundry-inline-code-color: #79c0ff;
+    --foundry-border-color: #30363d;
+    --foundry-muted-color: #8b949e;
+    --foundry-heading-color: #e6edf3;
+    --foundry-table-header-bg: #161b22;
+    --foundry-table-hover-bg: #161b22;
+    --foundry-footer-bg: #161b22;
+    --foundry-callout-bg: rgba(88, 166, 255, 0.08);
+    --foundry-accent-color: #58a6ff;
+    --foundry-navbar-shadow: rgba(0, 0, 0, 0.3);
   }
 
-  :root:not([data-bs-theme="light"]) pre {
-    background-color: #161b22;
-    border-color: #30363d;
-  }
-
-  :root:not([data-bs-theme="light"]) pre code {
-    color: #c9d1d9;
-  }
-
-  :root:not([data-bs-theme="light"]) :not(pre) > code {
-    background-color: rgba(88, 166, 255, 0.15);
-  }
-
-  :root:not([data-bs-theme="light"]) th {
-    background-color: #161b22;
-    border-color: #30363d;
-  }
-
-  :root:not([data-bs-theme="light"]) td {
-    border-color: #30363d;
-  }
-
-  :root:not([data-bs-theme="light"]) tr:hover {
-    background-color: #161b22;
-  }
-
-  :root:not([data-bs-theme="light"]) footer {
-    background-color: #161b22;
-    border-color: #30363d;
-  }
+  :root:not([data-bs-theme="light"]):not([data-bs-theme="dark"]) .sourceCode .kw { color: #ff7b72; }
+  :root:not([data-bs-theme="light"]):not([data-bs-theme="dark"]) .sourceCode .dt { color: #79c0ff; }
+  :root:not([data-bs-theme="light"]):not([data-bs-theme="dark"]) .sourceCode .dv { color: #79c0ff; }
+  :root:not([data-bs-theme="light"]):not([data-bs-theme="dark"]) .sourceCode .st { color: #a5d6ff; }
+  :root:not([data-bs-theme="light"]):not([data-bs-theme="dark"]) .sourceCode .co { color: #8b949e; }
+  :root:not([data-bs-theme="light"]):not([data-bs-theme="dark"]) .sourceCode .fu { color: #d2a8ff; }
+  :root:not([data-bs-theme="light"]):not([data-bs-theme="dark"]) .sourceCode .op { color: #e6edf3; }
 }
 
-/* Print styles */
+/* ============================================
+   Print Styles
+   ============================================ */
 @media print {
   .navbar, .sidebar, footer {
     display: none;
@@ -312,4 +387,107 @@ a, .nav-link, .btn {
     white-space: pre-wrap;
     word-wrap: break-word;
   }
+
+  body {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  a {
+    color: #000000;
+    text-decoration: underline;
+  }
+}
+
+/* ============================================
+   Bootstrap 5 Variable Overrides for Light Mode
+   Ensures Bootstrap components use proper light mode colors
+   ============================================ */
+[data-bs-theme="light"] {
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #1f2328;
+  --bs-link-color: #0969da;
+  --bs-link-hover-color: #0550ae;
+  --bs-border-color: #d0d7de;
+  --bs-secondary-bg: #f6f8fa;
+  --bs-tertiary-bg: #f6f8fa;
+}
+
+/* ============================================
+   Bootstrap 5 Variable Overrides for Dark Mode
+   ============================================ */
+[data-bs-theme="dark"] {
+  --bs-body-bg: #0d1117;
+  --bs-body-color: #e6edf3;
+  --bs-link-color: #58a6ff;
+  --bs-link-hover-color: #79b8ff;
+  --bs-border-color: #30363d;
+  --bs-secondary-bg: #161b22;
+  --bs-tertiary-bg: #161b22;
+}
+
+/* ============================================
+   Card Styling for Both Modes
+   ============================================ */
+.card {
+  background-color: var(--foundry-body-bg);
+  border-color: var(--foundry-border-color);
+  color: var(--foundry-body-color);
+}
+
+.card-header {
+  background-color: var(--foundry-table-header-bg);
+  border-bottom-color: var(--foundry-border-color);
+}
+
+/* ============================================
+   Form Controls
+   ============================================ */
+.form-control {
+  background-color: var(--foundry-body-bg);
+  border-color: var(--foundry-border-color);
+  color: var(--foundry-body-color);
+}
+
+.form-control:focus {
+  border-color: var(--foundry-accent-color);
+  box-shadow: 0 0 0 0.25rem rgba(9, 105, 218, 0.25);
+}
+
+[data-bs-theme="dark"] .form-control:focus {
+  box-shadow: 0 0 0 0.25rem rgba(88, 166, 255, 0.25);
+}
+
+/* ============================================
+   Alert/Note Boxes
+   ============================================ */
+.alert {
+  color: var(--foundry-body-color);
+  border-color: var(--foundry-border-color);
+}
+
+.alert-info {
+  background-color: var(--foundry-callout-bg);
+  border-left: 4px solid var(--foundry-accent-color);
+}
+
+/* ============================================
+   TOC (Table of Contents)
+   ============================================ */
+.toc-title {
+  color: var(--foundry-heading-color);
+  font-weight: 600;
+}
+
+.toc a {
+  color: var(--foundry-body-color);
+}
+
+.toc a:hover {
+  color: var(--foundry-link-color);
+}
+
+.toc a.active {
+  color: var(--foundry-accent-color);
+  font-weight: 500;
 }
