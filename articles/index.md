@@ -18,3 +18,8 @@
   DALL-E](https://farach.github.io/foundryR/articles/image-generation.md):
 - [tidymodels
   Integration](https://farach.github.io/foundryR/articles/tidymodels.md):
+
+### Integrations
+
+- [Integrating foundryR with
+  onet2r](https://farach.github.io/foundryR/articles/onet2r-integration.md):
