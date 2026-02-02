@@ -1,0 +1,410 @@
+# tidymodels Integration
+
+## Introduction
+
+foundryR integrates seamlessly with the
+[tidymodels](https://www.tidymodels.org/) ecosystem through
+[`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md),
+a recipe step that converts text columns into embedding vectors. This
+enables you to incorporate state-of-the-art text representations into
+your machine learning pipelines alongside traditional preprocessing
+steps.
+
+## Why Use Embeddings in ML Pipelines?
+
+Traditional text features like bag-of-words or TF-IDF capture word
+frequencies but miss semantic meaning. Embeddings provide dense vector
+representations that understand:
+
+- **Synonyms**: “happy” and “joyful” produce similar vectors
+- **Context**: “bank” (financial) vs “bank” (river) are distinguished
+- **Relationships**: Semantic similarities are preserved in vector space
+
+By converting text to embeddings within a recipe, you get:
+
+- **Reproducible preprocessing**: The embedding step is part of your
+  documented workflow
+- **Consistent handling**: Training and test data are processed
+  identically
+- **Pipeline integration**: Combine with other preprocessing steps
+  seamlessly
+
+## Prerequisites
+
+Install tidymodels if you haven’t already:
+
+``` r
+install.packages("tidymodels")
+```
+
+Ensure foundryR is configured with your Azure credentials and you have
+an embedding model deployed.
+
+## Basic Usage
+
+### Creating a Recipe with Embeddings
+
+Use
+[`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
+to add embedding generation to your recipe:
+
+``` r
+library(tidymodels)
+library(foundryR)
+
+# Sample data with text and outcome
+reviews <- tibble(
+  text = c(
+    "This product is amazing, highly recommend!",
+    "Terrible quality, waste of money",
+    "Good value for the price",
+    "Disappointed with the purchase",
+    "Exceeded my expectations",
+    "Would not buy again"
+  ),
+  sentiment = factor(c("positive", "negative", "positive",
+                       "negative", "positive", "negative"))
+)
+
+# Create recipe with embedding step
+recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
+  step_foundry_embed(
+    text,
+    model = "text-embedding-3-small",  # Your deployment name
+    keep_original_cols = FALSE         # Remove original text column
+  )
+
+recipe_spec
+#> Recipe
+#>
+#> Inputs:
+#>
+#>       role #variables
+#>    outcome          1
+#>  predictor          1
+#>
+#> Operations:
+#>
+#> Azure AI Foundry embeddings for text
+```
+
+### Preparing and Baking the Recipe
+
+``` r
+# Prepare the recipe (generates embeddings for training data)
+prepped_recipe <- prep(recipe_spec, training = reviews)
+
+# Bake to transform data
+baked_data <- bake(prepped_recipe, new_data = NULL)
+baked_data
+#> # A tibble: 6 × 1,537
+#>   sentiment text_embed_001 text_embed_002 text_embed_003 ... text_embed_1536
+#>   <fct>              <dbl>          <dbl>          <dbl>             <dbl>
+#> 1 positive          0.0234        -0.0156         0.0089           0.0123
+#> 2 negative         -0.0145         0.0234        -0.0067          -0.0089
+#> 3 positive          0.0178        -0.0123         0.0145           0.0098
+#> ...
+```
+
+The text column is replaced with 1,536 numeric embedding dimensions (the
+exact number depends on your embedding model).
+
+## Complete ML Pipeline Example
+
+Here’s a full example building a sentiment classifier:
+
+``` r
+library(tidymodels)
+library(foundryR)
+
+# Load your data
+set.seed(123)
+reviews <- tibble(
+  review_text = c(
+    # Positive reviews
+    "Absolutely love this product! Works perfectly.",
+    "Great quality and fast shipping. Very satisfied.",
+    "Best purchase I've made this year. Highly recommend!",
+    "Exceeded all expectations. Will buy again.",
+    "Perfect fit and great value for money.",
+    # Negative reviews
+    "Complete waste of money. Broke after one use.",
+    "Terrible customer service. Never buying again.",
+    "Poor quality, doesn't work as advertised.",
+    "Disappointed. Much smaller than expected.",
+    "Arrived damaged and took forever to ship."
+  ),
+  sentiment = factor(rep(c("positive", "negative"), each = 5))
+)
+
+# Split data
+splits <- initial_split(reviews, prop = 0.8, strata = sentiment)
+train_data <- training(splits)
+test_data <- testing(splits)
+
+# Define recipe with embeddings
+embedding_recipe <- recipe(sentiment ~ review_text, data = train_data) %>%
+  step_foundry_embed(
+    review_text,
+    model = "text-embedding-3-small",
+    keep_original_cols = FALSE
+  ) %>%
+  step_normalize(all_numeric_predictors())  # Normalize embedding dimensions
+
+# Define model
+log_reg_spec <- logistic_reg() %>%
+  set_engine("glm") %>%
+  set_mode("classification")
+
+# Create workflow
+sentiment_workflow <- workflow() %>%
+  add_recipe(embedding_recipe) %>%
+  add_model(log_reg_spec)
+
+# Fit the model
+fitted_workflow <- fit(sentiment_workflow, data = train_data)
+
+# Make predictions on test data
+predictions <- predict(fitted_workflow, test_data) %>%
+  bind_cols(test_data)
+
+# Evaluate
+predictions %>%
+  metrics(truth = sentiment, estimate = .pred_class)
+#> # A tibble: 2 × 3
+#>   .metric  .estimator .estimate
+#>   <chr>    <chr>          <dbl>
+#> 1 accuracy binary         1
+#> 2 kap      binary         1
+```
+
+## Advanced Options
+
+### Controlling Embedding Dimensions
+
+Some models support dimension reduction for faster processing:
+
+``` r
+recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
+  step_foundry_embed(
+    text,
+    model = "text-embedding-3-small",
+    dimensions = 256,  # Reduce from 1536 to 256
+    keep_original_cols = FALSE
+  )
+```
+
+Lower dimensions mean: - Faster model training - Less memory usage -
+Some loss in semantic precision
+
+### Multiple Text Columns
+
+Process multiple text columns independently:
+
+``` r
+# Data with multiple text fields
+data <- tibble(
+  title = c("Great Product", "Terrible Experience"),
+  description = c("Works as expected", "Broke immediately"),
+  outcome = c(1, 0)
+)
+
+recipe_spec <- recipe(outcome ~ ., data = data) %>%
+  step_foundry_embed(title, model = "text-embedding-3-small",
+                     prefix = "title_") %>%
+  step_foundry_embed(description, model = "text-embedding-3-small",
+                     prefix = "desc_") %>%
+  step_rm(title, description)  # Remove original text columns
+```
+
+### Keeping Original Columns
+
+Sometimes you want both the text and embeddings:
+
+``` r
+recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
+  step_foundry_embed(
+    text,
+    model = "text-embedding-3-small",
+    keep_original_cols = TRUE  # Keep the text column
+  )
+
+# Useful when you also want to apply other text processing
+```
+
+### Custom Column Prefix
+
+Control the naming of embedding columns:
+
+``` r
+recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
+  step_foundry_embed(
+    text,
+    model = "text-embedding-3-small",
+    prefix = "embed_"  # Columns will be embed_001, embed_002, etc.
+  )
+```
+
+## Cross-Validation
+
+Embeddings are generated during
+[`prep()`](https://recipes.tidymodels.org/reference/prep.html), so
+cross-validation works correctly:
+
+``` r
+# Create CV folds
+folds <- vfold_cv(train_data, v = 5, strata = sentiment)
+
+# Fit resamples
+cv_results <- fit_resamples(
+  sentiment_workflow,
+  resamples = folds,
+  metrics = metric_set(accuracy, roc_auc)
+)
+
+# Collect metrics
+collect_metrics(cv_results)
+#> # A tibble: 2 × 6
+#>   .metric  .estimator  mean     n std_err .config
+#>   <chr>    <chr>      <dbl> <int>   <dbl> <chr>
+#> 1 accuracy binary     0.875     5  0.0559 Preprocessor1_Model1
+#> 2 roc_auc  binary     0.925     5  0.0433 Preprocessor1_Model1
+```
+
+## Hyperparameter Tuning
+
+Tune the embedding dimensions alongside model hyperparameters:
+
+``` r
+# Recipe with tunable dimensions
+tunable_recipe <- recipe(sentiment ~ text, data = train_data) %>%
+  step_foundry_embed(
+    text,
+    model = "text-embedding-3-small",
+    dimensions = tune(),  # Will be tuned
+    keep_original_cols = FALSE
+  ) %>%
+  step_normalize(all_numeric_predictors())
+
+# Model with tunable parameters
+rf_spec <- rand_forest(
+  mtry = tune(),
+  trees = 500,
+  min_n = tune()
+) %>%
+  set_engine("ranger") %>%
+  set_mode("classification")
+
+# Workflow
+tunable_workflow <- workflow() %>%
+  add_recipe(tunable_recipe) %>%
+  add_model(rf_spec)
+
+# Define grid
+grid <- grid_regular(
+  dimensions(range = c(128, 512)),  # Embedding dimensions
+  mtry(range = c(10, 50)),
+  min_n(range = c(2, 10)),
+  levels = 3
+)
+
+# Tune (this will take a while due to API calls)
+tune_results <- tune_grid(
+  tunable_workflow,
+  resamples = folds,
+  grid = grid,
+  metrics = metric_set(accuracy, roc_auc)
+)
+
+# Best parameters
+show_best(tune_results, metric = "roc_auc")
+```
+
+## Performance Considerations
+
+### API Rate Limits
+
+Embedding generation makes API calls for each text. For large datasets:
+
+1.  **Use batch processing**: Consider using
+    [`foundry_embed_batch()`](https://farach.github.io/foundryR/reference/foundry_embed_batch.md)
+    outside the recipe for large training sets
+2.  **Cache embeddings**: Pre-compute and store embeddings for
+    frequently used datasets
+3.  **Reduce cross-validation folds**: Fewer folds mean fewer API calls
+    during tuning
+
+### Cost Management
+
+Each embedding call incurs API costs. Strategies to manage costs:
+
+- Start with smaller dimension sizes during development
+- Use a subset of data for initial experimentation
+- Pre-compute embeddings for production datasets
+
+### Memory Usage
+
+With 1,536 dimensions per text and thousands of observations, memory can
+grow quickly:
+
+``` r
+# Estimate memory for 10,000 texts
+n_texts <- 10000
+n_dims <- 1536
+bytes_per_double <- 8
+
+memory_mb <- (n_texts * n_dims * bytes_per_double) / 1024^2
+print(paste(round(memory_mb), "MB for embeddings alone"))
+#> [1] "117 MB for embeddings alone"
+```
+
+Consider dimension reduction for large datasets.
+
+## Troubleshooting
+
+### “Column already exists” Error
+
+If you run
+[`prep()`](https://recipes.tidymodels.org/reference/prep.html) multiple
+times, column names may conflict:
+
+``` r
+# Use a unique prefix if reusing recipes
+recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
+  step_foundry_embed(text, model = "my-model",
+                     prefix = paste0("v", format(Sys.time(), "%H%M%S"), "_"))
+```
+
+### Rate Limit Errors
+
+If you hit rate limits during prep:
+
+``` r
+# Prepare in smaller batches
+small_sample <- reviews %>% slice_sample(n = 100)
+prepped <- prep(recipe_spec, training = small_sample)
+```
+
+### Missing Credentials
+
+Ensure credentials are set before creating recipes:
+
+``` r
+# Check setup
+foundry_check_setup()
+
+# Set credentials if needed
+foundry_set_endpoint("https://your-resource.openai.azure.com")
+foundry_set_key("your-api-key")
+```
+
+## Next Steps
+
+- Learn about [Text
+  Embeddings](https://farach.github.io/foundryR/articles/embeddings.md)
+  in depth
+- Explore [Content
+  Safety](https://farach.github.io/foundryR/articles/content-safety.md)
+  for responsible AI
+- Read the [tidymodels documentation](https://www.tidymodels.org/) for
+  more preprocessing options

@@ -299,9 +299,10 @@ MIT
 
 # Package index
 
-## Authentication & Configuration
+## Setup & Configuration
 
-Set up your Azure AI Foundry credentials
+Configure your Azure AI Foundry credentials and verify your setup. These
+functions manage authentication for all API calls.
 
 - [`foundry_check_setup()`](https://farach.github.io/foundryR/reference/foundry_check_setup.md)
   : Check foundryR Setup
@@ -311,21 +312,19 @@ Set up your Azure AI Foundry credentials
   : Set Azure AI Foundry Endpoint
 - [`foundry_get_endpoint()`](https://farach.github.io/foundryR/reference/foundry_get_endpoint.md)
   : Get Azure AI Foundry Endpoint
-- [`foundry_set_content_safety_key()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_key.md)
-  : Set Azure Content Safety API Key
-- [`foundry_set_content_safety_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_endpoint.md)
-  : Set Azure Content Safety Endpoint
 
 ## Chat Completions
 
-Interact with chat models
+Interact with large language models like GPT-4, Claude, Llama, and more.
+Send messages and receive AI-generated responses as tidy tibbles.
 
 - [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
   : Chat with an Azure AI Model
 
-## Embeddings
+## Text Embeddings
 
-Generate and work with text embeddings
+Generate vector embeddings for semantic search, clustering, and machine
+learning. Includes batch processing and similarity computation.
 
 - [`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md)
   : Generate Text Embeddings
@@ -333,6 +332,12 @@ Generate and work with text embeddings
   : Generate Text Embeddings in Parallel Batches
 - [`foundry_similarity()`](https://farach.github.io/foundryR/reference/foundry_similarity.md)
   : Compute Cosine Similarity Between Embeddings
+
+## tidymodels Integration
+
+Seamlessly integrate text embeddings into your tidymodels workflows
+using recipe steps.
+
 - [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
   [`tidy(`*`<step_foundry_embed>`*`)`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
   : Foundry Embedding Recipe Step
@@ -347,7 +352,8 @@ Generate and work with text embeddings
 
 ## Content Safety
 
-Content moderation and responsible AI features
+Azure AI Content Safety features for responsible AI deployment. Moderate
+content, detect hallucinations, and protect against prompt injection.
 
 - [`foundry_moderate()`](https://farach.github.io/foundryR/reference/foundry_moderate.md)
   : Moderate Text Content
@@ -355,10 +361,15 @@ Content moderation and responsible AI features
   : Detect Groundedness of LLM Responses
 - [`foundry_shield()`](https://farach.github.io/foundryR/reference/foundry_shield.md)
   : Shield Prompt from Injection Attacks
+- [`foundry_set_content_safety_key()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_key.md)
+  : Set Azure Content Safety API Key
+- [`foundry_set_content_safety_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_endpoint.md)
+  : Set Azure Content Safety Endpoint
 
 ## Image Generation
 
-Generate images with DALL-E models
+Create images with DALL-E models. Generate, customize, and save
+AI-generated artwork and visualizations.
 
 - [`foundry_image()`](https://farach.github.io/foundryR/reference/foundry_image.md)
   : Generate Images with DALL-E
@@ -369,18 +380,30 @@ Generate images with DALL-E models
 - [`foundry_set_image_key()`](https://farach.github.io/foundryR/reference/foundry_set_image_key.md)
   : Set Image Generation API Key
 
-## Models
+## Model Discovery
 
-Discover available deployments
+Explore available model deployments in your Azure AI Foundry resource.
 
 - [`foundry_models()`](https://farach.github.io/foundryR/reference/foundry_models.md)
   : List Available Models/Deployments
 
 # Articles
 
-### All vignettes
+### Core Functionality
 
-- [Working with
-  Embeddings](https://farach.github.io/foundryR/articles/embeddings.md):
 - [Getting Started with
   foundryR](https://farach.github.io/foundryR/articles/getting-started.md):
+- [Working with
+  Embeddings](https://farach.github.io/foundryR/articles/embeddings.md):
+
+### Responsible AI
+
+- [Content Safety and Responsible
+  AI](https://farach.github.io/foundryR/articles/content-safety.md):
+
+### Advanced Topics
+
+- [Image Generation with
+  DALL-E](https://farach.github.io/foundryR/articles/image-generation.md):
+- [tidymodels
+  Integration](https://farach.github.io/foundryR/articles/tidymodels.md):

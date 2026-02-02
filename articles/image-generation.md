@@ -1,0 +1,365 @@
+# Image Generation with DALL-E
+
+## Introduction
+
+foundryR integrates with DALL-E models deployed on Azure AI Foundry to
+generate images from text descriptions. Whether you need visualizations
+for reports, creative assets, or synthetic data,
+[`foundry_image()`](https://farach.github.io/foundryR/reference/foundry_image.md)
+provides a tidy interface to AI image generation.
+
+## Prerequisites
+
+### Deploying a DALL-E Model
+
+Before using image generation, deploy a DALL-E model in Azure AI
+Foundry:
+
+1.  Go to [Azure AI Foundry](https://ai.azure.com) or the Azure Portal
+2.  Navigate to your Azure OpenAI resource → **Model deployments**
+3.  Click **+ Deploy model** → **Deploy base model**
+4.  Select **dall-e-3** (recommended) or **dall-e-2**
+5.  Give it a deployment name (e.g., `my-dalle`)
+
+### Configuration
+
+DALL-E may be deployed on a different Azure resource than your chat
+models. foundryR supports separate configuration for image generation:
+
+``` r
+library(foundryR)
+
+# If DALL-E is on the same resource as your chat models:
+foundry_set_endpoint("https://your-resource.openai.azure.com")
+foundry_set_key("your-api-key")
+
+# If DALL-E is on a different resource:
+foundry_set_image_endpoint("https://your-dalle-resource.cognitiveservices.azure.com")
+foundry_set_image_key("your-dalle-api-key")  # Only if different from main key
+
+# Set default DALL-E deployment
+Sys.setenv(AZURE_FOUNDRY_IMAGE_MODEL = "my-dalle")
+```
+
+## Generating Images with foundry_image()
+
+### Basic Usage
+
+Generate an image with a simple text prompt:
+
+``` r
+library(foundryR)
+
+result <- foundry_image(
+  "A serene mountain landscape at sunset with a reflective lake",
+  model = "my-dalle"
+)
+
+result
+#> # A tibble: 1 × 5
+#>   prompt                                     revised_prompt               url                    b64_json created
+#>   <chr>                                      <chr>                        <chr>                  <chr>    <dttm>
+#> 1 A serene mountain landscape at sunset...   A breathtaking mountain...   https://dalleprodsec...NA       2024-01-15 10:30:00
+```
+
+The result includes:
+
+- **prompt**: Your original prompt
+- **revised_prompt**: DALL-E 3’s enhanced interpretation (more detailed)
+- **url**: Temporary URL to the generated image
+- **b64_json**: Base64-encoded image data (if requested)
+- **created**: Timestamp of generation
+
+### Viewing the Image
+
+Open the generated image in your browser:
+
+``` r
+# View in browser
+browseURL(result$url)
+
+# Or in RStudio Viewer (if you have the right setup)
+# htmltools::browsable(htmltools::img(src = result$url))
+```
+
+**Important**: Image URLs are temporary and expire after a short time.
+Save images locally for permanent storage.
+
+### Saving Images
+
+Use
+[`foundry_save_image()`](https://farach.github.io/foundryR/reference/foundry_save_image.md)
+to download and save images:
+
+``` r
+result <- foundry_image(
+  "A futuristic cityscape with flying cars",
+  model = "my-dalle"
+)
+
+# Save to file
+foundry_save_image(result, "cityscape.png")
+#> ✓ Image saved to cityscape.png (from URL)
+```
+
+## Customizing Image Generation
+
+### Image Size
+
+DALL-E supports different image sizes:
+
+``` r
+# DALL-E 3 sizes
+# - 1024x1024 (square, default)
+# - 1792x1024 (landscape)
+# - 1024x1792 (portrait)
+
+# Landscape image
+result <- foundry_image(
+  "A panoramic view of the Grand Canyon",
+  model = "my-dalle",
+  size = "1792x1024"
+)
+
+# Portrait image
+result <- foundry_image(
+  "A tall redwood tree reaching toward the sky",
+  model = "my-dalle",
+  size = "1024x1792"
+)
+```
+
+### Quality Settings
+
+DALL-E 3 offers standard and HD quality:
+
+``` r
+# Standard quality (faster, less detailed)
+result <- foundry_image(
+  "A simple icon of a house",
+  model = "my-dalle",
+  quality = "standard"
+)
+
+# HD quality (slower, finer details)
+result <- foundry_image(
+  "An intricate mandala pattern with fine details",
+  model = "my-dalle",
+  quality = "hd"
+)
+```
+
+### Style Options
+
+Control the artistic style:
+
+``` r
+# Vivid style (hyper-real, dramatic)
+result <- foundry_image(
+  "A dragon breathing fire",
+  model = "my-dalle",
+  style = "vivid"
+)
+
+# Natural style (more realistic, less dramatic)
+result <- foundry_image(
+  "A golden retriever in a park",
+  model = "my-dalle",
+  style = "natural"
+)
+```
+
+### Multiple Images
+
+Generate multiple variations at once:
+
+``` r
+# Generate 3 variations
+results <- foundry_image(
+  "An abstract representation of data science",
+  model = "my-dalle",
+  n = 3
+)
+
+results
+#> # A tibble: 3 × 5
+#>   prompt                                   revised_prompt  url       b64_json created
+#>   <chr>                                    <chr>           <chr>     <chr>    <dttm>
+#> 1 An abstract representation of data...   A creative...   https://… NA       2024-01-15 10:30:00
+#> 2 An abstract representation of data...   An artistic...  https://… NA       2024-01-15 10:30:00
+#> 3 An abstract representation of data...   A vibrant...    https://… NA       2024-01-15 10:30:00
+
+# Save each image
+for (i in seq_len(nrow(results))) {
+  foundry_save_image(results, paste0("abstract_", i, ".png"), index = i)
+}
+```
+
+### Base64 Response Format
+
+For programmatic use, request base64-encoded images instead of URLs:
+
+``` r
+result <- foundry_image(
+  "A simple logo design",
+  model = "my-dalle",
+  response_format = "b64_json"
+)
+
+# The image data is in the b64_json column
+nchar(result$b64_json)  # Large base64 string
+#> [1] 1234567
+
+# Save from base64
+foundry_save_image(result, "logo.png")
+#> ✓ Image saved to logo.png (from base64)
+```
+
+Base64 is useful when you need to: - Store images in databases - Embed
+images directly in HTML/documents - Process images without downloading
+from URLs
+
+## Prompt Engineering Tips
+
+### Be Specific
+
+Vague prompts produce unpredictable results. Add details about:
+
+- **Subject**: What is the main focus?
+- **Style**: Photorealistic, watercolor, digital art, sketch?
+- **Composition**: Close-up, wide angle, aerial view?
+- **Lighting**: Golden hour, dramatic shadows, soft diffused light?
+- **Mood**: Serene, energetic, mysterious?
+
+``` r
+# Vague prompt
+foundry_image("a cat", model = "my-dalle")
+
+# Specific prompt
+foundry_image(
+  "A fluffy orange tabby cat sitting on a windowsill,
+   soft morning light streaming through lace curtains,
+   photorealistic style, shallow depth of field",
+  model = "my-dalle"
+)
+```
+
+### Use DALL-E 3’s Revised Prompts
+
+DALL-E 3 automatically enhances your prompts. Check `revised_prompt` to
+learn what works:
+
+``` r
+result <- foundry_image("sunset", model = "my-dalle")
+
+# See how DALL-E interpreted your prompt
+cat(result$revised_prompt)
+#> A breathtaking sunset over a calm ocean, with vibrant hues of
+#> orange, pink, and purple reflecting off the water's surface...
+```
+
+### Iterative Refinement
+
+Use the revised prompt as inspiration for your next attempt:
+
+``` r
+# First attempt
+r1 <- foundry_image("a robot", model = "my-dalle")
+
+# Refine based on what you liked/disliked
+r2 <- foundry_image(
+  "A friendly humanoid robot with soft rounded edges,
+   warm LED eyes, and a brushed aluminum finish,
+   standing in a modern home environment",
+  model = "my-dalle"
+)
+```
+
+## Use Cases
+
+### Data Visualization Enhancement
+
+Generate custom illustrations for reports:
+
+``` r
+# Create a conceptual illustration for a report section
+foundry_image(
+  "A clean, professional infographic-style illustration showing
+   data flowing from multiple sources into a central analytics hub,
+   using a blue and white color scheme, minimalist corporate style",
+  model = "my-dalle",
+  size = "1792x1024"
+) |>
+  foundry_save_image("data_flow_illustration.png")
+```
+
+### Placeholder Images for Prototypes
+
+Quickly generate placeholder images for UI mockups:
+
+``` r
+categories <- c("technology", "nature", "food", "travel")
+
+for (cat in categories) {
+  foundry_image(
+    paste("A beautiful photograph representing", cat,
+          "suitable for a website hero image"),
+    model = "my-dalle"
+  ) |>
+    foundry_save_image(paste0("hero_", cat, ".png"))
+}
+```
+
+### Synthetic Training Data
+
+Generate diverse images for ML training (with appropriate caution):
+
+``` r
+# Generate variations of a product for training an object detector
+variations <- c(
+  "on a white background, studio lighting",
+  "on a wooden table, natural lighting",
+  "held in a person's hand, outdoor setting",
+  "on a store shelf with other products"
+)
+
+for (i in seq_along(variations)) {
+  foundry_image(
+    paste("A blue ceramic coffee mug", variations[i]),
+    model = "my-dalle",
+    style = "natural"
+  ) |>
+    foundry_save_image(paste0("mug_", i, ".png"))
+}
+```
+
+## Best Practices
+
+1.  **Save images promptly**: URLs expire quickly. Always save images
+    you want to keep.
+
+2.  **Use HD quality sparingly**: HD takes longer and costs more. Use
+    standard quality for drafts and iterations.
+
+3.  **Respect content policies**: DALL-E has content filters. Prompts
+    requesting harmful, illegal, or inappropriate content will be
+    rejected.
+
+4.  **Monitor costs**: Image generation is more expensive than text
+    APIs. Track usage in the Azure Portal.
+
+5.  **Consider copyright**: AI-generated images have complex
+    intellectual property implications. Consult legal guidance for
+    commercial use.
+
+## Next Steps
+
+- Learn about [Content
+  Safety](https://farach.github.io/foundryR/articles/content-safety.md)
+  for responsible AI deployment
+- Explore [Text
+  Embeddings](https://farach.github.io/foundryR/articles/embeddings.md)
+  for semantic search
+- Read [Getting
+  Started](https://farach.github.io/foundryR/articles/getting-started.md)
+  for foundryR basics
