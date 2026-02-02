@@ -72,7 +72,7 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
     model = "text-embedding-3-small",  # Your deployment name
-    keep_original_cols = FALSE         # Remove original text column
+    keep_original = FALSE         # Remove original text column
   )
 
 recipe_spec
@@ -147,7 +147,7 @@ embedding_recipe <- recipe(sentiment ~ review_text, data = train_data) %>%
   step_foundry_embed(
     review_text,
     model = "text-embedding-3-small",
-    keep_original_cols = FALSE
+    keep_original = FALSE
   ) %>%
   step_normalize(all_numeric_predictors())  # Normalize embedding dimensions
 
@@ -190,7 +190,7 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
     text,
     model = "text-embedding-3-small",
     dimensions = 256,  # Reduce from 1536 to 256
-    keep_original_cols = FALSE
+    keep_original = FALSE
   )
 ```
 
@@ -228,7 +228,7 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
     model = "text-embedding-3-small",
-    keep_original_cols = TRUE  # Keep the text column
+    keep_original = TRUE  # Keep the text column
   )
 
 # Useful when you also want to apply other text processing
@@ -281,7 +281,7 @@ tunable_recipe <- recipe(sentiment ~ text, data = train_data) %>%
     text,
     model = "text-embedding-3-small",
     dimensions = tune(),  # Will be tuned
-    keep_original_cols = FALSE
+    keep_original = FALSE
   ) %>%
   step_normalize(all_numeric_predictors())
 
