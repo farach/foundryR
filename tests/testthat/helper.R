@@ -217,3 +217,94 @@ mock_shield_response <- function(user_attack = FALSE, doc_attacks = NULL) {
 
   result
 }
+
+# ============================================================================
+# Image Generation Mocking Helpers
+# ============================================================================
+
+#' Set up mock environment for Image Generation API tests
+#'
+#' Use within withr::local_ or test_that blocks
+setup_image_env <- function(env = parent.frame()) {
+  withr::local_envvar(
+    AZURE_FOUNDRY_IMAGE_KEY = "test-image-key-12345",
+    AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.cognitiveservices.azure.com",
+    AZURE_FOUNDRY_IMAGE_MODEL = "dall-e-3",
+    .local_envir = env
+  )
+}
+
+#' Create a mock image generation response (URL format)
+#'
+#' @param prompt Character. The original prompt.
+#' @param revised_prompt Character. DALL-E's revised prompt.
+#' @param url Character. The image URL.
+#' @param n Integer. Number of images to generate.
+#' @return List representing the API response
+mock_image_response_url <- function(prompt = "A test image",
+                                     revised_prompt = "Enhanced test image description",
+                                     url = "https://oaidalleapiprodscus.blob.core.windows.net/private/test.png",
+                                     n = 1L) {
+  data <- lapply(seq_len(n), function(i) {
+    list(
+      revised_prompt = paste(revised_prompt, "- Variation", i),
+      url = paste0(url, "?v=", i)
+    )
+  })
+
+  list(
+    created = as.integer(Sys.time()),
+    data = data
+  )
+}
+
+#' Create a mock image generation response (base64 format)
+#'
+#' @param prompt Character. The original prompt.
+#' @param revised_prompt Character. DALL-E's revised prompt.
+#' @param b64_json Character. Base64-encoded image data (minimal valid PNG).
+#' @return List representing the API response
+mock_image_response_b64 <- function(prompt = "A test image",
+                                     revised_prompt = "Enhanced test image description",
+                                     b64_json = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==") {
+  list(
+    created = as.integer(Sys.time()),
+    data = list(
+      list(
+        revised_prompt = revised_prompt,
+        b64_json = b64_json
+      )
+    )
+  )
+}
+
+# ============================================================================
+# Batch Embedding Mocking Helpers
+# ============================================================================
+
+#' Create a mock batch embedding response
+#'
+#' @param texts Character vector. The input texts.
+#' @param n_dims Integer. Embedding dimensionality.
+#' @param model Character. Model name.
+#' @return List representing the API response
+mock_batch_embed_response <- function(texts, n_dims = 10L,
+                                       model = "text-embedding-ada-002") {
+  data <- lapply(seq_along(texts) - 1L, function(i) {
+    list(
+      index = i,
+      object = "embedding",
+      embedding = as.list(rnorm(n_dims))
+    )
+  })
+
+  list(
+    object = "list",
+    model = model,
+    data = data,
+    usage = list(
+      prompt_tokens = length(texts) * 4L,
+      total_tokens = length(texts) * 4L
+    )
+  )
+}
