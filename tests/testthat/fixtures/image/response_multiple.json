@@ -1,0 +1,17 @@
+{
+  "created": 1704067200,
+  "data": [
+    {
+      "revised_prompt": "Abstract data science visualization - Variation 1: A flowing network of interconnected nodes representing data pipelines.",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/test-image-1.png"
+    },
+    {
+      "revised_prompt": "Abstract data science visualization - Variation 2: Colorful geometric patterns symbolizing algorithms and computation.",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/test-image-2.png"
+    },
+    {
+      "revised_prompt": "Abstract data science visualization - Variation 3: A digital landscape with mountains of data and rivers of insights.",
+      "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/test-image-3.png"
+    }
+  ]
+}
