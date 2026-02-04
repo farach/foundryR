@@ -98,6 +98,7 @@ foundry_get_endpoint <- function(endpoint = NULL, required = FALSE) {
 foundry_get_api_version <- function(api_version = NULL) {
   if (is.null(api_version)) {
     api_version <- Sys.getenv("AZURE_FOUNDRY_API_VERSION", "2024-10-21")
+    if (!nzchar(api_version)) api_version <- "2024-10-21"
   }
   api_version
 }
