@@ -87,7 +87,7 @@ mock_embed_response <- function(embedding = NULL, n_dims = 1536, model = "text-e
 }
 
 # ============================================================================
-# httptest2 Mocking Helpers
+# Fixture Helpers
 # ============================================================================
 
 #' Get path to fixture files
