@@ -115,10 +115,9 @@ packages. ## Prerequisites</p>
 <p>Configure your API credentials:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">onet2r</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">onet2r</span><span class="op">)</span>  <span class="co"># install from GitHub: pak::pak("farach/onet2r")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org" class="external-link">tidyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Set Azure AI Foundry credentials</span></span>
 <span><span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="st">"https://your-resource.openai.azure.com"</span><span class="op">)</span></span>
@@ -213,7 +212,7 @@ official occupation titles.</p>
 <span><span class="co"># Find most similar occupations</span></span>
 <span><span class="va">search_results</span> <span class="op">&lt;-</span> <span class="va">occupation_index</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    similarity <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span><span class="va">embedding</span>, <span class="op">~</span><span class="fu">cosine_similarity</span><span class="op">(</span><span class="va">query_vec</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
+<span>    similarity <span class="op">=</span> <span class="fu">map_dbl</span><span class="op">(</span><span class="va">embedding</span>, <span class="op">~</span><span class="fu">cosine_similarity</span><span class="op">(</span><span class="va">query_vec</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">similarity</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">title</span>, <span class="va">similarity</span><span class="op">)</span></span>
@@ -248,7 +247,7 @@ titles.</p>
 <span></span>
 <span><span class="va">semantic_results</span> <span class="op">&lt;-</span> <span class="va">occupation_index</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    similarity <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span><span class="va">embedding</span>, <span class="op">~</span><span class="fu">cosine_similarity</span><span class="op">(</span><span class="va">semantic_vec</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
+<span>    similarity <span class="op">=</span> <span class="fu">map_dbl</span><span class="op">(</span><span class="va">embedding</span>, <span class="op">~</span><span class="fu">cosine_similarity</span><span class="op">(</span><span class="va">semantic_vec</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">similarity</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">title</span>, <span class="va">similarity</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -298,12 +297,12 @@ clustering of similar occupations.</p>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="va">skill_profiles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_dfr</a></span><span class="op">(</span><span class="va">occupation_codes</span>, <span class="va">get_skill_profile</span><span class="op">)</span></span>
+<span><span class="va">skill_profiles</span> <span class="op">&lt;-</span> <span class="fu">map_dfr</span><span class="op">(</span><span class="va">occupation_codes</span>, <span class="va">get_skill_profile</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add occupation titles</span></span>
 <span><span class="va">skill_profiles</span> <span class="op">&lt;-</span> <span class="va">skill_profiles</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_dfr</a></span><span class="op">(</span><span class="va">occupation_codes</span>, <span class="va">onet_occupation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">map_dfr</span><span class="op">(</span><span class="va">occupation_codes</span>, <span class="va">onet_occupation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">title</span><span class="op">)</span>,</span>
 <span>    by <span class="op">=</span> <span class="st">"code"</span></span>
 <span>  <span class="op">)</span></span>
@@ -492,7 +491,7 @@ suggesting potential career transitions.</p>
 <span><span class="va">transition_candidates</span> <span class="op">&lt;-</span> <span class="va">occupation_index</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">code</span> <span class="op">!=</span> <span class="va">current_code</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    similarity <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span><span class="va">embedding</span>, <span class="op">~</span><span class="fu">cosine_similarity</span><span class="op">(</span><span class="va">skill_vec</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
+<span>    similarity <span class="op">=</span> <span class="fu">map_dbl</span><span class="op">(</span><span class="va">embedding</span>, <span class="op">~</span><span class="fu">cosine_similarity</span><span class="op">(</span><span class="va">skill_vec</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">similarity</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">title</span>, <span class="va">similarity</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -575,7 +574,7 @@ technology data.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Gather hot technologies</span></span>
-<span><span class="va">all_hot_tech</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_dfr</a></span><span class="op">(</span><span class="va">tech_occupations</span>, <span class="kw">function</span><span class="op">(</span><span class="va">code</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">all_hot_tech</span> <span class="op">&lt;-</span> <span class="fu">map_dfr</span><span class="op">(</span><span class="va">tech_occupations</span>, <span class="kw">function</span><span class="op">(</span><span class="va">code</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu">onet_hot_technology</span><span class="op">(</span><span class="va">code</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>occupation_code <span class="op">=</span> <span class="va">code</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
@@ -583,7 +582,7 @@ technology data.</p>
 <span><span class="co"># Combine with occupation titles</span></span>
 <span><span class="va">all_hot_tech</span> <span class="op">&lt;-</span> <span class="va">all_hot_tech</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html" class="external-link">map_dfr</a></span><span class="op">(</span><span class="va">tech_occupations</span>, <span class="va">onet_occupation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>    <span class="fu">map_dfr</span><span class="op">(</span><span class="va">tech_occupations</span>, <span class="va">onet_occupation</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">title</span><span class="op">)</span>,</span>
 <span>    by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"occupation_code"</span> <span class="op">=</span> <span class="st">"code"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
@@ -641,7 +640,7 @@ job recommendations.</p>
 <span><span class="co"># Find matching occupations</span></span>
 <span><span class="va">recommendations</span> <span class="op">&lt;-</span> <span class="va">occupation_index</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    similarity <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_dbl</a></span><span class="op">(</span><span class="va">embedding</span>, <span class="op">~</span><span class="fu">cosine_similarity</span><span class="op">(</span><span class="va">user_vec</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
+<span>    similarity <span class="op">=</span> <span class="fu">map_dbl</span><span class="op">(</span><span class="va">embedding</span>, <span class="op">~</span><span class="fu">cosine_similarity</span><span class="op">(</span><span class="va">user_vec</span>, <span class="va">.x</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">similarity</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">title</span>, <span class="va">similarity</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>

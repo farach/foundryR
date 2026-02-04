@@ -30,10 +30,9 @@ Configure your API credentials:
 
 ``` r
 library(foundryR)
-library(onet2r)
+library(onet2r)  # install from GitHub: pak::pak("farach/onet2r")
 library(dplyr)
 library(tidyr)
-library(purrr)
 
 # Set Azure AI Foundry credentials
 foundry_set_endpoint("https://your-resource.openai.azure.com")
