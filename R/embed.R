@@ -182,27 +182,32 @@ foundry_similarity <- function(data, text_col = "text") {
   data <- data[valid_idx, ]
   n <- nrow(data)
 
-  # Compute pairwise similarities
-  results <- list()
-  idx <- 1
-
-  for (i in 1:(n - 1)) {
-    for (j in (i + 1):n) {
-      e1 <- data$embedding[[i]]
-      e2 <- data$embedding[[j]]
-
-      # Cosine similarity
-      sim <- sum(e1 * e2) / (sqrt(sum(e1^2)) * sqrt(sum(e2^2)))
-
-      results[[idx]] <- tibble::tibble(
-        text_1 = data[[text_col]][i],
-        text_2 = data[[text_col]][j],
-        similarity = sim
-      )
-      idx <- idx + 1
-    }
+  # All embeddings must share the same dimensionality to be comparable.
+  dims <- lengths(data$embedding)
+  if (length(unique(dims)) > 1) {
+    cli::cli_abort(c(
+      "All embeddings must have the same dimensionality.",
+      "i" = "Found embeddings with {length(unique(dims))} different lengths."
+    ))
   }
 
-  dplyr::bind_rows(results) %>%
+  # Stack embeddings into an n x d matrix (rows = texts) and compute all
+  # pairwise cosine similarities with a single matrix product. This replaces
+  # the O(n^2) nested R loop and per-pair tibble allocation.
+  mat <- matrix(unlist(data$embedding, use.names = FALSE), nrow = n, byrow = TRUE)
+
+  norms <- sqrt(rowSums(mat^2))
+  unit <- mat / norms
+  sim_mat <- tcrossprod(unit)
+
+  # Extract the upper triangle (i < j) as the unique pairs.
+  pairs <- which(upper.tri(sim_mat), arr.ind = TRUE)
+  labels <- data[[text_col]]
+
+  tibble::tibble(
+    text_1 = labels[pairs[, "row"]],
+    text_2 = labels[pairs[, "col"]],
+    similarity = sim_mat[pairs]
+  ) %>%
     dplyr::arrange(dplyr::desc(similarity))
 }
