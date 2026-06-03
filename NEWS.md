@@ -13,6 +13,11 @@ Initial development release of foundryR, a tidy interface to Microsoft Azure AI 
 - `foundry_embed()` for generating text embeddings
 - `foundry_embed_batch()` for parallel batch processing with progress tracking
 - `foundry_similarity()` for computing pairwise cosine similarities
+
+### Performance
+- `foundry_similarity()` now computes all pairwise cosine similarities with a
+  single vectorized matrix product instead of a nested R loop, making it
+  dramatically faster for larger embedding sets (e.g. hundreds of texts).
 - Support for configurable embedding dimensions
 
 ### tidymodels Integration
