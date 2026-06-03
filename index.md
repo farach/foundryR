@@ -24,6 +24,7 @@ seamlessly with tidyverse and tidymodels workflows.
 Install the development version from GitHub:
 
 ``` r
+
 # install.packages("pak")
 pak::pak("farach/foundryR")
 ```
@@ -33,6 +34,7 @@ pak::pak("farach/foundryR")
 ### Configure credentials
 
 ``` r
+
 library(foundryR)
 
 # Set credentials for current session
@@ -51,6 +53,7 @@ For persistent configuration, add to your `.Renviron` file:
 ### Chat with a model
 
 ``` r
+
 foundry_chat("What is the tidyverse?", model = "gpt-4o-mini")
 #> # A tibble: 1 x 7
 #>   role      content                          model finish_reason prompt_tokens
@@ -62,6 +65,7 @@ foundry_chat("What is the tidyverse?", model = "gpt-4o-mini")
 ### Generate embeddings
 
 ``` r
+
 texts <- c("I love R programming", "R is great for statistics")
 foundry_embed(texts, model = "text-embedding-3-small")
 #> # A tibble: 2 x 3
@@ -74,6 +78,7 @@ foundry_embed(texts, model = "text-embedding-3-small")
 ### Compute similarity
 
 ``` r
+
 embeddings <- foundry_embed(texts, model = "text-embedding-3-small")
 foundry_similarity(embeddings)
 #> # A tibble: 1 x 3
@@ -89,6 +94,7 @@ Safety](https://azure.microsoft.com/products/ai-services/ai-content-safety/)
 for responsible AI features:
 
 ``` r
+
 # Content moderation
 foundry_moderate("Sample text to analyze")
 
@@ -109,6 +115,7 @@ foundry_shield(user_prompt = "User input to check")
 Create images with DALL-E:
 
 ``` r
+
 result <- foundry_image(
   "A serene mountain landscape at sunset",
   model = "dall-e-3"
@@ -121,6 +128,7 @@ foundry_save_image(result, "landscape.png")
 Add text embeddings to your ML pipelines:
 
 ``` r
+
 library(tidymodels)
 
 recipe(sentiment ~ text, data = reviews) |>

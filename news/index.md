@@ -23,6 +23,13 @@ Azure AI Foundry. \## Core Features
   for parallel batch processing with progress tracking
 - [`foundry_similarity()`](https://farach.github.io/foundryR/reference/foundry_similarity.md)
   for computing pairwise cosine similarities
+
+#### Performance
+
+- [`foundry_similarity()`](https://farach.github.io/foundryR/reference/foundry_similarity.md)
+  now computes all pairwise cosine similarities with a single vectorized
+  matrix product instead of a nested R loop, making it dramatically
+  faster for larger embedding sets (e.g. hundreds of texts).
 - Support for configurable embedding dimensions
 
 #### tidymodels Integration

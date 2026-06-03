@@ -26,6 +26,7 @@ The
 function converts text into embedding vectors:
 
 ``` r
+
 library(foundryR)
 
 # Single text
@@ -49,6 +50,7 @@ The result is a tibble with:
 Pass a character vector to embed multiple texts in one call:
 
 ``` r
+
 documents <- c(
   "The quick brown fox jumps over the lazy dog",
   "A fast auburn fox leaps above a sleepy canine",
@@ -75,6 +77,7 @@ Smaller dimensions mean faster similarity computations and less storage,
 with some trade-off in precision:
 
 ``` r
+
 # Reduce to 256 dimensions (model must support this)
 compact_embedding <- foundry_embed(
   "Hello, world!",
@@ -93,6 +96,7 @@ ranging from -1 (opposite) to 1 (identical). The
 function computes pairwise similarities for all embeddings in a tibble:
 
 ``` r
+
 texts <- c(
   "I love programming in R",
   "R is my favorite language for data analysis",
@@ -124,6 +128,7 @@ A common application is finding documents most similar to a query. Here
 is how to implement a simple semantic search:
 
 ``` r
+
 library(dplyr)
 
 # Your document collection
@@ -174,6 +179,7 @@ example using [`stats::kmeans()`](https://rdrr.io/r/stats/kmeans.html)
 to group similar texts:
 
 ``` r
+
 library(dplyr)
 
 # Sample texts to cluster
@@ -238,11 +244,11 @@ sports) without any labeled training data.
 
 Azure AI Foundry offers several embedding models:
 
-| Model                  | Dimensions           | Notes                               |
-|------------------------|----------------------|-------------------------------------|
-| text-embedding-ada-002 | 1,536                | Previous generation, widely used    |
+| Model | Dimensions | Notes |
+|----|----|----|
+| text-embedding-ada-002 | 1,536 | Previous generation, widely used |
 | text-embedding-3-small | 1,536 (configurable) | Newer, supports dimension reduction |
-| text-embedding-3-large | 3,072 (configurable) | Highest quality, more expensive     |
+| text-embedding-3-large | 3,072 (configurable) | Highest quality, more expensive |
 
 For most use cases, `text-embedding-3-small` offers a good balance of
 quality and cost.
@@ -270,6 +276,7 @@ For large collections, consider:
     for faster similarity search on large datasets
 
 ``` r
+
 # Example: Processing in batches
 batch_embed <- function(texts, model, batch_size = 100) {
   n_batches <- ceiling(length(texts) / batch_size)

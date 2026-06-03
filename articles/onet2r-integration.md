@@ -19,6 +19,7 @@ packages. \## Prerequisites
 Install both packages:
 
 ``` r
+
 # Install pak if you don't have it
 # install.packages("pak")
 
@@ -29,6 +30,7 @@ pak::pak("farach/onet2r")
 Configure your API credentials:
 
 ``` r
+
 library(foundryR)
 library(onet2r)  # install from GitHub: pak::pak("farach/onet2r")
 library(dplyr)
@@ -49,6 +51,7 @@ occupational information in the United States. The onet2r package
 provides access to rich data about occupations:
 
 ``` r
+
 # Search for occupations by keyword
 software_jobs <- onet_search("software developer")
 software_jobs
@@ -90,6 +93,7 @@ official occupation titles.
 ### Building an Occupation Search Index
 
 ``` r
+
 # Get all occupations (or a subset for demonstration)
 all_occupations <- onet_occupations(end = 100)  # First 100 for demo
 
@@ -115,6 +119,7 @@ occupation_index <- occupation_texts %>%
 ### Semantic Occupation Search
 
 ``` r
+
 # Helper function to compute cosine similarity
 cosine_similarity <- function(a, b) {
   sum(a * b) / (sqrt(sum(a^2)) * sqrt(sum(b^2)))
@@ -150,6 +155,7 @@ even though the query did not use exact occupation titles.
 ### Comparing Keyword vs Semantic Search
 
 ``` r
+
 # Keyword search
 keyword_results <- onet_search("work with computers and solve problems")
 keyword_results
@@ -189,6 +195,7 @@ Using embeddings on occupation skill profiles enables data-driven
 clustering of similar occupations.
 
 ``` r
+
 # Get skills for multiple occupations
 occupation_codes <- c(
   "15-1252.00",  # Software Developers
@@ -265,6 +272,7 @@ to analyze occupational data and provide career guidance.
 ### Summarizing Occupation Requirements
 
 ``` r
+
 # Gather comprehensive data for an occupation
 occupation_code <- "15-1252.00"  # Software Developers
 
@@ -341,6 +349,7 @@ cat(response$content)
 ### Comparing Two Occupations
 
 ``` r
+
 # Gather data for two occupations to compare
 compare_occupations <- function(code1, code2) {
   occ1 <- onet_occupation(code1)
@@ -389,6 +398,7 @@ Identify occupations that share skills with a current role, suggesting
 potential career transitions.
 
 ``` r
+
 # Current occupation
 current_code <- "15-1252.00"  # Software Developers
 current_skills <- onet_skills(current_code) %>%
@@ -435,6 +445,7 @@ transition_candidates
 ### Analyzing Skill Gaps for Transitions
 
 ``` r
+
 analyze_skill_gap <- function(from_code, to_code) {
   from_skills <- onet_skills(from_code) %>%
     filter(scale_id == "IM") %>%
@@ -485,6 +496,7 @@ Analyze emerging technologies across occupations using O\*NET’s hot
 technology data.
 
 ``` r
+
 # Get hot technologies for tech-related occupations
 tech_occupations <- c(
   "15-1252.00",  # Software Developers
@@ -535,6 +547,7 @@ Combine user preferences with occupation embeddings for personalized job
 recommendations.
 
 ``` r
+
 # User profile (could come from a survey or assessment)
 user_profile <- list(
   interests = "I enjoy analyzing data, solving complex problems, and working
@@ -598,6 +611,7 @@ For production applications, cache occupation embeddings to avoid
 repeated API calls:
 
 ``` r
+
 # Save embeddings to disk
 saveRDS(occupation_index, "occupation_embeddings.rds")
 
@@ -610,6 +624,7 @@ occupation_index <- readRDS("occupation_embeddings.rds")
 When processing many occupations, use batch embedding:
 
 ``` r
+
 # Collect all texts first
 texts_to_embed <- occupation_texts$search_text
 
@@ -637,6 +652,7 @@ final_embeddings <- bind_rows(all_embeddings)
 For large-scale applications, consider reducing embedding dimensions:
 
 ``` r
+
 # Use smaller dimensions for faster similarity computation
 compact_embeddings <- foundry_embed(
   occupation_texts$search_text,

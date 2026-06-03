@@ -34,6 +34,7 @@ By converting text to embeddings within a recipe, you get:
 Install tidymodels if you haven’t already:
 
 ``` r
+
 install.packages("tidymodels")
 ```
 
@@ -49,6 +50,7 @@ Use
 to add embedding generation to your recipe:
 
 ``` r
+
 library(tidymodels)
 library(foundryR)
 
@@ -91,6 +93,7 @@ recipe_spec
 ### Preparing and Baking the Recipe
 
 ``` r
+
 # Prepare the recipe (generates embeddings for training data)
 prepped_recipe <- prep(recipe_spec, training = reviews)
 
@@ -114,6 +117,7 @@ exact number depends on your embedding model).
 Here’s a full example building a sentiment classifier:
 
 ``` r
+
 library(tidymodels)
 library(foundryR)
 
@@ -185,6 +189,7 @@ predictions %>%
 Some models support dimension reduction for faster processing:
 
 ``` r
+
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
@@ -202,6 +207,7 @@ Some loss in semantic precision
 Process multiple text columns independently:
 
 ``` r
+
 # Data with multiple text fields
 data <- tibble(
   title = c("Great Product", "Terrible Experience"),
@@ -222,6 +228,7 @@ recipe_spec <- recipe(outcome ~ ., data = data) %>%
 Sometimes you want both the text and embeddings:
 
 ``` r
+
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
@@ -237,6 +244,7 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
 Control the naming of embedding columns:
 
 ``` r
+
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
@@ -252,6 +260,7 @@ Embeddings are generated during
 cross-validation works correctly:
 
 ``` r
+
 # Create CV folds
 folds <- vfold_cv(train_data, v = 5, strata = sentiment)
 
@@ -276,6 +285,7 @@ collect_metrics(cv_results)
 Tune the embedding dimensions alongside model hyperparameters:
 
 ``` r
+
 # Recipe with tunable dimensions
 tunable_recipe <- recipe(sentiment ~ text, data = train_data) %>%
   step_foundry_embed(
@@ -348,6 +358,7 @@ With 1,536 dimensions per text and thousands of observations, memory can
 grow quickly:
 
 ``` r
+
 # Estimate memory for 10,000 texts
 n_texts <- 10000
 n_dims <- 1536
@@ -369,6 +380,7 @@ If you run
 times, column names may conflict:
 
 ``` r
+
 # Use a unique prefix if reusing recipes
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(text, model = "my-model",
@@ -380,6 +392,7 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
 If you hit rate limits during prep:
 
 ``` r
+
 # Prepare in smaller batches
 small_sample <- reviews %>% slice_sample(n = 100)
 prepped <- prep(recipe_spec, training = small_sample)
@@ -390,6 +403,7 @@ prepped <- prep(recipe_spec, training = small_sample)
 Ensure credentials are set before creating recipes:
 
 ``` r
+
 # Check setup
 foundry_check_setup()
 

@@ -27,6 +27,7 @@ DALL-E may be deployed on a different Azure resource than your chat
 models. foundryR supports separate configuration for image generation:
 
 ``` r
+
 library(foundryR)
 
 # If DALL-E is on the same resource as your chat models:
@@ -48,6 +49,7 @@ Sys.setenv(AZURE_FOUNDRY_IMAGE_MODEL = "my-dalle")
 Generate an image with a simple text prompt:
 
 ``` r
+
 library(foundryR)
 
 result <- foundry_image(
@@ -75,6 +77,7 @@ The result includes:
 Open the generated image in your browser:
 
 ``` r
+
 # View in browser
 browseURL(result$url)
 
@@ -92,6 +95,7 @@ Use
 to download and save images:
 
 ``` r
+
 result <- foundry_image(
   "A futuristic cityscape with flying cars",
   model = "my-dalle"
@@ -109,6 +113,7 @@ foundry_save_image(result, "cityscape.png")
 DALL-E supports different image sizes:
 
 ``` r
+
 # DALL-E 3 sizes
 # - 1024x1024 (square, default)
 # - 1792x1024 (landscape)
@@ -134,6 +139,7 @@ result <- foundry_image(
 DALL-E 3 offers standard and HD quality:
 
 ``` r
+
 # Standard quality (faster, less detailed)
 result <- foundry_image(
   "A simple icon of a house",
@@ -154,6 +160,7 @@ result <- foundry_image(
 Control the artistic style:
 
 ``` r
+
 # Vivid style (hyper-real, dramatic)
 result <- foundry_image(
   "A dragon breathing fire",
@@ -174,6 +181,7 @@ result <- foundry_image(
 Generate multiple variations at once:
 
 ``` r
+
 # Generate 3 variations
 results <- foundry_image(
   "An abstract representation of data science",
@@ -200,6 +208,7 @@ for (i in seq_len(nrow(results))) {
 For programmatic use, request base64-encoded images instead of URLs:
 
 ``` r
+
 result <- foundry_image(
   "A simple logo design",
   model = "my-dalle",
@@ -232,6 +241,7 @@ Vague prompts produce unpredictable results. Add details about:
 - **Mood**: Serene, energetic, mysterious?
 
 ``` r
+
 # Vague prompt
 foundry_image("a cat", model = "my-dalle")
 
@@ -250,6 +260,7 @@ DALL-E 3 automatically enhances your prompts. Check `revised_prompt` to
 learn what works:
 
 ``` r
+
 result <- foundry_image("sunset", model = "my-dalle")
 
 # See how DALL-E interpreted your prompt
@@ -263,6 +274,7 @@ cat(result$revised_prompt)
 Use the revised prompt as inspiration for your next attempt:
 
 ``` r
+
 # First attempt
 r1 <- foundry_image("a robot", model = "my-dalle")
 
@@ -282,6 +294,7 @@ r2 <- foundry_image(
 Generate custom illustrations for reports:
 
 ``` r
+
 # Create a conceptual illustration for a report section
 foundry_image(
   "A clean, professional infographic-style illustration showing
@@ -298,6 +311,7 @@ foundry_image(
 Quickly generate placeholder images for UI mockups:
 
 ``` r
+
 categories <- c("technology", "nature", "food", "travel")
 
 for (cat in categories) {
@@ -315,6 +329,7 @@ for (cat in categories) {
 Generate diverse images for ML training (with appropriate caution):
 
 ``` r
+
 # Generate variations of a product for training an object detector
 variations <- c(
   "on a white background, studio lighting",

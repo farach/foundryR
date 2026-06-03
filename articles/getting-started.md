@@ -31,6 +31,7 @@ deploy `gpt-4o-mini` with deployment name `my-gpt4`, you would use
 Install foundryR from GitHub:
 
 ``` r
+
 # Install pak if you don't have it
 # install.packages("pak")
 
@@ -55,6 +56,7 @@ There are two ways to configure these credentials:
 Set credentials for the current R session only:
 
 ``` r
+
 library(foundryR)
 
 foundry_set_endpoint("https://your-resource-name.openai.azure.com")
@@ -67,6 +69,7 @@ Store credentials in your `.Renviron` file so they persist across
 sessions. You can do this manually or use the `store = TRUE` argument:
 
 ``` r
+
 # Store credentials permanently
 foundry_set_endpoint("https://your-resource-name.openai.azure.com", store = TRUE)
 foundry_set_key("your-api-key-here", store = TRUE)
@@ -75,6 +78,7 @@ foundry_set_key("your-api-key-here", store = TRUE)
 Alternatively, edit your `.Renviron` file directly:
 
 ``` r
+
 # Open .Renviron for editing
 usethis::edit_r_environ()
 ```
@@ -101,6 +105,7 @@ Use
 to verify your configuration:
 
 ``` r
+
 library(foundryR)
 
 foundry_check_setup()
@@ -111,6 +116,7 @@ provides helpful guidance if anything is missing. You can also test a
 specific deployment:
 
 ``` r
+
 # Test that a specific deployment works
 foundry_check_setup(model = "my-gpt4")
 ```
@@ -121,6 +127,7 @@ Once configured, sending a chat message is straightforward with
 [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md):
 
 ``` r
+
 library(foundryR)
 
 # Simple question (replace "my-gpt4" with your deployment name)
@@ -141,6 +148,7 @@ response$content
 You can guide the model’s behavior with a system prompt:
 
 ``` r
+
 foundry_chat(
   "Explain what a tibble is",
   system = "You are a helpful R programming tutor. Be concise and use examples.",
@@ -153,6 +161,7 @@ foundry_chat(
 Control the response style with parameters like `temperature`:
 
 ``` r
+
 # More creative responses (higher temperature)
 foundry_chat(
   "Write a haiku about data science",
@@ -177,6 +186,7 @@ meaning. Use
 to generate embeddings:
 
 ``` r
+
 # Single text (replace "my-embeddings" with your embedding model deployment name)
 embedding <- foundry_embed("Data science is fascinating", model = "my-embeddings")
 embedding
@@ -190,6 +200,7 @@ The embedding is stored as a list-column containing a numeric vector.
 You can embed multiple texts at once:
 
 ``` r
+
 texts <- c(
   "I love R programming",
   "R is great for statistics",
