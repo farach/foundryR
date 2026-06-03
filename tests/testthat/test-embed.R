@@ -83,6 +83,34 @@ test_that("foundry_similarity filters NULL embeddings", {
   expect_equal(result$text_2, "c")
 })
 
+test_that("foundry_similarity errors on mismatched embedding dimensions", {
+  df <- tibble::tibble(
+    text = c("a", "b"),
+    embedding = list(c(1, 0), c(1, 0, 0))
+  )
+  expect_error(foundry_similarity(df), "same dimensionality")
+})
+
+test_that("foundry_similarity returns all unique pairs sorted by similarity", {
+  df <- tibble::tibble(
+    text = c("a", "b", "c", "d"),
+    embedding = list(c(1, 0), c(1, 0), c(0, 1), c(-1, 0))
+  )
+
+  result <- foundry_similarity(df)
+
+  # n*(n-1)/2 = 6 unique pairs
+  expect_equal(nrow(result), 6)
+  # sorted descending
+  expect_false(is.unsorted(rev(result$similarity)))
+  # identical vectors a,b -> similarity 1
+  ab <- result$similarity[result$text_1 == "a" & result$text_2 == "b"]
+  expect_equal(ab, 1, tolerance = 1e-10)
+  # opposite vectors a,d -> similarity -1
+  ad <- result$similarity[result$text_1 == "a" & result$text_2 == "d"]
+  expect_equal(ad, -1, tolerance = 1e-10)
+})
+
 # ============================================================================
 # Mocked API Tests
 # ============================================================================
