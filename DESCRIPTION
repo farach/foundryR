@@ -19,13 +19,13 @@ Imports:
     cli,
     dplyr,
     httr2 (>= 1.0.0),
+    jsonlite,
     magrittr,
     purrr,
     rlang,
     tibble
 Suggests:
     base64enc,
-    jsonlite,
     knitr,
     recipes,
     rmarkdown,

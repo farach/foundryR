@@ -39,6 +39,54 @@ foundry_build_request <- function(deployment,
 }
 
 
+#' Build Azure AI Foundry v1 Request
+#'
+#' Internal function to construct httr2 requests for Azure OpenAI in Microsoft
+#' Foundry's v1 data-plane API.
+#'
+#' @param path Character. The v1 API path, relative to `/openai/v1/`.
+#' @param body List. Optional request body.
+#' @param method Character. HTTP method. Default: `"POST"`.
+#' @param api_key Character. Optional API key override.
+#' @param endpoint Character. Optional endpoint override.
+#' @param api_version Character. Optional API version query value. Usually not
+#'   required for v1 endpoints.
+#'
+#' @return An httr2 request object (not yet performed).
+#' @keywords internal
+foundry_build_v1_request <- function(path,
+                                     body = NULL,
+                                     method = "POST",
+                                     api_key = NULL,
+                                     endpoint = NULL,
+                                     api_version = NULL) {
+
+  base_url <- foundry_get_endpoint(endpoint = endpoint, required = TRUE)
+  api_key <- foundry_get_key(key = api_key, required = TRUE)
+
+  path <- sub("^/+", "", path)
+  url <- paste0(base_url, "/openai/v1/", path)
+
+  req <- httr2::request(url) %>%
+    httr2::req_method(method) %>%
+    httr2::req_headers(`api-key` = api_key) %>%
+    httr2::req_retry(max_tries = 3, backoff = ~ 2) %>%
+    httr2::req_error(body = foundry_error_body)
+
+  if (!is.null(api_version)) {
+    req <- req %>%
+      httr2::req_url_query(`api-version` = api_version)
+  }
+
+  if (!is.null(body)) {
+    req <- req %>%
+      httr2::req_body_json(body)
+  }
+
+  req
+}
+
+
 #' Parse API Error Response
 #'
 #' Internal function to extract user-friendly error messages from API responses.
