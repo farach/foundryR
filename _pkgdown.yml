@@ -22,8 +22,9 @@ home:
   title: foundryR - Tidy Interface to Azure AI Foundry
   description: >
     A tidy, API-first R interface to Microsoft Azure AI Foundry.
-    Build AI-powered applications with chat completions, embeddings,
-    content safety, and image generation - all returning tibbles.
+    Build AI-powered applications with chat completions, the Responses API,
+    structured extraction, embeddings, content safety, and image generation -
+    all returning tibbles.
   sidebar:
     structure: [links, license, community, citation, authors, dev]
     components:
@@ -50,6 +51,8 @@ navbar:
         - text: "Core Functionality"
         - text: Getting Started
           href: articles/getting-started.html
+        - text: Responses API
+          href: articles/responses-api.html
         - text: Text Embeddings
           href: articles/embeddings.html
         - text: "---"
@@ -89,6 +92,17 @@ reference:
       Send messages and receive AI-generated responses as tidy tibbles.
     contents:
       - foundry_chat
+
+  - title: Responses API
+    desc: >
+      Use Microsoft Foundry's newer v1 Responses API for stateful turns,
+      tool calls, schema-constrained extraction, and web-grounded answers.
+    contents:
+      - foundry_response
+      - foundry_response_retrieve
+      - foundry_response_delete
+      - foundry_extract
+      - foundry_web_search
 
   - title: Text Embeddings
     desc: >
@@ -142,6 +156,7 @@ articles:
     navbar: ~
     contents:
       - getting-started
+      - responses-api
       - embeddings
 
   - title: Responsible AI

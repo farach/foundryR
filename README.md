@@ -5,11 +5,14 @@
 [![R-CMD-check](https://github.com/farach/foundryR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/farach/foundryR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-A tidy, API-first R interface to [Microsoft Azure AI Foundry](https://azure.microsoft.com/products/ai-foundry/). Build AI-powered applications with chat completions, embeddings, content safety, and image generation - all returning tibbles that integrate seamlessly with tidyverse and tidymodels workflows.
+A tidy, API-first R interface to [Microsoft Azure AI Foundry](https://azure.microsoft.com/products/ai-foundry/). Build AI-powered applications with chat completions, the newer Responses API, structured extraction, web-grounded answers, embeddings, content safety, and image generation - all returning tibbles that integrate seamlessly with tidyverse and tidymodels workflows.
 
 ## Features
 
 - **Chat completions** - Interact with GPT, Claude, Llama, Mistral, DeepSeek, Cohere, and other models
+- **Responses API** - Use Microsoft Foundry's v1 `/openai/v1/responses` endpoint for stateful turns, tools, and structured outputs
+- **Structured extraction** - Convert free text into schema-constrained tidy columns for annotation and research workflows
+- **Web-grounded responses** - Use the Responses API `web_search` tool and get citations as tidy list-columns
 - **Text embeddings** - Generate vector embeddings for semantic search, clustering, and ML
 - **Content safety** - Moderate content, detect hallucinations (groundedness), and protect against prompt injection
 - **Image generation** - Create images with DALL-E models
@@ -55,6 +58,58 @@ foundry_chat("What is the tidyverse?", model = "gpt-4o-mini")
 #> 1 assistant The tidyverse is a collection... gpt-4 stop                     10
 #> # i 2 more variables: completion_tokens <int>, total_tokens <int>
 ```
+
+### Use the Responses API
+
+The newer Microsoft Foundry Responses API supports stateful turns, built-in tools, and schema-constrained output through the v1 endpoint:
+
+```r
+first <- foundry_response(
+  "Define catastrophic forgetting.",
+  model = "gpt-4.1"
+)
+
+foundry_response(
+  "Explain it for a college freshman.",
+  model = "gpt-4.1",
+  previous_response_id = first$response_id
+)
+```
+
+### Extract structured data
+
+Use JSON Schema to turn free text into analyzable variables:
+
+```r
+schema <- list(
+  type = "object",
+  properties = list(
+    sentiment = list(type = "string", enum = c("positive", "negative", "neutral")),
+    entities = list(type = "array", items = list(type = "string"))
+  ),
+  required = c("sentiment", "entities"),
+  additionalProperties = FALSE
+)
+
+foundry_extract(
+  c("I love using R with Azure.", "The workflow was slow and confusing."),
+  schema = schema,
+  model = "gpt-4.1"
+)
+```
+
+### Search the web with citations
+
+```r
+web_answer <- foundry_web_search(
+  "What changed recently in Azure AI Foundry Responses API?",
+  model = "gpt-4.1"
+)
+
+web_answer$citations[[1]]
+```
+
+`foundry_web_search()` uses Grounding with Bing services. Microsoft documents that this can leave compliance/geographic boundaries and incur additional costs.
 
 ### Generate embeddings
 
@@ -126,6 +181,7 @@ recipe(sentiment ~ text, data = reviews) |>
 ## Learn More
 
 - [Getting Started](https://farach.github.io/foundryR/articles/getting-started.html) - Setup and first API calls
+- [Responses API](https://farach.github.io/foundryR/articles/responses-api.html) - Stateful turns, structured extraction, and web search
 - [Text Embeddings](https://farach.github.io/foundryR/articles/embeddings.html) - Semantic search and similarity
 - [Content Safety](https://farach.github.io/foundryR/articles/content-safety.html) - Responsible AI features
 - [Image Generation](https://farach.github.io/foundryR/articles/image-generation.html) - Creating images with DALL-E

@@ -63,6 +63,66 @@ mock_chat_response <- function(content = "Hello! How can I help you?",
   )
 }
 
+#' Create a mock Responses API response
+mock_response_api_response <- function(output_text = "Hello from Responses API",
+                                       model = "gpt-4.1",
+                                       response_id = "resp_test123",
+                                       include_web_search = FALSE,
+                                       citations = FALSE) {
+  content_item <- list(
+    type = "output_text",
+    text = output_text
+  )
+
+  if (citations) {
+    content_item$annotations <- list(
+      list(
+        type = "url_citation",
+        start_index = 0L,
+        end_index = 12L,
+        url = "https://learn.microsoft.com/azure/foundry/openai/how-to/responses",
+        title = "Use the Azure OpenAI Responses API"
+      )
+    )
+  }
+
+  output <- list()
+  if (include_web_search) {
+    output[[1]] <- list(
+      id = "ws_test123",
+      type = "web_search_call",
+      status = "completed",
+      action = list(
+        type = "search",
+        query = "latest Azure AI Foundry Responses API updates"
+      )
+    )
+  }
+
+  output[[length(output) + 1L]] <- list(
+    id = "msg_test123",
+    type = "message",
+    status = "completed",
+    role = "assistant",
+    content = list(content_item)
+  )
+
+  list(
+    id = response_id,
+    object = "response",
+    created_at = 1741369938,
+    status = "completed",
+    model = model,
+    output = output,
+    usage = list(
+      input_tokens = 10L,
+      output_tokens = 20L,
+      total_tokens = 30L,
+      output_tokens_details = list(reasoning_tokens = 0L)
+    )
+  )
+}
+
 #' Create a mock embedding response
 mock_embed_response <- function(embedding = NULL, n_dims = 1536, model = "text-embedding-ada-002") {
   if (is.null(embedding)) {
