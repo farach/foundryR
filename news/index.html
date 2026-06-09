@@ -21,6 +21,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
@@ -66,6 +67,17 @@
 <code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> for interacting with LLMs (GPT-4, Claude, Llama, Mistral, etc.)</li>
 <li>Support for system prompts and conversation history</li>
 <li>Compatible with both <code>max_tokens</code> and <code>max_completion_tokens</code> parameters</li>
+</ul></div>
+<div class="section level4">
+<h4 id="responses-api-0-0-0-9000">Responses API<a class="anchor" aria-label="anchor" href="#responses-api-0-0-0-9000"></a></h4>
+<ul><li>
+<code><a href="../reference/foundry_response.html">foundry_response()</a></code> for Microsoft Foundry’s newer <code>/openai/v1/responses</code> endpoint, including stateful turns, tools, structured output formats, token usage, citations, tool-call metadata, and raw response capture.</li>
+<li>
+<code><a href="../reference/foundry_response_retrieve.html">foundry_response_retrieve()</a></code> and <code><a href="../reference/foundry_response_delete.html">foundry_response_delete()</a></code> for managing stored Responses API objects.</li>
+<li>
+<code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> for JSON Schema-constrained structured extraction from text vectors, returning one tidy row per input with schema fields as columns.</li>
+<li>
+<code><a href="../reference/foundry_web_search.html">foundry_web_search()</a></code> for Responses API web search with citations and tool-call metadata. Documentation calls out Microsoft Grounding with Bing compliance-boundary and cost considerations.</li>
 </ul></div>
 <div class="section level4">
 <h4 id="text-embeddings-0-0-0-9000">Text Embeddings<a class="anchor" aria-label="anchor" href="#text-embeddings-0-0-0-9000"></a></h4>
@@ -116,7 +128,7 @@
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-0-0-0-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-0-0-9000"></a></h3>
-<ul><li>Comprehensive vignettes: Getting Started, Embeddings, Content Safety, Image Generation, tidymodels</li>
+<ul><li>Comprehensive vignettes: Getting Started, Responses API, Embeddings, Content Safety, Image Generation, tidymodels</li>
 <li>Full roxygen2 documentation for all exported functions</li>
 <li>pkgdown site with Azure-inspired styling</li>
 </ul></div>

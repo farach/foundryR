@@ -22,6 +22,22 @@ Send messages and receive AI-generated responses as tidy tibbles.
 - [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
   : Chat with an Azure AI Model
 
+## Responses API
+
+Use Microsoft Foundry’s newer v1 Responses API for stateful turns, tool
+calls, schema-constrained extraction, and web-grounded answers.
+
+- [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+  : Create a response with the Azure OpenAI Responses API
+- [`foundry_response_retrieve()`](https://farach.github.io/foundryR/reference/foundry_response_retrieve.md)
+  : Retrieve a stored Responses API response
+- [`foundry_response_delete()`](https://farach.github.io/foundryR/reference/foundry_response_delete.md)
+  : Delete a stored Responses API response
+- [`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
+  : Extract structured data from text using JSON Schema
+- [`foundry_web_search()`](https://farach.github.io/foundryR/reference/foundry_web_search.md)
+  : Search the web with the Responses API
+
 ## Text Embeddings
 
 Generate vector embeddings for semantic search, clustering, and machine

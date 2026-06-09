@@ -17,9 +17,9 @@
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="foundryR - Tidy Interface to Azure AI Foundry">
-<meta name="description" content="A tidy, API-first R interface to Microsoft Azure AI Foundry. Build AI-powered applications with chat completions, embeddings, content safety, and image generation - all returning tibbles.
+<meta name="description" content="A tidy, API-first R interface to Microsoft Azure AI Foundry. Build AI-powered applications with chat completions, the Responses API, structured extraction, embeddings, content safety, and image generation - all returning tibbles.
 ">
-<meta property="og:description" content="A tidy, API-first R interface to Microsoft Azure AI Foundry. Build AI-powered applications with chat completions, embeddings, content safety, and image generation - all returning tibbles.
+<meta property="og:description" content="A tidy, API-first R interface to Microsoft Azure AI Foundry. Build AI-powered applications with chat completions, the Responses API, structured extraction, embeddings, content safety, and image generation - all returning tibbles.
 ">
 <meta property="og:image" content="https://farach.github.io/foundryR/logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,6 +50,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
     <li><a class="dropdown-item" href="articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="articles/responses-api.html">Responses API</a></li>
     <li><a class="dropdown-item" href="articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
@@ -93,13 +94,19 @@
 </div>
 <!-- badges: start -->
 
-<p>A tidy, API-first R interface to <a href="https://azure.microsoft.com/products/ai-foundry/" class="external-link">Microsoft Azure AI Foundry</a>. Build AI-powered applications with chat completions, embeddings, content safety, and image generation - all returning tibbles that integrate seamlessly with tidyverse and tidymodels workflows.</p>
+<p>A tidy, API-first R interface to <a href="https://azure.microsoft.com/products/ai-foundry/" class="external-link">Microsoft Azure AI Foundry</a>. Build AI-powered applications with chat completions, the newer Responses API, structured extraction, web-grounded answers, embeddings, content safety, and image generation - all returning tibbles that integrate seamlessly with tidyverse and tidymodels workflows.</p>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
 </h2>
 <ul>
 <li>
 <strong>Chat completions</strong> - Interact with GPT, Claude, Llama, Mistral, DeepSeek, Cohere, and other models</li>
+<li>
+<strong>Responses API</strong> - Use Microsoft Foundry’s v1 <code>/openai/v1/responses</code> endpoint for stateful turns, tools, and structured outputs</li>
+<li>
+<strong>Structured extraction</strong> - Convert free text into schema-constrained tidy columns for annotation and research workflows</li>
+<li>
+<strong>Web-grounded responses</strong> - Use the Responses API <code>web_search</code> tool and get citations as tidy list-columns</li>
 <li>
 <strong>Text embeddings</strong> - Generate vector embeddings for semantic search, clustering, and ML</li>
 <li>
@@ -149,9 +156,58 @@ AZURE_FOUNDRY_KEY=your-api-key</code></pre>
 <span><span class="co">#&gt; # i 2 more variables: completion_tokens &lt;int&gt;, total_tokens &lt;int&gt;</span></span></code></pre></div>
 </div>
 <div class="section level3">
+<h3 id="use-the-responses-api">Use the Responses API<a class="anchor" aria-label="anchor" href="#use-the-responses-api"></a>
+</h3>
+<p>The newer Microsoft Foundry Responses API supports stateful turns, built-in tools, and schema-constrained output through the v1 endpoint:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">first</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Define catastrophic forgetting."</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Explain it for a college freshman."</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span>,</span>
+<span>  previous_response_id <span class="op">=</span> <span class="va">first</span><span class="op">$</span><span class="va">response_id</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="extract-structured-data">Extract structured data<a class="anchor" aria-label="anchor" href="#extract-structured-data"></a>
+</h3>
+<p>Use JSON Schema to turn free text into analyzable variables:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"object"</span>,</span>
+<span>  properties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    sentiment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"string"</span>, enum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"positive"</span>, <span class="st">"negative"</span>, <span class="st">"neutral"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    entities <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"array"</span>, items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"string"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  required <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sentiment"</span>, <span class="st">"entities"</span><span class="op">)</span>,</span>
+<span>  additionalProperties <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/foundry_extract.html">foundry_extract</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"I love using R with Azure."</span>, <span class="st">"The workflow was slow and confusing."</span><span class="op">)</span>,</span>
+<span>  schema <span class="op">=</span> <span class="va">schema</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="search-the-web-with-citations">Search the web with citations<a class="anchor" aria-label="anchor" href="#search-the-web-with-citations"></a>
+</h3>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">web_answer</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/foundry_web_search.html">foundry_web_search</a></span><span class="op">(</span></span>
+<span>  <span class="st">"What changed recently in Azure AI Foundry Responses API?"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">web_answer</span><span class="op">$</span><span class="va">citations</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p><code><a href="reference/foundry_web_search.html">foundry_web_search()</a></code> uses Grounding with Bing services. Microsoft documents that this can leave compliance/geographic boundaries and incur additional costs.</p>
+</div>
+<div class="section level3">
 <h3 id="generate-embeddings">Generate embeddings<a class="anchor" aria-label="anchor" href="#generate-embeddings"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">texts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"I love R programming"</span>, <span class="st">"R is great for statistics"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">texts</span>, model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 2 x 3</span></span>
@@ -163,7 +219,7 @@ AZURE_FOUNDRY_KEY=your-api-key</code></pre>
 <div class="section level3">
 <h3 id="compute-similarity">Compute similarity<a class="anchor" aria-label="anchor" href="#compute-similarity"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">texts</span>, model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/foundry_similarity.html">foundry_similarity</a></span><span class="op">(</span><span class="va">embeddings</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 x 3</span></span>
@@ -176,7 +232,7 @@ AZURE_FOUNDRY_KEY=your-api-key</code></pre>
 <h2 id="content-safety">Content Safety<a class="anchor" aria-label="anchor" href="#content-safety"></a>
 </h2>
 <p>foundryR integrates with <a href="https://azure.microsoft.com/products/ai-services/ai-content-safety/" class="external-link">Azure AI Content Safety</a> for responsible AI features:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Content moderation</span></span>
 <span><span class="fu"><a href="reference/foundry_moderate.html">foundry_moderate</a></span><span class="op">(</span><span class="st">"Sample text to analyze"</span><span class="op">)</span></span>
 <span></span>
@@ -195,7 +251,7 @@ AZURE_FOUNDRY_KEY=your-api-key</code></pre>
 <h2 id="image-generation">Image Generation<a class="anchor" aria-label="anchor" href="#image-generation"></a>
 </h2>
 <p>Create images with DALL-E:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/foundry_image.html">foundry_image</a></span><span class="op">(</span></span>
 <span>  <span class="st">"A serene mountain landscape at sunset"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"dall-e-3"</span></span>
@@ -206,7 +262,7 @@ AZURE_FOUNDRY_KEY=your-api-key</code></pre>
 <h2 id="tidymodels-integration">tidymodels Integration<a class="anchor" aria-label="anchor" href="#tidymodels-integration"></a>
 </h2>
 <p>Add text embeddings to your ML pipelines:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">recipe</span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -219,6 +275,8 @@ AZURE_FOUNDRY_KEY=your-api-key</code></pre>
 <ul>
 <li>
 <a href="https://farach.github.io/foundryR/articles/getting-started.html">Getting Started</a> - Setup and first API calls</li>
+<li>
+<a href="https://farach.github.io/foundryR/articles/responses-api.html">Responses API</a> - Stateful turns, structured extraction, and web search</li>
 <li>
 <a href="https://farach.github.io/foundryR/articles/embeddings.html">Text Embeddings</a> - Semantic search and similarity</li>
 <li>

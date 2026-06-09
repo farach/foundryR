@@ -8,6 +8,7 @@
 <url><loc>https://farach.github.io/foundryR/articles/image-generation.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/index.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/onet2r-integration.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/articles/responses-api.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/tidymodels.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/authors.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/index.html</loc></url>
@@ -16,11 +17,13 @@
 <url><loc>https://farach.github.io/foundryR/reference/batch_vector.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/content_safety_error_body.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_build_request.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_build_v1_request.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_chat.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_check_setup.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_embed.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_embed_batch.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_error_body.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_extract.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_get_api_version.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_get_endpoint.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_get_image_endpoint.html</loc></url>
@@ -32,7 +35,11 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_moderate.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_parse_chat_response.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_parse_image_response.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_parse_response.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_perform.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_response.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_response_delete.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_response_retrieve.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_save_image.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_set_content_safety_endpoint.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_set_content_safety_key.html</loc></url>
@@ -42,6 +49,7 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_set_key.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_shield.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_similarity.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_web_search.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/get_content_safety_endpoint.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/get_content_safety_key.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/groundedness_error_body.html</loc></url>

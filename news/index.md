@@ -15,6 +15,24 @@ Azure AI Foundry. \## Core Features
 - Compatible with both `max_tokens` and `max_completion_tokens`
   parameters
 
+#### Responses API
+
+- [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+  for Microsoft Foundry’s newer `/openai/v1/responses` endpoint,
+  including stateful turns, tools, structured output formats, token
+  usage, citations, tool-call metadata, and raw response capture.
+- [`foundry_response_retrieve()`](https://farach.github.io/foundryR/reference/foundry_response_retrieve.md)
+  and
+  [`foundry_response_delete()`](https://farach.github.io/foundryR/reference/foundry_response_delete.md)
+  for managing stored Responses API objects.
+- [`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
+  for JSON Schema-constrained structured extraction from text vectors,
+  returning one tidy row per input with schema fields as columns.
+- [`foundry_web_search()`](https://farach.github.io/foundryR/reference/foundry_web_search.md)
+  for Responses API web search with citations and tool-call metadata.
+  Documentation calls out Microsoft Grounding with Bing
+  compliance-boundary and cost considerations.
+
 #### Text Embeddings
 
 - [`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md)
@@ -71,7 +89,7 @@ Azure AI Foundry. \## Core Features
 
 ### Documentation
 
-- Comprehensive vignettes: Getting Started, Embeddings, Content Safety,
-  Image Generation, tidymodels
+- Comprehensive vignettes: Getting Started, Responses API, Embeddings,
+  Content Safety, Image Generation, tidymodels
 - Full roxygen2 documentation for all exported functions
 - pkgdown site with Azure-inspired styling
