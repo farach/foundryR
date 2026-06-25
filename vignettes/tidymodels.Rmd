@@ -13,6 +13,14 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = FALSE
 )
+
+foundryr_vignette_cache <- function(name) {
+  path <- system.file("extdata", "vignette-cache", name, package = "foundryR")
+  if (!nzchar(path)) {
+    path <- file.path("..", "inst", "extdata", "vignette-cache", name)
+  }
+  path
+}
 ```
 
 ## Introduction
@@ -304,6 +312,50 @@ collect_metrics(cv_results)
 #>   <chr>    <chr>      <dbl> <int>   <dbl> <chr>
 #> 1 accuracy binary     0.875     5  0.0559 Preprocessor1_Model1
 #> 2 roc_auc  binary     0.925     5  0.0433 Preprocessor1_Model1
+```
+
+The rendered evaluation outputs below use precomputed, illustrative data from a
+representative resampling run. They are rendered during the documentation build
+without Azure credentials.
+
+```{r tidymodels-metrics-rendered, eval = TRUE, echo = FALSE}
+tidymodels_cache <- readRDS(foundryr_vignette_cache("tidymodels.rds"))
+
+tidymodels_cache$metrics |>
+  dplyr::mutate(.estimate = round(.estimate, 3)) |>
+  gt::gt() |>
+  gt::cols_label(
+    .metric = "Metric",
+    .estimator = "Estimator",
+    .estimate = "Estimate",
+    .config = "Configuration"
+  ) |>
+  gt::fmt_number(columns = .estimate, decimals = 3) |>
+  gt::tab_header(title = "Embedding classifier evaluation metrics") |>
+  gt::tab_options(table.font.names = "Inter")
+```
+
+```{r tidymodels-roc-rendered, eval = TRUE, echo = FALSE, fig.alt = "ROC curve for a cached embedding classifier evaluation."}
+ggplot2::ggplot(
+  tidymodels_cache$roc,
+  ggplot2::aes(x = 1 - specificity, y = sensitivity)
+) +
+  ggplot2::geom_abline(
+    slope = 1,
+    intercept = 0,
+    linetype = "dashed",
+    color = "#767676"
+  ) +
+  ggplot2::geom_line(color = "#0078D4", linewidth = 1.1) +
+  ggplot2::geom_point(color = "#0078D4", size = 2.2) +
+  ggplot2::coord_equal() +
+  ggplot2::labs(
+    title = "ROC curve for a classifier built on cached embeddings",
+    x = "False positive rate",
+    y = "True positive rate"
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::theme(panel.grid.minor = ggplot2::element_blank())
 ```
 
 ## Hyperparameter tuning

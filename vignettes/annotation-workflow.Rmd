@@ -13,6 +13,14 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = FALSE
 )
+
+foundryr_vignette_cache <- function(name) {
+  path <- system.file("extdata", "vignette-cache", name, package = "foundryR")
+  if (!nzchar(path)) {
+    path <- file.path("..", "inst", "extdata", "vignette-cache", name)
+  }
+  path
+}
 ```
 
 Open-ended survey responses are valuable because respondents can say what the
@@ -186,6 +194,61 @@ review <- coded |>
   )
 
 review
+```
+
+The rendered table and chart below use precomputed, illustrative data from a
+representative run. They are rendered during the documentation build without
+Azure credentials.
+
+```{r review-table-rendered, eval = TRUE, echo = FALSE}
+annotation_cache <- readRDS(foundryr_vignette_cache("annotation-workflow.rds"))
+review <- annotation_cache$review
+
+review |>
+  dplyr::mutate(
+    needs_followup = ifelse(needs_followup, "Review", "No review"),
+    response = substr(response, 1, 70)
+  ) |>
+  gt::gt() |>
+  gt::cols_label(
+    respondent_id = "ID",
+    response = "Response",
+    sentiment = "Sentiment",
+    primary_theme = "Theme",
+    needs_followup = "Follow-up",
+    short_summary = "Summary"
+  ) |>
+  gt::tab_header(title = "Structured annotations from open-ended responses") |>
+  gt::tab_options(table.font.names = "Inter")
+```
+
+```{r sentiment-theme-chart, eval = TRUE, echo = FALSE, fig.alt = "Bar chart of survey response themes by sentiment."}
+theme_counts <- review |>
+  dplyr::count(primary_theme, sentiment, name = "responses")
+
+ggplot2::ggplot(
+  theme_counts,
+  ggplot2::aes(x = primary_theme, y = responses, fill = sentiment)
+) +
+  ggplot2::geom_col(position = "dodge", width = 0.72) +
+  ggplot2::scale_fill_manual(
+    values = c(
+      negative = "#D13438",
+      mixed = "#FFB900",
+      positive = "#107C10"
+    )
+  ) +
+  ggplot2::labs(
+    title = "Extracted labels make response patterns countable",
+    x = "Primary theme",
+    y = "Responses",
+    fill = "Sentiment"
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::theme(
+    legend.position = "bottom",
+    panel.grid.minor = ggplot2::element_blank()
+  )
 ```
 
 The workflow leaves a trail: raw response, extracted labels, model metadata,

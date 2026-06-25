@@ -222,7 +222,6 @@ articles:
     contents:
       - audio
       - media-generation
-      - image-generation
 
   - title: Integrations
     navbar: ~

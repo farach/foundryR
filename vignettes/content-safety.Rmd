@@ -13,6 +13,14 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = FALSE
 )
+
+foundryr_vignette_cache <- function(name) {
+  path <- system.file("extdata", "vignette-cache", name, package = "foundryR")
+  if (!nzchar(path)) {
+    path <- file.path("..", "inst", "extdata", "vignette-cache", name)
+  }
+  path
+}
 ```
 
 ## Introduction
@@ -119,6 +127,57 @@ results
 #>  4 Have a wonderful day!       Violence        0 safe
 #>  5 This product is terrible    Hate            0 safe
 #>  ...
+```
+
+The rendered table and chart below use precomputed, illustrative data from
+representative Content Safety responses. They are rendered during the
+documentation build without Azure credentials.
+
+```{r moderate-summary-rendered, eval = TRUE, echo = FALSE}
+safety_cache <- readRDS(foundryr_vignette_cache("content-safety.rds"))
+
+safety_cache$summary |>
+  dplyr::rename(
+    Category = category,
+    Safe = n_safe,
+    Low = n_low,
+    Medium = n_medium,
+    High = n_high,
+    `Max severity` = max_severity
+  ) |>
+  gt::gt() |>
+  gt::tab_header(title = "Moderation severity by category") |>
+  gt::tab_options(table.font.names = "Inter")
+```
+
+```{r moderate-severity-chart, eval = TRUE, echo = FALSE, fig.alt = "Stacked bar chart of moderation labels by Content Safety category."}
+safety_counts <- safety_cache$results |>
+  dplyr::count(category, label, name = "texts")
+
+ggplot2::ggplot(
+  safety_counts,
+  ggplot2::aes(x = category, y = texts, fill = label)
+) +
+  ggplot2::geom_col(width = 0.72) +
+  ggplot2::scale_fill_manual(
+    values = c(
+      safe = "#107C10",
+      low = "#FFB900",
+      medium = "#D83B01",
+      high = "#D13438"
+    )
+  ) +
+  ggplot2::labs(
+    title = "Moderation output is ready for review queues",
+    x = "Category",
+    y = "Texts",
+    fill = "Label"
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::theme(
+    legend.position = "bottom",
+    panel.grid.minor = ggplot2::element_blank()
+  )
 ```
 
 ### Setting Thresholds
@@ -389,6 +448,6 @@ safe_ai_response <- function(user_input, context_docs, model = "my-gpt4") {
 
 ## Next Steps
 
-- Learn about [Image Generation](image-generation.html) with DALL-E
+- Learn about [Image and Video Generation](media-generation.html)
 - Explore [tidymodels Integration](tidymodels.html) for ML pipelines
 - Read about [Text Embeddings](embeddings.html) for semantic search

@@ -79,7 +79,7 @@ run_test <- function(name, expr) {
 
 # ============================================================================
 # SECTION 1: CONFIGURATION FUNCTIONS
-# From: getting-started.Rmd, content-safety.Rmd, image-generation.Rmd
+# From: getting-started.Rmd, content-safety.Rmd, media-generation.Rmd
 # ============================================================================
 
 cat("\n\n### SECTION 1: CONFIGURATION FUNCTIONS ###\n")
@@ -564,7 +564,7 @@ if (cs_endpoint == "") {
 
 # ============================================================================
 # SECTION 5: IMAGE GENERATION
-# From: image-generation.Rmd
+# From: media-generation.Rmd
 # ============================================================================
 
 cat("\n\n### SECTION 5: IMAGE GENERATION ###\n")
@@ -579,7 +579,7 @@ if (image_model == "") {
   if (image_endpoint != "") cat("Image endpoint:", image_endpoint, "\n")
   cat("\n")
 
-  # Basic image generation - from image-generation.Rmd
+  # Basic image generation - from media-generation.Rmd
   run_test("foundry_image - basic generation", quote({
     result <- foundry_image(
       "A simple blue circle on a white background, minimalist style",
@@ -599,7 +599,7 @@ if (image_model == "") {
     result
   }))
 
-  # Image with size parameter - from image-generation.Rmd
+  # Image with size parameter - from media-generation.Rmd
   run_test("foundry_image - landscape size", quote({
     result <- foundry_image(
       "A panoramic mountain landscape",
@@ -611,7 +611,7 @@ if (image_model == "") {
     result
   }))
 
-  # Image with quality parameter - from image-generation.Rmd
+  # Image with quality parameter - from media-generation.Rmd
   run_test("foundry_image - HD quality", quote({
     result <- foundry_image(
       "A detailed mandala pattern",
@@ -622,7 +622,7 @@ if (image_model == "") {
     result
   }))
 
-  # Image with style parameter - from image-generation.Rmd
+  # Image with style parameter - from media-generation.Rmd
   run_test("foundry_image - natural style", quote({
     result <- foundry_image(
       "A golden retriever in a park",
@@ -634,7 +634,7 @@ if (image_model == "") {
     result
   }))
 
-  # Multiple images - from image-generation.Rmd
+  # Multiple images - from media-generation.Rmd
   run_test("foundry_image - multiple images (n=2)", quote({
     result <- foundry_image(
       "An abstract representation of data science",
@@ -646,7 +646,7 @@ if (image_model == "") {
     result
   }))
 
-  # Save image to file - from image-generation.Rmd
+  # Save image to file - from media-generation.Rmd
   run_test("foundry_save_image - save to file", quote({
     result <- foundry_image(
       "A red square",
@@ -669,7 +669,7 @@ if (image_model == "") {
     result
   }))
 
-  # Base64 response format - from image-generation.Rmd
+  # Base64 response format - from media-generation.Rmd
   run_test("foundry_image - base64 response format", quote({
     result <- foundry_image(
       "A simple logo design",
@@ -685,7 +685,7 @@ if (image_model == "") {
     result
   }))
 
-  # Save base64 image - from image-generation.Rmd
+  # Save base64 image - from media-generation.Rmd
   run_test("foundry_save_image - save from base64", quote({
     result <- foundry_image(
       "A green triangle",
@@ -969,7 +969,7 @@ cat("  foundry_moderate()                    - Tested (single, multiple)\n")
 cat("  foundry_groundedness()                - Tested (QnA, Summarization, multiple sources)\n")
 cat("  foundry_shield()                      - Tested (basic, with documents)\n")
 
-cat("\n[image-generation.Rmd]\n")
+cat("\n[media-generation.Rmd]\n")
 cat("  foundry_set_image_endpoint()  - Tested\n")
 cat("  foundry_set_image_key()       - Tested\n")
 cat("  foundry_get_image_endpoint()  - Tested\n")

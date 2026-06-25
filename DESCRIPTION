@@ -29,6 +29,9 @@ Imports:
     tibble
 Suggests:
     base64enc,
+    ggplot2,
+    gt,
+    irlba,
     knitr,
     recipes,
     rmarkdown,

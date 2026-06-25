@@ -13,6 +13,14 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = FALSE
 )
+
+foundryr_vignette_cache <- function(name) {
+  path <- system.file("extdata", "vignette-cache", name, package = "foundryR")
+  if (!nzchar(path)) {
+    path <- file.path("..", "inst", "extdata", "vignette-cache", name)
+  }
+  path
+}
 ```
 
 ## What embeddings are for
@@ -121,6 +129,51 @@ similarities
 
 Results are sorted by similarity (highest first). Notice how texts about similar topics (R programming, weather) have higher similarity scores with each other.
 
+The rendered outputs below use precomputed, illustrative data from a
+representative run. They are rendered during the documentation build without
+Azure credentials.
+
+```{r similarity-heatmap-rendered, eval = TRUE, echo = FALSE, fig.alt = "Heatmap of cosine similarity across four short texts."}
+embedding_cache <- readRDS(foundryr_vignette_cache("embeddings.rds"))
+similarity_heatmap <- embedding_cache$similarity_heatmap |>
+  dplyr::mutate(
+    text_1_short = dplyr::case_when(
+      text_1 == "I love programming in R" ~ "R programming",
+      text_1 == "R is my favorite language for data analysis" ~ "R analysis",
+      text_1 == "The weather is nice today" ~ "Weather",
+      TRUE ~ "Sunny"
+    ),
+    text_2_short = dplyr::case_when(
+      text_2 == "I love programming in R" ~ "R programming",
+      text_2 == "R is my favorite language for data analysis" ~ "R analysis",
+      text_2 == "The weather is nice today" ~ "Weather",
+      TRUE ~ "Sunny"
+    )
+  )
+
+ggplot2::ggplot(
+  similarity_heatmap,
+  ggplot2::aes(x = text_2_short, y = text_1_short, fill = similarity)
+) +
+  ggplot2::geom_tile(color = "white", linewidth = 0.6) +
+  ggplot2::geom_text(
+    ggplot2::aes(label = sprintf("%.2f", similarity)),
+    size = 3.2
+  ) +
+  ggplot2::scale_fill_gradient(low = "#E6F2FB", high = "#0078D4", limits = c(0.65, 1)) +
+  ggplot2::labs(
+    title = "Cosine similarity separates near matches from weaker pairs",
+    x = NULL,
+    y = NULL,
+    fill = "Similarity"
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::theme(
+    panel.grid = ggplot2::element_blank(),
+    legend.position = "bottom"
+  )
+```
+
 ## Use Case: Finding Similar Documents
 
 A common application is finding documents most similar to a query. Here is how to implement a simple semantic search:
@@ -167,6 +220,20 @@ head(results, 3)
 #> 1 Data visualization with ggplot2 in R              0.891
 #> 2 How to install R packages using install.packages() 0.812
 #> 3 Building web applications with Shiny              0.756
+```
+
+```{r nearest-neighbors-rendered, eval = TRUE, echo = FALSE}
+embedding_cache$nearest_neighbors |>
+  dplyr::mutate(similarity = round(similarity, 3)) |>
+  gt::gt() |>
+  gt::cols_label(
+    rank = "Rank",
+    text = "Document",
+    similarity = "Cosine similarity"
+  ) |>
+  gt::fmt_number(columns = similarity, decimals = 3) |>
+  gt::tab_header(title = "Nearest documents for a charting query") |>
+  gt::tab_options(table.font.names = "Inter")
 ```
 
 ## Use Case: Clustering Text
@@ -230,6 +297,35 @@ results
 ```
 
 The algorithm successfully grouped texts by topic (programming, food, sports) without any labeled training data.
+
+```{r embedding-projection-rendered, eval = TRUE, echo = FALSE, fig.alt = "Two-dimensional embedding projection with programming, food, and sports clusters."}
+projection <- embedding_cache$projection
+
+ggplot2::ggplot(
+  projection,
+  ggplot2::aes(x = pc1, y = pc2, color = topic, label = label)
+) +
+  ggplot2::geom_point(size = 3.2, alpha = 0.9) +
+  ggplot2::geom_text(nudge_y = 0.12, size = 3, show.legend = FALSE) +
+  ggplot2::scale_color_manual(
+    values = c(
+      Programming = "#0078D4",
+      Food = "#107C10",
+      Sports = "#5C2D91"
+    )
+  ) +
+  ggplot2::labs(
+    title = "A two-dimensional projection makes embedding clusters visible",
+    x = "Principal component 1",
+    y = "Principal component 2",
+    color = "Topic"
+  ) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::theme(
+    legend.position = "bottom",
+    panel.grid.minor = ggplot2::element_blank()
+  )
+```
 
 ## Tips for Working with Embeddings
 
