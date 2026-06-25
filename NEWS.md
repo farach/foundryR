@@ -2,6 +2,16 @@
 # foundryR 0.0.0.9000
 
 Initial development release of foundryR, a tidy interface to Microsoft Azure AI Foundry.
+
+- `foundry_batch_create()`, `foundry_batches()`, `foundry_batch_get()`, `foundry_batch_cancel()`, and `foundry_batch_requests()` add v1 Batch API workflows for large-scale prompt, annotation, extraction, and classification jobs.
+- `foundry_file_upload()`, `foundry_files()`, `foundry_file_get()`, `foundry_file_delete()`, and `foundry_file_download()` add v1 Files API support for Batch, eval, fine-tuning, and assistant/file-search workflows.
+- `foundry_image()` now uses the v1 preview image generation endpoint by default, supports newer image options such as `output_format`, `output_compression`, `background`, and `moderation`, and keeps the legacy deployment endpoint available with `api = "deployment"`.
+- `foundry_image_edit()` adds v1 preview image editing with local image and optional mask uploads.
+- `foundry_models()` now calls the v1 model/deployment metadata endpoints instead of sending a dummy chat request.
+- `foundry_set_speech_endpoint()`, `foundry_set_speech_key()`, `foundry_transcribe()`, and `foundry_translate_audio()` add LLM Speech and MAI-Transcribe workflows for interview, lecture, meeting, and multilingual research audio.
+- `foundry_set_token()` adds Microsoft Entra ID bearer-token support for keyless authentication across Foundry requests.
+- `foundry_speak()` adds v1 preview text-to-speech output saved directly to local audio files.
+- `foundry_video_job_create()`, `foundry_video_jobs()`, `foundry_video_job_get()`, `foundry_video_job_delete()`, `foundry_video_get()`, and `foundry_video_download()` add preview video generation job management and content download helpers.
 ## Core Features
 
 ### Chat Completions

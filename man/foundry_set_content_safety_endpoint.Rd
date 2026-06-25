@@ -8,7 +8,7 @@ foundry_set_content_safety_endpoint(endpoint, store = FALSE)
 }
 \arguments{
 \item{endpoint}{Character string containing the endpoint URL.
-Example: "https://your-resource.cognitiveservices.azure.com"}
+Example: the endpoint URL from your Content Safety resource.}
 
 \item{store}{Logical. If TRUE, stores the endpoint in \code{.Renviron} for future sessions.
 Default: FALSE (endpoint only available for current session).}
@@ -21,9 +21,9 @@ Set the base endpoint URL for your Azure Content Safety resource.
 }
 \examples{
 \dontrun{
-foundry_set_content_safety_endpoint("https://my-resource.cognitiveservices.azure.com")
+foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT")
 
 # Store permanently
-foundry_set_content_safety_endpoint("https://my-resource.cognitiveservices.azure.com", store = TRUE)
+foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT", store = TRUE)
 }
 }

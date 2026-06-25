@@ -1,86 +1,69 @@
-#' List Available Models/Deployments
+#' List or retrieve available model deployments
 #'
-#' Retrieve information about models deployed in your Azure AI Foundry resource.
+#' List model deployments available through the Microsoft Foundry v1 data-plane
+#' API, or retrieve metadata for one deployment by name. Use the deployment name
+#' shown in the Foundry portal as the `model` value in `foundry_response()` and
+#' other v1 helpers.
 #'
-#' Note: Azure AI Foundry doesn't have a direct "list deployments" API endpoint
-#' in the same way that Hugging Face does. This function provides a placeholder
-#' that can be extended when such an API becomes available, or can be used to
-#' validate a specific deployment exists.
-#'
-#' @param model Character. Optional. A specific deployment name to check.
+#' @param model Character. Optional deployment name to retrieve.
 #' @param api_key Character. Optional API key override.
-#' @param api_version Character. Optional API version override.
+#' @param token Character. Optional bearer token override.
+#' @param endpoint Character. Optional endpoint override.
+#' @param api_version Character. Optional API version query value.
 #'
-#' @return A tibble with deployment information, or a message about available
-#'   functionality.
-#'
+#' @return A tibble with model or deployment metadata and the raw model object
+#'   in a list-column.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Check if a deployment exists by making a minimal request
-#' foundry_models("gpt-4")
+#' foundry_models()
+#' foundry_models("gpt-4.1")
 #' }
 foundry_models <- function(model = NULL,
-                            api_key = NULL,
-                            api_version = NULL) {
+                           api_key = NULL,
+                           token = NULL,
+                           endpoint = NULL,
+                           api_version = NULL) {
+  path <- "models"
+  if (!is.null(model)) {
+    foundry_check_character_scalar(model, "model")
+    path <- paste0("models/", model)
+  }
 
-  if (is.null(model)) {
-    cli::cli_inform(c(
-      "i" = "Azure AI Foundry doesn't provide a list-deployments API.",
-      "i" = "Deployments are managed in the Azure Portal.",
-      "i" = "Use {.code foundry_models(\"deployment-name\")} to verify a specific deployment."
-    ))
+  req <- foundry_build_v1_request(
+    path = path,
+    method = "GET",
+    api_key = api_key,
+    token = token,
+    endpoint = endpoint,
+    api_version = api_version
+  )
 
+  result <- foundry_perform(req)
+  foundry_parse_models(result)
+}
+
+
+foundry_parse_models <- function(result) {
+  models <- result$data %||% list(result)
+  if (length(models) == 0L) {
     return(tibble::tibble(
-      deployment = character(),
-      status = character(),
-      message = character()
+      id = character(),
+      object = character(),
+      created = as.POSIXct(character()),
+      owned_by = character(),
+      raw_model = list()
     ))
   }
 
-  # Try to validate the deployment with a minimal chat request
-  tryCatch({
-    body <- list(
-      messages = list(list(role = "user", content = "Hi")),
-      max_tokens = 1
-    )
-
-    req <- foundry_build_request(
-      deployment = model,
-      endpoint_path = "chat/completions",
-      body = body,
-      api_key = api_key,
-      api_version = api_version
-    )
-
-    result <- foundry_perform(req)
-
+  purrr::map_dfr(models, function(model) {
     tibble::tibble(
-      deployment = model,
-      status = "available",
-      message = "Deployment is accessible and responding.",
-      model_id = result$model %||% NA_character_
+      id = model$id %||% NA_character_,
+      object = model$object %||% NA_character_,
+      created = foundry_response_created_at(model$created %||% NA_real_),
+      owned_by = model$owned_by %||% NA_character_,
+      raw_model = list(model)
     )
-
-  }, error = function(e) {
-    msg <- conditionMessage(e)
-
-    # Check if it's a "not found" vs other error
-    if (grepl("not found|404", msg, ignore.case = TRUE)) {
-      tibble::tibble(
-        deployment = model,
-        status = "not_found",
-        message = "Deployment not found. Check the name in Azure Portal.",
-        model_id = NA_character_
-      )
-    } else {
-      tibble::tibble(
-        deployment = model,
-        status = "error",
-        message = msg,
-        model_id = NA_character_
-      )
-    }
   })
 }

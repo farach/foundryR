@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' foundry_set_image_endpoint("https://my-dalle-resource.cognitiveservices.azure.com")
+#' foundry_set_image_endpoint("AZURE_FOUNDRY_IMAGE_ENDPOINT")
 #' }
 foundry_set_image_endpoint <- function(endpoint) {
  if (is.null(endpoint) || endpoint == "") {
@@ -149,16 +149,29 @@ foundry_get_image_key <- function(key = NULL, required = FALSE) {
 #'   Defaults to the environment variable `AZURE_FOUNDRY_IMAGE_MODEL`.
 #' @param n Integer. Number of images to generate (1-10). Default: 1.
 #' @param size Character. The size of the generated image(s).
-#'   One of: "1024x1024" (default), "1792x1024", "1024x1792", "512x512", "256x256".
-#'   Note: Not all sizes are supported by all DALL-E versions.
-#' @param quality Character. The quality of the image. One of: "standard" (default), "hd".
-#'   HD quality provides finer details and greater consistency. Only supported by DALL-E 3.
-#' @param style Character. The style of the generated image. One of: "vivid" (default), "natural".
-#'   Vivid creates hyper-real and dramatic images. Natural produces more realistic,
-#'   less hyper-real images. Only supported by DALL-E 3.
-#' @param response_format Character. The format of the generated images.
-#'   One of: "url" (default) or "b64_json" (base64-encoded).
+#'   Modern v1 image models support `"auto"`, `"1024x1024"`, `"1536x1024"`,
+#'   and `"1024x1536"`. DALL-E deployments also support older sizes such as
+#'   `"1792x1024"`, `"1024x1792"`, `"512x512"`, and `"256x256"`.
+#' @param quality Character. The quality of the image. Modern v1 models support
+#'   `"auto"`, `"low"`, `"medium"`, and `"high"`. DALL-E 3 supports
+#'   `"standard"` and `"hd"`.
+#' @param style Character. Optional DALL-E 3 style, `"vivid"` or `"natural"`.
+#' @param response_format Character. Optional DALL-E response format, `"url"`
+#'   or `"b64_json"`. This is not supported by `gpt-image-1`-series models,
+#'   which return base64 image data.
+#' @param output_format Character. Optional v1 image output format, `"png"`,
+#'   `"jpeg"`, or `"webp"`.
+#' @param output_compression Integer. Optional v1 compression level from 0 to
+#'   100 for `"jpeg"` or `"webp"` output.
+#' @param background Character. Optional v1 background mode: `"transparent"`,
+#'   `"opaque"`, or `"auto"`.
+#' @param moderation Character. Optional v1 moderation level: `"low"` or
+#'   `"auto"`.
+#' @param api Character. API shape to use. `"v1"` uses
+#'   `/openai/v1/images/generations`; `"deployment"` uses the legacy
+#'   `/openai/deployments/{deployment}/images/generations` endpoint.
 #' @param api_key Character. Optional API key override.
+#' @param token Character. Optional bearer token override.
 #' @param api_version Character. Optional API version override.
 #'
 #' @return A tibble with columns:
@@ -167,14 +180,18 @@ foundry_get_image_key <- function(key = NULL, required = FALSE) {
 #'     \item{revised_prompt}{Character. DALL-E's interpretation/revision of the prompt (DALL-E 3 only).}
 #'     \item{url}{Character. URL to the generated image (NA if response_format is "b64_json").}
 #'     \item{b64_json}{Character. Base64-encoded image data (NA if response_format is "url").}
+#'     \item{output_format}{Character. Requested or returned output format.}
 #'     \item{created}{POSIXct. Timestamp when the image was created.}
+#'     \item{raw_image}{List. Raw image object returned by the service.}
 #'   }
 #'
 #' @details
-#' **Model Requirements**: The `model` parameter must be a deployment of a DALL-E model
-#' (e.g., dall-e-2, dall-e-3). Chat models cannot generate images.
+#' **Model Requirements**: The `model` parameter must be an image-capable
+#' deployment such as a DALL-E or `gpt-image-1`-series deployment. Chat models
+#' cannot generate images.
 #'
 #' **Size Availability**:
+#' - gpt-image-1 series: auto, 1024x1024, 1536x1024, 1024x1536
 #' - DALL-E 3: 1024x1024, 1792x1024, 1024x1792
 #' - DALL-E 2: 256x256, 512x512, 1024x1024
 #'
@@ -214,11 +231,17 @@ foundry_get_image_key <- function(key = NULL, required = FALSE) {
 foundry_image <- function(prompt,
                           model = NULL,
                           n = 1L,
-                          size = c("1024x1024", "1792x1024", "1024x1792", "512x512", "256x256"),
-                          quality = c("standard", "hd"),
-                          style = c("vivid", "natural"),
-                          response_format = c("url", "b64_json"),
+                          size = "1024x1024",
+                          quality = NULL,
+                          style = NULL,
+                          response_format = NULL,
+                          output_format = NULL,
+                          output_compression = NULL,
+                          background = NULL,
+                          moderation = NULL,
+                          api = c("v1", "deployment"),
                           api_key = NULL,
+                          token = NULL,
                           api_version = NULL) {
 
   # Get model/deployment
@@ -247,47 +270,80 @@ foundry_image <- function(prompt,
     cli::cli_abort("{.arg n} must be an integer between 1 and 10.")
   }
 
-  # Match arguments
-  size <- match.arg(size)
-  quality <- match.arg(quality)
-  style <- match.arg(style)
-  response_format <- match.arg(response_format)
-
-  # Build request body
-  body <- list(
-    prompt = prompt,
-    n = n,
+  api <- match.arg(api)
+  foundry_validate_image_options(
     size = size,
     quality = quality,
     style = style,
-    response_format = response_format
+    response_format = response_format,
+    output_format = output_format,
+    background = background,
+    moderation = moderation
   )
 
-  # Get image-specific endpoint and key (with fallback to main credentials)
+  # Build request body
+  body <- list(
+    model = model,
+    prompt = prompt,
+    n = n,
+    size = size
+  )
+  if (!is.null(quality)) body$quality <- quality
+  if (!is.null(style)) body$style <- style
+  if (!is.null(response_format)) body$response_format <- response_format
+  if (!is.null(output_format)) body$output_format <- output_format
+  if (!is.null(output_compression)) {
+    output_compression <- as.integer(output_compression)
+    if (is.na(output_compression) || output_compression < 0L ||
+        output_compression > 100L) {
+      cli::cli_abort("{.arg output_compression} must be between 0 and 100.")
+    }
+    body$output_compression <- output_compression
+  }
+  if (!is.null(background)) body$background <- background
+  if (!is.null(moderation)) body$moderation <- moderation
+
+  # Get image-specific endpoint and use image credentials without overriding
+  # shared token/key precedence.
   base_url <- foundry_get_image_endpoint(required = TRUE)
-  api_key <- foundry_get_image_key(key = api_key, required = TRUE)
-  api_version <- api_version %||% foundry_get_api_version()
 
-  # Construct URL for image generation
-  url <- paste0(
-    base_url,
-    "/openai/deployments/",
-    model,
-    "/images/generations"
-  )
+  if (identical(api, "v1")) {
+    req <- foundry_build_v1_request(
+      path = "images/generations",
+      body = body,
+      method = "POST",
+      api_key = api_key,
+      token = token,
+      endpoint = base_url,
+      api_version = api_version %||% "preview",
+      key_getter = foundry_get_image_key
+    )
+  } else {
+    body$model <- NULL
+    api_version <- api_version %||% foundry_get_api_version()
+    url <- paste0(
+      base_url,
+      "/openai/deployments/",
+      model,
+      "/images/generations"
+    )
 
-  # Build request
-  req <- httr2::request(url) %>%
-    httr2::req_url_query(`api-version` = api_version) %>%
-    httr2::req_headers(`api-key` = api_key) %>%
-    httr2::req_body_json(body) %>%
-    httr2::req_retry(max_tries = 3, backoff = ~ 2) %>%
-    httr2::req_error(body = foundry_error_body)
+    req <- httr2::request(url) %>%
+      httr2::req_url_query(`api-version` = api_version) %>%
+      foundry_authenticate_request(
+        api_key = api_key,
+        token = token,
+        key_getter = foundry_get_image_key
+      ) %>%
+      httr2::req_body_json(body) %>%
+      httr2::req_retry(max_tries = 3, backoff = ~ 2) %>%
+      httr2::req_error(body = foundry_error_body)
+  }
 
   result <- foundry_perform(req)
 
   # Parse response into tibble
-  foundry_parse_image_response(result, prompt, response_format)
+  foundry_parse_image_response(result, prompt, response_format, output_format)
 }
 
 
@@ -301,7 +357,10 @@ foundry_image <- function(prompt,
 #'
 #' @return A tibble with image response data.
 #' @keywords internal
-foundry_parse_image_response <- function(result, original_prompt, response_format) {
+foundry_parse_image_response <- function(result,
+                                         original_prompt,
+                                         response_format = NULL,
+                                         output_format = NULL) {
   # Convert Unix timestamp to POSIXct
   created_time <- as.POSIXct(result$created, origin = "1970-01-01", tz = "UTC")
 
@@ -310,13 +369,162 @@ foundry_parse_image_response <- function(result, original_prompt, response_forma
     tibble::tibble(
       prompt = original_prompt,
       revised_prompt = img$revised_prompt %||% NA_character_,
-      url = if (response_format == "url") img$url %||% NA_character_ else NA_character_,
-      b64_json = if (response_format == "b64_json") img$b64_json %||% NA_character_ else NA_character_,
-      created = created_time
+      url = img$url %||% NA_character_,
+      b64_json = img$b64_json %||% NA_character_,
+      output_format = output_format %||% img$output_format %||% NA_character_,
+      created = created_time,
+      raw_image = list(img)
     )
   })
 
   images
+}
+
+
+#' Edit an image with Microsoft Foundry
+#'
+#' Use the v1 preview image edits endpoint to edit one or more input images with
+#' a text prompt.
+#'
+#' @param image Character vector of local image paths.
+#' @param prompt Character. Edit instruction.
+#' @param model Character. Image model deployment name.
+#' @param mask Character. Optional local mask image path.
+#' @param n Integer. Number of images to generate.
+#' @param size Character. Output image size.
+#' @param quality Character. Optional quality value.
+#' @param output_format Character. Optional output format, such as `"png"`,
+#'   `"jpeg"`, or `"webp"`.
+#' @param background Character. Optional background mode.
+#' @param api_key Character. Optional API key override.
+#' @param token Character. Optional bearer token override.
+#' @param api_version Character. Optional API version. Defaults to `"preview"`.
+#'
+#' @return A tibble with edited image data and metadata.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' foundry_image_edit("input.png", "Make the sky more dramatic", model = "gpt-image-1")
+#' }
+foundry_image_edit <- function(image,
+                               prompt,
+                               model = NULL,
+                               mask = NULL,
+                               n = 1L,
+                               size = "1024x1024",
+                               quality = NULL,
+                               output_format = NULL,
+                               background = NULL,
+                               api_key = NULL,
+                               token = NULL,
+                               api_version = "preview") {
+  if (!is.character(image) || length(image) < 1L || anyNA(image)) {
+    cli::cli_abort("{.arg image} must be one or more local image paths.")
+  }
+  missing_images <- image[!file.exists(image)]
+  if (length(missing_images) > 0L) {
+    cli::cli_abort("Image file does not exist: {.file {missing_images[[1]]}}.")
+  }
+  foundry_check_character_scalar(prompt, "prompt")
+  model <- foundry_resolve_image_model(model)
+  n <- as.integer(n)
+  if (is.na(n) || n < 1L || n > 10L) {
+    cli::cli_abort("{.arg n} must be an integer between 1 and 10.")
+  }
+  if (!is.null(mask) && !file.exists(mask)) {
+    cli::cli_abort("Mask file does not exist: {.file {mask}}.")
+  }
+
+  base_url <- foundry_get_image_endpoint(required = TRUE)
+  req <- foundry_build_v1_request(
+    path = "images/edits",
+    method = "POST",
+    api_key = api_key,
+    token = token,
+    endpoint = base_url,
+    api_version = api_version,
+    key_getter = foundry_get_image_key
+  )
+
+  multipart <- list(
+    prompt = prompt,
+    model = model,
+    n = as.character(n),
+    size = size
+  )
+  if (length(image) == 1L) {
+    multipart$image <- curl::form_file(image)
+  } else {
+    image_parts <- lapply(image, curl::form_file)
+    names(image_parts) <- rep("image[]", length(image_parts))
+    multipart <- c(multipart, image_parts)
+  }
+  if (!is.null(mask)) multipart$mask <- curl::form_file(mask)
+  if (!is.null(quality)) multipart$quality <- quality
+  if (!is.null(output_format)) multipart$output_format <- output_format
+  if (!is.null(background)) multipart$background <- background
+
+  req <- do.call(httr2::req_body_multipart, c(list(req), multipart))
+  result <- foundry_perform(req)
+  foundry_parse_image_response(result, prompt, NULL, output_format)
+}
+
+
+foundry_validate_image_options <- function(size,
+                                           quality,
+                                           style,
+                                           response_format,
+                                           output_format,
+                                           background,
+                                           moderation) {
+  foundry_match_choice(size, c(
+    "auto", "1024x1024", "1536x1024", "1024x1536", "256x256",
+    "512x512", "1792x1024", "1024x1792"
+  ), "size")
+  if (!is.null(quality)) {
+    foundry_match_choice(quality, c(
+      "auto", "standard", "hd", "low", "medium", "high"
+    ), "quality")
+  }
+  if (!is.null(style)) foundry_match_choice(style, c("vivid", "natural"), "style")
+  if (!is.null(response_format)) {
+    foundry_match_choice(response_format, c("url", "b64_json"), "response_format")
+  }
+  if (!is.null(output_format)) {
+    foundry_match_choice(output_format, c("png", "jpeg", "webp"), "output_format")
+  }
+  if (!is.null(background)) {
+    foundry_match_choice(background, c("transparent", "opaque", "auto"), "background")
+  }
+  if (!is.null(moderation)) {
+    foundry_match_choice(moderation, c("low", "auto"), "moderation")
+  }
+  invisible(TRUE)
+}
+
+
+foundry_match_choice <- function(value, choices, arg) {
+  if (!is.character(value) || length(value) != 1L || is.na(value) ||
+      !value %in% choices) {
+    cli::cli_abort("{.arg {arg}} must be one of {.val {choices}}.")
+  }
+  invisible(value)
+}
+
+
+foundry_resolve_image_model <- function(model) {
+  if (is.null(model)) {
+    model <- Sys.getenv("AZURE_FOUNDRY_IMAGE_MODEL")
+    if (model == "") {
+      cli::cli_abort(c(
+        "Image model/deployment name is required.",
+        "i" = "Specify {.arg model} or set the {.envvar AZURE_FOUNDRY_IMAGE_MODEL} environment variable."
+      ))
+    }
+  }
+  foundry_check_character_scalar(model, "model")
+  model
 }
 
 

@@ -2,33 +2,40 @@
 % Please edit documentation in R/models.R
 \name{foundry_models}
 \alias{foundry_models}
-\title{List Available Models/Deployments}
+\title{List or retrieve available model deployments}
 \usage{
-foundry_models(model = NULL, api_key = NULL, api_version = NULL)
+foundry_models(
+  model = NULL,
+  api_key = NULL,
+  token = NULL,
+  endpoint = NULL,
+  api_version = NULL
+)
 }
 \arguments{
-\item{model}{Character. Optional. A specific deployment name to check.}
+\item{model}{Character. Optional deployment name to retrieve.}
 
 \item{api_key}{Character. Optional API key override.}
 
-\item{api_version}{Character. Optional API version override.}
+\item{token}{Character. Optional bearer token override.}
+
+\item{endpoint}{Character. Optional endpoint override.}
+
+\item{api_version}{Character. Optional API version query value.}
 }
 \value{
-A tibble with deployment information, or a message about available
-functionality.
+A tibble with model or deployment metadata and the raw model object
+in a list-column.
 }
 \description{
-Retrieve information about models deployed in your Azure AI Foundry resource.
-}
-\details{
-Note: Azure AI Foundry doesn't have a direct "list deployments" API endpoint
-in the same way that Hugging Face does. This function provides a placeholder
-that can be extended when such an API becomes available, or can be used to
-validate a specific deployment exists.
+List model deployments available through the Microsoft Foundry v1 data-plane
+API, or retrieve metadata for one deployment by name. Use the deployment name
+shown in the Foundry portal as the \code{model} value in \code{foundry_response()} and
+other v1 helpers.
 }
 \examples{
 \dontrun{
-# Check if a deployment exists by making a minimal request
-foundry_models("gpt-4")
+foundry_models()
+foundry_models("gpt-4.1")
 }
 }

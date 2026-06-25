@@ -4,7 +4,12 @@
 \alias{foundry_parse_image_response}
 \title{Parse Image Generation Response}
 \usage{
-foundry_parse_image_response(result, original_prompt, response_format)
+foundry_parse_image_response(
+  result,
+  original_prompt,
+  response_format = NULL,
+  output_format = NULL
+)
 }
 \arguments{
 \item{result}{List. The parsed JSON response.}

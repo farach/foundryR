@@ -1,0 +1,125 @@
+---
+title: "Image and Video Generation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Image and Video Generation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(foundryR)
+```
+
+foundryR supports current v1 preview image generation and editing parameters,
+while keeping the legacy deployment-style image endpoint available with
+`api = "deployment"`.
+
+## Generate images
+
+```{r image-call, eval = FALSE}
+image <- foundry_image(
+  "A clean data science illustration of survey responses becoming a chart",
+  model = "gpt-image-1",
+  size = "1024x1024",
+  output_format = "png",
+  background = "opaque"
+)
+```
+
+```{r image-output}
+image <- tibble::tibble(
+  prompt = "A clean data science illustration of survey responses becoming a chart",
+  revised_prompt = NA_character_,
+  url = NA_character_,
+  b64_json = "<base64 image bytes>",
+  output_format = "png",
+  created = as.POSIXct("2026-06-24 12:00:00", tz = "UTC")
+)
+
+image[, c("prompt", "url", "b64_json", "output_format", "created")]
+```
+
+Save generated image bytes with `foundry_save_image()`:
+
+```{r save-image, eval = FALSE}
+foundry_save_image(image, "survey-chart.png")
+```
+
+## Edit images
+
+```{r edit-call, eval = FALSE}
+edited <- foundry_image_edit(
+  image = "survey-chart.png",
+  prompt = "Use a blue Microsoft-inspired color palette.",
+  model = "gpt-image-1",
+  output_format = "png"
+)
+```
+
+```{r edit-output}
+edited <- tibble::tibble(
+  prompt = "Use a blue Microsoft-inspired color palette.",
+  revised_prompt = NA_character_,
+  url = NA_character_,
+  b64_json = "<base64 edited image bytes>",
+  output_format = "png",
+  created = as.POSIXct("2026-06-24 12:05:00", tz = "UTC")
+)
+
+edited[, c("prompt", "b64_json", "output_format", "created")]
+```
+
+## Start a video generation job
+
+Video generation is a preview, long-running workflow. Create a job, poll it, and
+download content after a generation succeeds.
+
+```{r video-call, eval = FALSE}
+job <- foundry_video_job_create(
+  "A short animation of dots clustering into groups",
+  model = "my-video-model",
+  width = 1280,
+  height = 720,
+  n_seconds = 5
+)
+
+foundry_video_job_get(job$job_id)
+```
+
+```{r video-output}
+job <- tibble::tibble(
+  job_id = "videojob_abc123",
+  status = "running",
+  model = "my-video-model",
+  prompt = "A short animation of dots clustering into groups",
+  width = 1280L,
+  height = 720L,
+  n_seconds = 5L,
+  n_variants = 1L,
+  created_at = as.POSIXct("2026-06-24 12:10:00", tz = "UTC")
+)
+
+job
+```
+
+```{r video-download, eval = FALSE}
+foundry_video_download(
+  generation_id = "vidgen_abc123",
+  path = "cluster-animation.mp4"
+)
+```
+
+## When to use these APIs
+
+- Generate research stimuli or report illustrations with `foundry_image()`.
+- Iterate on existing figures or image stimuli with `foundry_image_edit()`.
+- Treat video as experimental: keep prompts, job IDs, and output files together
+  so generated assets remain reproducible and auditable.

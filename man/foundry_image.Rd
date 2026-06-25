@@ -8,11 +8,17 @@ foundry_image(
   prompt,
   model = NULL,
   n = 1L,
-  size = c("1024x1024", "1792x1024", "1024x1792", "512x512", "256x256"),
-  quality = c("standard", "hd"),
-  style = c("vivid", "natural"),
-  response_format = c("url", "b64_json"),
+  size = "1024x1024",
+  quality = NULL,
+  style = NULL,
+  response_format = NULL,
+  output_format = NULL,
+  output_compression = NULL,
+  background = NULL,
+  moderation = NULL,
+  api = c("v1", "deployment"),
   api_key = NULL,
+  token = NULL,
   api_version = NULL
 )
 }
@@ -25,20 +31,39 @@ Defaults to the environment variable \code{AZURE_FOUNDRY_IMAGE_MODEL}.}
 \item{n}{Integer. Number of images to generate (1-10). Default: 1.}
 
 \item{size}{Character. The size of the generated image(s).
-One of: "1024x1024" (default), "1792x1024", "1024x1792", "512x512", "256x256".
-Note: Not all sizes are supported by all DALL-E versions.}
+Modern v1 image models support \code{"auto"}, \code{"1024x1024"}, \code{"1536x1024"},
+and \code{"1024x1536"}. DALL-E deployments also support older sizes such as
+\code{"1792x1024"}, \code{"1024x1792"}, \code{"512x512"}, and \code{"256x256"}.}
 
-\item{quality}{Character. The quality of the image. One of: "standard" (default), "hd".
-HD quality provides finer details and greater consistency. Only supported by DALL-E 3.}
+\item{quality}{Character. The quality of the image. Modern v1 models support
+\code{"auto"}, \code{"low"}, \code{"medium"}, and \code{"high"}. DALL-E 3 supports
+\code{"standard"} and \code{"hd"}.}
 
-\item{style}{Character. The style of the generated image. One of: "vivid" (default), "natural".
-Vivid creates hyper-real and dramatic images. Natural produces more realistic,
-less hyper-real images. Only supported by DALL-E 3.}
+\item{style}{Character. Optional DALL-E 3 style, \code{"vivid"} or \code{"natural"}.}
 
-\item{response_format}{Character. The format of the generated images.
-One of: "url" (default) or "b64_json" (base64-encoded).}
+\item{response_format}{Character. Optional DALL-E response format, \code{"url"}
+or \code{"b64_json"}. This is not supported by \code{gpt-image-1}-series models,
+which return base64 image data.}
+
+\item{output_format}{Character. Optional v1 image output format, \code{"png"},
+\code{"jpeg"}, or \code{"webp"}.}
+
+\item{output_compression}{Integer. Optional v1 compression level from 0 to
+100 for \code{"jpeg"} or \code{"webp"} output.}
+
+\item{background}{Character. Optional v1 background mode: \code{"transparent"},
+\code{"opaque"}, or \code{"auto"}.}
+
+\item{moderation}{Character. Optional v1 moderation level: \code{"low"} or
+\code{"auto"}.}
+
+\item{api}{Character. API shape to use. \code{"v1"} uses
+\verb{/openai/v1/images/generations}; \code{"deployment"} uses the legacy
+\verb{/openai/deployments/\{deployment\}/images/generations} endpoint.}
 
 \item{api_key}{Character. Optional API key override.}
+
+\item{token}{Character. Optional bearer token override.}
 
 \item{api_version}{Character. Optional API version override.}
 }
@@ -49,7 +74,9 @@ A tibble with columns:
 \item{revised_prompt}{Character. DALL-E's interpretation/revision of the prompt (DALL-E 3 only).}
 \item{url}{Character. URL to the generated image (NA if response_format is "b64_json").}
 \item{b64_json}{Character. Base64-encoded image data (NA if response_format is "url").}
+\item{output_format}{Character. Requested or returned output format.}
 \item{created}{POSIXct. Timestamp when the image was created.}
+\item{raw_image}{List. Raw image object returned by the service.}
 }
 }
 \description{
@@ -58,11 +85,13 @@ tibble with the generated image URLs or base64-encoded data, along with
 metadata about the generation.
 }
 \details{
-\strong{Model Requirements}: The \code{model} parameter must be a deployment of a DALL-E model
-(e.g., dall-e-2, dall-e-3). Chat models cannot generate images.
+\strong{Model Requirements}: The \code{model} parameter must be an image-capable
+deployment such as a DALL-E or \code{gpt-image-1}-series deployment. Chat models
+cannot generate images.
 
 \strong{Size Availability}:
 \itemize{
+\item gpt-image-1 series: auto, 1024x1024, 1536x1024, 1024x1536
 \item DALL-E 3: 1024x1024, 1792x1024, 1024x1792
 \item DALL-E 2: 256x256, 512x512, 1024x1024
 }

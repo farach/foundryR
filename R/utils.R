@@ -6,6 +6,7 @@
 #' @param endpoint_path Character. The API endpoint path (e.g., "chat/completions").
 #' @param body List. The request body.
 #' @param api_key Character. Optional API key override.
+#' @param token Character. Optional bearer token override.
 #' @param api_version Character. Optional API version override.
 #'
 #' @return An httr2 request object (not yet performed).
@@ -14,10 +15,10 @@ foundry_build_request <- function(deployment,
                                    endpoint_path,
                                    body,
                                    api_key = NULL,
+                                   token = NULL,
                                    api_version = NULL) {
 
   base_url <- foundry_get_endpoint(required = TRUE)
-  api_key <- foundry_get_key(key = api_key, required = TRUE)
   api_version <- foundry_get_api_version(api_version)
 
   # Construct full URL
@@ -32,7 +33,7 @@ foundry_build_request <- function(deployment,
 
   httr2::request(url) %>%
     httr2::req_url_query(`api-version` = api_version) %>%
-    httr2::req_headers(`api-key` = api_key) %>%
+    foundry_authenticate_request(api_key = api_key, token = token) %>%
     httr2::req_body_json(body) %>%
     httr2::req_retry(max_tries = 3, backoff = ~ 2) %>%
     httr2::req_error(body = foundry_error_body)
@@ -48,9 +49,12 @@ foundry_build_request <- function(deployment,
 #' @param body List. Optional request body.
 #' @param method Character. HTTP method. Default: `"POST"`.
 #' @param api_key Character. Optional API key override.
+#' @param token Character. Optional bearer token override.
 #' @param endpoint Character. Optional endpoint override.
 #' @param api_version Character. Optional API version query value. Usually not
 #'   required for v1 endpoints.
+#' @param key_getter Function used to resolve API keys. Defaults to
+#'   `foundry_get_key()`.
 #'
 #' @return An httr2 request object (not yet performed).
 #' @keywords internal
@@ -58,18 +62,23 @@ foundry_build_v1_request <- function(path,
                                      body = NULL,
                                      method = "POST",
                                      api_key = NULL,
+                                     token = NULL,
                                      endpoint = NULL,
-                                     api_version = NULL) {
+                                     api_version = NULL,
+                                     key_getter = foundry_get_key) {
 
   base_url <- foundry_get_endpoint(endpoint = endpoint, required = TRUE)
-  api_key <- foundry_get_key(key = api_key, required = TRUE)
 
   path <- sub("^/+", "", path)
   url <- paste0(base_url, "/openai/v1/", path)
 
   req <- httr2::request(url) %>%
     httr2::req_method(method) %>%
-    httr2::req_headers(`api-key` = api_key) %>%
+    foundry_authenticate_request(
+      api_key = api_key,
+      token = token,
+      key_getter = key_getter
+    ) %>%
     httr2::req_retry(max_tries = 3, backoff = ~ 2) %>%
     httr2::req_error(body = foundry_error_body)
 
@@ -81,6 +90,56 @@ foundry_build_v1_request <- function(path,
   if (!is.null(body)) {
     req <- req %>%
       httr2::req_body_json(body)
+  }
+
+  req
+}
+
+
+foundry_authenticate_request <- function(req,
+                                         api_key = NULL,
+                                         token = NULL,
+                                         required = TRUE,
+                                         key_header = "api-key",
+                                         key_getter = foundry_get_key,
+                                         token_getter = foundry_get_token) {
+  explicit_token <- NULL
+  if (!is.null(token)) {
+    explicit_token <- token_getter(token = token, required = FALSE)
+  }
+  if (!is.null(explicit_token)) {
+    return(req %>%
+      httr2::req_headers(Authorization = paste("Bearer", explicit_token)))
+  }
+
+  explicit_key <- NULL
+  if (!is.null(api_key)) {
+    explicit_key <- key_getter(key = api_key, required = FALSE)
+  }
+  if (!is.null(explicit_key)) {
+    headers <- list(explicit_key)
+    names(headers) <- key_header
+    return(do.call(httr2::req_headers, c(list(req), headers)))
+  }
+
+  env_token <- token_getter(token = NULL, required = FALSE)
+  if (!is.null(env_token)) {
+    return(req %>%
+      httr2::req_headers(Authorization = paste("Bearer", env_token)))
+  }
+
+  env_key <- key_getter(key = NULL, required = FALSE)
+  if (!is.null(env_key)) {
+    headers <- list(env_key)
+    names(headers) <- key_header
+    return(do.call(httr2::req_headers, c(list(req), headers)))
+  }
+
+  if (required) {
+    cli::cli_abort(c(
+      "Azure AI Foundry authentication is required.",
+      "i" = "Set an API key with {.code foundry_set_key()} or set a bearer token with {.code foundry_set_token()}."
+    ))
   }
 
   req
@@ -170,6 +229,29 @@ foundry_perform <- function(req) {
 }
 
 
+foundry_perform_raw <- function(req) {
+  resp <- httr2::req_perform(req)
+  httr2::resp_body_raw(resp)
+}
+
+
+foundry_write_raw_response <- function(req, path, overwrite = FALSE) {
+  if (file.exists(path) && !isTRUE(overwrite)) {
+    cli::cli_abort(c(
+      "File already exists: {.file {path}}.",
+      "i" = "Use {.code overwrite = TRUE} to replace it."
+    ))
+  }
+
+  bytes <- foundry_perform_raw(req)
+  writeBin(bytes, path)
+  tibble::tibble(
+    path = normalizePath(path, winslash = "/", mustWork = FALSE),
+    bytes = length(bytes)
+  )
+}
+
+
 #' Warn if Model Looks Like a Chat Model
 #'
 #' Internal function to warn users if they appear to be using a chat model
@@ -223,4 +305,14 @@ warn_if_chat_model <- function(model, calling_fn = "foundry_embed") {
   }
 
   invisible(NULL)
+}
+
+
+foundry_multipart_add <- function(parts, name, values) {
+  if (is.null(values)) {
+    return(parts)
+  }
+  values <- as.list(as.character(values))
+  names(values) <- rep(name, length(values))
+  c(parts, values)
 }

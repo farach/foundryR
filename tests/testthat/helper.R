@@ -27,6 +27,8 @@ skip_if_no_model <- function(env_var = "AZURE_FOUNDRY_MODEL") {
 setup_mock_env <- function(env = parent.frame()) {
   withr::local_envvar(
     AZURE_FOUNDRY_KEY = "test-key-12345",
+    AZURE_FOUNDRY_TOKEN = "",
+    AZURE_OPENAI_TOKEN = "",
     AZURE_FOUNDRY_ENDPOINT = "https://test-resource.openai.azure.com",
     AZURE_FOUNDRY_MODEL = "gpt-4-test",
     AZURE_FOUNDRY_EMBED_MODEL = "text-embedding-ada-002",
@@ -198,6 +200,35 @@ mock_httr2_response <- function(body, status_code = 200L,
   )
 }
 
+mock_httr2_raw_response <- function(body = charToRaw("binary"),
+                                    status_code = 200L,
+                                    url = "https://mock-api.azure.com",
+                                    content_type = "application/octet-stream") {
+  httr2::response(
+    status_code = status_code,
+    url = url,
+    headers = list(`content-type` = content_type),
+    body = body
+  )
+}
+
+expect_valid_multipart_request <- function(req) {
+  testthat::expect_equal(req$body$type, "multipart")
+  valid <- vapply(req$body$data, function(field) {
+    is.character(field) ||
+      inherits(field, "form_file") ||
+      inherits(field, "form_data")
+  }, logical(1))
+  testthat::expect_true(
+    all(valid),
+    info = paste(
+      "Unsupported multipart fields:",
+      paste(names(req$body$data)[!valid], collapse = ", ")
+    )
+  )
+  invisible(req)
+}
+
 #' Mock an HTTP request and return a fixture response
 #'
 #' This function uses local_mocked_bindings to replace httr2::req_perform
@@ -288,6 +319,8 @@ mock_shield_response <- function(user_attack = FALSE, doc_attacks = NULL) {
 setup_image_env <- function(env = parent.frame()) {
   withr::local_envvar(
     AZURE_FOUNDRY_IMAGE_KEY = "test-image-key-12345",
+    AZURE_FOUNDRY_TOKEN = "",
+    AZURE_OPENAI_TOKEN = "",
     AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.cognitiveservices.azure.com",
     AZURE_FOUNDRY_IMAGE_MODEL = "dall-e-3",
     .local_envir = env

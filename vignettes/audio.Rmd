@@ -1,0 +1,150 @@
+---
+title: "Audio Workflows with Microsoft Foundry"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Audio Workflows with Microsoft Foundry}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(foundryR)
+```
+
+Audio is one of the most useful Foundry additions for researchers. You can
+transcribe interviews, lectures, field recordings, meetings, and focus groups,
+then keep the result in a tibble with segment-level timing for downstream
+coding or analysis.
+
+## Configure Speech in Foundry Tools
+
+MAI-Transcribe models are exposed through the LLM Speech API. Configure the
+Speech resource once per session:
+
+```{r configure-speech, eval = FALSE}
+foundry_set_speech_endpoint("AZURE_FOUNDRY_SPEECH_ENDPOINT")
+foundry_set_speech_key("your-speech-key")
+```
+
+For keyless authentication, set a bearer token instead of a key:
+
+```{r configure-token, eval = FALSE}
+foundry_set_token("your-entra-id-access-token")
+```
+
+## Transcribe an audio file
+
+```{r transcribe-call, eval = FALSE}
+transcript <- foundry_transcribe(
+  "interview.mp3",
+  model = "mai-transcribe-1.5",
+  locales = "en-US",
+  phrase_list = c("foundryR", "tidymodels")
+)
+```
+
+A successful transcription returns one row per file. The `phrases` column is a
+list-column with segment timing.
+
+```{r transcribe-output}
+phrases <- tibble::tibble(
+  text = c(
+    "We used foundryR to transcribe the interview.",
+    "Then we coded the responses in R."
+  ),
+  locale = c("en-us", "en-us"),
+  offset_ms = c(0L, 3280L),
+  duration_ms = c(3120L, 2600L),
+  confidence = c(0, 0),
+  speaker = c(NA_character_, NA_character_),
+  words = list(list(), list())
+)
+
+transcript <- tibble::tibble(
+  file = "interview.mp3",
+  task = "transcribe",
+  model = "mai-transcribe-1.5",
+  text = paste(phrases$text, collapse = " "),
+  duration_ms = 5880L,
+  language = "en-us",
+  phrases = list(phrases)
+)
+
+transcript[, c("file", "task", "model", "text", "duration_ms")]
+head(transcript$phrases[[1]])
+```
+
+## Translate multilingual recordings
+
+Use `foundry_translate_audio()` when you want an analysis corpus in a common
+language.
+
+```{r translate-call, eval = FALSE}
+translation <- foundry_translate_audio(
+  "interview-es.mp3",
+  target_language = "en",
+  prompt = "Use concise research-note style."
+)
+```
+
+```{r translate-output}
+translation <- tibble::tibble(
+  file = "interview-es.mp3",
+  task = "translate",
+  model = NA_character_,
+  text = "The participant described the workflow as fast and easy to learn.",
+  duration_ms = 4210L,
+  language = "en",
+  phrases = list(tibble::tibble(
+    text = "The participant described the workflow as fast and easy to learn.",
+    locale = "en",
+    offset_ms = 0L,
+    duration_ms = 4210L,
+    confidence = 0,
+    speaker = NA_character_,
+    words = list(list())
+  ))
+)
+
+translation[, c("file", "task", "text", "duration_ms")]
+```
+
+## Synthesize speech
+
+`foundry_speak()` writes binary audio to disk and returns the file path and byte
+count. This is useful for experiment stimuli, accessibility assets, and demos.
+
+```{r speak-call, eval = FALSE}
+speech <- foundry_speak(
+  "Welcome to the study.",
+  model = "tts-1",
+  voice = "alloy",
+  path = "welcome.mp3"
+)
+```
+
+```{r speak-output}
+speech <- tibble::tibble(
+  path = "welcome.mp3",
+  bytes = 18432L,
+  model = "tts-1",
+  voice = "alloy",
+  format = "mp3"
+)
+
+speech
+```
+
+## Notes for researchers
+
+- Use `head(transcript$phrases[[1]])` before processing long recordings.
+- Keep raw audio out of your project repository; store transcripts and IDs.
+- MAI-Transcribe preview limitations include no diarization for MAI-Transcribe
+  models and no prompt tuning for MAI-Transcribe 1.0.

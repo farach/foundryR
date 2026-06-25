@@ -11,6 +11,7 @@
 #'   \describe{
 #'     \item{endpoint}{The configured endpoint URL, or NA if not set.}
 #'     \item{key_set}{Logical. TRUE if an API key is configured.}
+#'     \item{token_set}{Logical. TRUE if a bearer token is configured.}
 #'     \item{model_tested}{The deployment name tested, or NA if none.}
 #'     \item{api_ok}{Logical. TRUE if the API test succeeded, NA if not tested.}
 #'     \item{all_ok}{Logical. TRUE if all checks passed.}
@@ -31,6 +32,7 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
   results <- list(
     endpoint = NA_character_,
     key_set = FALSE,
+    token_set = FALSE,
     model_tested = NA_character_,
     api_ok = NA,
     all_ok = FALSE
@@ -46,7 +48,7 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
     if (verbose) {
       cli::cli_alert_danger("Endpoint not configured")
       cli::cli_bullets(c(
-        "i" = "Set with: {.code foundry_set_endpoint(\"https://your-resource.openai.azure.com\")}",
+        "i" = "Set with: {.code foundry_set_endpoint(\"AZURE_FOUNDRY_ENDPOINT\")}",
         "i" = "Or set environment variable: {.envvar AZURE_FOUNDRY_ENDPOINT}"
       ))
     }
@@ -69,23 +71,30 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
     }
   }
 
-  # Check API key
+  # Check authentication
   key <- Sys.getenv("AZURE_FOUNDRY_KEY")
-  if (key == "") {
+  token <- Sys.getenv("AZURE_FOUNDRY_TOKEN")
+  if (key == "" && token == "") {
     if (verbose) {
-      cli::cli_alert_danger("API key not configured")
+      cli::cli_alert_danger("Authentication not configured")
       cli::cli_bullets(c(
         "i" = "Set with: {.code foundry_set_key(\"your-api-key\")}",
+        "i" = "For keyless auth, set with: {.code foundry_set_token(\"your-token\")}",
         "i" = "Or set environment variable: {.envvar AZURE_FOUNDRY_KEY}",
         "i" = "Find your key in Azure Portal > Your Resource > Keys and Endpoint"
       ))
     }
   } else {
-    results$key_set <- TRUE
-    # Mask the key for display
-    masked <- paste0(substr(key, 1, 4), "...", substr(key, nchar(key) - 3, nchar(key)))
-    if (verbose) {
+    if (key != "") {
+      results$key_set <- TRUE
+      masked <- paste0(substr(key, 1, 4), "...", substr(key, nchar(key) - 3, nchar(key)))
+      if (verbose) {
       cli::cli_alert_success("API key: {masked}")
+      }
+    }
+    if (token != "") {
+      results$token_set <- TRUE
+      if (verbose) cli::cli_alert_success("Bearer token: configured")
     }
   }
 
@@ -99,7 +108,8 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
     if (verbose) {
       cli::cli_alert_info("No default chat model set")
       cli::cli_bullets(c(
-        "i" = "Set {.envvar AZURE_FOUNDRY_MODEL} to avoid specifying {.arg model} each time"
+        "i" = "Set {.envvar AZURE_FOUNDRY_MODEL} to avoid specifying {.arg model} each time",
+        "i" = "Use {.code foundry_models()} to list deployments available through the v1 API"
       ))
     }
   } else {
@@ -129,7 +139,8 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
   }
 
   # Test API call if model provided and config is complete
-  if (!is.null(model) && results$key_set && !is.na(results$endpoint)) {
+  auth_ok <- results$key_set || results$token_set
+  if (!is.null(model) && auth_ok && !is.na(results$endpoint)) {
     if (verbose) {
       cli::cli_h2("API Connection Test")
       cli::cli_alert_info("Testing deployment: {.val {model}}")
@@ -161,7 +172,7 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
   }
 
   # Summary
-  results$all_ok <- results$key_set &&
+  results$all_ok <- auth_ok &&
     !is.na(results$endpoint) &&
     (is.na(results$api_ok) || isTRUE(results$api_ok))
 

@@ -17,6 +17,7 @@ Invisibly returns a list with configuration status:
 \describe{
 \item{endpoint}{The configured endpoint URL, or NA if not set.}
 \item{key_set}{Logical. TRUE if an API key is configured.}
+\item{token_set}{Logical. TRUE if a bearer token is configured.}
 \item{model_tested}{The deployment name tested, or NA if none.}
 \item{api_ok}{Logical. TRUE if the API test succeeded, NA if not tested.}
 \item{all_ok}{Logical. TRUE if all checks passed.}

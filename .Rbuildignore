@@ -1,6 +1,8 @@
 ^.*\.Rproj$
+^\.git$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^cran-comments\.md$
 ^README\.Rmd$
 ^CLAUDE\.md$
 ^_pkgdown\.yml$

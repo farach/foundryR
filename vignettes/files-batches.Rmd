@@ -1,0 +1,127 @@
+---
+title: "Files and Batch API Workflows"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Files and Batch API Workflows}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(foundryR)
+```
+
+The Batch API is useful when your research task has hundreds or thousands of
+independent rows: survey coding, abstract screening, entity extraction, document
+classification, or large-scale summarization.
+
+## Prepare JSONL locally
+
+`foundry_batch_requests()` runs locally. It converts a data frame into the JSON
+Lines shape expected by the Batch API.
+
+```{r batch-jsonl}
+survey <- data.frame(
+  id = c("resp-001", "resp-002", "resp-003"),
+  response = c(
+    "The workshop was clear and practical.",
+    "I liked the examples but wanted more time.",
+    "The setup instructions were confusing."
+  )
+)
+
+jsonl <- tempfile(fileext = ".jsonl")
+
+request_file <- foundry_batch_requests(
+  survey,
+  input = "response",
+  path = jsonl,
+  model = "gpt-4.1",
+  custom_id = "id",
+  body = list(
+    instructions = "Classify the response sentiment as positive, neutral, or negative."
+  )
+)
+
+request_file
+head(readLines(jsonl), 2)
+```
+
+## Upload and create a batch
+
+Uploading and batch creation call the Foundry service, so these chunks are not
+run while building the vignette.
+
+```{r upload-create, eval = FALSE}
+file <- foundry_file_upload(jsonl, purpose = "batch")
+
+batch <- foundry_batch_create(
+  input_file_id = file$file_id,
+  endpoint = "/v1/responses"
+)
+```
+
+The returned objects are tidy tibbles:
+
+```{r upload-create-output}
+file <- tibble::tibble(
+  file_id = "file_abc123",
+  filename = basename(jsonl),
+  purpose = "batch",
+  status = "processed",
+  bytes = file.size(jsonl),
+  created_at = as.POSIXct("2026-06-24 12:00:00", tz = "UTC")
+)
+
+batch <- tibble::tibble(
+  batch_id = "batch_abc123",
+  status = "validating",
+  endpoint = "/v1/responses",
+  input_file_id = file$file_id,
+  output_file_id = NA_character_,
+  error_file_id = NA_character_,
+  completion_window = "24h",
+  request_counts_total = 3L,
+  request_counts_completed = 0L,
+  request_counts_failed = 0L
+)
+
+file
+batch
+```
+
+## Poll and download results
+
+```{r poll-download, eval = FALSE}
+foundry_batch_get(batch$batch_id)
+
+foundry_file_download(
+  file_id = batch$output_file_id,
+  path = "batch-output.jsonl"
+)
+```
+
+Output files are JSONL too. Read a few lines first before parsing a large job:
+
+```{r output-shape}
+output_lines <- c(
+  '{"custom_id":"resp-001","response":{"body":{"output_text":"positive"}}}',
+  '{"custom_id":"resp-002","response":{"body":{"output_text":"neutral"}}}'
+)
+
+head(output_lines)
+```
+
+## Practical advice
+
+- Start with 10 to 20 rows and inspect the output before scaling up.
+- Use stable `custom_id` values so results join back to your data frame.
+- Store prompts and schema versions with your analysis code for reproducibility.
+- Download both output and error files when a batch finishes.

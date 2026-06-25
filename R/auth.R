@@ -90,3 +90,80 @@ foundry_get_key <- function(key = NULL, required = FALSE) {
 
   key
 }
+
+
+#' Set Azure AI Foundry Bearer Token
+#'
+#' Set a Microsoft Entra ID bearer token for keyless authentication. API keys
+#' remain supported, but Microsoft recommends keyless authentication for
+#' production workloads.
+#'
+#' @param token Character string containing a bearer token. Do not include the
+#'   `"Bearer "` prefix.
+#' @param store Logical. If `TRUE`, stores the token in `.Renviron` for future
+#'   sessions. Tokens expire, so this is usually only useful for local testing.
+#'
+#' @return Invisibly returns `TRUE` if the token was set successfully.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' foundry_set_token("eyJ0eXAiOiJKV1QiLCJhbGciOi...")
+#' }
+foundry_set_token <- function(token, store = FALSE) {
+  if (missing(token) || is.null(token) || !is.character(token) ||
+      length(token) != 1L || is.na(token) || token == "") {
+    cli::cli_abort("Bearer token cannot be empty.")
+  }
+
+  token <- sub("^Bearer\\s+", "", token, ignore.case = TRUE)
+  Sys.setenv(AZURE_FOUNDRY_TOKEN = token)
+  cli::cli_alert_success("Bearer token set for current session.")
+
+  if (store) {
+    renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
+    if (file.exists(renviron_path)) {
+      renviron_lines <- readLines(renviron_path, warn = FALSE)
+      renviron_lines <- renviron_lines[!grepl("^AZURE_FOUNDRY_TOKEN=", renviron_lines)]
+    } else {
+      renviron_lines <- character()
+    }
+    renviron_lines <- c(renviron_lines, paste0("AZURE_FOUNDRY_TOKEN=", token))
+    writeLines(renviron_lines, renviron_path)
+    cli::cli_alert_success("Bearer token stored in {.file {renviron_path}}")
+  }
+
+  invisible(TRUE)
+}
+
+
+#' Get Azure AI Foundry Bearer Token
+#'
+#' Retrieve a bearer token from the environment or a provided value.
+#'
+#' @param token Character. Optional token to use instead of environment
+#'   variables.
+#' @param required Logical. If `TRUE`, throws an error when no token is found.
+#'
+#' @return The bearer token string, or `NULL` if not found and not required.
+#' @keywords internal
+foundry_get_token <- function(token = NULL, required = FALSE) {
+  if (is.null(token)) {
+    token <- Sys.getenv("AZURE_FOUNDRY_TOKEN")
+    if (token == "") token <- Sys.getenv("AZURE_OPENAI_TOKEN")
+    if (token == "") token <- NULL
+  }
+
+  if (!is.null(token)) {
+    token <- sub("^Bearer\\s+", "", token, ignore.case = TRUE)
+  }
+
+  if (required && is.null(token)) {
+    cli::cli_abort(c(
+      "Azure AI Foundry bearer token is required.",
+      "i" = "Set one with {.code foundry_set_token()} or set the {.envvar AZURE_FOUNDRY_TOKEN} environment variable."
+    ))
+  }
+
+  token
+}

@@ -71,7 +71,7 @@ test_that("foundry_image validates size parameter", {
 
   expect_error(
     foundry_image("test", model = "dall-e-3", size = "invalid"),
-    "'arg' should be one of"
+    "must be one of"
   )
 })
 
@@ -84,7 +84,7 @@ test_that("foundry_image validates quality parameter", {
 
   expect_error(
     foundry_image("test", model = "dall-e-3", quality = "ultra"),
-    "'arg' should be one of"
+    "must be one of"
   )
 })
 
@@ -97,7 +97,7 @@ test_that("foundry_image validates style parameter", {
 
   expect_error(
     foundry_image("test", model = "dall-e-3", style = "artistic"),
-    "'arg' should be one of"
+    "must be one of"
   )
 })
 
@@ -110,8 +110,188 @@ test_that("foundry_image validates response_format parameter", {
 
   expect_error(
     foundry_image("test", model = "dall-e-3", response_format = "png"),
-    "'arg' should be one of"
+    "must be one of"
   )
+})
+
+test_that("foundry_image uses v1 image endpoint by default", {
+  setup_mock_env()
+  withr::local_envvar(
+    AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.openai.azure.com",
+    AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-1"
+  )
+  captured <- NULL
+  mock_resp <- mock_httr2_response(mock_image_response_b64())
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  result <- foundry_image(
+    "A logo",
+    output_format = "png",
+    background = "transparent"
+  )
+
+  expect_match(captured$url, "/openai/v1/images/generations")
+  expect_match(captured$url, "api-version=preview")
+  expect_equal(captured$body$data$model, "gpt-image-1")
+  expect_equal(result$output_format, "png")
+})
+
+test_that("foundry_image_edit builds multipart request", {
+  setup_mock_env()
+  withr::local_envvar(
+    AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.openai.azure.com",
+    AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-1"
+  )
+  image <- tempfile(fileext = ".png")
+  writeBin(charToRaw("fake image"), image)
+  captured <- NULL
+  mock_resp <- mock_httr2_response(mock_image_response_b64())
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  result <- foundry_image_edit(image, "Add a blue background")
+
+  expect_match(captured$url, "/openai/v1/images/edits")
+  expect_valid_multipart_request(captured)
+  expect_equal(result$prompt, "Add a blue background")
+})
+
+test_that("foundry_image_edit builds multipart request with multiple images", {
+  setup_mock_env()
+  withr::local_envvar(
+    AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.openai.azure.com",
+    AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-1"
+  )
+  images <- c(tempfile(fileext = ".png"), tempfile(fileext = ".png"))
+  writeBin(charToRaw("fake image one"), images[[1]])
+  writeBin(charToRaw("fake image two"), images[[2]])
+  captured <- NULL
+  mock_resp <- mock_httr2_response(mock_image_response_b64())
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  foundry_image_edit(images, "Blend these images")
+
+  expect_valid_multipart_request(captured)
+  expect_equal(sum(names(captured$body$data) == "image[]"), 2L)
+})
+
+test_that("foundry_image supports keyless auth from environment token", {
+  withr::local_envvar(
+    AZURE_FOUNDRY_ENDPOINT = "https://test-image.openai.azure.com",
+    AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.openai.azure.com",
+    AZURE_FOUNDRY_KEY = "",
+    AZURE_FOUNDRY_IMAGE_KEY = "",
+    AZURE_FOUNDRY_TOKEN = "env-token",
+    AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-1"
+  )
+  captured <- NULL
+  mock_resp <- mock_httr2_response(mock_image_response_b64())
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  foundry_image("A logo")
+
+  expect_contains(names(captured$headers), "Authorization")
+  expect_setequal(setdiff(names(captured$headers), "Authorization"), character())
+})
+
+test_that("foundry_image prefers environment token over environment image key", {
+  withr::local_envvar(
+    AZURE_FOUNDRY_ENDPOINT = "https://test-image.openai.azure.com",
+    AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.openai.azure.com",
+    AZURE_FOUNDRY_KEY = "env-key",
+    AZURE_FOUNDRY_IMAGE_KEY = "env-image-key",
+    AZURE_FOUNDRY_TOKEN = "env-token",
+    AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-1"
+  )
+  captured <- NULL
+  mock_resp <- mock_httr2_response(mock_image_response_b64())
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  foundry_image("A logo")
+
+  expect_contains(names(captured$headers), "Authorization")
+  expect_setequal(setdiff(names(captured$headers), "Authorization"), character())
+})
+
+test_that("foundry_image_edit supports keyless auth from environment token", {
+  withr::local_envvar(
+    AZURE_FOUNDRY_ENDPOINT = "https://test-image.openai.azure.com",
+    AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.openai.azure.com",
+    AZURE_FOUNDRY_KEY = "",
+    AZURE_FOUNDRY_IMAGE_KEY = "",
+    AZURE_FOUNDRY_TOKEN = "env-token",
+    AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-1"
+  )
+  image <- tempfile(fileext = ".png")
+  writeBin(charToRaw("fake image"), image)
+  captured <- NULL
+  mock_resp <- mock_httr2_response(mock_image_response_b64())
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  foundry_image_edit(image, "Add a blue background")
+
+  expect_contains(names(captured$headers), "Authorization")
+  expect_setequal(setdiff(names(captured$headers), "Authorization"), character())
+})
+
+test_that("foundry_image deployment mode omits auto quality by default", {
+  setup_mock_env()
+  withr::local_envvar(AZURE_FOUNDRY_IMAGE_MODEL = "dall-e-3")
+  captured <- NULL
+  mock_resp <- mock_httr2_response(mock_image_response_url())
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  foundry_image("A sunset", api = "deployment")
+
+  expect_null(captured$body$data$quality)
 })
 
 # ============================================================================
@@ -196,7 +376,10 @@ test_that("foundry_image returns tibble with correct structure (mocked)", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 1)
-  expect_named(result, c("prompt", "revised_prompt", "url", "b64_json", "created"))
+  expect_named(result, c(
+    "prompt", "revised_prompt", "url", "b64_json", "output_format",
+    "created", "raw_image"
+  ))
 })
 
 test_that("foundry_image returns correct column types (mocked)", {

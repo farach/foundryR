@@ -8,7 +8,7 @@ foundry_set_endpoint(endpoint, store = FALSE)
 }
 \arguments{
 \item{endpoint}{Character string containing the endpoint URL.
-Example: "https://your-resource.openai.azure.com"}
+Example: the endpoint URL from your Foundry resource.}
 
 \item{store}{Logical. If TRUE, stores the endpoint in \code{.Renviron} for future sessions.
 Default: FALSE (endpoint only available for current session).}
@@ -21,9 +21,9 @@ Set the base endpoint URL for your Azure AI Foundry resource.
 }
 \examples{
 \dontrun{
-foundry_set_endpoint("https://my-resource.openai.azure.com")
+foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
 
 # Store permanently
-foundry_set_endpoint("https://my-resource.openai.azure.com", store = TRUE)
+foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT", store = TRUE)
 }
 }

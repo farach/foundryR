@@ -68,7 +68,7 @@ foundry_set_content_safety_key <- function(key = NULL, store = FALSE) {
 #' Set the base endpoint URL for your Azure Content Safety resource.
 #'
 #' @param endpoint Character string containing the endpoint URL.
-#'   Example: "https://your-resource.cognitiveservices.azure.com"
+#'   Example: the endpoint URL from your Content Safety resource.
 #' @param store Logical. If TRUE, stores the endpoint in `.Renviron` for future sessions.
 #'   Default: FALSE (endpoint only available for current session).
 #'
@@ -77,10 +77,10 @@ foundry_set_content_safety_key <- function(key = NULL, store = FALSE) {
 #'
 #' @examples
 #' \dontrun{
-#' foundry_set_content_safety_endpoint("https://my-resource.cognitiveservices.azure.com")
+#' foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT")
 #'
 #' # Store permanently
-#' foundry_set_content_safety_endpoint("https://my-resource.cognitiveservices.azure.com", store = TRUE)
+#' foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT", store = TRUE)
 #' }
 foundry_set_content_safety_endpoint <- function(endpoint, store = FALSE) {
 

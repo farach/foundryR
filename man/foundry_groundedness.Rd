@@ -77,7 +77,7 @@ the Azure AI Foundry (OpenAI) credentials used by other foundryR functions.
 
 Set environment variables:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{AZURE_CONTENT_SAFETY_ENDPOINT=https://your-resource.cognitiveservices.azure.com
+\if{html}{\out{<div class="sourceCode">}}\preformatted{AZURE_CONTENT_SAFETY_ENDPOINT=<your Content Safety endpoint URL>
 AZURE_CONTENT_SAFETY_KEY=your-api-key
 }\if{html}{\out{</div>}}
 

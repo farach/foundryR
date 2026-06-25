@@ -9,6 +9,7 @@ foundry_build_request(
   endpoint_path,
   body,
   api_key = NULL,
+  token = NULL,
   api_version = NULL
 )
 }
@@ -20,6 +21,8 @@ foundry_build_request(
 \item{body}{List. The request body.}
 
 \item{api_key}{Character. Optional API key override.}
+
+\item{token}{Character. Optional bearer token override.}
 
 \item{api_version}{Character. Optional API version override.}
 }

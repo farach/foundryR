@@ -386,7 +386,7 @@ Ensure credentials are set before creating recipes:
 foundry_check_setup()
 
 # Set credentials if needed
-foundry_set_endpoint("https://your-resource.openai.azure.com")
+foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
 foundry_set_key("your-api-key")
 ```
 

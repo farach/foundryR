@@ -9,8 +9,10 @@ foundry_build_v1_request(
   body = NULL,
   method = "POST",
   api_key = NULL,
+  token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  key_getter = foundry_get_key
 )
 }
 \arguments{
@@ -22,10 +24,15 @@ foundry_build_v1_request(
 
 \item{api_key}{Character. Optional API key override.}
 
+\item{token}{Character. Optional bearer token override.}
+
 \item{endpoint}{Character. Optional endpoint override.}
 
 \item{api_version}{Character. Optional API version query value. Usually not
 required for v1 endpoints.}
+
+\item{key_getter}{Function used to resolve API keys. Defaults to
+\code{foundry_get_key()}.}
 }
 \value{
 An httr2 request object (not yet performed).

@@ -31,7 +31,7 @@ home:
       links:
         title: Links
         text: |
-          - [Azure AI Foundry](https://azure.microsoft.com/products/ai-foundry/)
+          - [Azure AI Foundry](https://azure.microsoft.com/en-us/products/ai-foundry/)
           - [Azure OpenAI Documentation](https://learn.microsoft.com/azure/ai-services/openai/)
           - [Azure AI Content Safety](https://azure.microsoft.com/products/ai-services/ai-content-safety/)
 
@@ -53,6 +53,10 @@ navbar:
           href: articles/getting-started.html
         - text: Responses API
           href: articles/responses-api.html
+        - text: Audio Workflows
+          href: articles/audio.html
+        - text: Files and Batch API
+          href: articles/files-batches.html
         - text: Text Embeddings
           href: articles/embeddings.html
         - text: "---"
@@ -61,8 +65,8 @@ navbar:
           href: articles/content-safety.html
         - text: "---"
         - text: "Advanced Topics"
-        - text: Image Generation
-          href: articles/image-generation.html
+        - text: Image and Video Generation
+          href: articles/media-generation.html
         - text: tidymodels Integration
           href: articles/tidymodels.html
         - text: "---"
@@ -82,8 +86,11 @@ reference:
     contents:
       - foundry_check_setup
       - foundry_set_key
+      - foundry_set_token
       - foundry_set_endpoint
       - foundry_get_endpoint
+      - foundry_set_speech_endpoint
+      - foundry_set_speech_key
 
   - title: Chat Completions
     desc: >
@@ -103,6 +110,31 @@ reference:
       - foundry_response_delete
       - foundry_extract
       - foundry_web_search
+
+  - title: Audio and Speech
+    desc: >
+      Transcribe and translate research audio, including MAI-Transcribe models
+      through LLM Speech, and synthesize text-to-speech audio files.
+    contents:
+      - foundry_transcribe
+      - foundry_translate_audio
+      - foundry_speak
+
+  - title: Files and Batch API
+    desc: >
+      Upload files, prepare JSONL request files, and manage asynchronous batch
+      jobs for large-scale annotation, extraction, and classification.
+    contents:
+      - foundry_file_upload
+      - foundry_files
+      - foundry_file_get
+      - foundry_file_delete
+      - foundry_file_download
+      - foundry_batch_requests
+      - foundry_batch_create
+      - foundry_batches
+      - foundry_batch_get
+      - foundry_batch_cancel
 
   - title: Text Embeddings
     desc: >
@@ -135,15 +167,22 @@ reference:
       - foundry_set_content_safety_key
       - foundry_set_content_safety_endpoint
 
-  - title: Image Generation
+  - title: Image and Video Generation
     desc: >
-      Create images with DALL-E models. Generate, customize, and save
-      AI-generated artwork and visualizations.
+      Generate and edit images with v1 preview image models, and manage preview
+      video generation jobs.
     contents:
       - foundry_image
+      - foundry_image_edit
       - foundry_save_image
       - foundry_set_image_endpoint
       - foundry_set_image_key
+      - foundry_video_job_create
+      - foundry_video_jobs
+      - foundry_video_job_get
+      - foundry_video_job_delete
+      - foundry_video_get
+      - foundry_video_download
 
   - title: Model Discovery
     desc: >
@@ -157,6 +196,8 @@ articles:
     contents:
       - getting-started
       - responses-api
+      - audio
+      - files-batches
       - embeddings
 
   - title: Responsible AI
@@ -167,6 +208,7 @@ articles:
   - title: Advanced Topics
     navbar: ~
     contents:
+      - media-generation
       - image-generation
       - tidymodels
 
@@ -183,4 +225,4 @@ footer:
     package: >
       foundryR is developed by [Alex Farach](https://github.com/farach)
     azure: >
-      Powered by [Azure AI Foundry](https://azure.microsoft.com/products/ai-foundry/)
+      Powered by [Azure AI Foundry](https://azure.microsoft.com/en-us/products/ai-foundry/)

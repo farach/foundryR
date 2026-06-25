@@ -33,3 +33,38 @@ test_that("foundry_get_key uses provided key over environment", {
 
   expect_equal(foundry_get_key(key = "provided-key"), "provided-key")
 })
+
+test_that("foundry_set_token sets environment variable", {
+  withr::local_envvar(AZURE_FOUNDRY_TOKEN = "")
+
+  suppressMessages(foundry_set_token("Bearer test-token-123"))
+  expect_equal(Sys.getenv("AZURE_FOUNDRY_TOKEN"), "test-token-123")
+})
+
+test_that("foundry_get_token retrieves from environment", {
+  withr::local_envvar(AZURE_FOUNDRY_TOKEN = "env-token-456")
+
+  expect_equal(foundry_get_token(), "env-token-456")
+})
+
+test_that("foundry_get_token returns NULL when not set", {
+  withr::local_envvar(
+    AZURE_FOUNDRY_TOKEN = "",
+    AZURE_OPENAI_TOKEN = ""
+  )
+
+  expect_null(foundry_get_token())
+})
+
+test_that("explicit API key takes precedence over environment token", {
+  withr::local_envvar(
+    AZURE_FOUNDRY_TOKEN = "env-token",
+    AZURE_FOUNDRY_KEY = "env-key"
+  )
+
+  req <- httr2::request("https://example.com") |>
+    foundry_authenticate_request(api_key = "explicit-key")
+
+  expect_contains(names(req$headers), "api-key")
+  expect_setequal(setdiff(names(req$headers), "api-key"), character())
+})
