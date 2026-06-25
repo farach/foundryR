@@ -181,6 +181,23 @@ review <- coded |>
 review
 ```
 
+The rendered table and chart below use precomputed, illustrative data
+from a representative run. They are rendered during the documentation
+build without Azure credentials.
+
+| Structured annotations from open-ended responses |  |  |  |  |  |
+|----|----|----|----|----|----|
+| ID | Response | Sentiment | Theme | Follow-up | Summary |
+| 1 | The lectures were clear, but the weekly quizzes felt rushed. | mixed | assessment | Review | Clear lectures, rushed quizzes |
+| 2 | I liked the examples in R. More office hours would help. | positive | support | Review | R examples helped, office hours requested |
+| 3 | The project made the material practical. | positive | instruction | No review | Project connected concepts to practice |
+| 4 | I struggled because the instructions changed late. | negative | instruction | Review | Late instruction changes caused confusion |
+| 5 | The instructor explained regression well. | positive | instruction | No review | Regression explanation was clear |
+| 6 | The course needed more examples before the final exam. | mixed | materials | Review | More exam examples requested |
+
+![Bar chart of survey response themes by
+sentiment.](annotation-workflow_files/figure-html/sentiment-theme-chart-1.png)
+
 The workflow leaves a trail: raw response, extracted labels, model
 metadata, embedding similarity, and groundedness checks. That trail is
 the reason foundryR returns tibbles instead of hiding results inside

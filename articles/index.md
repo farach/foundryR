@@ -31,8 +31,6 @@
   Foundry](https://farach.github.io/foundryR/articles/audio.md):
 - [Image and Video
   Generation](https://farach.github.io/foundryR/articles/media-generation.md):
-- [Image Generation with
-  DALL-E](https://farach.github.io/foundryR/articles/image-generation.md):
 
 ### Integrations
 

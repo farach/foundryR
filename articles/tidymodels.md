@@ -317,6 +317,22 @@ collect_metrics(cv_results)
 #> 2 roc_auc  binary     0.925     5  0.0433 Preprocessor1_Model1
 ```
 
+The rendered evaluation outputs below use precomputed, illustrative data
+from a representative resampling run. They are rendered during the
+documentation build without Azure credentials.
+
+| Embedding classifier evaluation metrics |  |  |  |
+|----|----|----|----|
+| Metric | Estimator | Estimate | Configuration |
+| accuracy | binary | 0.875 | Preprocessor1_Model1 |
+| roc_auc | binary | 0.925 | Preprocessor1_Model1 |
+| kap | binary | 0.750 | Preprocessor1_Model1 |
+| sensitivity | binary | 0.900 | Preprocessor1_Model1 |
+| specificity | binary | 0.850 | Preprocessor1_Model1 |
+
+![ROC curve for a cached embedding classifier
+evaluation.](tidymodels_files/figure-html/tidymodels-roc-rendered-1.png)
+
 ## Hyperparameter tuning
 
 Tune the embedding dimensions alongside model hyperparameters:

@@ -62,107 +62,42 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="foundryr-development-version">foundryR (development version)<a class="anchor" aria-label="anchor" href="#foundryr-development-version"></a></h2>
-</div>
-    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9000" id="foundryr-0009000">foundryR 0.0.0.9000<a class="anchor" aria-label="anchor" href="#foundryr-0009000"></a></h2>
 <p>Initial development release of foundryR, a tidy interface to Microsoft Azure AI Foundry.</p>
-<ul><li>License metadata now uses a single MIT license file so GitHub does not report mixed license files (overhaul brief).</li>
-<li>Media generation helpers are now grouped and described as experimental media while the core docs emphasize research, annotation, embeddings, batch, Responses API, and Content Safety workflows (overhaul brief).</li>
+<div class="section level3">
+<h3 id="new-features-0-0-0-9000">New features<a class="anchor" aria-label="anchor" href="#new-features-0-0-0-9000"></a></h3>
+<ul><li>Added v1 Batch API workflows with <code><a href="../reference/foundry_batch_create.html">foundry_batch_create()</a></code>, <code><a href="../reference/foundry_batches.html">foundry_batches()</a></code>, <code><a href="../reference/foundry_batch_get.html">foundry_batch_get()</a></code>, <code><a href="../reference/foundry_batch_cancel.html">foundry_batch_cancel()</a></code>, and <code><a href="../reference/foundry_batch_requests.html">foundry_batch_requests()</a></code> for large-scale prompt, annotation, extraction, and classification jobs.</li>
+<li>Added v1 Files API support with <code><a href="../reference/foundry_file_upload.html">foundry_file_upload()</a></code>, <code><a href="../reference/foundry_files.html">foundry_files()</a></code>, <code><a href="../reference/foundry_file_get.html">foundry_file_get()</a></code>, <code><a href="../reference/foundry_file_delete.html">foundry_file_delete()</a></code>, and <code><a href="../reference/foundry_file_download.html">foundry_file_download()</a></code> for Batch, eval, fine-tuning, and file-search workflows.</li>
+<li>Added <code><a href="../reference/foundry_agent.html">foundry_agent()</a></code> and <code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> for a bounded Responses API function-calling loop with user-defined R tools.</li>
+<li>Added <code><a href="../reference/foundry_image_edit.html">foundry_image_edit()</a></code> for v1 preview image editing with local image and optional mask uploads.</li>
+<li>Added <code><a href="../reference/foundry_set_speech_endpoint.html">foundry_set_speech_endpoint()</a></code>, <code><a href="../reference/foundry_set_speech_key.html">foundry_set_speech_key()</a></code>, <code><a href="../reference/foundry_transcribe.html">foundry_transcribe()</a></code>, and <code><a href="../reference/foundry_translate_audio.html">foundry_translate_audio()</a></code> for LLM Speech and MAI-Transcribe workflows.</li>
+<li>Added <code><a href="../reference/foundry_set_token.html">foundry_set_token()</a></code> for Microsoft Entra ID bearer-token authentication across Foundry requests.</li>
+<li>Added <code><a href="../reference/foundry_speak.html">foundry_speak()</a></code> for v1 preview text-to-speech output saved to local audio files.</li>
+<li>Added <code><a href="../reference/foundry_video_job_create.html">foundry_video_job_create()</a></code>, <code><a href="../reference/foundry_video_jobs.html">foundry_video_jobs()</a></code>, <code><a href="../reference/foundry_video_job_get.html">foundry_video_job_get()</a></code>, <code><a href="../reference/foundry_video_job_delete.html">foundry_video_job_delete()</a></code>, <code><a href="../reference/foundry_video_get.html">foundry_video_get()</a></code>, and <code><a href="../reference/foundry_video_download.html">foundry_video_download()</a></code> for preview video job management and content downloads.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-0-0-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-0-0-9000"></a></h3>
+<ul><li>
+<code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> now accepts <code>reasoning_effort</code> and returns <code>reasoning_tokens</code> and <code>cached_input_tokens</code> when chat-completions responses report those fields.</li>
 <li>
-<code><a href="../reference/foundry_agent.html">foundry_agent()</a></code> and <code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> add a bounded Responses API function-calling loop for user-defined R tools, including single-call, multi-call, and iteration-cap handling (overhaul brief).</li>
-<li>
-<code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> now accepts <code>reasoning_effort</code> and returns <code>reasoning_tokens</code> and <code>cached_input_tokens</code> when chat-completions responses report those fields (overhaul brief).</li>
-<li>
-<code><a href="../reference/foundry_response.html">foundry_response()</a></code> now accepts <code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> objects in <code>tools</code>, strips local R function references from request bodies, and returns <code>cached_input_tokens</code> when the Responses API reports cached input tokens (overhaul brief).</li>
-<li>
-<code><a href="../reference/foundry_batch_create.html">foundry_batch_create()</a></code>, <code><a href="../reference/foundry_batches.html">foundry_batches()</a></code>, <code><a href="../reference/foundry_batch_get.html">foundry_batch_get()</a></code>, <code><a href="../reference/foundry_batch_cancel.html">foundry_batch_cancel()</a></code>, and <code><a href="../reference/foundry_batch_requests.html">foundry_batch_requests()</a></code> add v1 Batch API workflows for large-scale prompt, annotation, extraction, and classification jobs.</li>
-<li>
-<code><a href="../reference/foundry_file_upload.html">foundry_file_upload()</a></code>, <code><a href="../reference/foundry_files.html">foundry_files()</a></code>, <code><a href="../reference/foundry_file_get.html">foundry_file_get()</a></code>, <code><a href="../reference/foundry_file_delete.html">foundry_file_delete()</a></code>, and <code><a href="../reference/foundry_file_download.html">foundry_file_download()</a></code> add v1 Files API support for Batch, eval, fine-tuning, and assistant/file-search workflows.</li>
+<code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> uses strict JSON Schema mode by default for supported Responses API models.</li>
 <li>
 <code><a href="../reference/foundry_image.html">foundry_image()</a></code> now uses the v1 preview image generation endpoint by default, supports newer image options such as <code>output_format</code>, <code>output_compression</code>, <code>background</code>, and <code>moderation</code>, and keeps the legacy deployment endpoint available with <code>api = "deployment"</code>.</li>
 <li>
-<code><a href="../reference/foundry_image_edit.html">foundry_image_edit()</a></code> adds v1 preview image editing with local image and optional mask uploads.</li>
+<code><a href="../reference/foundry_models.html">foundry_models()</a></code> now calls the v1 model and deployment metadata endpoints instead of sending a dummy chat request.</li>
 <li>
-<code><a href="../reference/foundry_models.html">foundry_models()</a></code> now calls the v1 model/deployment metadata endpoints instead of sending a dummy chat request.</li>
+<code><a href="../reference/foundry_response.html">foundry_response()</a></code> accepts <code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> objects in <code>tools</code>, strips local R function references from request bodies, and returns <code>cached_input_tokens</code> when the Responses API reports cached input tokens.</li>
 <li>
-<code><a href="../reference/foundry_set_speech_endpoint.html">foundry_set_speech_endpoint()</a></code>, <code><a href="../reference/foundry_set_speech_key.html">foundry_set_speech_key()</a></code>, <code><a href="../reference/foundry_transcribe.html">foundry_transcribe()</a></code>, and <code><a href="../reference/foundry_translate_audio.html">foundry_translate_audio()</a></code> add LLM Speech and MAI-Transcribe workflows for interview, lecture, meeting, and multilingual research audio.</li>
-<li>
-<code><a href="../reference/foundry_set_token.html">foundry_set_token()</a></code> adds Microsoft Entra ID bearer-token support for keyless authentication across Foundry requests.</li>
-<li>
-<code><a href="../reference/foundry_speak.html">foundry_speak()</a></code> adds v1 preview text-to-speech output saved directly to local audio files.</li>
-<li>
-<code><a href="../reference/foundry_video_job_create.html">foundry_video_job_create()</a></code>, <code><a href="../reference/foundry_video_jobs.html">foundry_video_jobs()</a></code>, <code><a href="../reference/foundry_video_job_get.html">foundry_video_job_get()</a></code>, <code><a href="../reference/foundry_video_job_delete.html">foundry_video_job_delete()</a></code>, <code><a href="../reference/foundry_video_get.html">foundry_video_get()</a></code>, and <code><a href="../reference/foundry_video_download.html">foundry_video_download()</a></code> add preview video generation job management and content download helpers. ## Core Features</li>
-</ul><div class="section level4">
-<h4 id="chat-completions-0-0-0-9000">Chat Completions<a class="anchor" aria-label="anchor" href="#chat-completions-0-0-0-9000"></a></h4>
-<ul><li>
-<code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> for interacting with LLMs (GPT-4, Claude, Llama, Mistral, etc.)</li>
-<li>Support for system prompts and conversation history</li>
-<li>Compatible with both <code>max_tokens</code> and <code>max_completion_tokens</code> parameters</li>
-</ul></div>
-<div class="section level4">
-<h4 id="responses-api-0-0-0-9000">Responses API<a class="anchor" aria-label="anchor" href="#responses-api-0-0-0-9000"></a></h4>
-<ul><li>
-<code><a href="../reference/foundry_response.html">foundry_response()</a></code> for Microsoft Foundry’s newer <code>/openai/v1/responses</code> endpoint, including stateful turns, tools, structured output formats, token usage, citations, tool-call metadata, and raw response capture.</li>
-<li>
-<code><a href="../reference/foundry_response_retrieve.html">foundry_response_retrieve()</a></code> and <code><a href="../reference/foundry_response_delete.html">foundry_response_delete()</a></code> for managing stored Responses API objects.</li>
-<li>
-<code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> for JSON Schema-constrained structured extraction from text vectors, returning one tidy row per input with schema fields as columns.</li>
-<li>
-<code><a href="../reference/foundry_web_search.html">foundry_web_search()</a></code> for Responses API web search with citations and tool-call metadata. Documentation calls out Microsoft Grounding with Bing compliance-boundary and cost considerations.</li>
-</ul></div>
-<div class="section level4">
-<h4 id="text-embeddings-0-0-0-9000">Text Embeddings<a class="anchor" aria-label="anchor" href="#text-embeddings-0-0-0-9000"></a></h4>
-<ul><li>
-<code><a href="../reference/foundry_embed.html">foundry_embed()</a></code> for generating text embeddings</li>
-<li>
-<code><a href="../reference/foundry_embed_batch.html">foundry_embed_batch()</a></code> for parallel batch processing with progress tracking</li>
-<li>
-<code><a href="../reference/foundry_similarity.html">foundry_similarity()</a></code> for computing pairwise cosine similarities</li>
-</ul></div>
-<div class="section level4">
-<h4 id="performance-0-0-0-9000">Performance<a class="anchor" aria-label="anchor" href="#performance-0-0-0-9000"></a></h4>
-<ul><li>
-<code><a href="../reference/foundry_similarity.html">foundry_similarity()</a></code> now computes all pairwise cosine similarities with a single vectorized matrix product instead of a nested R loop, making it dramatically faster for larger embedding sets (e.g. hundreds of texts).</li>
-<li>Support for configurable embedding dimensions</li>
-</ul></div>
-<div class="section level4">
-<h4 id="tidymodels-integration-0-0-0-9000">tidymodels Integration<a class="anchor" aria-label="anchor" href="#tidymodels-integration-0-0-0-9000"></a></h4>
-<ul><li>
-<code><a href="../reference/step_foundry_embed.html">step_foundry_embed()</a></code> recipe step for embedding text columns in ML pipelines</li>
-<li>Full compatibility with tidymodels cross-validation and tuning workflows</li>
-</ul></div>
-<div class="section level4">
-<h4 id="content-safety-responsible-ai-0-0-0-9000">Content Safety (Responsible AI)<a class="anchor" aria-label="anchor" href="#content-safety-responsible-ai-0-0-0-9000"></a></h4>
-<ul><li>
-<code><a href="../reference/foundry_moderate.html">foundry_moderate()</a></code> for content moderation across hate, violence, sexual, and self-harm categories</li>
-<li>
-<code><a href="../reference/foundry_groundedness.html">foundry_groundedness()</a></code> for hallucination detection in AI responses</li>
-<li>
-<code><a href="../reference/foundry_shield.html">foundry_shield()</a></code> for prompt injection and jailbreak detection</li>
-</ul></div>
-<div class="section level4">
-<h4 id="image-generation-0-0-0-9000">Image Generation<a class="anchor" aria-label="anchor" href="#image-generation-0-0-0-9000"></a></h4>
-<ul><li>
-<code><a href="../reference/foundry_image.html">foundry_image()</a></code> for generating images with DALL-E models</li>
-<li>
-<code><a href="../reference/foundry_save_image.html">foundry_save_image()</a></code> for saving generated images locally</li>
-<li>Support for separate image endpoint/key configuration</li>
-</ul></div>
-<div class="section level4">
-<h4 id="configuration--setup-0-0-0-9000">Configuration &amp; Setup<a class="anchor" aria-label="anchor" href="#configuration--setup-0-0-0-9000"></a></h4>
-<ul><li>
-<code><a href="../reference/foundry_set_key.html">foundry_set_key()</a></code> and <code><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint()</a></code> for credential management</li>
-<li>
-<code><a href="../reference/foundry_check_setup.html">foundry_check_setup()</a></code> for validating configuration</li>
-<li>Environment variable support for persistent configuration</li>
-<li>Separate configuration for Content Safety and Image Generation resources</li>
+<code><a href="../reference/foundry_similarity.html">foundry_similarity()</a></code> now computes all pairwise cosine similarities with a single vectorized matrix product instead of a nested R loop.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="documentation-0-0-0-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-0-0-9000"></a></h3>
-<ul><li>Comprehensive vignettes: Getting Started, Responses API, Embeddings, Content Safety, Image Generation, tidymodels</li>
-<li>Full roxygen2 documentation for all exported functions</li>
-<li>pkgdown site with Azure-inspired styling</li>
+<h3 id="documentation-and-package-metadata-0-0-0-9000">Documentation and package metadata<a class="anchor" aria-label="anchor" href="#documentation-and-package-metadata-0-0-0-9000"></a></h3>
+<ul><li>Documentation now positions foundryR around Azure AI Content Safety, Responses API workflows, strict extraction, embeddings, batch jobs, and research annotation workflows, with chat completions kept as a maintained convenience layer.</li>
+<li>Key vignettes now render precomputed gt tables and ggplot2 charts from cached illustrative data, so examples show the tibble outputs without calling Azure during documentation builds.</li>
+<li>Media helpers are grouped as experimental media while the core research surface is documented separately.</li>
+<li>Media documentation now uses one image and video generation vignette instead of separate overlapping image and media articles.</li>
+<li>New vignettes compare foundryR with ellmer and show an end-to-end annotation workflow.</li>
+<li>License metadata now uses a single MIT license file so GitHub reports one license.</li>
 </ul></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -117,9 +117,24 @@
 parameters, while keeping the legacy deployment-style image endpoint
 available with <code>api = "deployment"</code>.</p>
 <div class="section level2">
+<h2 id="configure-image-resources">Configure image resources<a class="anchor" aria-label="anchor" href="#configure-image-resources"></a>
+</h2>
+<p>Image models may be deployed on the same Azure OpenAI resource as
+your text models, or on a separate resource. Use the image-specific
+helpers only when the resource or key differs.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/foundry_set_key.html">foundry_set_key</a></span><span class="op">(</span><span class="st">"your-api-key"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/foundry_set_image_endpoint.html">foundry_set_image_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_IMAGE_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/foundry_set_image_key.html">foundry_set_image_key</a></span><span class="op">(</span><span class="st">"your-image-api-key"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>AZURE_FOUNDRY_IMAGE_MODEL <span class="op">=</span> <span class="st">"my-image-deployment"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="generate-images">Generate images<a class="anchor" aria-label="anchor" href="#generate-images"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">image</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_image.html">foundry_image</a></span><span class="op">(</span></span>
 <span>  <span class="st">"A clean data science illustration of survey responses becoming a chart"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"gpt-image-1"</span>,</span>
@@ -127,7 +142,7 @@ available with <code>api = "deployment"</code>.</p>
 <span>  output_format <span class="op">=</span> <span class="st">"png"</span>,</span>
 <span>  background <span class="op">=</span> <span class="st">"opaque"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">image</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  prompt <span class="op">=</span> <span class="st">"A clean data science illustration of survey responses becoming a chart"</span>,</span>
 <span>  revised_prompt <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
@@ -142,22 +157,37 @@ available with <code>api = "deployment"</code>.</p>
 <span><span class="co">#&gt;   prompt                        url   b64_json output_format created            </span></span>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A clean data science illustr… <span style="color: #BB0000;">NA</span>    &lt;base64… png           2026-06-24 <span style="color: #949494;">12:00:00</span></span></span></code></pre></div>
+<p>Use model-supported options such as <code>size</code>,
+<code>quality</code>, <code>output_format</code>,
+<code>background</code>, and <code>moderation</code> when you need a
+specific asset format:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_image.html">foundry_image</a></span><span class="op">(</span></span>
+<span>  <span class="st">"A simple report illustration showing coded survey responses"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-image-1"</span>,</span>
+<span>  size <span class="op">=</span> <span class="st">"1792x1024"</span>,</span>
+<span>  output_format <span class="op">=</span> <span class="st">"png"</span>,</span>
+<span>  background <span class="op">=</span> <span class="st">"opaque"</span>,</span>
+<span>  moderation <span class="op">=</span> <span class="st">"auto"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>Save generated image bytes with
 <code><a href="../reference/foundry_save_image.html">foundry_save_image()</a></code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_save_image.html">foundry_save_image</a></span><span class="op">(</span><span class="va">image</span>, <span class="st">"survey-chart.png"</span><span class="op">)</span></span></code></pre></div>
+<p>Image URLs are temporary. Save images that belong in reports,
+stimuli, or audited records.</p>
 </div>
 <div class="section level2">
 <h2 id="edit-images">Edit images<a class="anchor" aria-label="anchor" href="#edit-images"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">edited</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_image_edit.html">foundry_image_edit</a></span><span class="op">(</span></span>
 <span>  image <span class="op">=</span> <span class="st">"survey-chart.png"</span>,</span>
 <span>  prompt <span class="op">=</span> <span class="st">"Use a blue Microsoft-inspired color palette."</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"gpt-image-1"</span>,</span>
 <span>  output_format <span class="op">=</span> <span class="st">"png"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">edited</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  prompt <span class="op">=</span> <span class="st">"Use a blue Microsoft-inspired color palette."</span>,</span>
 <span>  revised_prompt <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
@@ -178,7 +208,7 @@ available with <code>api = "deployment"</code>.</p>
 </h2>
 <p>Video generation is a preview, long-running workflow. Create a job,
 poll it, and download content after a generation succeeds.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">job</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_video_job_create.html">foundry_video_job_create</a></span><span class="op">(</span></span>
 <span>  <span class="st">"A short animation of dots clustering into groups"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"my-video-model"</span>,</span>
@@ -188,7 +218,7 @@ poll it, and download content after a generation succeeds.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/foundry_video_job_get.html">foundry_video_job_get</a></span><span class="op">(</span><span class="va">job</span><span class="op">$</span><span class="va">job_id</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">job</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  job_id <span class="op">=</span> <span class="st">"videojob_abc123"</span>,</span>
 <span>  status <span class="op">=</span> <span class="st">"running"</span>,</span>
@@ -207,7 +237,7 @@ poll it, and download content after a generation succeeds.</p>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> videojob_abc123 running my-video-mod… A sho…  <span style="text-decoration: underline;">1</span>280    720         5          1</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: created_at &lt;dttm&gt;</span></span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_video_download.html">foundry_video_download</a></span><span class="op">(</span></span>
 <span>  generation_id <span class="op">=</span> <span class="st">"vidgen_abc123"</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"cluster-animation.mp4"</span></span>
@@ -223,6 +253,8 @@ poll it, and download content after a generation succeeds.</p>
 <code><a href="../reference/foundry_image_edit.html">foundry_image_edit()</a></code>.</li>
 <li>Treat video as experimental: keep prompts, job IDs, and output files
 together so generated assets remain reproducible and auditable.</li>
+<li>Track costs separately from text calls. Image and video generation
+are usually more expensive than text and embedding calls.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

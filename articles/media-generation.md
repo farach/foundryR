@@ -19,6 +19,23 @@ foundryR supports current v1 preview image generation and editing
 parameters, while keeping the legacy deployment-style image endpoint
 available with `api = "deployment"`.
 
+## Configure image resources
+
+Image models may be deployed on the same Azure OpenAI resource as your
+text models, or on a separate resource. Use the image-specific helpers
+only when the resource or key differs.
+
+``` r
+
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
+foundry_set_key("your-api-key")
+
+foundry_set_image_endpoint(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"))
+foundry_set_image_key("your-image-api-key")
+
+Sys.setenv(AZURE_FOUNDRY_IMAGE_MODEL = "my-image-deployment")
+```
+
 ## Generate images
 
 ``` r
@@ -50,6 +67,21 @@ image[, c("prompt", "url", "b64_json", "output_format", "created")]
 #> 1 A clean data science illustr… NA    <base64… png           2026-06-24 12:00:00
 ```
 
+Use model-supported options such as `size`, `quality`, `output_format`,
+`background`, and `moderation` when you need a specific asset format:
+
+``` r
+
+foundry_image(
+  "A simple report illustration showing coded survey responses",
+  model = "gpt-image-1",
+  size = "1792x1024",
+  output_format = "png",
+  background = "opaque",
+  moderation = "auto"
+)
+```
+
 Save generated image bytes with
 [`foundry_save_image()`](https://farach.github.io/foundryR/reference/foundry_save_image.md):
 
@@ -57,6 +89,9 @@ Save generated image bytes with
 
 foundry_save_image(image, "survey-chart.png")
 ```
+
+Image URLs are temporary. Save images that belong in reports, stimuli,
+or audited records.
 
 ## Edit images
 
@@ -144,3 +179,5 @@ foundry_video_download(
   [`foundry_image_edit()`](https://farach.github.io/foundryR/reference/foundry_image_edit.md).
 - Treat video as experimental: keep prompts, job IDs, and output files
   together so generated assets remain reproducible and auditable.
+- Track costs separately from text calls. Image and video generation are
+  usually more expensive than text and embedding calls.

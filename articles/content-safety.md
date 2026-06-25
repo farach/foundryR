@@ -118,6 +118,21 @@ results
 #>  ...
 ```
 
+The rendered table and chart below use precomputed, illustrative data
+from representative Content Safety responses. They are rendered during
+the documentation build without Azure credentials.
+
+| Moderation severity by category |      |     |        |      |              |
+|---------------------------------|------|-----|--------|------|--------------|
+| Category                        | High | Low | Medium | Safe | Max severity |
+| Hate                            | 0    | 1   | 1      | 2    | 4            |
+| Violence                        | 0    | 1   | 1      | 2    | 4            |
+| Sexual                          | 0    | 0   | 0      | 4    | 0            |
+| SelfHarm                        | 0    | 1   | 0      | 3    | 2            |
+
+![Stacked bar chart of moderation labels by Content Safety
+category.](content-safety_files/figure-html/moderate-severity-chart-1.png)
+
 ### Setting Thresholds
 
 Use moderation results to filter or flag content:
@@ -412,9 +427,8 @@ safe_ai_response <- function(user_input, context_docs, model = "my-gpt4") {
 
 ## Next Steps
 
-- Learn about [Image
-  Generation](https://farach.github.io/foundryR/articles/image-generation.md)
-  with DALL-E
+- Learn about [Image and Video
+  Generation](https://farach.github.io/foundryR/articles/media-generation.md)
 - Explore [tidymodels
   Integration](https://farach.github.io/foundryR/articles/tidymodels.md)
   for ML pipelines

@@ -121,6 +121,13 @@ Results are sorted by similarity (highest first). Notice how texts about
 similar topics (R programming, weather) have higher similarity scores
 with each other.
 
+The rendered outputs below use precomputed, illustrative data from a
+representative run. They are rendered during the documentation build
+without Azure credentials.
+
+![Heatmap of cosine similarity across four short
+texts.](embeddings_files/figure-html/similarity-heatmap-rendered-1.png)
+
 ## Use Case: Finding Similar Documents
 
 A common application is finding documents most similar to a query. Here
@@ -170,6 +177,13 @@ head(results, 3)
 #> 2 How to install R packages using install.packages() 0.812
 #> 3 Building web applications with Shiny              0.756
 ```
+
+| Nearest documents for a charting query |  |  |
+|----|----|----|
+| Rank | Document | Cosine similarity |
+| 1 | Data visualization with ggplot2 in R | 0.891 |
+| 2 | How to install R packages using install.packages() | 0.812 |
+| 3 | Building web applications with Shiny | 0.756 |
 
 ## Use Case: Clustering Text
 
@@ -236,6 +250,10 @@ results
 
 The algorithm successfully grouped texts by topic (programming, food,
 sports) without any labeled training data.
+
+![Two-dimensional embedding projection with programming, food, and
+sports
+clusters.](embeddings_files/figure-html/embedding-projection-rendered-1.png)
 
 ## Tips for Working with Embeddings
 
