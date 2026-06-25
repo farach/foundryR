@@ -19,6 +19,7 @@ foundry_chat(
   frequency_penalty = NULL,
   presence_penalty = NULL,
   stop = NULL,
+  reasoning_effort = NULL,
   api_key = NULL,
   api_version = NULL,
   ...
@@ -77,6 +78,11 @@ foundry_chat(
   Character vector. Up to 4 sequences where the API will stop
   generating.
 
+- reasoning_effort:
+
+  Character. Optional reasoning effort (`"low"`, `"medium"`, or
+  `"high"`) for reasoning models that accept this control.
+
 - api_key:
 
   Character. Optional API key override.
@@ -116,6 +122,14 @@ A tibble with columns:
 - completion_tokens:
 
   Integer. Tokens in the response.
+
+- reasoning_tokens:
+
+  Integer. Hidden reasoning tokens, when reported.
+
+- cached_input_tokens:
+
+  Integer. Cached prompt tokens, when reported.
 
 - total_tokens:
 

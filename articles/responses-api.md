@@ -16,9 +16,9 @@ metadata.
 
 foundryR wraps this with
 [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
-while preserving the package’s tidy interface: generated text,
-citations, tool calls, token usage, and the raw response are returned as
-tibble columns.
+while keeping the package’s tidy interface: generated text, citations,
+tool calls, token usage, and the raw response are returned as tibble
+columns.
 
 ## Basic response
 
@@ -26,7 +26,7 @@ tibble columns.
 
 library(foundryR)
 
-foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
 foundry_set_key("your-api-key")
 
 foundry_response(
@@ -42,7 +42,9 @@ The result includes:
   items
 - `citations`: a list-column of URL citations, when present
 - `tool_calls`: a list-column of tool calls, such as web-search calls
-- token usage columns and a `raw_response` list-column
+- token usage columns, including reasoning and cached input tokens when
+  the API reports them
+- a `raw_response` list-column
 
 ## Stateful turns
 
@@ -76,6 +78,11 @@ is designed for data scientists and researchers who need to turn free
 text into analyzable variables. You provide a JSON Schema as an R list;
 foundryR sends it through the Responses API structured output format and
 returns one row per input text.
+
+[`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
+sends `strict = TRUE` in the JSON Schema format by default. For
+supported models, the service must return data that conforms to the
+schema.
 
 ``` r
 
@@ -111,6 +118,74 @@ foundry_extract(
 Top-level scalar fields become regular tibble columns. Arrays and nested
 objects become list-columns, which work naturally with tidyverse
 workflows.
+
+## User-defined R tools
+
+The Responses API function-calling contract uses tool definitions with
+`type = "function"` and follow-up tool outputs with
+`type = "function_call_output"` plus a matching `call_id`.
+[`foundry_tool()`](https://farach.github.io/foundryR/reference/foundry_tool.md)
+builds the tool schema and keeps the R function reference for local
+execution.
+[`foundry_agent()`](https://farach.github.io/foundryR/reference/foundry_agent.md)
+runs the bounded call, execute, return-output loop.
+
+``` r
+
+get_weather <- function(location) {
+  list(location = location, temperature = "70 F")
+}
+
+weather_tool <- foundry_tool(
+  get_weather,
+  description = "Get weather for a location",
+  parameters = list(
+    type = "object",
+    properties = list(location = list(type = "string")),
+    required = "location"
+  )
+)
+
+turns <- foundry_agent(
+  "What is the weather in San Francisco?",
+  tools = list(weather_tool),
+  model = "my-gpt4",
+  max_iterations = 4
+)
+
+turns[, c("iteration", "final", "output_text")]
+turns$tool_results[[1]]
+```
+
+The loop stops with an error if the model continues requesting tools
+after `max_iterations`. This protects batch jobs from unbounded tool
+use.
+
+## Remote MCP tools
+
+Microsoft documents remote Model Context Protocol tools for the
+Responses API. foundryR does not add a separate MCP helper yet because
+[`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+already accepts raw Responses API tool objects:
+
+``` r
+
+mcp_tool <- list(
+  type = "mcp",
+  server_label = "my_mcp_server",
+  server_url = Sys.getenv("MY_MCP_SERVER_URL"),
+  require_approval = "never"
+)
+
+foundry_response(
+  "Use the MCP server if it helps answer the question.",
+  model = "my-gpt4",
+  tools = list(mcp_tool)
+)
+```
+
+Only attach MCP servers you trust and whose data-handling behavior your
+organization has approved.
 
 ## Web-grounded answers with citations
 
@@ -152,6 +227,36 @@ and/or Grounding with Bing Custom Search. The Data Protection Addendum
 does not apply to data sent to these services, data can leave compliance
 and geographic boundaries, and tool usage can incur additional costs.
 Avoid sending secrets or sensitive research data in web-search prompts.
+
+## Reasoning models and token accounting
+
+[`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+accepts `reasoning_effort` and sends it as
+`reasoning = list(effort = ...)`, the Responses API shape documented by
+Microsoft for reasoning models.
+[`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
+accepts the chat-completions shape, `reasoning_effort = "medium"`.
+
+``` r
+
+foundry_response(
+  "Compare the two arguments and identify the weaker premise.",
+  model = "my-reasoning-deployment",
+  reasoning_effort = "medium"
+)
+```
+
+The returned tibble includes `reasoning_tokens` and
+`cached_input_tokens` when the API reports them. These fields matter for
+cost review because reasoning tokens may be billed even when they are
+not visible in `output_text`.
+
+## Streaming
+
+The Azure OpenAI Responses API supports Server-Sent Events streaming,
+but foundryR does not implement streaming. The package focuses on
+reproducible, tibble-returning analytical workflows. Use ellmer when you
+need interactive streaming chat in R.
 
 ## When to use `foundry_chat()` vs `foundry_response()`
 

@@ -53,7 +53,9 @@ foundry_response(
 - tools:
 
   List. Optional Responses API tools, for example
-  `list(list(type = "web_search"))`.
+  `list(list(type = "web_search"))` or a list of
+  [`foundry_tool()`](https://farach.github.io/foundryR/reference/foundry_tool.md)
+  objects.
 
 - text_format:
 

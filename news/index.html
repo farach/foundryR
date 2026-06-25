@@ -19,19 +19,23 @@
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
     <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
@@ -63,7 +67,15 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9000" id="foundryr-0009000">foundryR 0.0.0.9000<a class="anchor" aria-label="anchor" href="#foundryr-0009000"></a></h2>
 <p>Initial development release of foundryR, a tidy interface to Microsoft Azure AI Foundry.</p>
-<ul><li>
+<ul><li>License metadata now uses a single MIT license file so GitHub does not report mixed license files (overhaul brief).</li>
+<li>Media generation helpers are now grouped and described as experimental media while the core docs emphasize research, annotation, embeddings, batch, Responses API, and Content Safety workflows (overhaul brief).</li>
+<li>
+<code><a href="../reference/foundry_agent.html">foundry_agent()</a></code> and <code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> add a bounded Responses API function-calling loop for user-defined R tools, including single-call, multi-call, and iteration-cap handling (overhaul brief).</li>
+<li>
+<code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> now accepts <code>reasoning_effort</code> and returns <code>reasoning_tokens</code> and <code>cached_input_tokens</code> when chat-completions responses report those fields (overhaul brief).</li>
+<li>
+<code><a href="../reference/foundry_response.html">foundry_response()</a></code> now accepts <code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> objects in <code>tools</code>, strips local R function references from request bodies, and returns <code>cached_input_tokens</code> when the Responses API reports cached input tokens (overhaul brief).</li>
+<li>
 <code><a href="../reference/foundry_batch_create.html">foundry_batch_create()</a></code>, <code><a href="../reference/foundry_batches.html">foundry_batches()</a></code>, <code><a href="../reference/foundry_batch_get.html">foundry_batch_get()</a></code>, <code><a href="../reference/foundry_batch_cancel.html">foundry_batch_cancel()</a></code>, and <code><a href="../reference/foundry_batch_requests.html">foundry_batch_requests()</a></code> add v1 Batch API workflows for large-scale prompt, annotation, extraction, and classification jobs.</li>
 <li>
 <code><a href="../reference/foundry_file_upload.html">foundry_file_upload()</a></code>, <code><a href="../reference/foundry_files.html">foundry_files()</a></code>, <code><a href="../reference/foundry_file_get.html">foundry_file_get()</a></code>, <code><a href="../reference/foundry_file_delete.html">foundry_file_delete()</a></code>, and <code><a href="../reference/foundry_file_download.html">foundry_file_download()</a></code> add v1 Files API support for Batch, eval, fine-tuning, and assistant/file-search workflows.</li>

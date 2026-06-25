@@ -2,15 +2,14 @@
 
 ## Introduction
 
-foundryR integrates seamlessly with the
-[tidymodels](https://www.tidymodels.org/) ecosystem through
+foundryR integrates with [tidymodels](https://www.tidymodels.org/)
+through
 [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md),
-a recipe step that converts text columns into embedding vectors. This
-enables you to incorporate state-of-the-art text representations into
-your machine learning pipelines alongside traditional preprocessing
-steps.
+a recipe step that converts text columns into embedding vectors. Use it
+when text should enter a model as numeric predictors rather than as
+bag-of-words counts.
 
-## Why Use Embeddings in ML Pipelines?
+## Why use embeddings in ML pipelines?
 
 Traditional text features like bag-of-words or TF-IDF capture word
 frequencies but miss semantic meaning. Embeddings provide dense vector
@@ -26,8 +25,8 @@ By converting text to embeddings within a recipe, you get:
   documented workflow
 - **Consistent handling**: Training and test data are processed
   identically
-- **Pipeline integration**: Combine with other preprocessing steps
-  seamlessly
+- **Pipeline integration**: Combine embeddings with other preprocessing
+  steps
 
 ## Prerequisites
 
@@ -253,11 +252,49 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   )
 ```
 
-## Cross-Validation
+## Resampling, caching, and cost
+
+[`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
+calls the embedding API when a recipe is prepared and when new data is
+baked. In a resampling workflow, each fold prepares its own recipe. That
+means the assessment and analysis sets can be embedded repeatedly across
+folds unless you precompute embeddings outside the recipe.
+
+There is no built-in cache in
+[`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md).
+This keeps the recipe behavior explicit, but it also means
+cross-validation has a direct API cost. For large or repeated
+experiments, embed the text once with
+[`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md)
+or
+[`foundry_embed_batch()`](https://farach.github.io/foundryR/reference/foundry_embed_batch.md),
+save the resulting numeric columns, and resample the saved embeddings.
+
+``` r
+
+embedded_reviews <- foundry_embed(
+  reviews$review_text,
+  model = "text-embedding-3-small"
+)
+
+embedding_matrix <- do.call(rbind, embedded_reviews$embedding)
+embedding_cols <- as_tibble(embedding_matrix, .name_repair = "unique")
+
+precomputed <- bind_cols(
+  reviews["sentiment"],
+  embedding_cols
+)
+```
+
+Use the recipe step when preprocessing needs to be self-contained.
+Precompute when cost, rate limits, or repeated resampling runs matter
+more.
+
+## Cross-validation
 
 Embeddings are generated during
 [`prep()`](https://recipes.tidymodels.org/reference/prep.html), so
-cross-validation works correctly:
+cross-validation follows the usual tidymodels recipe lifecycle:
 
 ``` r
 
@@ -280,7 +317,7 @@ collect_metrics(cv_results)
 #> 2 roc_auc  binary     0.925     5  0.0433 Preprocessor1_Model1
 ```
 
-## Hyperparameter Tuning
+## Hyperparameter tuning
 
 Tune the embedding dimensions alongside model hyperparameters:
 
@@ -318,7 +355,7 @@ grid <- grid_regular(
   levels = 3
 )
 
-# Tune (this will take a while due to API calls)
+# Tune only after estimating the API calls and cost.
 tune_results <- tune_grid(
   tunable_workflow,
   resamples = folds,
@@ -330,29 +367,28 @@ tune_results <- tune_grid(
 show_best(tune_results, metric = "roc_auc")
 ```
 
-## Performance Considerations
+## Performance considerations
 
 ### API Rate Limits
 
 Embedding generation makes API calls for each text. For large datasets:
 
-1.  **Use batch processing**: Consider using
+1.  Use batch processing with
     [`foundry_embed_batch()`](https://farach.github.io/foundryR/reference/foundry_embed_batch.md)
-    outside the recipe for large training sets
-2.  **Cache embeddings**: Pre-compute and store embeddings for
-    frequently used datasets
-3.  **Reduce cross-validation folds**: Fewer folds mean fewer API calls
-    during tuning
+    outside the recipe for large training sets.
+2.  Precompute and store embeddings for frequently used datasets.
+3.  Reduce cross-validation folds when repeated API calls are not worth
+    the extra precision.
 
-### Cost Management
+### Cost management
 
 Each embedding call incurs API costs. Strategies to manage costs:
 
 - Start with smaller dimension sizes during development
 - Use a subset of data for initial experimentation
-- Pre-compute embeddings for production datasets
+- Precompute embeddings for production datasets
 
-### Memory Usage
+### Memory usage
 
 With 1,536 dimensions per text and thousands of observations, memory can
 grow quickly:
@@ -373,7 +409,7 @@ Consider dimension reduction for large datasets.
 
 ## Troubleshooting
 
-### “Column already exists” Error
+### “Column already exists” error
 
 If you run
 [`prep()`](https://recipes.tidymodels.org/reference/prep.html) multiple
@@ -387,7 +423,7 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
                      prefix = paste0("v", format(Sys.time(), "%H%M%S"), "_"))
 ```
 
-### Rate Limit Errors
+### Rate limit errors
 
 If you hit rate limits during prep:
 
@@ -398,7 +434,7 @@ small_sample <- reviews %>% slice_sample(n = 100)
 prepped <- prep(recipe_spec, training = small_sample)
 ```
 
-### Missing Credentials
+### Missing credentials
 
 Ensure credentials are set before creating recipes:
 
@@ -407,12 +443,12 @@ Ensure credentials are set before creating recipes:
 # Check setup
 foundry_check_setup()
 
-# Set credentials if needed
-foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
+# Set credentials if needed.
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
 foundry_set_key("your-api-key")
 ```
 
-## Next Steps
+## Next steps
 
 - Learn about [Text
   Embeddings](https://farach.github.io/foundryR/articles/embeddings.md)

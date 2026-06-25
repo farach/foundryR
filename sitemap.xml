@@ -1,11 +1,12 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://farach.github.io/foundryR/404.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/LICENSE-text.html</loc></url>
-<url><loc>https://farach.github.io/foundryR/LICENSE.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/articles/annotation-workflow.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/audio.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/content-safety.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/embeddings.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/files-batches.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/articles/foundryr-vs-ellmer.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/getting-started.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/image-generation.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/index.html</loc></url>
@@ -19,6 +20,7 @@
 <url><loc>https://farach.github.io/foundryR/reference/bake.step_foundry_embed.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/batch_vector.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/content_safety_error_body.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_agent.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_batch_cancel.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_batch_create.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_batch_get.html</loc></url>
@@ -68,6 +70,7 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_shield.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_similarity.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_speak.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_tool.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_transcribe.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_translate_audio.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_video_download.html</loc></url>

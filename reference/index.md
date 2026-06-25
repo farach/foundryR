@@ -1,6 +1,6 @@
 # Package index
 
-## Setup & Configuration
+## Setup and configuration
 
 Configure your Azure AI Foundry credentials and verify your setup. These
 functions manage authentication for all API calls.
@@ -20,21 +20,34 @@ functions manage authentication for all API calls.
 - [`foundry_set_speech_key()`](https://farach.github.io/foundryR/reference/foundry_set_speech_key.md)
   : Set Microsoft Foundry Speech API key
 
-## Chat Completions
+## Content Safety
 
-Interact with large language models like GPT-4, Claude, Llama, and more.
-Send messages and receive AI-generated responses as tidy tibbles.
+Azure AI Content Safety features for responsible AI pipelines. Moderate
+content, detect hallucinations, and protect against prompt injection.
 
-- [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
-  : Chat with an Azure AI Model
+- [`foundry_moderate()`](https://farach.github.io/foundryR/reference/foundry_moderate.md)
+  : Moderate Text Content
+- [`foundry_groundedness()`](https://farach.github.io/foundryR/reference/foundry_groundedness.md)
+  : Detect Groundedness of LLM Responses
+- [`foundry_shield()`](https://farach.github.io/foundryR/reference/foundry_shield.md)
+  : Shield Prompt from Injection Attacks
+- [`foundry_set_content_safety_key()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_key.md)
+  : Set Azure Content Safety API Key
+- [`foundry_set_content_safety_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_endpoint.md)
+  : Set Azure Content Safety Endpoint
 
-## Responses API
+## Responses API and extraction
 
-Use Microsoft Foundry’s newer v1 Responses API for stateful turns, tool
-calls, schema-constrained extraction, and web-grounded answers.
+Use Microsoft Foundry’s newer v1 Responses API for stateful turns,
+user-defined tools, schema-constrained extraction, and web-grounded
+answers.
 
 - [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
   : Create a response with the Azure OpenAI Responses API
+- [`foundry_agent()`](https://farach.github.io/foundryR/reference/foundry_agent.md)
+  : Run a bounded Responses API tool-calling loop
+- [`foundry_tool()`](https://farach.github.io/foundryR/reference/foundry_tool.md)
+  : Define an R function as a Responses API tool
 - [`foundry_response_retrieve()`](https://farach.github.io/foundryR/reference/foundry_response_retrieve.md)
   : Retrieve a stored Responses API response
 - [`foundry_response_delete()`](https://farach.github.io/foundryR/reference/foundry_response_delete.md)
@@ -44,17 +57,17 @@ calls, schema-constrained extraction, and web-grounded answers.
 - [`foundry_web_search()`](https://farach.github.io/foundryR/reference/foundry_web_search.md)
   : Search the web with the Responses API
 
-## Audio and Speech
+## Text embeddings
 
-Transcribe and translate research audio, including MAI-Transcribe models
-through LLM Speech, and synthesize text-to-speech audio files.
+Generate vector embeddings for semantic search, clustering, and machine
+learning. Includes batch processing and similarity computation.
 
-- [`foundry_transcribe()`](https://farach.github.io/foundryR/reference/foundry_transcribe.md)
-  : Transcribe an audio file with Microsoft Foundry
-- [`foundry_translate_audio()`](https://farach.github.io/foundryR/reference/foundry_translate_audio.md)
-  : Translate an audio file with Microsoft Foundry
-- [`foundry_speak()`](https://farach.github.io/foundryR/reference/foundry_speak.md)
-  : Generate speech audio from text
+- [`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md)
+  : Generate Text Embeddings
+- [`foundry_embed_batch()`](https://farach.github.io/foundryR/reference/foundry_embed_batch.md)
+  : Generate Text Embeddings in Parallel Batches
+- [`foundry_similarity()`](https://farach.github.io/foundryR/reference/foundry_similarity.md)
+  : Compute Cosine Similarity Between Embeddings
 
 ## Files and Batch API
 
@@ -82,22 +95,9 @@ jobs for large-scale annotation, extraction, and classification.
 - [`foundry_batch_cancel()`](https://farach.github.io/foundryR/reference/foundry_batch_cancel.md)
   : Cancel a Microsoft Foundry batch
 
-## Text Embeddings
+## tidymodels integration
 
-Generate vector embeddings for semantic search, clustering, and machine
-learning. Includes batch processing and similarity computation.
-
-- [`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md)
-  : Generate Text Embeddings
-- [`foundry_embed_batch()`](https://farach.github.io/foundryR/reference/foundry_embed_batch.md)
-  : Generate Text Embeddings in Parallel Batches
-- [`foundry_similarity()`](https://farach.github.io/foundryR/reference/foundry_similarity.md)
-  : Compute Cosine Similarity Between Embeddings
-
-## tidymodels Integration
-
-Seamlessly integrate text embeddings into your tidymodels workflows
-using recipe steps.
+Add Foundry text embeddings to tidymodels recipes.
 
 - [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
   [`tidy(`*`<step_foundry_embed>`*`)`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
@@ -111,23 +111,26 @@ using recipe steps.
 - [`required_pkgs(`*`<step_foundry_embed>`*`)`](https://farach.github.io/foundryR/reference/required_pkgs.step_foundry_embed.md)
   : Required packages for step_foundry_embed
 
-## Content Safety
+## Chat completions
 
-Azure AI Content Safety features for responsible AI deployment. Moderate
-content, detect hallucinations, and protect against prompt injection.
+Send chat-completion requests to Azure AI Foundry deployments.
 
-- [`foundry_moderate()`](https://farach.github.io/foundryR/reference/foundry_moderate.md)
-  : Moderate Text Content
-- [`foundry_groundedness()`](https://farach.github.io/foundryR/reference/foundry_groundedness.md)
-  : Detect Groundedness of LLM Responses
-- [`foundry_shield()`](https://farach.github.io/foundryR/reference/foundry_shield.md)
-  : Shield Prompt from Injection Attacks
-- [`foundry_set_content_safety_key()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_key.md)
-  : Set Azure Content Safety API Key
-- [`foundry_set_content_safety_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_endpoint.md)
-  : Set Azure Content Safety Endpoint
+- [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
+  : Chat with an Azure AI Model
 
-## Image and Video Generation
+## Audio and speech
+
+Transcribe and translate research audio, including MAI-Transcribe models
+through LLM Speech, and synthesize text-to-speech audio files.
+
+- [`foundry_transcribe()`](https://farach.github.io/foundryR/reference/foundry_transcribe.md)
+  : Transcribe an audio file with Microsoft Foundry
+- [`foundry_translate_audio()`](https://farach.github.io/foundryR/reference/foundry_translate_audio.md)
+  : Translate an audio file with Microsoft Foundry
+- [`foundry_speak()`](https://farach.github.io/foundryR/reference/foundry_speak.md)
+  : Generate speech audio from text
+
+## Experimental media
 
 Generate and edit images with v1 preview image models, and manage
 preview video generation jobs.
@@ -155,7 +158,7 @@ preview video generation jobs.
 - [`foundry_video_download()`](https://farach.github.io/foundryR/reference/foundry_video_download.md)
   : Download Microsoft Foundry generated video content
 
-## Model Discovery
+## Model discovery
 
 Explore available model deployments in your Azure AI Foundry resource.
 

@@ -43,19 +43,23 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
+<li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
     <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
@@ -100,14 +104,13 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>foundryR integrates seamlessly with the <a href="https://www.tidymodels.org/" class="external-link">tidymodels</a> ecosystem through
+<p>foundryR integrates with <a href="https://www.tidymodels.org/" class="external-link">tidymodels</a> through
 <code><a href="../reference/step_foundry_embed.html">step_foundry_embed()</a></code>, a recipe step that converts text
-columns into embedding vectors. This enables you to incorporate
-state-of-the-art text representations into your machine learning
-pipelines alongside traditional preprocessing steps.</p>
+columns into embedding vectors. Use it when text should enter a model as
+numeric predictors rather than as bag-of-words counts.</p>
 </div>
 <div class="section level2">
-<h2 id="why-use-embeddings-in-ml-pipelines">Why Use Embeddings in ML Pipelines?<a class="anchor" aria-label="anchor" href="#why-use-embeddings-in-ml-pipelines"></a>
+<h2 id="why-use-embeddings-in-ml-pipelines">Why use embeddings in ML pipelines?<a class="anchor" aria-label="anchor" href="#why-use-embeddings-in-ml-pipelines"></a>
 </h2>
 <p>Traditional text features like bag-of-words or TF-IDF capture word
 frequencies but miss semantic meaning. Embeddings provide dense vector
@@ -132,8 +135,8 @@ part of your documented workflow</li>
 <strong>Consistent handling</strong>: Training and test data are
 processed identically</li>
 <li>
-<strong>Pipeline integration</strong>: Combine with other
-preprocessing steps seamlessly</li>
+<strong>Pipeline integration</strong>: Combine embeddings with other
+preprocessing steps</li>
 </ul>
 </div>
 <div class="section level2">
@@ -346,11 +349,42 @@ Some loss in semantic precision</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="cross-validation">Cross-Validation<a class="anchor" aria-label="anchor" href="#cross-validation"></a>
+<h2 id="resampling-caching-and-cost">Resampling, caching, and cost<a class="anchor" aria-label="anchor" href="#resampling-caching-and-cost"></a>
+</h2>
+<p><code><a href="../reference/step_foundry_embed.html">step_foundry_embed()</a></code> calls the embedding API when a
+recipe is prepared and when new data is baked. In a resampling workflow,
+each fold prepares its own recipe. That means the assessment and
+analysis sets can be embedded repeatedly across folds unless you
+precompute embeddings outside the recipe.</p>
+<p>There is no built-in cache in <code><a href="../reference/step_foundry_embed.html">step_foundry_embed()</a></code>. This
+keeps the recipe behavior explicit, but it also means cross-validation
+has a direct API cost. For large or repeated experiments, embed the text
+once with <code><a href="../reference/foundry_embed.html">foundry_embed()</a></code> or
+<code><a href="../reference/foundry_embed_batch.html">foundry_embed_batch()</a></code>, save the resulting numeric columns,
+and resample the saved embeddings.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">embedded_reviews</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span></span>
+<span>  <span class="va">reviews</span><span class="op">$</span><span class="va">review_text</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">embedding_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">embedded_reviews</span><span class="op">$</span><span class="va">embedding</span><span class="op">)</span></span>
+<span><span class="va">embedding_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html" class="external-link">as_tibble</a></span><span class="op">(</span><span class="va">embedding_matrix</span>, .name_repair <span class="op">=</span> <span class="st">"unique"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">precomputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span></span>
+<span>  <span class="va">reviews</span><span class="op">[</span><span class="st">"sentiment"</span><span class="op">]</span>,</span>
+<span>  <span class="va">embedding_cols</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Use the recipe step when preprocessing needs to be self-contained.
+Precompute when cost, rate limits, or repeated resampling runs matter
+more.</p>
+</div>
+<div class="section level2">
+<h2 id="cross-validation">Cross-validation<a class="anchor" aria-label="anchor" href="#cross-validation"></a>
 </h2>
 <p>Embeddings are generated during <code><a href="https://recipes.tidymodels.org/reference/prep.html" class="external-link">prep()</a></code>, so
-cross-validation works correctly:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+cross-validation follows the usual tidymodels recipe lifecycle:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create CV folds</span></span>
 <span><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu">vfold_cv</span><span class="op">(</span><span class="va">train_data</span>, v <span class="op">=</span> <span class="fl">5</span>, strata <span class="op">=</span> <span class="va">sentiment</span><span class="op">)</span></span>
 <span></span>
@@ -370,10 +404,10 @@ cross-validation works correctly:</p>
 <span><span class="co">#&gt; 2 roc_auc  binary     0.925     5  0.0433 Preprocessor1_Model1</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="hyperparameter-tuning">Hyperparameter Tuning<a class="anchor" aria-label="anchor" href="#hyperparameter-tuning"></a>
+<h2 id="hyperparameter-tuning">Hyperparameter tuning<a class="anchor" aria-label="anchor" href="#hyperparameter-tuning"></a>
 </h2>
 <p>Tune the embedding dimensions alongside model hyperparameters:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Recipe with tunable dimensions</span></span>
 <span><span class="va">tunable_recipe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span></span>
@@ -406,7 +440,7 @@ cross-validation works correctly:</p>
 <span>  levels <span class="op">=</span> <span class="fl">3</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Tune (this will take a while due to API calls)</span></span>
+<span><span class="co"># Tune only after estimating the API calls and cost.</span></span>
 <span><span class="va">tune_results</span> <span class="op">&lt;-</span> <span class="fu">tune_grid</span><span class="op">(</span></span>
 <span>  <span class="va">tunable_workflow</span>,</span>
 <span>  resamples <span class="op">=</span> <span class="va">folds</span>,</span>
@@ -418,7 +452,7 @@ cross-validation works correctly:</p>
 <span><span class="fu">show_best</span><span class="op">(</span><span class="va">tune_results</span>, metric <span class="op">=</span> <span class="st">"roc_auc"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="performance-considerations">Performance Considerations<a class="anchor" aria-label="anchor" href="#performance-considerations"></a>
+<h2 id="performance-considerations">Performance considerations<a class="anchor" aria-label="anchor" href="#performance-considerations"></a>
 </h2>
 <div class="section level3">
 <h3 id="api-rate-limits">API Rate Limits<a class="anchor" aria-label="anchor" href="#api-rate-limits"></a>
@@ -426,34 +460,29 @@ cross-validation works correctly:</p>
 <p>Embedding generation makes API calls for each text. For large
 datasets:</p>
 <ol style="list-style-type: decimal">
-<li>
-<strong>Use batch processing</strong>: Consider using
-<code><a href="../reference/foundry_embed_batch.html">foundry_embed_batch()</a></code> outside the recipe for large training
-sets</li>
-<li>
-<strong>Cache embeddings</strong>: Pre-compute and store embeddings
-for frequently used datasets</li>
-<li>
-<strong>Reduce cross-validation folds</strong>: Fewer folds mean
-fewer API calls during tuning</li>
+<li>Use batch processing with <code><a href="../reference/foundry_embed_batch.html">foundry_embed_batch()</a></code> outside
+the recipe for large training sets.</li>
+<li>Precompute and store embeddings for frequently used datasets.</li>
+<li>Reduce cross-validation folds when repeated API calls are not worth
+the extra precision.</li>
 </ol>
 </div>
 <div class="section level3">
-<h3 id="cost-management">Cost Management<a class="anchor" aria-label="anchor" href="#cost-management"></a>
+<h3 id="cost-management">Cost management<a class="anchor" aria-label="anchor" href="#cost-management"></a>
 </h3>
 <p>Each embedding call incurs API costs. Strategies to manage costs:</p>
 <ul>
 <li>Start with smaller dimension sizes during development</li>
 <li>Use a subset of data for initial experimentation</li>
-<li>Pre-compute embeddings for production datasets</li>
+<li>Precompute embeddings for production datasets</li>
 </ul>
 </div>
 <div class="section level3">
-<h3 id="memory-usage">Memory Usage<a class="anchor" aria-label="anchor" href="#memory-usage"></a>
+<h3 id="memory-usage">Memory usage<a class="anchor" aria-label="anchor" href="#memory-usage"></a>
 </h3>
 <p>With 1,536 dimensions per text and thousands of observations, memory
 can grow quickly:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Estimate memory for 10,000 texts</span></span>
 <span><span class="va">n_texts</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
 <span><span class="va">n_dims</span> <span class="op">&lt;-</span> <span class="fl">1536</span></span>
@@ -469,40 +498,40 @@ can grow quickly:</p>
 <h2 id="troubleshooting">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
 </h2>
 <div class="section level3">
-<h3 id="column-already-exists-error">“Column already exists” Error<a class="anchor" aria-label="anchor" href="#column-already-exists-error"></a>
+<h3 id="column-already-exists-error">“Column already exists” error<a class="anchor" aria-label="anchor" href="#column-already-exists-error"></a>
 </h3>
 <p>If you run <code><a href="https://recipes.tidymodels.org/reference/prep.html" class="external-link">prep()</a></code> multiple times, column names may
 conflict:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use a unique prefix if reusing recipes</span></span>
 <span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span><span class="va">text</span>, model <span class="op">=</span> <span class="st">"my-model"</span>,</span>
 <span>                     prefix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"v"</span>, <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%H%M%S"</span><span class="op">)</span>, <span class="st">"_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="rate-limit-errors">Rate Limit Errors<a class="anchor" aria-label="anchor" href="#rate-limit-errors"></a>
+<h3 id="rate-limit-errors">Rate limit errors<a class="anchor" aria-label="anchor" href="#rate-limit-errors"></a>
 </h3>
 <p>If you hit rate limits during prep:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Prepare in smaller batches</span></span>
 <span><span class="va">small_sample</span> <span class="op">&lt;-</span> <span class="va">reviews</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_sample</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="va">prepped</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/prep.html" class="external-link">prep</a></span><span class="op">(</span><span class="va">recipe_spec</span>, training <span class="op">=</span> <span class="va">small_sample</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="missing-credentials">Missing Credentials<a class="anchor" aria-label="anchor" href="#missing-credentials"></a>
+<h3 id="missing-credentials">Missing credentials<a class="anchor" aria-label="anchor" href="#missing-credentials"></a>
 </h3>
 <p>Ensure credentials are set before creating recipes:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check setup</span></span>
 <span><span class="fu"><a href="../reference/foundry_check_setup.html">foundry_check_setup</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Set credentials if needed</span></span>
-<span><span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span><span class="op">)</span></span>
+<span><span class="co"># Set credentials if needed.</span></span>
+<span><span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/foundry_set_key.html">foundry_set_key</a></span><span class="op">(</span><span class="st">"your-api-key"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="next-steps">Next Steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
+<h2 id="next-steps">Next steps<a class="anchor" aria-label="anchor" href="#next-steps"></a>
 </h2>
 <ul>
 <li>Learn about <a href="embeddings.html">Text Embeddings</a> in

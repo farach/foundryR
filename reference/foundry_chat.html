@@ -21,19 +21,23 @@ Returns a tibble with the assistant's response and usage metadata."><meta proper
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
     <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
@@ -79,6 +83,7 @@ Returns a tibble with the assistant's response and usage metadata.</p>
 <span>  frequency_penalty <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  presence_penalty <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  stop <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  reasoning_effort <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_version <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -138,6 +143,11 @@ parameter for newer models (gpt-4o, etc.). Takes precedence over <code>max_token
 <dd><p>Character vector. Up to 4 sequences where the API will stop generating.</p></dd>
 
 
+<dt id="arg-reasoning-effort">reasoning_effort<a class="anchor" aria-label="anchor" href="#arg-reasoning-effort"></a></dt>
+<dd><p>Character. Optional reasoning effort (<code>"low"</code>,
+<code>"medium"</code>, or <code>"high"</code>) for reasoning models that accept this control.</p></dd>
+
+
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
 <dd><p>Character. Optional API key override.</p></dd>
 
@@ -169,6 +179,12 @@ parameter for newer models (gpt-4o, etc.). Takes precedence over <code>max_token
 
 <dt>completion_tokens</dt>
 <dd><p>Integer. Tokens in the response.</p></dd>
+
+<dt>reasoning_tokens</dt>
+<dd><p>Integer. Hidden reasoning tokens, when reported.</p></dd>
+
+<dt>cached_input_tokens</dt>
+<dd><p>Integer. Cached prompt tokens, when reported.</p></dd>
 
 <dt>total_tokens</dt>
 <dd><p>Integer. Total tokens used.</p></dd>

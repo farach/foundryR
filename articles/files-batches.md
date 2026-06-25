@@ -4,13 +4,13 @@
 
 library(foundryR)
 #> 
-#> foundryR - Tidy Interface to Azure AI Foundry
-#> ==============================================
+#> foundryR - Tidy Azure AI Foundry workflows
+#> ==========================================
 #> * Check your setup:
 #>   foundry_check_setup()
 #> * Set your API key: foundry_set_key()
 #> * Set your endpoint: foundry_set_endpoint()
-#> * Get started: ?foundry_chat, ?foundry_embed
+#> * Get started: ?foundry_response, ?foundry_groundedness
 #> 
 #> New to Azure? See the README for setup instructions.
 ```
@@ -53,7 +53,7 @@ request_file
 #> # A tibble: 1 × 3
 #>   path                                   requests endpoint     
 #>   <chr>                                     <int> <chr>        
-#> 1 /tmp/RtmpF3s083/file20c86ff1f4a6.jsonl        3 /v1/responses
+#> 1 /tmp/RtmpXHGkAB/file20406d641bda.jsonl        3 /v1/responses
 head(readLines(jsonl), 2)
 #> [1] "{\"custom_id\":\"resp-001\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-4.1\",\"input\":\"The workshop was clear and practical.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"     
 #> [2] "{\"custom_id\":\"resp-002\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-4.1\",\"input\":\"I liked the examples but wanted more time.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"
@@ -104,7 +104,7 @@ file
 #> # A tibble: 1 × 6
 #>   file_id     filename               purpose status    bytes created_at         
 #>   <chr>       <chr>                  <chr>   <chr>     <dbl> <dttm>             
-#> 1 file_abc123 file20c86ff1f4a6.jsonl batch   processed   672 2026-06-24 12:00:00
+#> 1 file_abc123 file20406d641bda.jsonl batch   processed   672 2026-06-24 12:00:00
 batch
 #> # A tibble: 1 × 10
 #>   batch_id     status     endpoint    input_file_id output_file_id error_file_id

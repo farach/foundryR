@@ -19,19 +19,23 @@
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
     <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
@@ -57,7 +61,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="setup-configuration">Setup &amp; Configuration<a class="anchor" aria-label="anchor" href="#setup-configuration"></a></h2>
+      <h2 id="setup-and-configuration">Setup and configuration<a class="anchor" aria-label="anchor" href="#setup-and-configuration"></a></h2>
 
       <div class="section-desc"><p>Configure your Azure AI Foundry credentials and verify your setup. These functions manage authentication for all API calls.</p></div>
 
@@ -115,9 +119,9 @@
         </dt>
         <dd>Set Microsoft Foundry Speech API key</dd>
       </dl></div><div class="section level2">
-      <h2 id="chat-completions">Chat Completions<a class="anchor" aria-label="anchor" href="#chat-completions"></a></h2>
+      <h2 id="content-safety">Content Safety<a class="anchor" aria-label="anchor" href="#content-safety"></a></h2>
 
-      <div class="section-desc"><p>Interact with large language models like GPT-4, Claude, Llama, and more. Send messages and receive AI-generated responses as tidy tibbles.</p></div>
+      <div class="section-desc"><p>Azure AI Content Safety features for responsible AI pipelines. Moderate content, detect hallucinations, and protect against prompt injection.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -126,14 +130,42 @@
 
       <dl><dt>
 
-          <code><a href="foundry_chat.html">foundry_chat()</a></code>
+          <code><a href="foundry_moderate.html">foundry_moderate()</a></code>
 
         </dt>
-        <dd>Chat with an Azure AI Model</dd>
-      </dl></div><div class="section level2">
-      <h2 id="responses-api">Responses API<a class="anchor" aria-label="anchor" href="#responses-api"></a></h2>
+        <dd>Moderate Text Content</dd>
 
-      <div class="section-desc"><p>Use Microsoft Foundry’s newer v1 Responses API for stateful turns, tool calls, schema-constrained extraction, and web-grounded answers.</p></div>
+        <dt>
+
+          <code><a href="foundry_groundedness.html">foundry_groundedness()</a></code>
+
+        </dt>
+        <dd>Detect Groundedness of LLM Responses</dd>
+
+        <dt>
+
+          <code><a href="foundry_shield.html">foundry_shield()</a></code>
+
+        </dt>
+        <dd>Shield Prompt from Injection Attacks</dd>
+
+        <dt>
+
+          <code><a href="foundry_set_content_safety_key.html">foundry_set_content_safety_key()</a></code>
+
+        </dt>
+        <dd>Set Azure Content Safety API Key</dd>
+
+        <dt>
+
+          <code><a href="foundry_set_content_safety_endpoint.html">foundry_set_content_safety_endpoint()</a></code>
+
+        </dt>
+        <dd>Set Azure Content Safety Endpoint</dd>
+      </dl></div><div class="section level2">
+      <h2 id="responses-api-and-extraction">Responses API and extraction<a class="anchor" aria-label="anchor" href="#responses-api-and-extraction"></a></h2>
+
+      <div class="section-desc"><p>Use Microsoft Foundry’s newer v1 Responses API for stateful turns, user-defined tools, schema-constrained extraction, and web-grounded answers.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -146,6 +178,20 @@
 
         </dt>
         <dd>Create a response with the Azure OpenAI Responses API</dd>
+
+        <dt>
+
+          <code><a href="foundry_agent.html">foundry_agent()</a></code>
+
+        </dt>
+        <dd>Run a bounded Responses API tool-calling loop</dd>
+
+        <dt>
+
+          <code><a href="foundry_tool.html">foundry_tool()</a></code>
+
+        </dt>
+        <dd>Define an R function as a Responses API tool</dd>
 
         <dt>
 
@@ -175,9 +221,9 @@
         </dt>
         <dd>Search the web with the Responses API</dd>
       </dl></div><div class="section level2">
-      <h2 id="audio-and-speech">Audio and Speech<a class="anchor" aria-label="anchor" href="#audio-and-speech"></a></h2>
+      <h2 id="text-embeddings">Text embeddings<a class="anchor" aria-label="anchor" href="#text-embeddings"></a></h2>
 
-      <div class="section-desc"><p>Transcribe and translate research audio, including MAI-Transcribe models through LLM Speech, and synthesize text-to-speech audio files.</p></div>
+      <div class="section-desc"><p>Generate vector embeddings for semantic search, clustering, and machine learning. Includes batch processing and similarity computation.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -186,24 +232,24 @@
 
       <dl><dt>
 
-          <code><a href="foundry_transcribe.html">foundry_transcribe()</a></code>
+          <code><a href="foundry_embed.html">foundry_embed()</a></code>
 
         </dt>
-        <dd>Transcribe an audio file with Microsoft Foundry</dd>
+        <dd>Generate Text Embeddings</dd>
 
         <dt>
 
-          <code><a href="foundry_translate_audio.html">foundry_translate_audio()</a></code>
+          <code><a href="foundry_embed_batch.html">foundry_embed_batch()</a></code>
 
         </dt>
-        <dd>Translate an audio file with Microsoft Foundry</dd>
+        <dd>Generate Text Embeddings in Parallel Batches</dd>
 
         <dt>
 
-          <code><a href="foundry_speak.html">foundry_speak()</a></code>
+          <code><a href="foundry_similarity.html">foundry_similarity()</a></code>
 
         </dt>
-        <dd>Generate speech audio from text</dd>
+        <dd>Compute Cosine Similarity Between Embeddings</dd>
       </dl></div><div class="section level2">
       <h2 id="files-and-batch-api">Files and Batch API<a class="anchor" aria-label="anchor" href="#files-and-batch-api"></a></h2>
 
@@ -284,39 +330,9 @@
         </dt>
         <dd>Cancel a Microsoft Foundry batch</dd>
       </dl></div><div class="section level2">
-      <h2 id="text-embeddings">Text Embeddings<a class="anchor" aria-label="anchor" href="#text-embeddings"></a></h2>
+      <h2 id="tidymodels-integration">tidymodels integration<a class="anchor" aria-label="anchor" href="#tidymodels-integration"></a></h2>
 
-      <div class="section-desc"><p>Generate vector embeddings for semantic search, clustering, and machine learning. Includes batch processing and similarity computation.</p></div>
-
-      <dl></dl></div><div class="section level2">
-
-
-
-
-      <dl><dt>
-
-          <code><a href="foundry_embed.html">foundry_embed()</a></code>
-
-        </dt>
-        <dd>Generate Text Embeddings</dd>
-
-        <dt>
-
-          <code><a href="foundry_embed_batch.html">foundry_embed_batch()</a></code>
-
-        </dt>
-        <dd>Generate Text Embeddings in Parallel Batches</dd>
-
-        <dt>
-
-          <code><a href="foundry_similarity.html">foundry_similarity()</a></code>
-
-        </dt>
-        <dd>Compute Cosine Similarity Between Embeddings</dd>
-      </dl></div><div class="section level2">
-      <h2 id="tidymodels-integration">tidymodels Integration<a class="anchor" aria-label="anchor" href="#tidymodels-integration"></a></h2>
-
-      <div class="section-desc"><p>Seamlessly integrate text embeddings into your tidymodels workflows using recipe steps.</p></div>
+      <div class="section-desc"><p>Add Foundry text embeddings to tidymodels recipes.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -358,9 +374,9 @@
         </dt>
         <dd>Required packages for step_foundry_embed</dd>
       </dl></div><div class="section level2">
-      <h2 id="content-safety">Content Safety<a class="anchor" aria-label="anchor" href="#content-safety"></a></h2>
+      <h2 id="chat-completions">Chat completions<a class="anchor" aria-label="anchor" href="#chat-completions"></a></h2>
 
-      <div class="section-desc"><p>Azure AI Content Safety features for responsible AI deployment. Moderate content, detect hallucinations, and protect against prompt injection.</p></div>
+      <div class="section-desc"><p>Send chat-completion requests to Azure AI Foundry deployments.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -369,40 +385,42 @@
 
       <dl><dt>
 
-          <code><a href="foundry_moderate.html">foundry_moderate()</a></code>
+          <code><a href="foundry_chat.html">foundry_chat()</a></code>
 
         </dt>
-        <dd>Moderate Text Content</dd>
-
-        <dt>
-
-          <code><a href="foundry_groundedness.html">foundry_groundedness()</a></code>
-
-        </dt>
-        <dd>Detect Groundedness of LLM Responses</dd>
-
-        <dt>
-
-          <code><a href="foundry_shield.html">foundry_shield()</a></code>
-
-        </dt>
-        <dd>Shield Prompt from Injection Attacks</dd>
-
-        <dt>
-
-          <code><a href="foundry_set_content_safety_key.html">foundry_set_content_safety_key()</a></code>
-
-        </dt>
-        <dd>Set Azure Content Safety API Key</dd>
-
-        <dt>
-
-          <code><a href="foundry_set_content_safety_endpoint.html">foundry_set_content_safety_endpoint()</a></code>
-
-        </dt>
-        <dd>Set Azure Content Safety Endpoint</dd>
+        <dd>Chat with an Azure AI Model</dd>
       </dl></div><div class="section level2">
-      <h2 id="image-and-video-generation">Image and Video Generation<a class="anchor" aria-label="anchor" href="#image-and-video-generation"></a></h2>
+      <h2 id="audio-and-speech">Audio and speech<a class="anchor" aria-label="anchor" href="#audio-and-speech"></a></h2>
+
+      <div class="section-desc"><p>Transcribe and translate research audio, including MAI-Transcribe models through LLM Speech, and synthesize text-to-speech audio files.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="foundry_transcribe.html">foundry_transcribe()</a></code>
+
+        </dt>
+        <dd>Transcribe an audio file with Microsoft Foundry</dd>
+
+        <dt>
+
+          <code><a href="foundry_translate_audio.html">foundry_translate_audio()</a></code>
+
+        </dt>
+        <dd>Translate an audio file with Microsoft Foundry</dd>
+
+        <dt>
+
+          <code><a href="foundry_speak.html">foundry_speak()</a></code>
+
+        </dt>
+        <dd>Generate speech audio from text</dd>
+      </dl></div><div class="section level2">
+      <h2 id="experimental-media">Experimental media<a class="anchor" aria-label="anchor" href="#experimental-media"></a></h2>
 
       <div class="section-desc"><p>Generate and edit images with v1 preview image models, and manage preview video generation jobs.</p></div>
 
@@ -488,7 +506,7 @@
         </dt>
         <dd>Download Microsoft Foundry generated video content</dd>
       </dl></div><div class="section level2">
-      <h2 id="model-discovery">Model Discovery<a class="anchor" aria-label="anchor" href="#model-discovery"></a></h2>
+      <h2 id="model-discovery">Model discovery<a class="anchor" aria-label="anchor" href="#model-discovery"></a></h2>
 
       <div class="section-desc"><p>Explore available model deployments in your Azure AI Foundry resource.</p></div>
 

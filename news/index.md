@@ -7,6 +7,27 @@
 Initial development release of foundryR, a tidy interface to Microsoft
 Azure AI Foundry.
 
+- License metadata now uses a single MIT license file so GitHub does not
+  report mixed license files (overhaul brief).
+- Media generation helpers are now grouped and described as experimental
+  media while the core docs emphasize research, annotation, embeddings,
+  batch, Responses API, and Content Safety workflows (overhaul brief).
+- [`foundry_agent()`](https://farach.github.io/foundryR/reference/foundry_agent.md)
+  and
+  [`foundry_tool()`](https://farach.github.io/foundryR/reference/foundry_tool.md)
+  add a bounded Responses API function-calling loop for user-defined R
+  tools, including single-call, multi-call, and iteration-cap handling
+  (overhaul brief).
+- [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
+  now accepts `reasoning_effort` and returns `reasoning_tokens` and
+  `cached_input_tokens` when chat-completions responses report those
+  fields (overhaul brief).
+- [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+  now accepts
+  [`foundry_tool()`](https://farach.github.io/foundryR/reference/foundry_tool.md)
+  objects in `tools`, strips local R function references from request
+  bodies, and returns `cached_input_tokens` when the Responses API
+  reports cached input tokens (overhaul brief).
 - [`foundry_batch_create()`](https://farach.github.io/foundryR/reference/foundry_batch_create.md),
   [`foundry_batches()`](https://farach.github.io/foundryR/reference/foundry_batches.md),
   [`foundry_batch_get()`](https://farach.github.io/foundryR/reference/foundry_batch_get.md),

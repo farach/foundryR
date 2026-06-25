@@ -4,13 +4,13 @@
 
 library(foundryR)
 #> 
-#> foundryR - Tidy Interface to Azure AI Foundry
-#> ==============================================
+#> foundryR - Tidy Azure AI Foundry workflows
+#> ==========================================
 #> * Check your setup:
 #>   foundry_check_setup()
 #> * Set your API key: foundry_set_key()
 #> * Set your endpoint: foundry_set_endpoint()
-#> * Get started: ?foundry_chat, ?foundry_embed
+#> * Get started: ?foundry_response, ?foundry_groundedness
 #> 
 #> New to Azure? See the README for setup instructions.
 ```

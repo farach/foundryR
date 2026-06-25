@@ -43,19 +43,23 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
+<li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
     <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
@@ -98,25 +102,20 @@
     
     
 <div class="section level2">
-<h2 id="what-are-embeddings">What Are Embeddings?<a class="anchor" aria-label="anchor" href="#what-are-embeddings"></a>
+<h2 id="what-embeddings-are-for">What embeddings are for<a class="anchor" aria-label="anchor" href="#what-embeddings-are-for"></a>
 </h2>
 <p>Embeddings are numerical representations of text that capture
 semantic meaning. When you convert text to an embedding, you get a
-vector of numbers (typically 1,536 or 3,072 dimensions depending on the
-model) where similar meanings result in similar vectors.</p>
-<p>This enables powerful capabilities:</p>
+vector of numbers (often 1,536 or 3,072 dimensions depending on the
+model). Texts with similar meanings tend to have similar vectors.</p>
+<p>Use embeddings when you need to:</p>
 <ul>
-<li>
-<strong>Semantic Search</strong>: Find documents related to a query
-by meaning, not just keywords</li>
-<li>
-<strong>Similarity Comparison</strong>: Measure how similar two
-pieces of text are</li>
-<li>
-<strong>Clustering</strong>: Group related documents together</li>
-<li>
-<strong>Classification</strong>: Use embeddings as features for
-machine learning models</li>
+<li>Find documents related to a query by meaning, not only
+keywords.</li>
+<li>Measure how similar two pieces of text are.</li>
+<li>Cluster open-ended responses into themes.</li>
+<li>Find near-duplicate responses or records.</li>
+<li>Feed text-derived numeric predictors into downstream models.</li>
 </ul>
 <p>Unlike keyword matching, embeddings understand that “automobile” and
 “car” are semantically similar, even though they share no letters.</p>

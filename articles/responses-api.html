@@ -43,19 +43,23 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
+<li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
     <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
@@ -108,7 +112,7 @@ the model deployment in the JSON body. It also adds stateful response
 chaining, built-in tools, structured output formats, and richer output
 metadata.</p>
 <p>foundryR wraps this with <code><a href="../reference/foundry_response.html">foundry_response()</a></code> while
-preserving the package’s tidy interface: generated text, citations, tool
+keeping the package’s tidy interface: generated text, citations, tool
 calls, token usage, and the raw response are returned as tibble
 columns.</p>
 </div>
@@ -118,7 +122,7 @@ columns.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/foundry_set_key.html">foundry_set_key</a></span><span class="op">(</span><span class="st">"your-api-key"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
@@ -138,7 +142,9 @@ present</li>
 <li>
 <code>tool_calls</code>: a list-column of tool calls, such as
 web-search calls</li>
-<li>token usage columns and a <code>raw_response</code> list-column</li>
+<li>token usage columns, including reasoning and cached input tokens
+when the API reports them</li>
+<li>a <code>raw_response</code> list-column</li>
 </ul>
 </div>
 <div class="section level2">
@@ -172,6 +178,9 @@ researchers who need to turn free text into analyzable variables. You
 provide a JSON Schema as an R list; foundryR sends it through the
 Responses API structured output format and returns one row per input
 text.</p>
+<p><code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> sends <code>strict = TRUE</code> in
+the JSON Schema format by default. For supported models, the service
+must return data that conforms to the schema.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"object"</span>,</span>
@@ -205,12 +214,73 @@ nested objects become list-columns, which work naturally with tidyverse
 workflows.</p>
 </div>
 <div class="section level2">
+<h2 id="user-defined-r-tools">User-defined R tools<a class="anchor" aria-label="anchor" href="#user-defined-r-tools"></a>
+</h2>
+<p>The Responses API function-calling contract uses tool definitions
+with <code>type = "function"</code> and follow-up tool outputs with
+<code>type = "function_call_output"</code> plus a matching
+<code>call_id</code>. <code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> builds the tool schema
+and keeps the R function reference for local execution.
+<code><a href="../reference/foundry_agent.html">foundry_agent()</a></code> runs the bounded call, execute,
+return-output loop.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">get_weather</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">location</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>location <span class="op">=</span> <span class="va">location</span>, temperature <span class="op">=</span> <span class="st">"70 F"</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">weather_tool</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_tool.html">foundry_tool</a></span><span class="op">(</span></span>
+<span>  <span class="va">get_weather</span>,</span>
+<span>  description <span class="op">=</span> <span class="st">"Get weather for a location"</span>,</span>
+<span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    type <span class="op">=</span> <span class="st">"object"</span>,</span>
+<span>    properties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>location <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"string"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    required <span class="op">=</span> <span class="st">"location"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">turns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_agent.html">foundry_agent</a></span><span class="op">(</span></span>
+<span>  <span class="st">"What is the weather in San Francisco?"</span>,</span>
+<span>  tools <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">weather_tool</span><span class="op">)</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"my-gpt4"</span>,</span>
+<span>  max_iterations <span class="op">=</span> <span class="fl">4</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">turns</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iteration"</span>, <span class="st">"final"</span>, <span class="st">"output_text"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">turns</span><span class="op">$</span><span class="va">tool_results</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p>The loop stops with an error if the model continues requesting tools
+after <code>max_iterations</code>. This protects batch jobs from
+unbounded tool use.</p>
+</div>
+<div class="section level2">
+<h2 id="remote-mcp-tools">Remote MCP tools<a class="anchor" aria-label="anchor" href="#remote-mcp-tools"></a>
+</h2>
+<p>Microsoft documents remote Model Context Protocol tools for the
+Responses API. foundryR does not add a separate MCP helper yet because
+<code><a href="../reference/foundry_response.html">foundry_response()</a></code> already accepts raw Responses API tool
+objects:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mcp_tool</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>  type <span class="op">=</span> <span class="st">"mcp"</span>,</span>
+<span>  server_label <span class="op">=</span> <span class="st">"my_mcp_server"</span>,</span>
+<span>  server_url <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"MY_MCP_SERVER_URL"</span><span class="op">)</span>,</span>
+<span>  require_approval <span class="op">=</span> <span class="st">"never"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Use the MCP server if it helps answer the question."</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"my-gpt4"</span>,</span>
+<span>  tools <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mcp_tool</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Only attach MCP servers you trust and whose data-handling behavior
+your organization has approved.</p>
+</div>
+<div class="section level2">
 <h2 id="web-grounded-answers-with-citations">Web-grounded answers with citations<a class="anchor" aria-label="anchor" href="#web-grounded-answers-with-citations"></a>
 </h2>
 <p><code><a href="../reference/foundry_web_search.html">foundry_web_search()</a></code> uses the Responses API
 <code>web_search</code> tool and parses URL citations into a tidy
 list-column:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">answer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_web_search.html">foundry_web_search</a></span><span class="op">(</span></span>
 <span>  <span class="st">"What changed recently in Azure AI Foundry Responses API?"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span>,</span>
@@ -221,7 +291,7 @@ list-column:</p>
 <span><span class="va">answer</span><span class="op">$</span><span class="va">citations</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">answer</span><span class="op">$</span><span class="va">tool_calls</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
 <p>You can optionally provide approximate location fields:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_web_search.html">foundry_web_search</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Find a recent AI research event near me."</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span>,</span>
@@ -240,6 +310,33 @@ does not apply to data sent to these services, data can leave compliance
 and geographic boundaries, and tool usage can incur additional costs.
 Avoid sending secrets or sensitive research data in web-search
 prompts.</p>
+</div>
+<div class="section level2">
+<h2 id="reasoning-models-and-token-accounting">Reasoning models and token accounting<a class="anchor" aria-label="anchor" href="#reasoning-models-and-token-accounting"></a>
+</h2>
+<p><code><a href="../reference/foundry_response.html">foundry_response()</a></code> accepts <code>reasoning_effort</code>
+and sends it as <code>reasoning = list(effort = ...)</code>, the
+Responses API shape documented by Microsoft for reasoning models.
+<code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> accepts the chat-completions shape,
+<code>reasoning_effort = "medium"</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Compare the two arguments and identify the weaker premise."</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"my-reasoning-deployment"</span>,</span>
+<span>  reasoning_effort <span class="op">=</span> <span class="st">"medium"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The returned tibble includes <code>reasoning_tokens</code> and
+<code>cached_input_tokens</code> when the API reports them. These fields
+matter for cost review because reasoning tokens may be billed even when
+they are not visible in <code>output_text</code>.</p>
+</div>
+<div class="section level2">
+<h2 id="streaming">Streaming<a class="anchor" aria-label="anchor" href="#streaming"></a>
+</h2>
+<p>The Azure OpenAI Responses API supports Server-Sent Events streaming,
+but foundryR does not implement streaming. The package focuses on
+reproducible, tibble-returning analytical workflows. Use ellmer when you
+need interactive streaming chat in R.</p>
 </div>
 <div class="section level2">
 <h2 id="when-to-use-foundry_chat-vs-foundry_response">When to use <code>foundry_chat()</code> vs

@@ -29,9 +29,12 @@ Invisibly returns TRUE if endpoint was set successfully.
 
 ``` r
 if (FALSE) { # \dontrun{
-foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT")
+foundry_set_content_safety_endpoint(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"))
 
 # Store permanently
-foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT", store = TRUE)
+foundry_set_content_safety_endpoint(
+  Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"),
+  store = TRUE
+)
 } # }
 ```

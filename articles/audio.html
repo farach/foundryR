@@ -43,19 +43,23 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
+<li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
     <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
@@ -100,13 +104,13 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; foundryR - Tidy Interface to Azure AI Foundry</span></span>
-<span><span class="co">#&gt; ==============================================</span></span>
+<span><span class="co">#&gt; foundryR - Tidy Azure AI Foundry workflows</span></span>
+<span><span class="co">#&gt; ==========================================</span></span>
 <span><span class="co">#&gt; * Check your setup:</span></span>
 <span><span class="co">#&gt;   foundry_check_setup()</span></span>
 <span><span class="co">#&gt; * Set your API key: foundry_set_key()</span></span>
 <span><span class="co">#&gt; * Set your endpoint: foundry_set_endpoint()</span></span>
-<span><span class="co">#&gt; * Get started: ?foundry_chat, ?foundry_embed</span></span>
+<span><span class="co">#&gt; * Get started: ?foundry_response, ?foundry_groundedness</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; New to Azure? See the README for setup instructions.</span></span></code></pre></div>
 <p>Audio is one of the most useful Foundry additions for researchers.
@@ -119,7 +123,7 @@ for downstream coding or analysis.</p>
 <p>MAI-Transcribe models are exposed through the LLM Speech API.
 Configure the Speech resource once per session:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_speech_endpoint.html">foundry_set_speech_endpoint</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_SPEECH_ENDPOINT"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_speech_endpoint.html">foundry_set_speech_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_SPEECH_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/foundry_set_speech_key.html">foundry_set_speech_key</a></span><span class="op">(</span><span class="st">"your-speech-key"</span><span class="op">)</span></span></code></pre></div>
 <p>For keyless authentication, set a bearer token instead of a key:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">

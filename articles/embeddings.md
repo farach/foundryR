@@ -1,20 +1,19 @@
 # Working with Embeddings
 
-## What Are Embeddings?
+## What embeddings are for
 
 Embeddings are numerical representations of text that capture semantic
 meaning. When you convert text to an embedding, you get a vector of
-numbers (typically 1,536 or 3,072 dimensions depending on the model)
-where similar meanings result in similar vectors.
+numbers (often 1,536 or 3,072 dimensions depending on the model). Texts
+with similar meanings tend to have similar vectors.
 
-This enables powerful capabilities:
+Use embeddings when you need to:
 
-- **Semantic Search**: Find documents related to a query by meaning, not
-  just keywords
-- **Similarity Comparison**: Measure how similar two pieces of text are
-- **Clustering**: Group related documents together
-- **Classification**: Use embeddings as features for machine learning
-  models
+- Find documents related to a query by meaning, not only keywords.
+- Measure how similar two pieces of text are.
+- Cluster open-ended responses into themes.
+- Find near-duplicate responses or records.
+- Feed text-derived numeric predictors into downstream models.
 
 Unlike keyword matching, embeddings understand that “automobile” and
 “car” are semantically similar, even though they share no letters.

@@ -26,6 +26,6 @@ Invisibly returns the endpoint that was set.
 
 ``` r
 if (FALSE) { # \dontrun{
-foundry_set_speech_endpoint("AZURE_FOUNDRY_SPEECH_ENDPOINT")
+foundry_set_speech_endpoint(Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT"))
 } # }
 ```

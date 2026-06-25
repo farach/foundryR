@@ -2,17 +2,16 @@
 
 ## Introduction
 
-Deploying AI responsibly requires safeguards against harmful content,
-hallucinations, and adversarial attacks. foundryR integrates with
-**Azure AI Content Safety** to provide enterprise-grade responsible AI
-features: - **Content Moderation**: Detect harmful content across
-multiple categories - **Groundedness Detection**: Identify when AI
-responses are not supported by source documents (hallucination
-detection) - **Prompt Shields**: Protect against prompt injection and
-jailbreak attempts
+Responsible AI work needs safeguards against harmful content,
+unsupported model claims, and adversarial prompts. foundryR integrates
+with **Azure AI Content Safety** and returns each check as a tibble: -
+**Content Moderation**: Detect harmful content across multiple
+categories - **Groundedness Detection**: Identify when AI responses are
+not supported by source documents (hallucination detection) - **Prompt
+Shields**: Protect against prompt injection and jailbreak attempts
 
-These features help you build AI applications that are safe,
-trustworthy, and compliant with organizational policies.
+These results can be logged, joined back to source records, and reviewed
+as part of an auditable R pipeline.
 
 ## Prerequisites
 
@@ -22,8 +21,8 @@ features in foundryR.
 
 ### Creating a Content Safety Resource
 
-1.  Go to the [Azure Portal](https://portal.azure.com)
-2.  Click **Create a resource** → search for **Content Safety**
+1.  Go to the Azure portal
+2.  Click **Create a resource**, then search for **Content Safety**
 3.  Select **Azure AI Content Safety** and click **Create**
 4.  Fill in the required fields:
     - **Subscription**: Your Azure subscription
@@ -33,7 +32,7 @@ features in foundryR.
     - **Name**: A unique name for your resource
     - **Pricing tier**: Free (F0) for testing or Standard (S0) for
       production
-5.  Click **Review + create** → **Create**
+5.  Click **Review + create**, then **Create**
 
 ### Configuring Credentials
 
@@ -45,7 +44,7 @@ and Endpoint** in the Azure Portal, then configure foundryR:
 library(foundryR)
 
 # Option A: Set for current session
-foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT")
+foundry_set_content_safety_endpoint(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"))
 foundry_set_content_safety_key("your-content-safety-key")
 
 # Option B: Set environment variables (recommended)
@@ -53,6 +52,14 @@ foundry_set_content_safety_key("your-content-safety-key")
 # AZURE_CONTENT_SAFETY_ENDPOINT=<your Content Safety endpoint URL>
 # AZURE_CONTENT_SAFETY_KEY=your-content-safety-key
 ```
+
+If your organization uses Microsoft Entra ID for Azure OpenAI calls,
+keep the same operational pattern for model calls and configure Content
+Safety resource access according to your Azure policy. The important
+boundary is data flow: core Content Safety calls go to your Content
+Safety resource, while web search in the Responses API can send query
+data to Grounding with Bing services outside your compliance and
+geographic boundary.
 
 ## Content Moderation with foundry_moderate()
 

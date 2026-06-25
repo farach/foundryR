@@ -16,8 +16,8 @@ Before using image generation, deploy a DALL-E model in Azure AI
 Foundry:
 
 1.  Go to [Azure AI Foundry](https://ai.azure.com) or the Azure Portal
-2.  Navigate to your Azure OpenAI resource → **Model deployments**
-3.  Click **+ Deploy model** → **Deploy base model**
+2.  Navigate to your Azure OpenAI resource, then **Model deployments**
+3.  Click **+ Deploy model**, then **Deploy base model**
 4.  Select **dall-e-3** (recommended) or **dall-e-2**
 5.  Give it a deployment name (e.g., `my-dalle`)
 
@@ -31,11 +31,11 @@ models. foundryR supports separate configuration for image generation:
 library(foundryR)
 
 # If DALL-E is on the same resource as your chat models:
-foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
 foundry_set_key("your-api-key")
 
 # If DALL-E is on a different resource:
-foundry_set_image_endpoint("AZURE_FOUNDRY_IMAGE_ENDPOINT")
+foundry_set_image_endpoint(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"))
 foundry_set_image_key("your-dalle-api-key")  # Only if different from main key
 
 # Set default DALL-E deployment

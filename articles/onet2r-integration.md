@@ -5,13 +5,12 @@
 The [onet2r](https://github.com/farach/onet2r) package provides access
 to the O\*NET Web Services API, which contains comprehensive U.S.
 occupational data including skills, knowledge requirements, tasks,
-abilities, and technology skills for thousands of occupations. By
-combining onet2r with foundryR’s AI capabilities, you can unlock
-powerful analytical workflows: - **Semantic search** for finding
-occupations by meaning, not just keywords - **Occupation clustering**
-based on skill and task similarities - **AI-powered analysis** of
-occupational data and career pathways - **Enhanced job matching** using
-embedding similarity
+abilities, and technology skills for thousands of occupations. Combining
+onet2r with foundryR supports analytical workflows such as: - **Semantic
+search** for finding occupations by meaning, not just keywords -
+**Occupation clustering** based on skill and task similarities -
+**AI-powered analysis** of occupational data and career pathways -
+**Enhanced job matching** using embedding similarity
 
 This vignette demonstrates practical integrations between these two
 packages. \## Prerequisites
@@ -37,7 +36,7 @@ library(dplyr)
 library(tidyr)
 
 # Set Azure AI Foundry credentials
-foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
 foundry_set_key("your-api-key")
 
 # onet2r will use credentials from environment variables:

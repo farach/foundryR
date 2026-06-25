@@ -1,240 +1,249 @@
-# Getting Started with foundryR
+# Getting started with foundryR
 
-## Introduction
+## What you need from Azure
 
-foundryR provides a tidy, API-first interface to Microsoft Azure AI
-Foundry. All functions return tibbles and integrate seamlessly with
-tidyverse and tidymodels workflows. This vignette will guide you through
-initial setup, configuration, and your first API calls.
+foundryR talks to deployed Azure AI Foundry and Azure OpenAI resources.
+Before writing R code, create or identify:
 
-## Prerequisites
+1.  An Azure OpenAI resource or Azure AI Foundry project with an OpenAI
+    endpoint.
+2.  At least one chat or Responses API deployment, for example
+    `gpt-4o-mini`.
+3.  An embedding deployment, for example `text-embedding-3-small`, if
+    you plan to use embeddings.
+4.  A Content Safety resource if you plan to use moderation,
+    groundedness, or prompt-shield checks.
+5.  Either API keys or a Microsoft Entra ID token.
 
-Before using foundryR, you need to set up resources in Azure AI Foundry.
-This typically takes 5-10 minutes and involves:
+In the Azure portal, open your Azure OpenAI resource, then use **Keys
+and Endpoint** to copy the endpoint URL and an API key. In Azure AI
+Foundry, use the deployments page to create model deployments and record
+their deployment names.
 
-1.  Creating an Azure OpenAI resource in the Azure Portal
-2.  Deploying at least one model (e.g., `gpt-4o-mini` for chat,
-    `text-embedding-3-small` for embeddings)
-3.  Obtaining your endpoint URL and API key
+> **Deployment name vs base model name**
+>
+> The value you pass to `model =` is the deployment name you chose in
+> Azure, not necessarily the base model name. If you deploy base model
+> `gpt-4o-mini` with deployment name `my-gpt4`, use `model = "my-gpt4"`
+> in foundryR. The same rule applies to embedding deployments.
 
-For detailed step-by-step instructions, see the [foundryR
-README](https://github.com/farach/foundryR#prerequisites) which includes
-screenshots and guidance for each step.
-
-**Important**: The **deployment name** you create in Azure is what you
-pass to foundryR functions, not the base model name. For example, if you
-deploy `gpt-4o-mini` with deployment name `my-gpt4`, you would use
-`model = "my-gpt4"` in your R code.
-
-## Installation
-
-Install foundryR from GitHub:
+## Install foundryR
 
 ``` r
 
-# Install pak if you don't have it
-# install.packages("pak")
-
+install.packages("pak")
 pak::pak("farach/foundryR")
 ```
 
-## Configuration
+After CRAN release, install with:
 
-### Setting Credentials
+``` r
 
-foundryR requires two pieces of information to connect to Azure AI
-Foundry:
+install.packages("foundryR")
+```
 
-- **Endpoint URL**: Your Azure OpenAI or Foundry project endpoint.
-- **API Key**: Found in the Azure Portal under “Keys and Endpoint”
+## Configure credentials
 
-There are two ways to configure these credentials:
-
-#### Option A: Session-Only (Interactive Use)
-
-Set credentials for the current R session only:
+Set credentials for the current R session:
 
 ``` r
 
 library(foundryR)
 
-foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
-foundry_set_key("your-api-key-here")
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
+foundry_set_key("your-api-key")
 ```
 
-#### Option B: Persistent Configuration (Recommended)
-
-Store credentials in your `.Renviron` file so they persist across
-sessions. You can do this manually or use the `store = TRUE` argument:
+For persistent local configuration, use `store = TRUE`:
 
 ``` r
 
-# Store credentials permanently
-foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT", store = TRUE)
-foundry_set_key("your-api-key-here", store = TRUE)
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), store = TRUE)
+foundry_set_key("your-api-key", store = TRUE)
 ```
 
-Alternatively, edit your `.Renviron` file directly:
+You can also edit `.Renviron` directly:
 
 ``` r
 
-# Open .Renviron for editing
 usethis::edit_r_environ()
 ```
 
-Add these lines to your `.Renviron`:
+Add values like these, then restart R:
 
-    AZURE_FOUNDRY_ENDPOINT=<your Foundry endpoint URL>
-    AZURE_FOUNDRY_KEY=your-api-key-here
+``` text
+AZURE_FOUNDRY_ENDPOINT=https://<resource-name>.openai.azure.com
+AZURE_FOUNDRY_KEY=your-api-key
+AZURE_FOUNDRY_MODEL=my-gpt4
+AZURE_FOUNDRY_EMBED_MODEL=my-embedding-deployment
+```
 
-After editing `.Renviron`, restart R for changes to take effect.
+## Keyless authentication with Microsoft Entra ID
 
-### Setting Default Models (Optional)
-
-If you frequently use the same models, you can set defaults to avoid
-specifying the `model` argument each time:
-
-    AZURE_FOUNDRY_MODEL=my-gpt4
-    AZURE_FOUNDRY_EMBED_MODEL=my-embeddings
-
-### Validating Your Setup
-
-Use
-[`foundry_check_setup()`](https://farach.github.io/foundryR/reference/foundry_check_setup.md)
-to verify your configuration:
+API keys are convenient for local testing. For enterprise environments
+that already use service principals, managed identity, or Azure
+role-based access control, use a Microsoft Entra ID bearer token:
 
 ``` r
 
-library(foundryR)
+foundry_set_token("your-entra-token")
+```
+
+foundryR sends the token in the `Authorization` header. If both a token
+and an API key are configured, the token takes precedence for supported
+calls.
+
+## Validate setup
+
+``` r
 
 foundry_check_setup()
 ```
 
-This function checks that your endpoint and API key are configured and
-provides helpful guidance if anything is missing. You can also test a
-specific deployment:
+Test a specific deployment:
 
 ``` r
 
-# Test that a specific deployment works
 foundry_check_setup(model = "my-gpt4")
 ```
 
-## Your First Chat
-
-Once configured, sending a chat message is straightforward with
-[`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md):
+If you need to see deployments exposed by the v1 model metadata
+endpoint, use:
 
 ``` r
 
-library(foundryR)
-
-# Simple question (replace "my-gpt4" with your deployment name)
-response <- foundry_chat("What is the tidyverse?", model = "my-gpt4")
-response
-#> # A tibble: 1 x 7
-#>   role      content                          model finish_reason prompt_tokens
-#>   <chr>     <chr>                            <chr> <chr>                 <int>
-#> 1 assistant The tidyverse is a collection... gpt-4 stop                     10
-#> # ... with 2 more variables: completion_tokens <int>, total_tokens <int>
-
-# Access the response text
-response$content
+models <- foundry_models()
+models[, c("id", "owned_by")]
 ```
 
-### Using a System Prompt
+## First Responses API call
 
-You can guide the model’s behavior with a system prompt:
+The Responses API is the newer v1 surface for stateful turns, strict
+structured outputs, tools, and richer token metadata:
 
 ``` r
 
-foundry_chat(
-  "Explain what a tibble is",
-  system = "You are a helpful R programming tutor. Be concise and use examples.",
+response <- foundry_response(
+  "Define retrieval-augmented generation in two sentences.",
+  model = "my-gpt4"
+)
+
+response$output_text
+```
+
+Chain a follow-up turn with `previous_response_id`:
+
+``` r
+
+follow_up <- foundry_response(
+  "Explain it for a first-year graduate student.",
+  model = "my-gpt4",
+  previous_response_id = response$response_id
+)
+
+follow_up$output_text
+```
+
+## First strict extraction
+
+Use JSON Schema when you need model output to become analyzable columns:
+
+``` r
+
+schema <- list(
+  type = "object",
+  properties = list(
+    sentiment = list(type = "string", enum = c("positive", "negative", "neutral")),
+    topic = list(type = "string")
+  ),
+  required = c("sentiment", "topic"),
+  additionalProperties = FALSE
+)
+
+foundry_extract(
+  c("The tutorial was clear.", "I needed more examples."),
+  schema = schema,
   model = "my-gpt4"
 )
 ```
 
-### Adjusting Parameters
+[`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
+uses strict JSON Schema mode by default for supported models.
 
-Control the response style with parameters like `temperature`:
+## First embedding
 
-``` r
-
-# More creative responses (higher temperature)
-foundry_chat(
-  "Write a haiku about data science",
-  model = "my-gpt4",
-  temperature = 0.9,
-  max_completion_tokens = 100
-)
-
-# More deterministic responses (lower temperature)
-foundry_chat(
-  "What is 2 + 2?",
-  model = "my-gpt4",
-  temperature = 0.1
-)
-```
-
-## Your First Embedding
-
-Embeddings convert text into numerical vectors that capture semantic
-meaning. Use
-[`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md)
-to generate embeddings:
-
-``` r
-
-# Single text (replace "my-embeddings" with your embedding model deployment name)
-embedding <- foundry_embed("Data science is fascinating", model = "my-embeddings")
-embedding
-#> # A tibble: 1 x 3
-#>   text                       embedding      n_dims
-#>   <chr>                      <list>          <int>
-#> 1 Data science is fascinating <dbl [1,536]>   1536
-```
-
-The embedding is stored as a list-column containing a numeric vector.
-You can embed multiple texts at once:
+Embeddings convert text to numeric vectors for clustering, semantic
+search, near-duplicate detection, and downstream models:
 
 ``` r
 
 texts <- c(
-  "I love R programming",
-  "R is great for statistics",
-"Python is also popular for data science"
+  "The tutorial was clear.",
+  "The lecture needed more examples.",
+  "The assignment instructions were easy to follow."
 )
 
-embeddings <- foundry_embed(texts, model = "my-embeddings")
-embeddings
-#> # A tibble: 3 x 3
-#>   text                                    embedding      n_dims
-#>   <chr>                                   <list>          <int>
-#> 1 I love R programming                    <dbl [1,536]>    1536
-#> 2 R is great for statistics               <dbl [1,536]>    1536
-#> 3 Python is also popular for data science <dbl [1,536]>    1536
+embeddings <- foundry_embed(texts, model = "my-embedding-deployment")
+foundry_similarity(embeddings)
 ```
 
-## Next Steps
+## Configure Content Safety
 
-Now that you have foundryR configured and working, explore more advanced
-topics:
+Content Safety uses a separate Azure AI Content Safety resource. In the
+Azure portal, create an Azure AI Content Safety resource, open **Keys
+and Endpoint**, then configure foundryR:
 
-- **Working with Embeddings**: Learn how to compute similarity scores,
-  find related documents, and cluster text in the
-  [`vignette("embeddings")`](https://farach.github.io/foundryR/articles/embeddings.md)
-  vignette.
+``` r
 
-- **Conversation History**: Pass previous messages to
-  [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
-  using the `history` argument for multi-turn conversations.
+foundry_set_content_safety_endpoint(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"))
+foundry_set_content_safety_key("your-content-safety-key")
+```
 
-- **Error Handling**: Wrap API calls in
-  [`tryCatch()`](https://rdrr.io/r/base/conditions.html) for robust
-  production code.
+Use groundedness and shields as auditable safety gates:
 
-For troubleshooting common issues like “Deployment not found” or “401
-Unauthorized” errors, see the [troubleshooting
-section](https://github.com/farach/foundryR#troubleshooting) in the
-README.
+``` r
+
+source <- "The program enrolled 82 students in 2026."
+answer <- "The program enrolled 82 students in 2026."
+
+grounded <- foundry_groundedness(
+  text = answer,
+  grounding_sources = source,
+  query = "How many students enrolled?",
+  task = "QnA"
+)
+
+shield <- foundry_shield(user_prompt = "Summarize this document.")
+```
+
+Most foundryR calls stay within your Azure OpenAI or Content Safety
+resources. Web search is different. Microsoft documents that Grounding
+with Bing can send data outside the compliance and geographic boundary
+and can incur separate costs. Do not send secrets or regulated data to
+web-search prompts.
+
+## Chat completions
+
+Chat completions are still available for simple assistant replies:
+
+``` r
+
+foundry_chat("What is the tidyverse?", model = "my-gpt4")
+```
+
+For interactive streaming chat and chat-first agent workflows, use
+ellmer.
+
+## Next steps
+
+- [`vignette("foundryr-vs-ellmer")`](https://farach.github.io/foundryR/articles/foundryr-vs-ellmer.md)
+  compares foundryR with ellmer.
+- [`vignette("annotation-workflow")`](https://farach.github.io/foundryR/articles/annotation-workflow.md)
+  shows extract, batch, embed, and validate.
+- [`vignette("responses-api")`](https://farach.github.io/foundryR/articles/responses-api.md)
+  covers Responses API tools and web search.
+- [`vignette("content-safety")`](https://farach.github.io/foundryR/articles/content-safety.md)
+  covers moderation, groundedness, and shields.
+- [`vignette("tidymodels")`](https://farach.github.io/foundryR/articles/tidymodels.md)
+  covers
+  [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md).

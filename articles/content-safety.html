@@ -43,19 +43,23 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
+<li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
+    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
     <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
@@ -100,17 +104,16 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Deploying AI responsibly requires safeguards against harmful content,
-hallucinations, and adversarial attacks. foundryR integrates with
-<strong>Azure AI Content Safety</strong> to provide enterprise-grade
-responsible AI features: - <strong>Content Moderation</strong>: Detect
-harmful content across multiple categories - <strong>Groundedness
-Detection</strong>: Identify when AI responses are not supported by
-source documents (hallucination detection) - <strong>Prompt
-Shields</strong>: Protect against prompt injection and jailbreak
-attempts</p>
-<p>These features help you build AI applications that are safe,
-trustworthy, and compliant with organizational policies.</p>
+<p>Responsible AI work needs safeguards against harmful content,
+unsupported model claims, and adversarial prompts. foundryR integrates
+with <strong>Azure AI Content Safety</strong> and returns each check as
+a tibble: - <strong>Content Moderation</strong>: Detect harmful content
+across multiple categories - <strong>Groundedness Detection</strong>:
+Identify when AI responses are not supported by source documents
+(hallucination detection) - <strong>Prompt Shields</strong>: Protect
+against prompt injection and jailbreak attempts</p>
+<p>These results can be logged, joined back to source records, and
+reviewed as part of an auditable R pipeline.</p>
 </div>
 <div class="section level2">
 <h2 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
@@ -122,9 +125,8 @@ content safety features in foundryR.</p>
 <h3 id="creating-a-content-safety-resource">Creating a Content Safety Resource<a class="anchor" aria-label="anchor" href="#creating-a-content-safety-resource"></a>
 </h3>
 <ol style="list-style-type: decimal">
-<li>Go to the <a href="https://portal.azure.com" class="external-link">Azure Portal</a>
-</li>
-<li>Click <strong>Create a resource</strong> → search for
+<li>Go to the Azure portal</li>
+<li>Click <strong>Create a resource</strong>, then search for
 <strong>Content Safety</strong>
 </li>
 <li>Select <strong>Azure AI Content Safety</strong> and click
@@ -146,7 +148,7 @@ Europe, Sweden Central)</li>
 (S0) for production</li>
 </ul>
 </li>
-<li>Click <strong>Review + create</strong> →
+<li>Click <strong>Review + create</strong>, then
 <strong>Create</strong>
 </li>
 </ol>
@@ -161,13 +163,20 @@ foundryR:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Option A: Set for current session</span></span>
-<span><span class="fu"><a href="../reference/foundry_set_content_safety_endpoint.html">foundry_set_content_safety_endpoint</a></span><span class="op">(</span><span class="st">"AZURE_CONTENT_SAFETY_ENDPOINT"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/foundry_set_content_safety_endpoint.html">foundry_set_content_safety_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_CONTENT_SAFETY_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/foundry_set_content_safety_key.html">foundry_set_content_safety_key</a></span><span class="op">(</span><span class="st">"your-content-safety-key"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Option B: Set environment variables (recommended)</span></span>
 <span><span class="co"># Add to .Renviron:</span></span>
 <span><span class="co"># AZURE_CONTENT_SAFETY_ENDPOINT=&lt;your Content Safety endpoint URL&gt;</span></span>
 <span><span class="co"># AZURE_CONTENT_SAFETY_KEY=your-content-safety-key</span></span></code></pre></div>
+<p>If your organization uses Microsoft Entra ID for Azure OpenAI calls,
+keep the same operational pattern for model calls and configure Content
+Safety resource access according to your Azure policy. The important
+boundary is data flow: core Content Safety calls go to your Content
+Safety resource, while web search in the Responses API can send query
+data to Grounding with Bing services outside your compliance and
+geographic boundary.</p>
 </div>
 </div>
 <div class="section level2">
