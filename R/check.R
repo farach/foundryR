@@ -48,8 +48,8 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
     if (verbose) {
       cli::cli_alert_danger("Endpoint not configured")
       cli::cli_bullets(c(
-        "i" = "Set with: {.code foundry_set_endpoint(\"AZURE_FOUNDRY_ENDPOINT\")}",
-        "i" = "Or set environment variable: {.envvar AZURE_FOUNDRY_ENDPOINT}"
+        "i" = "Set with: {.code foundry_set_endpoint(Sys.getenv(\"AZURE_FOUNDRY_ENDPOINT\"))}",
+        "i" = "Or set {.envvar AZURE_FOUNDRY_ENDPOINT} to your endpoint URL"
       ))
     }
   } else {

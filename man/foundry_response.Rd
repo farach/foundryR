@@ -38,7 +38,7 @@ items for advanced use cases.}
 stored conversation.}
 
 \item{tools}{List. Optional Responses API tools, for example
-\code{list(list(type = "web_search"))}.}
+\code{list(list(type = "web_search"))} or a list of \code{\link[=foundry_tool]{foundry_tool()}} objects.}
 
 \item{text_format}{List. Optional Responses API text format object. Use
 \code{list(type = "json_object")} for JSON mode or

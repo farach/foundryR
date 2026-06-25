@@ -1,15 +1,13 @@
 Package: foundryR
-Title: Tidy Interface to 'Azure AI Foundry'
+Title: Tibble Workflows for 'Azure AI Foundry'
 Version: 0.0.0.9000
 Authors@R:
     person("Alex", "Farach", , "alexfarach@example.com", role = c("aut", "cre", "cph"))
-Description: Provides a tidy, application programming interface (API)-first
-    interface to 'Microsoft Azure AI Foundry'. All functions return tibbles and
-    integrate with 'tidyverse' and 'tidymodels' workflows. Supports chat
-    completions, responses, audio transcription, image generation, file and
-    batch operations, text embeddings, and semantic similarity using
-    Azure-hosted models including 'GPT', 'Claude', 'Llama', 'Mistral',
-    'DeepSeek', and 'Cohere'.
+Description: Work with 'Microsoft Azure AI Foundry' from dataframe-oriented
+    'R' workflows. Returns tibbles for Content Safety, Responses API calls,
+    strict structured extraction, embeddings, files, batch jobs, audio, media,
+    and chat completions. Supports research annotation, safety gates,
+    semantic search, and 'tidymodels' recipes for teams committed to Azure.
 License: MIT + file LICENSE
 Depends:
     R (>= 4.1.0)

@@ -11,7 +11,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' foundry_set_speech_endpoint("AZURE_FOUNDRY_SPEECH_ENDPOINT")
+#' foundry_set_speech_endpoint(Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT"))
 #' }
 foundry_set_speech_endpoint <- function(endpoint) {
   foundry_check_character_scalar(endpoint, "endpoint")

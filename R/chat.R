@@ -19,6 +19,8 @@
 #' @param frequency_penalty Numeric. Penalty for token frequency (-2.0 to 2.0). Default: 0.
 #' @param presence_penalty Numeric. Penalty for token presence (-2.0 to 2.0). Default: 0.
 #' @param stop Character vector. Up to 4 sequences where the API will stop generating.
+#' @param reasoning_effort Character. Optional reasoning effort (`"low"`,
+#'   `"medium"`, or `"high"`) for reasoning models that accept this control.
 #' @param api_key Character. Optional API key override.
 #' @param api_version Character. Optional API version override.
 #' @param ... Additional parameters passed to the API.
@@ -31,6 +33,8 @@
 #'     \item{finish_reason}{Character. Why generation stopped: "stop", "length", etc.}
 #'     \item{prompt_tokens}{Integer. Tokens in the prompt.}
 #'     \item{completion_tokens}{Integer. Tokens in the response.}
+#'     \item{reasoning_tokens}{Integer. Hidden reasoning tokens, when reported.}
+#'     \item{cached_input_tokens}{Integer. Cached prompt tokens, when reported.}
 #'     \item{total_tokens}{Integer. Total tokens used.}
 #'   }
 #'
@@ -74,6 +78,7 @@ foundry_chat <- function(message,
                           frequency_penalty = NULL,
                           presence_penalty = NULL,
                           stop = NULL,
+                          reasoning_effort = NULL,
                           api_key = NULL,
                           api_version = NULL,
                           ...) {
@@ -130,6 +135,10 @@ foundry_chat <- function(message,
   if (!is.null(frequency_penalty)) body$frequency_penalty <- frequency_penalty
   if (!is.null(presence_penalty)) body$presence_penalty <- presence_penalty
   if (!is.null(stop)) body$stop <- stop
+  if (!is.null(reasoning_effort)) {
+    foundry_check_character_scalar(reasoning_effort, "reasoning_effort")
+    body$reasoning_effort <- reasoning_effort
+  }
 
   # Add any additional parameters
   dots <- list(...)
@@ -172,6 +181,8 @@ foundry_parse_chat_response <- function(result, model) {
     finish_reason = choice$finish_reason %||% NA_character_,
     prompt_tokens = result$usage$prompt_tokens %||% NA_integer_,
     completion_tokens = result$usage$completion_tokens %||% NA_integer_,
+    reasoning_tokens = result$usage$completion_tokens_details$reasoning_tokens %||% NA_integer_,
+    cached_input_tokens = result$usage$prompt_tokens_details$cached_tokens %||% NA_integer_,
     total_tokens = result$usage$total_tokens %||% NA_integer_
   )
 }

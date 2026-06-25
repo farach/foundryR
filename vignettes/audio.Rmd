@@ -29,7 +29,7 @@ MAI-Transcribe models are exposed through the LLM Speech API. Configure the
 Speech resource once per session:
 
 ```{r configure-speech, eval = FALSE}
-foundry_set_speech_endpoint("AZURE_FOUNDRY_SPEECH_ENDPOINT")
+foundry_set_speech_endpoint(Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT"))
 foundry_set_speech_key("your-speech-key")
 ```
 

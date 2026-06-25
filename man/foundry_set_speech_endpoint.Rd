@@ -19,6 +19,6 @@ Set the endpoint for Speech in Foundry Tools. This endpoint is used by
 }
 \examples{
 \dontrun{
-foundry_set_speech_endpoint("AZURE_FOUNDRY_SPEECH_ENDPOINT")
+foundry_set_speech_endpoint(Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT"))
 }
 }

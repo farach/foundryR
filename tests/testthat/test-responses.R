@@ -34,6 +34,8 @@ test_that("foundry_parse_response extracts output text, citations, and tool call
   expect_equal(result$output_text, "Grounded answer.")
   expect_equal(result$input_tokens, 10L)
   expect_equal(result$output_tokens, 20L)
+  expect_equal(result$reasoning_tokens, 0L)
+  expect_true(is.na(result$cached_input_tokens))
   expect_equal(result$total_tokens, 30L)
 
   citations <- result$citations[[1]]
@@ -85,6 +87,7 @@ test_that("foundry_response builds v1 request body", {
   expect_equal(captured$body$data$max_output_tokens, 50L)
   expect_false(captured$body$data$store)
   expect_equal(captured$body$data$text$format$type, "json_schema")
+  expect_true(captured$body$data$text$format$strict)
   expect_true(inherits(captured$body$data$text$format$schema$required, "AsIs"))
 
   expect_equal(result$structured[[1]]$answer, "yes")
@@ -97,9 +100,13 @@ test_that("foundry_extract flattens structured output", {
     output_text = "{\"sentiment\":\"positive\",\"entities\":[\"R\",\"Azure\"]}"
   )
   mock_resp <- mock_httr2_response(mock_response)
+  captured <- NULL
 
   testthat::local_mocked_bindings(
-    req_perform = function(req, ...) mock_resp,
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
     .package = "httr2"
   )
 
@@ -124,6 +131,7 @@ test_that("foundry_extract flattens structured output", {
   expect_false(result$.error)
   expect_equal(result$sentiment, "positive")
   expect_equal(result$entities[[1]], c("R", "Azure"))
+  expect_true(captured$body$data$text$format$strict)
 })
 
 test_that("foundry_extract handles NA inputs without an API call", {
@@ -180,6 +188,229 @@ test_that("foundry_web_search builds web_search tool and parses citations", {
   expect_equal(result$output_text, "Grounded web answer.")
   expect_equal(nrow(result$citations[[1]]), 1L)
   expect_equal(nrow(result$tool_calls[[1]]), 1L)
+})
+
+test_that("foundry_parse_response surfaces cached input tokens", {
+  mock_response <- mock_response_api_response(output_text = "answer")
+  mock_response$usage$input_tokens_details <- list(cached_tokens = 6L)
+  mock_response$usage$output_tokens_details <- list(reasoning_tokens = 4L)
+
+  result <- foundry_parse_response(mock_response)
+
+  expect_equal(result$cached_input_tokens, 6L)
+  expect_equal(result$reasoning_tokens, 4L)
+})
+
+test_that("foundry_tool emits a Responses API function schema", {
+  get_weather <- function(location) {
+    list(location = location)
+  }
+  tool <- foundry_tool(
+    get_weather,
+    description = "Get weather for a location",
+    parameters = list(
+      type = "object",
+      properties = list(location = list(type = "string")),
+      required = "location"
+    )
+  )
+
+  schema <- foundry_tool_schemas(list(tool))[[1]]
+
+  expect_equal(schema$type, "function")
+  expect_equal(schema$name, "get_weather")
+  expect_equal(schema$description, "Get weather for a location")
+  expect_null(schema$.fn)
+})
+
+test_that("foundry_response strips R functions from tool schemas", {
+  setup_mock_env()
+  mock_response <- mock_response_api_response(output_text = "No tool needed.")
+  mock_resp <- mock_httr2_response(mock_response)
+  captured <- NULL
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  tool <- foundry_tool(
+    function(location) location,
+    name = "echo_location",
+    description = "Echo a location",
+    parameters = list(
+      type = "object",
+      properties = list(location = list(type = "string")),
+      required = "location"
+    )
+  )
+
+  foundry_response("Hello", tools = list(tool))
+
+  expect_equal(captured$body$data$tools[[1]]$type, "function")
+  expect_equal(captured$body$data$tools[[1]]$name, "echo_location")
+  expect_null(captured$body$data$tools[[1]]$.fn)
+})
+
+test_that("foundry_agent returns final response when no tool is called", {
+  setup_mock_env()
+  mock_response <- mock_response_api_response(output_text = "No tool needed.")
+  mock_resp <- mock_httr2_response(mock_response)
+  calls <- 0L
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      calls <<- calls + 1L
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  tool <- foundry_tool(
+    function(location) location,
+    name = "echo_location",
+    description = "Echo a location",
+    parameters = list(
+      type = "object",
+      properties = list(location = list(type = "string")),
+      required = "location"
+    )
+  )
+
+  result <- foundry_agent("Hello", tools = list(tool), model = "gpt-4.1")
+
+  expect_equal(calls, 1L)
+  expect_equal(result$output_text, "No tool needed.")
+  expect_equal(result$final, TRUE)
+  expect_equal(nrow(result$tool_results[[1]]), 0L)
+})
+
+test_that("foundry_agent executes a single tool call", {
+  setup_mock_env()
+  responses <- list(
+    mock_httr2_response(mock_response_function_call(
+      name = "get_weather",
+      call_id = "call_weather",
+      arguments = list(location = "San Francisco"),
+      response_id = "resp_first"
+    )),
+    mock_httr2_response(mock_response_api_response(
+      output_text = "It is 70 F.",
+      response_id = "resp_final"
+    ))
+  )
+  captured <- list()
+  calls <- 0L
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      calls <<- calls + 1L
+      captured[[calls]] <<- req
+      responses[[calls]]
+    },
+    .package = "httr2"
+  )
+
+  tool <- foundry_tool(
+    function(location) list(location = location, temperature = "70 F"),
+    name = "get_weather",
+    description = "Get weather for a location",
+    parameters = list(
+      type = "object",
+      properties = list(location = list(type = "string")),
+      required = "location"
+    )
+  )
+
+  result <- foundry_agent("Weather?", tools = list(tool), model = "gpt-4.1")
+
+  expect_equal(nrow(result), 2L)
+  expect_equal(result$final, c(FALSE, TRUE))
+  expect_equal(captured[[2]]$body$data$previous_response_id, "resp_first")
+  expect_equal(captured[[2]]$body$data$input[[1]]$type, "function_call_output")
+  expect_equal(captured[[2]]$body$data$input[[1]]$call_id, "call_weather")
+  expect_match(captured[[2]]$body$data$input[[1]]$output, "70 F")
+})
+
+test_that("foundry_agent executes multiple tool calls in one turn", {
+  setup_mock_env()
+  multi_call <- mock_response_function_call(
+    name = "get_weather",
+    call_id = "call_sf",
+    arguments = list(location = "San Francisco"),
+    response_id = "resp_first"
+  )
+  multi_call$output[[2]] <- mock_response_function_call(
+    name = "get_weather",
+    call_id = "call_paris",
+    arguments = list(location = "Paris")
+  )$output[[1]]
+
+  responses <- list(
+    mock_httr2_response(multi_call),
+    mock_httr2_response(mock_response_api_response(output_text = "Done."))
+  )
+  captured <- list()
+  calls <- 0L
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      calls <<- calls + 1L
+      captured[[calls]] <<- req
+      responses[[calls]]
+    },
+    .package = "httr2"
+  )
+
+  tool <- foundry_tool(
+    function(location) list(location = location, temperature = "70 F"),
+    name = "get_weather",
+    description = "Get weather for a location",
+    parameters = list(
+      type = "object",
+      properties = list(location = list(type = "string")),
+      required = "location"
+    )
+  )
+
+  result <- foundry_agent("Weather?", tools = list(tool), model = "gpt-4.1")
+
+  expect_equal(length(captured[[2]]$body$data$input), 2L)
+  expect_equal(result$tool_results[[1]]$call_id, c("call_sf", "call_paris"))
+})
+
+test_that("foundry_agent stops at the iteration cap", {
+  setup_mock_env()
+  mock_resp <- mock_httr2_response(mock_response_function_call())
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) mock_resp,
+    .package = "httr2"
+  )
+
+  tool <- foundry_tool(
+    function(location) location,
+    name = "get_weather",
+    description = "Get weather for a location",
+    parameters = list(
+      type = "object",
+      properties = list(location = list(type = "string")),
+      required = "location"
+    )
+  )
+
+  expect_error(
+    foundry_agent(
+      "Weather?",
+      tools = list(tool),
+      model = "gpt-4.1",
+      max_iterations = 1
+    ),
+    "Maximum tool iterations"
+  )
 })
 
 test_that("foundry_response_retrieve and delete use v1 response paths", {

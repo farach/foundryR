@@ -16,6 +16,7 @@ foundry_chat(
   frequency_penalty = NULL,
   presence_penalty = NULL,
   stop = NULL,
+  reasoning_effort = NULL,
   api_key = NULL,
   api_version = NULL,
   ...
@@ -49,6 +50,9 @@ parameter for newer models (gpt-4o, etc.). Takes precedence over \code{max_token
 
 \item{stop}{Character vector. Up to 4 sequences where the API will stop generating.}
 
+\item{reasoning_effort}{Character. Optional reasoning effort (\code{"low"},
+\code{"medium"}, or \code{"high"}) for reasoning models that accept this control.}
+
 \item{api_key}{Character. Optional API key override.}
 
 \item{api_version}{Character. Optional API version override.}
@@ -64,6 +68,8 @@ A tibble with columns:
 \item{finish_reason}{Character. Why generation stopped: "stop", "length", etc.}
 \item{prompt_tokens}{Integer. Tokens in the prompt.}
 \item{completion_tokens}{Integer. Tokens in the response.}
+\item{reasoning_tokens}{Integer. Hidden reasoning tokens, when reported.}
+\item{cached_input_tokens}{Integer. Cached prompt tokens, when reported.}
 \item{total_tokens}{Integer. Total tokens used.}
 }
 }

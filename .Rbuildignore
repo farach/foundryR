@@ -1,7 +1,6 @@
 ^.*\.Rproj$
 ^\.git$
 ^\.Rproj\.user$
-^LICENSE\.md$
 ^cran-comments\.md$
 ^README\.Rmd$
 ^CLAUDE\.md$
@@ -12,3 +11,4 @@
 ^codecov\.yml$
 ^\.claude$
 ^data-raw$
+^dev$

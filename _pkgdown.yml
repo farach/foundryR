@@ -19,12 +19,11 @@ template:
   assets: pkgdown
 
 home:
-  title: foundryR - Tidy Interface to Azure AI Foundry
+  title: foundryR - Tidy Azure AI Foundry workflows
   description: >
-    A tidy, API-first R interface to Microsoft Azure AI Foundry.
-    Build AI-powered applications with chat completions, the Responses API,
-    structured extraction, embeddings, content safety, and image generation -
-    all returning tibbles.
+    A tibble-native R interface to Microsoft Azure AI Foundry for Content
+    Safety, Responses API workflows, strict extraction, embeddings, batch jobs,
+    files, audio, media helpers, and chat completions.
   sidebar:
     structure: [links, license, community, citation, authors, dev]
     components:
@@ -48,15 +47,13 @@ navbar:
     articles:
       text: Articles
       menu:
-        - text: "Core Functionality"
+        - text: "Core"
         - text: Getting Started
           href: articles/getting-started.html
+        - text: foundryR vs ellmer
+          href: articles/foundryr-vs-ellmer.html
         - text: Responses API
           href: articles/responses-api.html
-        - text: Audio Workflows
-          href: articles/audio.html
-        - text: Files and Batch API
-          href: articles/files-batches.html
         - text: Text Embeddings
           href: articles/embeddings.html
         - text: "---"
@@ -64,11 +61,19 @@ navbar:
         - text: Content Safety
           href: articles/content-safety.html
         - text: "---"
-        - text: "Advanced Topics"
-        - text: Image and Video Generation
-          href: articles/media-generation.html
+        - text: "Research Workflows"
+        - text: Annotation Workflow
+          href: articles/annotation-workflow.html
+        - text: Files and Batch API
+          href: articles/files-batches.html
         - text: tidymodels Integration
           href: articles/tidymodels.html
+        - text: "---"
+        - text: "Advanced Topics"
+        - text: Audio Workflows
+          href: articles/audio.html
+        - text: Image and Video Generation
+          href: articles/media-generation.html
         - text: "---"
         - text: "Integrations"
         - text: onet2r Integration
@@ -79,7 +84,7 @@ navbar:
       aria-label: GitHub repository
 
 reference:
-  - title: Setup & Configuration
+  - title: Setup and configuration
     desc: >
       Configure your Azure AI Foundry credentials and verify your setup.
       These functions manage authentication for all API calls.
@@ -92,33 +97,40 @@ reference:
       - foundry_set_speech_endpoint
       - foundry_set_speech_key
 
-  - title: Chat Completions
+  - title: Content Safety
     desc: >
-
-      Interact with large language models like GPT-4, Claude, Llama, and more.
-      Send messages and receive AI-generated responses as tidy tibbles.
+      Azure AI Content Safety features for responsible AI pipelines.
+      Moderate content, detect hallucinations, and protect against prompt
+      injection.
     contents:
-      - foundry_chat
+      - foundry_moderate
+      - foundry_groundedness
+      - foundry_shield
+      - foundry_set_content_safety_key
+      - foundry_set_content_safety_endpoint
 
-  - title: Responses API
+  - title: Responses API and extraction
     desc: >
       Use Microsoft Foundry's newer v1 Responses API for stateful turns,
-      tool calls, schema-constrained extraction, and web-grounded answers.
+      user-defined tools, schema-constrained extraction, and web-grounded
+      answers.
     contents:
       - foundry_response
+      - foundry_agent
+      - foundry_tool
       - foundry_response_retrieve
       - foundry_response_delete
       - foundry_extract
       - foundry_web_search
 
-  - title: Audio and Speech
+  - title: Text embeddings
     desc: >
-      Transcribe and translate research audio, including MAI-Transcribe models
-      through LLM Speech, and synthesize text-to-speech audio files.
+      Generate vector embeddings for semantic search, clustering, and
+      machine learning. Includes batch processing and similarity computation.
     contents:
-      - foundry_transcribe
-      - foundry_translate_audio
-      - foundry_speak
+      - foundry_embed
+      - foundry_embed_batch
+      - foundry_similarity
 
   - title: Files and Batch API
     desc: >
@@ -136,19 +148,9 @@ reference:
       - foundry_batch_get
       - foundry_batch_cancel
 
-  - title: Text Embeddings
+  - title: tidymodels integration
     desc: >
-      Generate vector embeddings for semantic search, clustering, and
-      machine learning. Includes batch processing and similarity computation.
-    contents:
-      - foundry_embed
-      - foundry_embed_batch
-      - foundry_similarity
-
-  - title: tidymodels Integration
-    desc: >
-      Seamlessly integrate text embeddings into your tidymodels workflows
-      using recipe steps.
+      Add Foundry text embeddings to tidymodels recipes.
     contents:
       - step_foundry_embed
       - bake.step_foundry_embed
@@ -156,18 +158,22 @@ reference:
       - print.step_foundry_embed
       - required_pkgs.step_foundry_embed
 
-  - title: Content Safety
+  - title: Chat completions
     desc: >
-      Azure AI Content Safety features for responsible AI deployment.
-      Moderate content, detect hallucinations, and protect against prompt injection.
+      Send chat-completion requests to Azure AI Foundry deployments.
     contents:
-      - foundry_moderate
-      - foundry_groundedness
-      - foundry_shield
-      - foundry_set_content_safety_key
-      - foundry_set_content_safety_endpoint
+      - foundry_chat
 
-  - title: Image and Video Generation
+  - title: Audio and speech
+    desc: >
+      Transcribe and translate research audio, including MAI-Transcribe models
+      through LLM Speech, and synthesize text-to-speech audio files.
+    contents:
+      - foundry_transcribe
+      - foundry_translate_audio
+      - foundry_speak
+
+  - title: Experimental media
     desc: >
       Generate and edit images with v1 preview image models, and manage preview
       video generation jobs.
@@ -184,20 +190,19 @@ reference:
       - foundry_video_get
       - foundry_video_download
 
-  - title: Model Discovery
+  - title: Model discovery
     desc: >
       Explore available model deployments in your Azure AI Foundry resource.
     contents:
       - foundry_models
 
 articles:
-  - title: Core Functionality
+  - title: Core
     navbar: ~
     contents:
       - getting-started
+      - foundryr-vs-ellmer
       - responses-api
-      - audio
-      - files-batches
       - embeddings
 
   - title: Responsible AI
@@ -205,12 +210,19 @@ articles:
     contents:
       - content-safety
 
+  - title: Research Workflows
+    navbar: ~
+    contents:
+      - annotation-workflow
+      - files-batches
+      - tidymodels
+
   - title: Advanced Topics
     navbar: ~
     contents:
+      - audio
       - media-generation
       - image-generation
-      - tidymodels
 
   - title: Integrations
     navbar: ~

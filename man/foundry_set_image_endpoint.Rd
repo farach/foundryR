@@ -22,6 +22,6 @@ Use this function when DALL-E is deployed on a separate Azure resource.
 }
 \examples{
 \dontrun{
-foundry_set_image_endpoint("AZURE_FOUNDRY_IMAGE_ENDPOINT")
+foundry_set_image_endpoint(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"))
 }
 }

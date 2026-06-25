@@ -125,6 +125,37 @@ mock_response_api_response <- function(output_text = "Hello from Responses API",
   )
 }
 
+
+mock_response_function_call <- function(name = "get_weather",
+                                        call_id = "call_123",
+                                        arguments = list(location = "San Francisco"),
+                                        response_id = "resp_tool") {
+  list(
+    id = response_id,
+    object = "response",
+    created_at = 1741369938,
+    status = "completed",
+    model = "gpt-4.1",
+    output = list(
+      list(
+        id = paste0("fc_", call_id),
+        type = "function_call",
+        status = "completed",
+        call_id = call_id,
+        name = name,
+        arguments = as.character(jsonlite::toJSON(arguments, auto_unbox = TRUE))
+      )
+    ),
+    usage = list(
+      input_tokens = 10L,
+      output_tokens = 5L,
+      total_tokens = 15L,
+      input_tokens_details = list(cached_tokens = 2L),
+      output_tokens_details = list(reasoning_tokens = 3L)
+    )
+  )
+}
+
 #' Create a mock embedding response
 mock_embed_response <- function(embedding = NULL, n_dims = 1536, model = "text-embedding-ada-002") {
   if (is.null(embedding)) {

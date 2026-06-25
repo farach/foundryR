@@ -3,6 +3,11 @@
 
 Initial development release of foundryR, a tidy interface to Microsoft Azure AI Foundry.
 
+- License metadata now uses a single MIT license file so GitHub does not report mixed license files (overhaul brief).
+- Media generation helpers are now grouped and described as experimental media while the core docs emphasize research, annotation, embeddings, batch, Responses API, and Content Safety workflows (overhaul brief).
+- `foundry_agent()` and `foundry_tool()` add a bounded Responses API function-calling loop for user-defined R tools, including single-call, multi-call, and iteration-cap handling (overhaul brief).
+- `foundry_chat()` now accepts `reasoning_effort` and returns `reasoning_tokens` and `cached_input_tokens` when chat-completions responses report those fields (overhaul brief).
+- `foundry_response()` now accepts `foundry_tool()` objects in `tools`, strips local R function references from request bodies, and returns `cached_input_tokens` when the Responses API reports cached input tokens (overhaul brief).
 - `foundry_batch_create()`, `foundry_batches()`, `foundry_batch_get()`, `foundry_batch_cancel()`, and `foundry_batch_requests()` add v1 Batch API workflows for large-scale prompt, annotation, extraction, and classification jobs.
 - `foundry_file_upload()`, `foundry_files()`, `foundry_file_get()`, `foundry_file_delete()`, and `foundry_file_download()` add v1 Files API support for Batch, eval, fine-tuning, and assistant/file-search workflows.
 - `foundry_image()` now uses the v1 preview image generation endpoint by default, supports newer image options such as `output_format`, `output_compression`, `background`, and `moderation`, and keeps the legacy deployment endpoint available with `api = "deployment"`.

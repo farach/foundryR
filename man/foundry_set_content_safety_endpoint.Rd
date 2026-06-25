@@ -21,9 +21,12 @@ Set the base endpoint URL for your Azure Content Safety resource.
 }
 \examples{
 \dontrun{
-foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT")
+foundry_set_content_safety_endpoint(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"))
 
 # Store permanently
-foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT", store = TRUE)
+foundry_set_content_safety_endpoint(
+  Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"),
+  store = TRUE
+)
 }
 }

@@ -21,9 +21,9 @@ Set the base endpoint URL for your Azure AI Foundry resource.
 }
 \examples{
 \dontrun{
-foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
 
 # Store permanently
-foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT", store = TRUE)
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), store = TRUE)
 }
 }

@@ -1,0 +1,99 @@
+---
+title: "foundryR vs ellmer"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{foundryR vs ellmer}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+foundryR and ellmer both make language-model work possible from R. They are not
+substitutes for every use case. ellmer is the better fit for provider-portable
+chat. foundryR is the better fit when the work is tied to Azure AI Foundry and
+the output needs to become data.
+
+## Comparison
+
+| Question | Use foundryR | Use ellmer |
+| --- | --- | --- |
+| Are you committed to Azure AI Foundry? | Yes | Sometimes |
+| Do you need Azure AI Content Safety? | Yes | No |
+| Do you need Azure's Files and Batch APIs? | Yes | No |
+| Do you need strict schema-constrained extraction as tibbles? | Yes | Sometimes |
+| Do you need embeddings inside a dataframe workflow? | Yes | Sometimes |
+| Do you need `step_foundry_embed()` in a tidymodels recipe? | Yes | No |
+| Do you need multi-provider chat? | No | Yes |
+| Do you need interactive streaming chat? | No | Yes |
+| Do you need a chat-first tool-calling agent interface? | Basic Responses API loop | Yes |
+
+## Where foundryR fits
+
+Use foundryR when your work starts or ends in a dataframe. Common examples are:
+
+- Coding open-ended survey responses with a strict JSON Schema.
+- Running low-cost batch annotation jobs through Azure's Batch API.
+- Embedding documents for clustering, semantic search, or near-duplicate checks.
+- Adding embeddings to tidymodels recipes.
+- Moderating user text, detecting prompt injection, or checking groundedness.
+- Keeping model metadata, citations, tool calls, and token use in tibble columns.
+
+Azure's own Batch API matters here. ellmer supports batch workflows for native
+OpenAI and Anthropic endpoints, but it does not target Azure's Files and Batch
+API surface.
+
+## Where ellmer fits
+
+Use ellmer when chat is the product interface. It gives you a provider-neutral
+chat abstraction, interactive streaming, and a mature chat-first tool-calling
+workflow. That is the right shape for assistants, notebooks where you want token
+streaming, or applications that may move between providers.
+
+foundryR deliberately does not implement streaming. For streaming chat in R, use
+ellmer.
+
+## Example: strict extraction with foundryR
+
+```{r extraction-example}
+library(foundryR)
+
+schema <- list(
+  type = "object",
+  properties = list(
+    sentiment = list(type = "string", enum = c("positive", "negative", "neutral")),
+    theme = list(type = "string")
+  ),
+  required = c("sentiment", "theme"),
+  additionalProperties = FALSE
+)
+
+foundry_extract(
+  c("The lesson was clear.", "I wanted more examples."),
+  schema = schema,
+  model = "my-gpt4"
+)
+```
+
+## Example: Azure Content Safety as a pipeline gate
+
+```{r safety-example}
+answer <- "The study enrolled 120 participants."
+source <- "The study enrolled 120 participants."
+
+foundry_groundedness(
+  text = answer,
+  grounding_sources = source,
+  query = "How many participants were enrolled?",
+  task = "QnA"
+)
+```
+
+The practical rule is simple: use ellmer when you need the best R chat client,
+and use foundryR when you need Azure AI Foundry results as data.

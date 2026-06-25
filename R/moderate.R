@@ -77,10 +77,13 @@ foundry_set_content_safety_key <- function(key = NULL, store = FALSE) {
 #'
 #' @examples
 #' \dontrun{
-#' foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT")
+#' foundry_set_content_safety_endpoint(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"))
 #'
 #' # Store permanently
-#' foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT", store = TRUE)
+#' foundry_set_content_safety_endpoint(
+#'   Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"),
+#'   store = TRUE
+#' )
 #' }
 foundry_set_content_safety_endpoint <- function(endpoint, store = FALSE) {
 

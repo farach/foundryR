@@ -13,7 +13,7 @@
 #' @param previous_response_id Character. Optional response ID to continue a
 #'   stored conversation.
 #' @param tools List. Optional Responses API tools, for example
-#'   `list(list(type = "web_search"))`.
+#'   `list(list(type = "web_search"))` or a list of [foundry_tool()] objects.
 #' @param text_format List. Optional Responses API text format object. Use
 #'   `list(type = "json_object")` for JSON mode or
 #'   `list(type = "json_schema", name = ..., schema = ..., strict = TRUE)` for
@@ -113,7 +113,7 @@ foundry_response <- function(input,
     if (!is.list(tools)) {
       cli::cli_abort("{.arg tools} must be a list.")
     }
-    body$tools <- tools
+    body$tools <- foundry_tool_schemas(tools)
   }
 
   if (!is.null(text_format)) {
@@ -177,6 +177,195 @@ foundry_response <- function(input,
 
   result <- foundry_perform(req)
   foundry_parse_response(result, parse_json = parse_json)
+}
+
+
+#' Define an R function as a Responses API tool
+#'
+#' Create a tool definition for `foundry_response()` or `foundry_agent()`. The
+#' request sent to Azure uses the Responses API function-tool contract, while
+#' the returned object also keeps the R function needed for local dispatch.
+#'
+#' @param fun Function. The R function to run when the model calls the tool.
+#' @param name Character. Tool name exposed to the model. If omitted and `fun`
+#'   is a named function object, the object name is used.
+#' @param description Character. Short description of what the tool does.
+#' @param parameters List. JSON Schema object describing function arguments.
+#'
+#' @return A `foundry_tool` object. It is a list containing the JSON tool schema
+#'   and the R function used by `foundry_agent()`.
+#' @export
+#'
+#' @examples
+#' get_weather <- function(location) {
+#'   list(location = location, temperature = "70 F")
+#' }
+#'
+#' weather_tool <- foundry_tool(
+#'   get_weather,
+#'   description = "Get weather for a location",
+#'   parameters = list(
+#'     type = "object",
+#'     properties = list(location = list(type = "string")),
+#'     required = "location"
+#'   )
+#' )
+foundry_tool <- function(fun,
+                         name = NULL,
+                         description,
+                         parameters) {
+  if (!is.function(fun)) {
+    cli::cli_abort("{.arg fun} must be an R function.")
+  }
+
+  if (is.null(name)) {
+    name <- deparse(substitute(fun), nlines = 1L)
+    if (identical(name, "function")) {
+      cli::cli_abort("{.arg name} is required for anonymous functions.")
+    }
+  }
+  foundry_check_character_scalar(name, "name")
+  foundry_check_character_scalar(description, "description")
+  if (missing(parameters) || is.null(parameters) || !is.list(parameters)) {
+    cli::cli_abort("{.arg parameters} must be a JSON Schema represented as an R list.")
+  }
+
+  structure(
+    list(
+      type = "function",
+      name = name,
+      description = description,
+      parameters = foundry_preserve_schema_arrays(parameters),
+      .fn = fun
+    ),
+    class = "foundry_tool"
+  )
+}
+
+
+#' Run a bounded Responses API tool-calling loop
+#'
+#' `foundry_agent()` sends a prompt to the Responses API with user-defined R
+#' tools, executes any returned function calls locally, sends matching
+#' `function_call_output` items back to the service, and repeats until the model
+#' returns a final answer or `max_iterations` is reached.
+#'
+#' @param input Character scalar or list. Initial user input for the response.
+#' @param tools A [foundry_tool()] object or list of `foundry_tool` objects.
+#' @param model Character. The model deployment name. Defaults to the
+#'   `AZURE_FOUNDRY_MODEL` environment variable.
+#' @param instructions Character. Optional system/developer instructions.
+#' @param max_iterations Integer. Maximum number of model responses in the loop.
+#' @param store Logical. Whether Responses API objects should be stored.
+#'   Defaults to `TRUE` because the loop uses `previous_response_id`.
+#' @param reasoning_effort Character. Optional reasoning effort for reasoning
+#'   models.
+#' @param max_output_tokens,temperature,top_p Optional generation controls passed
+#'   to `foundry_response()`.
+#' @param api_key Character. Optional API key override.
+#' @param endpoint Character. Optional endpoint override.
+#' @param ... Additional request body parameters passed to `foundry_response()`.
+#'
+#' @return A tibble with one row per model response. It includes the standard
+#'   `foundry_response()` columns plus `iteration`, `final`, and `tool_results`
+#'   list-columns for executed R tools.
+#' @export
+#'
+#' @references
+#' - Responses API function calling:
+#'   <https://learn.microsoft.com/azure/foundry/openai/how-to/responses#function-calling>
+#'
+#' @examples
+#' \dontrun{
+#' get_weather <- function(location) {
+#'   list(location = location, temperature = "70 F")
+#' }
+#'
+#' weather_tool <- foundry_tool(
+#'   get_weather,
+#'   description = "Get weather for a location",
+#'   parameters = list(
+#'     type = "object",
+#'     properties = list(location = list(type = "string")),
+#'     required = "location"
+#'   )
+#' )
+#'
+#' foundry_agent(
+#'   "What is the weather in San Francisco?",
+#'   tools = list(weather_tool),
+#'   model = "gpt-4.1"
+#' )
+#' }
+foundry_agent <- function(input,
+                          tools,
+                          model = NULL,
+                          instructions = NULL,
+                          max_iterations = 8L,
+                          store = TRUE,
+                          reasoning_effort = NULL,
+                          max_output_tokens = NULL,
+                          temperature = NULL,
+                          top_p = NULL,
+                          api_key = NULL,
+                          endpoint = NULL,
+                          ...) {
+
+  tools <- foundry_validate_agent_tools(tools)
+  max_iterations <- foundry_check_positive_integer(max_iterations, "max_iterations")
+  if (!is.logical(store) || length(store) != 1L || is.na(store)) {
+    cli::cli_abort("{.arg store} must be TRUE or FALSE.")
+  }
+
+  turns <- list()
+  current_input <- input
+  previous_response_id <- NULL
+
+  for (iteration in seq_len(max_iterations)) {
+    response <- foundry_response(
+      input = current_input,
+      model = model,
+      instructions = instructions,
+      previous_response_id = previous_response_id,
+      tools = tools,
+      max_output_tokens = max_output_tokens,
+      temperature = temperature,
+      top_p = top_p,
+      reasoning_effort = reasoning_effort,
+      store = store,
+      api_key = api_key,
+      endpoint = endpoint,
+      ...
+    )
+
+    tool_calls <- response$tool_calls[[1]]
+    has_tool_calls <- nrow(tool_calls) > 0L &&
+      any(identical(tool_calls$type, "function_call") | tool_calls$type == "function_call")
+
+    if (!has_tool_calls) {
+      response$iteration <- iteration
+      response$final <- TRUE
+      response$tool_results <- list(foundry_empty_tool_results())
+      turns[[length(turns) + 1L]] <- response
+      return(dplyr::bind_rows(turns))
+    }
+
+    if (iteration >= max_iterations) {
+      cli::cli_abort(c(
+        "Maximum tool iterations reached before a final response.",
+        "i" = "Increase {.arg max_iterations} if the model needs more tool calls."
+      ))
+    }
+
+    tool_results <- foundry_execute_tool_calls(tool_calls, tools)
+    response$iteration <- iteration
+    response$final <- FALSE
+    response$tool_results <- list(tool_results$results)
+    turns[[length(turns) + 1L]] <- response
+
+    previous_response_id <- response$response_id
+    current_input <- tool_results$input
+  }
 }
 
 
@@ -545,7 +734,10 @@ foundry_parse_response <- function(result, parse_json = FALSE) {
     created_at = foundry_response_created_at(created_at),
     input_tokens = usage$input_tokens %||% usage$prompt_tokens %||% NA_integer_,
     output_tokens = usage$output_tokens %||% usage$completion_tokens %||% NA_integer_,
-    reasoning_tokens = usage$output_tokens_details$reasoning_tokens %||% NA_integer_,
+    reasoning_tokens = usage$output_tokens_details$reasoning_tokens %||%
+      usage$completion_tokens_details$reasoning_tokens %||% NA_integer_,
+    cached_input_tokens = usage$input_tokens_details$cached_tokens %||%
+      usage$prompt_tokens_details$cached_tokens %||% NA_integer_,
     total_tokens = usage$total_tokens %||% NA_integer_,
     raw_response = list(result)
   )
@@ -572,6 +764,137 @@ foundry_check_character_scalar <- function(x, arg) {
     cli::cli_abort("{.arg {arg}} must be a single non-empty character string.")
   }
   invisible(x)
+}
+
+
+foundry_tool_schemas <- function(tools) {
+  if (inherits(tools, "foundry_tool")) {
+    return(list(foundry_tool_schema(tools)))
+  }
+
+  lapply(tools, function(tool) {
+    if (inherits(tool, "foundry_tool")) {
+      foundry_tool_schema(tool)
+    } else {
+      tool
+    }
+  })
+}
+
+
+foundry_tool_schema <- function(tool) {
+  tool$.fn <- NULL
+  class(tool) <- NULL
+  tool
+}
+
+
+foundry_validate_agent_tools <- function(tools) {
+  if (inherits(tools, "foundry_tool")) {
+    return(list(tools))
+  }
+  if (!is.list(tools) || length(tools) == 0L) {
+    cli::cli_abort("{.arg tools} must be a foundry tool or a non-empty list of foundry tools.")
+  }
+  valid <- vapply(tools, inherits, logical(1), "foundry_tool")
+  if (!all(valid)) {
+    cli::cli_abort("{.arg tools} must contain only objects created by {.fun foundry_tool}.")
+  }
+  tool_names <- vapply(tools, function(tool) tool$name, character(1))
+  if (anyDuplicated(tool_names)) {
+    cli::cli_abort("{.arg tools} must not contain duplicate tool names.")
+  }
+  tools
+}
+
+
+foundry_execute_tool_calls <- function(tool_calls, tools) {
+  function_calls <- tool_calls[tool_calls$type == "function_call", , drop = FALSE]
+  tool_lookup <- stats::setNames(
+    lapply(tools, function(tool) tool$.fn),
+    vapply(tools, function(tool) tool$name, character(1))
+  )
+
+  input_items <- vector("list", nrow(function_calls))
+  result_rows <- vector("list", nrow(function_calls))
+
+  for (i in seq_len(nrow(function_calls))) {
+    call <- function_calls[i, , drop = FALSE]
+    name <- call$name[[1]]
+    call_id <- call$call_id[[1]]
+
+    if (is.na(call_id) || call_id == "") {
+      cli::cli_abort("Function call {.val {name}} did not include a {.field call_id}.")
+    }
+    if (!name %in% names(tool_lookup)) {
+      cli::cli_abort("No R function is registered for tool {.val {name}}.")
+    }
+
+    args <- foundry_parse_tool_arguments(call$arguments[[1]], name)
+    value <- tryCatch(
+      do.call(tool_lookup[[name]], args),
+      error = function(e) {
+        cli::cli_abort(c(
+          "Tool {.val {name}} failed.",
+          "x" = conditionMessage(e)
+        ))
+      }
+    )
+    output <- foundry_tool_output_string(value)
+
+    input_items[[i]] <- list(
+      type = "function_call_output",
+      call_id = call_id,
+      output = output
+    )
+    result_rows[[i]] <- tibble::tibble(
+      call_id = call_id,
+      name = name,
+      arguments = list(args),
+      output = output
+    )
+  }
+
+  list(
+    input = input_items,
+    results = dplyr::bind_rows(result_rows)
+  )
+}
+
+
+foundry_parse_tool_arguments <- function(arguments, name) {
+  if (is.na(arguments) || arguments == "") {
+    return(list())
+  }
+
+  tryCatch(
+    jsonlite::fromJSON(arguments, simplifyVector = FALSE),
+    error = function(e) {
+      cli::cli_abort(c(
+        "Failed to parse arguments for tool {.val {name}}.",
+        "x" = conditionMessage(e)
+      ))
+    }
+  )
+}
+
+
+foundry_tool_output_string <- function(value) {
+  if (is.character(value) && length(value) == 1L && !is.na(value)) {
+    return(value)
+  }
+
+  as.character(jsonlite::toJSON(value, auto_unbox = TRUE, null = "null"))
+}
+
+
+foundry_empty_tool_results <- function() {
+  tibble::tibble(
+    call_id = character(),
+    name = character(),
+    arguments = list(),
+    output = character()
+  )
 }
 
 

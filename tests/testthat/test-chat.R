@@ -36,15 +36,35 @@ test_that("foundry_parse_chat_response returns correct tibble structure", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 1)
-  expect_named(result, c("role", "content", "model", "finish_reason",
-                          "prompt_tokens", "completion_tokens", "total_tokens"))
+  expect_named(result, c(
+    "role", "content", "model", "finish_reason",
+    "prompt_tokens", "completion_tokens", "reasoning_tokens",
+    "cached_input_tokens", "total_tokens"
+  ))
   expect_equal(result$role, "assistant")
   expect_equal(result$content, "Test response")
   expect_equal(result$model, "gpt-4")
   expect_equal(result$finish_reason, "stop")
   expect_equal(result$prompt_tokens, 5)
   expect_equal(result$completion_tokens, 10)
+  expect_true(is.na(result$reasoning_tokens))
+  expect_true(is.na(result$cached_input_tokens))
   expect_equal(result$total_tokens, 15)
+})
+
+test_that("foundry_parse_chat_response surfaces reasoning and cached tokens", {
+  mock_response <- mock_chat_response(
+    content = "Reasoned response",
+    prompt_tokens = 100,
+    completion_tokens = 40
+  )
+  mock_response$usage$prompt_tokens_details <- list(cached_tokens = 75L)
+  mock_response$usage$completion_tokens_details <- list(reasoning_tokens = 12L)
+
+  result <- foundry_parse_chat_response(mock_response, "gpt-4")
+
+  expect_equal(result$reasoning_tokens, 12L)
+  expect_equal(result$cached_input_tokens, 75L)
 })
 
 test_that("foundry_parse_chat_response handles missing fields", {
@@ -114,7 +134,28 @@ test_that("foundry_chat returns correct column types", {
   expect_type(result$finish_reason, "character")
   expect_type(result$prompt_tokens, "integer")
   expect_type(result$completion_tokens, "integer")
+  expect_type(result$reasoning_tokens, "integer")
+  expect_type(result$cached_input_tokens, "integer")
   expect_type(result$total_tokens, "integer")
+})
+
+test_that("foundry_chat sends reasoning_effort when supplied", {
+  setup_mock_env()
+  fixture <- load_fixture("chat", "response.json")
+  mock_resp <- mock_httr2_response(fixture)
+  captured <- NULL
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  foundry_chat("Test", model = "gpt-5-mini", reasoning_effort = "medium")
+
+  expect_equal(captured$body$data$reasoning_effort, "medium")
 })
 
 # ============================================================================
