@@ -12,8 +12,8 @@ foundry_set_content_safety_endpoint(endpoint, store = FALSE)
 
 - endpoint:
 
-  Character string containing the endpoint URL. Example:
-  "https://your-resource.cognitiveservices.azure.com"
+  Character string containing the endpoint URL. Example: the endpoint
+  URL from your Content Safety resource.
 
 - store:
 
@@ -29,9 +29,9 @@ Invisibly returns TRUE if endpoint was set successfully.
 
 ``` r
 if (FALSE) { # \dontrun{
-foundry_set_content_safety_endpoint("https://my-resource.cognitiveservices.azure.com")
+foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT")
 
 # Store permanently
-foundry_set_content_safety_endpoint("https://my-resource.cognitiveservices.azure.com", store = TRUE)
+foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT", store = TRUE)
 } # }
 ```

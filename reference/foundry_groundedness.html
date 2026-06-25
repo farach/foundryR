@@ -26,13 +26,15 @@ This helps identify hallucinations or unsupported claims in AI-generated text.">
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/image-generation.html">Image Generation</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
@@ -160,7 +162,7 @@ Empty character vector if fully grounded.</p></dd>
 <p>This function uses Azure Content Safety credentials, which are separate from
 the Azure AI Foundry (OpenAI) credentials used by other foundryR functions.</p>
 <p>Set environment variables:</p>
-<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>AZURE_CONTENT_SAFETY_ENDPOINT<span class="ot">=</span>https<span class="sc">:</span><span class="er">//</span>your<span class="sc">-</span>resource.cognitiveservices.azure.com</span>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>AZURE_CONTENT_SAFETY_ENDPOINT<span class="ot">=</span><span class="er">&lt;</span>your Content Safety endpoint URL<span class="sc">&gt;</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>AZURE_CONTENT_SAFETY_KEY<span class="ot">=</span>your<span class="sc">-</span>api<span class="sc">-</span>key</span></code></pre><p></p></div>
 <p>Or pass <code>endpoint</code> and <code>api_key</code> directly to the function.</p>
 </div>
@@ -234,7 +236,7 @@ groundedness requirements.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. Powered by <a href="https://azure.microsoft.com/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. Powered by <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
 </div>
 
     </footer></div>

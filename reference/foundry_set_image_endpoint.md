@@ -31,6 +31,6 @@ DALL-E is deployed on a separate Azure resource.
 
 ``` r
 if (FALSE) { # \dontrun{
-foundry_set_image_endpoint("https://my-dalle-resource.cognitiveservices.azure.com")
+foundry_set_image_endpoint("AZURE_FOUNDRY_IMAGE_ENDPOINT")
 } # }
 ```

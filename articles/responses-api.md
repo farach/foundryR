@@ -26,7 +26,7 @@ tibble columns.
 
 library(foundryR)
 
-foundry_set_endpoint("https://your-resource.openai.azure.com")
+foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
 foundry_set_key("your-api-key")
 
 foundry_response(

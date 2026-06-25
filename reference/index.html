@@ -22,13 +22,15 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/image-generation.html">Image Generation</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
@@ -80,6 +82,13 @@
 
         <dt>
 
+          <code><a href="foundry_set_token.html">foundry_set_token()</a></code>
+
+        </dt>
+        <dd>Set Azure AI Foundry Bearer Token</dd>
+
+        <dt>
+
           <code><a href="foundry_set_endpoint.html">foundry_set_endpoint()</a></code>
 
         </dt>
@@ -91,6 +100,20 @@
 
         </dt>
         <dd>Get Azure AI Foundry Endpoint</dd>
+
+        <dt>
+
+          <code><a href="foundry_set_speech_endpoint.html">foundry_set_speech_endpoint()</a></code>
+
+        </dt>
+        <dd>Set Microsoft Foundry Speech endpoint</dd>
+
+        <dt>
+
+          <code><a href="foundry_set_speech_key.html">foundry_set_speech_key()</a></code>
+
+        </dt>
+        <dd>Set Microsoft Foundry Speech API key</dd>
       </dl></div><div class="section level2">
       <h2 id="chat-completions">Chat Completions<a class="anchor" aria-label="anchor" href="#chat-completions"></a></h2>
 
@@ -151,6 +174,115 @@
 
         </dt>
         <dd>Search the web with the Responses API</dd>
+      </dl></div><div class="section level2">
+      <h2 id="audio-and-speech">Audio and Speech<a class="anchor" aria-label="anchor" href="#audio-and-speech"></a></h2>
+
+      <div class="section-desc"><p>Transcribe and translate research audio, including MAI-Transcribe models through LLM Speech, and synthesize text-to-speech audio files.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="foundry_transcribe.html">foundry_transcribe()</a></code>
+
+        </dt>
+        <dd>Transcribe an audio file with Microsoft Foundry</dd>
+
+        <dt>
+
+          <code><a href="foundry_translate_audio.html">foundry_translate_audio()</a></code>
+
+        </dt>
+        <dd>Translate an audio file with Microsoft Foundry</dd>
+
+        <dt>
+
+          <code><a href="foundry_speak.html">foundry_speak()</a></code>
+
+        </dt>
+        <dd>Generate speech audio from text</dd>
+      </dl></div><div class="section level2">
+      <h2 id="files-and-batch-api">Files and Batch API<a class="anchor" aria-label="anchor" href="#files-and-batch-api"></a></h2>
+
+      <div class="section-desc"><p>Upload files, prepare JSONL request files, and manage asynchronous batch jobs for large-scale annotation, extraction, and classification.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="foundry_file_upload.html">foundry_file_upload()</a></code>
+
+        </dt>
+        <dd>Upload a file to Microsoft Foundry</dd>
+
+        <dt>
+
+          <code><a href="foundry_files.html">foundry_files()</a></code>
+
+        </dt>
+        <dd>List uploaded Microsoft Foundry files</dd>
+
+        <dt>
+
+          <code><a href="foundry_file_get.html">foundry_file_get()</a></code>
+
+        </dt>
+        <dd>Retrieve a Microsoft Foundry file</dd>
+
+        <dt>
+
+          <code><a href="foundry_file_delete.html">foundry_file_delete()</a></code>
+
+        </dt>
+        <dd>Delete a Microsoft Foundry file</dd>
+
+        <dt>
+
+          <code><a href="foundry_file_download.html">foundry_file_download()</a></code>
+
+        </dt>
+        <dd>Download Microsoft Foundry file content</dd>
+
+        <dt>
+
+          <code><a href="foundry_batch_requests.html">foundry_batch_requests()</a></code>
+
+        </dt>
+        <dd>Write JSONL requests for the Batch API</dd>
+
+        <dt>
+
+          <code><a href="foundry_batch_create.html">foundry_batch_create()</a></code>
+
+        </dt>
+        <dd>Create a Microsoft Foundry batch</dd>
+
+        <dt>
+
+          <code><a href="foundry_batches.html">foundry_batches()</a></code>
+
+        </dt>
+        <dd>List Microsoft Foundry batches</dd>
+
+        <dt>
+
+          <code><a href="foundry_batch_get.html">foundry_batch_get()</a></code>
+
+        </dt>
+        <dd>Retrieve a Microsoft Foundry batch</dd>
+
+        <dt>
+
+          <code><a href="foundry_batch_cancel.html">foundry_batch_cancel()</a></code>
+
+        </dt>
+        <dd>Cancel a Microsoft Foundry batch</dd>
       </dl></div><div class="section level2">
       <h2 id="text-embeddings">Text Embeddings<a class="anchor" aria-label="anchor" href="#text-embeddings"></a></h2>
 
@@ -270,9 +402,9 @@
         </dt>
         <dd>Set Azure Content Safety Endpoint</dd>
       </dl></div><div class="section level2">
-      <h2 id="image-generation">Image Generation<a class="anchor" aria-label="anchor" href="#image-generation"></a></h2>
+      <h2 id="image-and-video-generation">Image and Video Generation<a class="anchor" aria-label="anchor" href="#image-and-video-generation"></a></h2>
 
-      <div class="section-desc"><p>Create images with DALL-E models. Generate, customize, and save AI-generated artwork and visualizations.</p></div>
+      <div class="section-desc"><p>Generate and edit images with v1 preview image models, and manage preview video generation jobs.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -285,6 +417,13 @@
 
         </dt>
         <dd>Generate Images with DALL-E</dd>
+
+        <dt>
+
+          <code><a href="foundry_image_edit.html">foundry_image_edit()</a></code>
+
+        </dt>
+        <dd>Edit an image with Microsoft Foundry</dd>
 
         <dt>
 
@@ -306,6 +445,48 @@
 
         </dt>
         <dd>Set Image Generation API Key</dd>
+
+        <dt>
+
+          <code><a href="foundry_video_job_create.html">foundry_video_job_create()</a></code>
+
+        </dt>
+        <dd>Create a Microsoft Foundry video generation job</dd>
+
+        <dt>
+
+          <code><a href="foundry_video_jobs.html">foundry_video_jobs()</a></code>
+
+        </dt>
+        <dd>List Microsoft Foundry video generation jobs</dd>
+
+        <dt>
+
+          <code><a href="foundry_video_job_get.html">foundry_video_job_get()</a></code>
+
+        </dt>
+        <dd>Retrieve a Microsoft Foundry video generation job</dd>
+
+        <dt>
+
+          <code><a href="foundry_video_job_delete.html">foundry_video_job_delete()</a></code>
+
+        </dt>
+        <dd>Delete a Microsoft Foundry video generation job</dd>
+
+        <dt>
+
+          <code><a href="foundry_video_get.html">foundry_video_get()</a></code>
+
+        </dt>
+        <dd>Retrieve a Microsoft Foundry video generation</dd>
+
+        <dt>
+
+          <code><a href="foundry_video_download.html">foundry_video_download()</a></code>
+
+        </dt>
+        <dd>Download Microsoft Foundry generated video content</dd>
       </dl></div><div class="section level2">
       <h2 id="model-discovery">Model Discovery<a class="anchor" aria-label="anchor" href="#model-discovery"></a></h2>
 
@@ -321,7 +502,7 @@
           <code><a href="foundry_models.html">foundry_models()</a></code>
 
         </dt>
-        <dd>List Available Models/Deployments</dd>
+        <dd>List or retrieve available model deployments</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
@@ -332,7 +513,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. Powered by <a href="https://azure.microsoft.com/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. Powered by <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
 </div>
 
     </footer></div>

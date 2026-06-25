@@ -45,8 +45,7 @@ pak::pak("farach/foundryR")
 foundryR requires two pieces of information to connect to Azure AI
 Foundry:
 
-- **Endpoint URL**: Your Azure OpenAI resource endpoint (e.g.,
-  `https://your-resource-name.openai.azure.com`)
+- **Endpoint URL**: Your Azure OpenAI or Foundry project endpoint.
 - **API Key**: Found in the Azure Portal under “Keys and Endpoint”
 
 There are two ways to configure these credentials:
@@ -59,7 +58,7 @@ Set credentials for the current R session only:
 
 library(foundryR)
 
-foundry_set_endpoint("https://your-resource-name.openai.azure.com")
+foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
 foundry_set_key("your-api-key-here")
 ```
 
@@ -71,7 +70,7 @@ sessions. You can do this manually or use the `store = TRUE` argument:
 ``` r
 
 # Store credentials permanently
-foundry_set_endpoint("https://your-resource-name.openai.azure.com", store = TRUE)
+foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT", store = TRUE)
 foundry_set_key("your-api-key-here", store = TRUE)
 ```
 
@@ -85,7 +84,7 @@ usethis::edit_r_environ()
 
 Add these lines to your `.Renviron`:
 
-    AZURE_FOUNDRY_ENDPOINT=https://your-resource-name.openai.azure.com
+    AZURE_FOUNDRY_ENDPOINT=<your Foundry endpoint URL>
     AZURE_FOUNDRY_KEY=your-api-key-here
 
 After editing `.Renviron`, restart R for changes to take effect.

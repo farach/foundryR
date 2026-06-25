@@ -11,11 +11,17 @@ foundry_image(
   prompt,
   model = NULL,
   n = 1L,
-  size = c("1024x1024", "1792x1024", "1024x1792", "512x512", "256x256"),
-  quality = c("standard", "hd"),
-  style = c("vivid", "natural"),
-  response_format = c("url", "b64_json"),
+  size = "1024x1024",
+  quality = NULL,
+  style = NULL,
+  response_format = NULL,
+  output_format = NULL,
+  output_compression = NULL,
+  background = NULL,
+  moderation = NULL,
+  api = c("v1", "deployment"),
   api_key = NULL,
+  token = NULL,
   api_version = NULL
 )
 ```
@@ -37,31 +43,59 @@ foundry_image(
 
 - size:
 
-  Character. The size of the generated image(s). One of: "1024x1024"
-  (default), "1792x1024", "1024x1792", "512x512", "256x256". Note: Not
-  all sizes are supported by all DALL-E versions.
+  Character. The size of the generated image(s). Modern v1 image models
+  support `"auto"`, `"1024x1024"`, `"1536x1024"`, and `"1024x1536"`.
+  DALL-E deployments also support older sizes such as `"1792x1024"`,
+  `"1024x1792"`, `"512x512"`, and `"256x256"`.
 
 - quality:
 
-  Character. The quality of the image. One of: "standard" (default),
-  "hd". HD quality provides finer details and greater consistency. Only
-  supported by DALL-E 3.
+  Character. The quality of the image. Modern v1 models support
+  `"auto"`, `"low"`, `"medium"`, and `"high"`. DALL-E 3 supports
+  `"standard"` and `"hd"`.
 
 - style:
 
-  Character. The style of the generated image. One of: "vivid"
-  (default), "natural". Vivid creates hyper-real and dramatic images.
-  Natural produces more realistic, less hyper-real images. Only
-  supported by DALL-E 3.
+  Character. Optional DALL-E 3 style, `"vivid"` or `"natural"`.
 
 - response_format:
 
-  Character. The format of the generated images. One of: "url" (default)
-  or "b64_json" (base64-encoded).
+  Character. Optional DALL-E response format, `"url"` or `"b64_json"`.
+  This is not supported by `gpt-image-1`-series models, which return
+  base64 image data.
+
+- output_format:
+
+  Character. Optional v1 image output format, `"png"`, `"jpeg"`, or
+  `"webp"`.
+
+- output_compression:
+
+  Integer. Optional v1 compression level from 0 to 100 for `"jpeg"` or
+  `"webp"` output.
+
+- background:
+
+  Character. Optional v1 background mode: `"transparent"`, `"opaque"`,
+  or `"auto"`.
+
+- moderation:
+
+  Character. Optional v1 moderation level: `"low"` or `"auto"`.
+
+- api:
+
+  Character. API shape to use. `"v1"` uses
+  `/openai/v1/images/generations`; `"deployment"` uses the legacy
+  `/openai/deployments/{deployment}/images/generations` endpoint.
 
 - api_key:
 
   Character. Optional API key override.
+
+- token:
+
+  Character. Optional bearer token override.
 
 - api_version:
 
@@ -89,17 +123,27 @@ A tibble with columns:
 
   Character. Base64-encoded image data (NA if response_format is "url").
 
+- output_format:
+
+  Character. Requested or returned output format.
+
 - created:
 
   POSIXct. Timestamp when the image was created.
 
+- raw_image:
+
+  List. Raw image object returned by the service.
+
 ## Details
 
-**Model Requirements**: The `model` parameter must be a deployment of a
-DALL-E model (e.g., dall-e-2, dall-e-3). Chat models cannot generate
-images.
+**Model Requirements**: The `model` parameter must be an image-capable
+deployment such as a DALL-E or `gpt-image-1`-series deployment. Chat
+models cannot generate images.
 
 **Size Availability**:
+
+- gpt-image-1 series: auto, 1024x1024, 1536x1024, 1024x1536
 
 - DALL-E 3: 1024x1024, 1792x1024, 1024x1792
 

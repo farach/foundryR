@@ -45,12 +45,12 @@ and Endpoint** in the Azure Portal, then configure foundryR:
 library(foundryR)
 
 # Option A: Set for current session
-foundry_set_content_safety_endpoint("https://your-resource.cognitiveservices.azure.com")
+foundry_set_content_safety_endpoint("AZURE_CONTENT_SAFETY_ENDPOINT")
 foundry_set_content_safety_key("your-content-safety-key")
 
 # Option B: Set environment variables (recommended)
 # Add to .Renviron:
-# AZURE_CONTENT_SAFETY_ENDPOINT=https://your-resource.cognitiveservices.azure.com
+# AZURE_CONTENT_SAFETY_ENDPOINT=<your Content Safety endpoint URL>
 # AZURE_CONTENT_SAFETY_KEY=your-content-safety-key
 ```
 

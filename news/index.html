@@ -22,13 +22,15 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/image-generation.html">Image Generation</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
@@ -60,8 +62,26 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.0.9000" id="foundryr-0009000">foundryR 0.0.0.9000<a class="anchor" aria-label="anchor" href="#foundryr-0009000"></a></h2>
-<p>Initial development release of foundryR, a tidy interface to Microsoft Azure AI Foundry. ## Core Features</p>
-<div class="section level4">
+<p>Initial development release of foundryR, a tidy interface to Microsoft Azure AI Foundry.</p>
+<ul><li>
+<code><a href="../reference/foundry_batch_create.html">foundry_batch_create()</a></code>, <code><a href="../reference/foundry_batches.html">foundry_batches()</a></code>, <code><a href="../reference/foundry_batch_get.html">foundry_batch_get()</a></code>, <code><a href="../reference/foundry_batch_cancel.html">foundry_batch_cancel()</a></code>, and <code><a href="../reference/foundry_batch_requests.html">foundry_batch_requests()</a></code> add v1 Batch API workflows for large-scale prompt, annotation, extraction, and classification jobs.</li>
+<li>
+<code><a href="../reference/foundry_file_upload.html">foundry_file_upload()</a></code>, <code><a href="../reference/foundry_files.html">foundry_files()</a></code>, <code><a href="../reference/foundry_file_get.html">foundry_file_get()</a></code>, <code><a href="../reference/foundry_file_delete.html">foundry_file_delete()</a></code>, and <code><a href="../reference/foundry_file_download.html">foundry_file_download()</a></code> add v1 Files API support for Batch, eval, fine-tuning, and assistant/file-search workflows.</li>
+<li>
+<code><a href="../reference/foundry_image.html">foundry_image()</a></code> now uses the v1 preview image generation endpoint by default, supports newer image options such as <code>output_format</code>, <code>output_compression</code>, <code>background</code>, and <code>moderation</code>, and keeps the legacy deployment endpoint available with <code>api = "deployment"</code>.</li>
+<li>
+<code><a href="../reference/foundry_image_edit.html">foundry_image_edit()</a></code> adds v1 preview image editing with local image and optional mask uploads.</li>
+<li>
+<code><a href="../reference/foundry_models.html">foundry_models()</a></code> now calls the v1 model/deployment metadata endpoints instead of sending a dummy chat request.</li>
+<li>
+<code><a href="../reference/foundry_set_speech_endpoint.html">foundry_set_speech_endpoint()</a></code>, <code><a href="../reference/foundry_set_speech_key.html">foundry_set_speech_key()</a></code>, <code><a href="../reference/foundry_transcribe.html">foundry_transcribe()</a></code>, and <code><a href="../reference/foundry_translate_audio.html">foundry_translate_audio()</a></code> add LLM Speech and MAI-Transcribe workflows for interview, lecture, meeting, and multilingual research audio.</li>
+<li>
+<code><a href="../reference/foundry_set_token.html">foundry_set_token()</a></code> adds Microsoft Entra ID bearer-token support for keyless authentication across Foundry requests.</li>
+<li>
+<code><a href="../reference/foundry_speak.html">foundry_speak()</a></code> adds v1 preview text-to-speech output saved directly to local audio files.</li>
+<li>
+<code><a href="../reference/foundry_video_job_create.html">foundry_video_job_create()</a></code>, <code><a href="../reference/foundry_video_jobs.html">foundry_video_jobs()</a></code>, <code><a href="../reference/foundry_video_job_get.html">foundry_video_job_get()</a></code>, <code><a href="../reference/foundry_video_job_delete.html">foundry_video_job_delete()</a></code>, <code><a href="../reference/foundry_video_get.html">foundry_video_get()</a></code>, and <code><a href="../reference/foundry_video_download.html">foundry_video_download()</a></code> add preview video generation job management and content download helpers. ## Core Features</li>
+</ul><div class="section level4">
 <h4 id="chat-completions-0-0-0-9000">Chat Completions<a class="anchor" aria-label="anchor" href="#chat-completions-0-0-0-9000"></a></h4>
 <ul><li>
 <code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> for interacting with LLMs (GPT-4, Claude, Llama, Mistral, etc.)</li>
@@ -142,7 +162,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. Powered by <a href="https://azure.microsoft.com/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. Powered by <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
 </div>
 
     </footer></div>

@@ -10,6 +10,7 @@ foundry_build_request(
   endpoint_path,
   body,
   api_key = NULL,
+  token = NULL,
   api_version = NULL
 )
 ```
@@ -31,6 +32,10 @@ foundry_build_request(
 - api_key:
 
   Character. Optional API key override.
+
+- token:
+
+  Character. Optional bearer token override.
 
 - api_version:
 

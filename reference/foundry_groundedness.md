@@ -109,7 +109,7 @@ functions.
 
 Set environment variables:
 
-    AZURE_CONTENT_SAFETY_ENDPOINT=https://your-resource.cognitiveservices.azure.com
+    AZURE_CONTENT_SAFETY_ENDPOINT=<your Content Safety endpoint URL>
     AZURE_CONTENT_SAFETY_KEY=your-api-key
 
 Or pass `endpoint` and `api_key` directly to the function.

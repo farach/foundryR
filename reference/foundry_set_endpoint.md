@@ -12,8 +12,8 @@ foundry_set_endpoint(endpoint, store = FALSE)
 
 - endpoint:
 
-  Character string containing the endpoint URL. Example:
-  "https://your-resource.openai.azure.com"
+  Character string containing the endpoint URL. Example: the endpoint
+  URL from your Foundry resource.
 
 - store:
 
@@ -29,9 +29,9 @@ Invisibly returns TRUE if endpoint was set successfully.
 
 ``` r
 if (FALSE) { # \dontrun{
-foundry_set_endpoint("https://my-resource.openai.azure.com")
+foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
 
 # Store permanently
-foundry_set_endpoint("https://my-resource.openai.azure.com", store = TRUE)
+foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT", store = TRUE)
 } # }
 ```

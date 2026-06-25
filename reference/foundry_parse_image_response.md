@@ -5,7 +5,12 @@ Internal function to parse image generation API response into a tibble.
 ## Usage
 
 ``` r
-foundry_parse_image_response(result, original_prompt, response_format)
+foundry_parse_image_response(
+  result,
+  original_prompt,
+  response_format = NULL,
+  output_format = NULL
+)
 ```
 
 ## Arguments

@@ -46,13 +46,15 @@
 <li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/image-generation.html">Image Generation</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
@@ -159,12 +161,12 @@ foundryR:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Option A: Set for current session</span></span>
-<span><span class="fu"><a href="../reference/foundry_set_content_safety_endpoint.html">foundry_set_content_safety_endpoint</a></span><span class="op">(</span><span class="st">"https://your-resource.cognitiveservices.azure.com"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/foundry_set_content_safety_endpoint.html">foundry_set_content_safety_endpoint</a></span><span class="op">(</span><span class="st">"AZURE_CONTENT_SAFETY_ENDPOINT"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/foundry_set_content_safety_key.html">foundry_set_content_safety_key</a></span><span class="op">(</span><span class="st">"your-content-safety-key"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Option B: Set environment variables (recommended)</span></span>
 <span><span class="co"># Add to .Renviron:</span></span>
-<span><span class="co"># AZURE_CONTENT_SAFETY_ENDPOINT=https://your-resource.cognitiveservices.azure.com</span></span>
+<span><span class="co"># AZURE_CONTENT_SAFETY_ENDPOINT=&lt;your Content Safety endpoint URL&gt;</span></span>
 <span><span class="co"># AZURE_CONTENT_SAFETY_KEY=your-content-safety-key</span></span></code></pre></div>
 </div>
 </div>
@@ -565,7 +567,7 @@ semantic search</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. Powered by <a href="https://azure.microsoft.com/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. Powered by <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
 </div>
 
     </footer>

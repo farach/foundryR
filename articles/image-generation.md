@@ -31,11 +31,11 @@ models. foundryR supports separate configuration for image generation:
 library(foundryR)
 
 # If DALL-E is on the same resource as your chat models:
-foundry_set_endpoint("https://your-resource.openai.azure.com")
+foundry_set_endpoint("AZURE_FOUNDRY_ENDPOINT")
 foundry_set_key("your-api-key")
 
 # If DALL-E is on a different resource:
-foundry_set_image_endpoint("https://your-dalle-resource.cognitiveservices.azure.com")
+foundry_set_image_endpoint("AZURE_FOUNDRY_IMAGE_ENDPOINT")
 foundry_set_image_key("your-dalle-api-key")  # Only if different from main key
 
 # Set default DALL-E deployment

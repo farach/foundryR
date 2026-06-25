@@ -6,6 +6,10 @@
   foundryR](https://farach.github.io/foundryR/articles/getting-started.md):
 - [Responses API, Structured Extraction, and Web
   Search](https://farach.github.io/foundryR/articles/responses-api.md):
+- [Audio Workflows with Microsoft
+  Foundry](https://farach.github.io/foundryR/articles/audio.md):
+- [Files and Batch API
+  Workflows](https://farach.github.io/foundryR/articles/files-batches.md):
 - [Working with
   Embeddings](https://farach.github.io/foundryR/articles/embeddings.md):
 
@@ -16,6 +20,8 @@
 
 ### Advanced Topics
 
+- [Image and Video
+  Generation](https://farach.github.io/foundryR/articles/media-generation.md):
 - [Image Generation with
   DALL-E](https://farach.github.io/foundryR/articles/image-generation.md):
 - [tidymodels

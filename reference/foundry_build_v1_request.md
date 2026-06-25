@@ -11,8 +11,10 @@ foundry_build_v1_request(
   body = NULL,
   method = "POST",
   api_key = NULL,
+  token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  key_getter = foundry_get_key
 )
 ```
 
@@ -34,6 +36,10 @@ foundry_build_v1_request(
 
   Character. Optional API key override.
 
+- token:
+
+  Character. Optional bearer token override.
+
 - endpoint:
 
   Character. Optional endpoint override.
@@ -42,6 +48,11 @@ foundry_build_v1_request(
 
   Character. Optional API version query value. Usually not required for
   v1 endpoints.
+
+- key_getter:
+
+  Function used to resolve API keys. Defaults to
+  [`foundry_get_key()`](https://farach.github.io/foundryR/reference/foundry_get_key.md).
 
 ## Value
 

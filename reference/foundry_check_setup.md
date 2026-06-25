@@ -32,6 +32,10 @@ Invisibly returns a list with configuration status:
 
   Logical. TRUE if an API key is configured.
 
+- token_set:
+
+  Logical. TRUE if a bearer token is configured.
+
 - model_tested:
 
   The deployment name tested, or NA if none.

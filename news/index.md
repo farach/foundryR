@@ -5,7 +5,57 @@
 ## foundryR 0.0.0.9000
 
 Initial development release of foundryR, a tidy interface to Microsoft
-Azure AI Foundry. \## Core Features
+Azure AI Foundry.
+
+- [`foundry_batch_create()`](https://farach.github.io/foundryR/reference/foundry_batch_create.md),
+  [`foundry_batches()`](https://farach.github.io/foundryR/reference/foundry_batches.md),
+  [`foundry_batch_get()`](https://farach.github.io/foundryR/reference/foundry_batch_get.md),
+  [`foundry_batch_cancel()`](https://farach.github.io/foundryR/reference/foundry_batch_cancel.md),
+  and
+  [`foundry_batch_requests()`](https://farach.github.io/foundryR/reference/foundry_batch_requests.md)
+  add v1 Batch API workflows for large-scale prompt, annotation,
+  extraction, and classification jobs.
+- [`foundry_file_upload()`](https://farach.github.io/foundryR/reference/foundry_file_upload.md),
+  [`foundry_files()`](https://farach.github.io/foundryR/reference/foundry_files.md),
+  [`foundry_file_get()`](https://farach.github.io/foundryR/reference/foundry_file_get.md),
+  [`foundry_file_delete()`](https://farach.github.io/foundryR/reference/foundry_file_delete.md),
+  and
+  [`foundry_file_download()`](https://farach.github.io/foundryR/reference/foundry_file_download.md)
+  add v1 Files API support for Batch, eval, fine-tuning, and
+  assistant/file-search workflows.
+- [`foundry_image()`](https://farach.github.io/foundryR/reference/foundry_image.md)
+  now uses the v1 preview image generation endpoint by default, supports
+  newer image options such as `output_format`, `output_compression`,
+  `background`, and `moderation`, and keeps the legacy deployment
+  endpoint available with `api = "deployment"`.
+- [`foundry_image_edit()`](https://farach.github.io/foundryR/reference/foundry_image_edit.md)
+  adds v1 preview image editing with local image and optional mask
+  uploads.
+- [`foundry_models()`](https://farach.github.io/foundryR/reference/foundry_models.md)
+  now calls the v1 model/deployment metadata endpoints instead of
+  sending a dummy chat request.
+- [`foundry_set_speech_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_speech_endpoint.md),
+  [`foundry_set_speech_key()`](https://farach.github.io/foundryR/reference/foundry_set_speech_key.md),
+  [`foundry_transcribe()`](https://farach.github.io/foundryR/reference/foundry_transcribe.md),
+  and
+  [`foundry_translate_audio()`](https://farach.github.io/foundryR/reference/foundry_translate_audio.md)
+  add LLM Speech and MAI-Transcribe workflows for interview, lecture,
+  meeting, and multilingual research audio.
+- [`foundry_set_token()`](https://farach.github.io/foundryR/reference/foundry_set_token.md)
+  adds Microsoft Entra ID bearer-token support for keyless
+  authentication across Foundry requests.
+- [`foundry_speak()`](https://farach.github.io/foundryR/reference/foundry_speak.md)
+  adds v1 preview text-to-speech output saved directly to local audio
+  files.
+- [`foundry_video_job_create()`](https://farach.github.io/foundryR/reference/foundry_video_job_create.md),
+  [`foundry_video_jobs()`](https://farach.github.io/foundryR/reference/foundry_video_jobs.md),
+  [`foundry_video_job_get()`](https://farach.github.io/foundryR/reference/foundry_video_job_get.md),
+  [`foundry_video_job_delete()`](https://farach.github.io/foundryR/reference/foundry_video_job_delete.md),
+  [`foundry_video_get()`](https://farach.github.io/foundryR/reference/foundry_video_get.md),
+  and
+  [`foundry_video_download()`](https://farach.github.io/foundryR/reference/foundry_video_download.md)
+  add preview video generation job management and content download
+  helpers. \## Core Features
 
 #### Chat Completions
 

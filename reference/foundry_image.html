@@ -26,13 +26,15 @@ metadata about the generation."><meta property="og:image" content="https://farac
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core Functionality</h6></li>
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
     <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/image-generation.html">Image Generation</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
     <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
@@ -72,11 +74,17 @@ metadata about the generation.</p>
 <span>  <span class="va">prompt</span>,</span>
 <span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1024x1024"</span>, <span class="st">"1792x1024"</span>, <span class="st">"1024x1792"</span>, <span class="st">"512x512"</span>, <span class="st">"256x256"</span><span class="op">)</span>,</span>
-<span>  quality <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"standard"</span>, <span class="st">"hd"</span><span class="op">)</span>,</span>
-<span>  style <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"vivid"</span>, <span class="st">"natural"</span><span class="op">)</span>,</span>
-<span>  response_format <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"url"</span>, <span class="st">"b64_json"</span><span class="op">)</span>,</span>
+<span>  size <span class="op">=</span> <span class="st">"1024x1024"</span>,</span>
+<span>  quality <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  style <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  response_format <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output_format <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  output_compression <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  background <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  moderation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  api <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"v1"</span>, <span class="st">"deployment"</span><span class="op">)</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_version <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -100,28 +108,59 @@ Defaults to the environment variable <code>AZURE_FOUNDRY_IMAGE_MODEL</code>.</p>
 
 <dt id="arg-size">size<a class="anchor" aria-label="anchor" href="#arg-size"></a></dt>
 <dd><p>Character. The size of the generated image(s).
-One of: "1024x1024" (default), "1792x1024", "1024x1792", "512x512", "256x256".
-Note: Not all sizes are supported by all DALL-E versions.</p></dd>
+Modern v1 image models support <code>"auto"</code>, <code>"1024x1024"</code>, <code>"1536x1024"</code>,
+and <code>"1024x1536"</code>. DALL-E deployments also support older sizes such as
+<code>"1792x1024"</code>, <code>"1024x1792"</code>, <code>"512x512"</code>, and <code>"256x256"</code>.</p></dd>
 
 
 <dt id="arg-quality">quality<a class="anchor" aria-label="anchor" href="#arg-quality"></a></dt>
-<dd><p>Character. The quality of the image. One of: "standard" (default), "hd".
-HD quality provides finer details and greater consistency. Only supported by DALL-E 3.</p></dd>
+<dd><p>Character. The quality of the image. Modern v1 models support
+<code>"auto"</code>, <code>"low"</code>, <code>"medium"</code>, and <code>"high"</code>. DALL-E 3 supports
+<code>"standard"</code> and <code>"hd"</code>.</p></dd>
 
 
 <dt id="arg-style">style<a class="anchor" aria-label="anchor" href="#arg-style"></a></dt>
-<dd><p>Character. The style of the generated image. One of: "vivid" (default), "natural".
-Vivid creates hyper-real and dramatic images. Natural produces more realistic,
-less hyper-real images. Only supported by DALL-E 3.</p></dd>
+<dd><p>Character. Optional DALL-E 3 style, <code>"vivid"</code> or <code>"natural"</code>.</p></dd>
 
 
 <dt id="arg-response-format">response_format<a class="anchor" aria-label="anchor" href="#arg-response-format"></a></dt>
-<dd><p>Character. The format of the generated images.
-One of: "url" (default) or "b64_json" (base64-encoded).</p></dd>
+<dd><p>Character. Optional DALL-E response format, <code>"url"</code>
+or <code>"b64_json"</code>. This is not supported by <code>gpt-image-1</code>-series models,
+which return base64 image data.</p></dd>
+
+
+<dt id="arg-output-format">output_format<a class="anchor" aria-label="anchor" href="#arg-output-format"></a></dt>
+<dd><p>Character. Optional v1 image output format, <code>"png"</code>,
+<code>"jpeg"</code>, or <code>"webp"</code>.</p></dd>
+
+
+<dt id="arg-output-compression">output_compression<a class="anchor" aria-label="anchor" href="#arg-output-compression"></a></dt>
+<dd><p>Integer. Optional v1 compression level from 0 to
+100 for <code>"jpeg"</code> or <code>"webp"</code> output.</p></dd>
+
+
+<dt id="arg-background">background<a class="anchor" aria-label="anchor" href="#arg-background"></a></dt>
+<dd><p>Character. Optional v1 background mode: <code>"transparent"</code>,
+<code>"opaque"</code>, or <code>"auto"</code>.</p></dd>
+
+
+<dt id="arg-moderation">moderation<a class="anchor" aria-label="anchor" href="#arg-moderation"></a></dt>
+<dd><p>Character. Optional v1 moderation level: <code>"low"</code> or
+<code>"auto"</code>.</p></dd>
+
+
+<dt id="arg-api">api<a class="anchor" aria-label="anchor" href="#arg-api"></a></dt>
+<dd><p>Character. API shape to use. <code>"v1"</code> uses
+<code>/openai/v1/images/generations</code>; <code>"deployment"</code> uses the legacy
+<code>/openai/deployments/{deployment}/images/generations</code> endpoint.</p></dd>
 
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
 <dd><p>Character. Optional API key override.</p></dd>
+
+
+<dt id="arg-token">token<a class="anchor" aria-label="anchor" href="#arg-token"></a></dt>
+<dd><p>Character. Optional bearer token override.</p></dd>
 
 
 <dt id="arg-api-version">api_version<a class="anchor" aria-label="anchor" href="#arg-api-version"></a></dt>
@@ -142,16 +181,24 @@ One of: "url" (default) or "b64_json" (base64-encoded).</p></dd>
 <dt>b64_json</dt>
 <dd><p>Character. Base64-encoded image data (NA if response_format is "url").</p></dd>
 
+<dt>output_format</dt>
+<dd><p>Character. Requested or returned output format.</p></dd>
+
 <dt>created</dt>
 <dd><p>POSIXct. Timestamp when the image was created.</p></dd>
+
+<dt>raw_image</dt>
+<dd><p>List. Raw image object returned by the service.</p></dd>
 
 
 </dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><strong>Model Requirements</strong>: The <code>model</code> parameter must be a deployment of a DALL-E model
-(e.g., dall-e-2, dall-e-3). Chat models cannot generate images.</p>
-<p><strong>Size Availability</strong>:</p><ul><li><p>DALL-E 3: 1024x1024, 1792x1024, 1024x1792</p></li>
+    <p><strong>Model Requirements</strong>: The <code>model</code> parameter must be an image-capable
+deployment such as a DALL-E or <code>gpt-image-1</code>-series deployment. Chat models
+cannot generate images.</p>
+<p><strong>Size Availability</strong>:</p><ul><li><p>gpt-image-1 series: auto, 1024x1024, 1536x1024, 1024x1536</p></li>
+<li><p>DALL-E 3: 1024x1024, 1792x1024, 1024x1792</p></li>
 <li><p>DALL-E 2: 256x256, 512x512, 1024x1024</p></li>
 </ul><p><strong>URL Expiration</strong>: Image URLs returned by the API are temporary and will expire.
 Use <code><a href="foundry_save_image.html">foundry_save_image()</a></code> to download and save images locally.</p>
@@ -197,7 +244,7 @@ Use <code><a href="foundry_save_image.html">foundry_save_image()</a></code> to d
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. Powered by <a href="https://azure.microsoft.com/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0. Powered by <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
 </div>
 
     </footer></div>
