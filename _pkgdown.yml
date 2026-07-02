@@ -208,6 +208,31 @@ reference:
       - foundry_extract_batch
       - foundry_usage
 
+  - title: Evaluations
+    desc: >
+      Run Azure AI Foundry cloud evaluations. Define graders (string check,
+      text similarity, model-graded labels and scores, and Azure built-in
+      evaluators), create evaluations, and inspect per-row grader results as
+      tibbles.
+    contents:
+      - foundry_grader_string_check
+      - foundry_grader_text_similarity
+      - foundry_grader_label_model
+      - foundry_grader_score_model
+      - foundry_grader_azure_ai
+      - foundry_eval_item
+      - foundry_eval_data_config
+      - foundry_eval_run_data
+      - foundry_eval_create
+      - foundry_evals
+      - foundry_eval_get
+      - foundry_eval_delete
+      - foundry_eval_run_create
+      - foundry_eval_runs
+      - foundry_eval_run_get
+      - foundry_eval_run_cancel
+      - foundry_eval_run_output_items
+
   - title: Validation and provenance
     desc: >
       Validate LLM annotation against human labels, measure repeated-extraction
