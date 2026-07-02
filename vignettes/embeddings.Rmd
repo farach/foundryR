@@ -18,6 +18,11 @@ recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
 run_api <- recording || have_fixtures
 
+# Attach foundryR before start_vignette(): httptest2 only sources the package's
+# inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
+# packages.
+library(foundryR)
+
 if (run_api) {
   httptest2::start_vignette(fixture_dir)
 }

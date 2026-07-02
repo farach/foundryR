@@ -28,6 +28,11 @@ fixture_path <- if (dir.exists("vignettes")) file.path("vignettes", fixture_dir)
 have_fixtures <- dir.exists(fixture_path) && length(list.files(fixture_path)) > 0
 run_api <- recording || have_fixtures
 
+# Attach foundryR before start_vignette(): httptest2 only sources the package's
+# inst/httptest2/start-vignette.R (redactor on record, placeholders on replay) from
+# attached packages.
+library(foundryR)
+
 if (run_api) {
   httptest2::start_vignette(fixture_dir)
 }

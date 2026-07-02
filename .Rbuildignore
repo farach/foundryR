@@ -17,3 +17,10 @@
 ^tools$
 ^vignettes/articles$
 ^vignettes/tools$
+^vignettes/annotation-workflow$
+^vignettes/content-safety$
+^vignettes/embeddings$
+^vignettes/foundryr-vs-ellmer$
+^vignettes/getting-started$
+^vignettes/responses-api$
+^vignettes/tidymodels$
