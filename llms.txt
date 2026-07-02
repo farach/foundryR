@@ -459,6 +459,48 @@ jobs for large-scale annotation, extraction, and classification.
 - [`foundry_usage()`](https://farach.github.io/foundryR/reference/foundry_usage.md)
   : Summarise token usage for foundryR results
 
+## Evaluations
+
+Run Azure AI Foundry cloud evaluations. Define graders (string check,
+text similarity, model-graded labels and scores, and Azure built-in
+evaluators), create evaluations, and inspect per-row grader results as
+tibbles.
+
+- [`foundry_grader_string_check()`](https://farach.github.io/foundryR/reference/foundry_grader_string_check.md)
+  : String-check grader
+- [`foundry_grader_text_similarity()`](https://farach.github.io/foundryR/reference/foundry_grader_text_similarity.md)
+  : Text-similarity grader
+- [`foundry_grader_label_model()`](https://farach.github.io/foundryR/reference/foundry_grader_label_model.md)
+  : Label-model grader
+- [`foundry_grader_score_model()`](https://farach.github.io/foundryR/reference/foundry_grader_score_model.md)
+  : Score-model grader
+- [`foundry_grader_azure_ai()`](https://farach.github.io/foundryR/reference/foundry_grader_azure_ai.md)
+  : Azure AI built-in evaluator grader
+- [`foundry_eval_item()`](https://farach.github.io/foundryR/reference/foundry_eval_item.md)
+  : Build an evaluation item for model-based graders
+- [`foundry_eval_data_config()`](https://farach.github.io/foundryR/reference/foundry_eval_data_config.md)
+  : Define an evaluation data-source configuration
+- [`foundry_eval_run_data()`](https://farach.github.io/foundryR/reference/foundry_eval_run_data.md)
+  : Define an evaluation run data source
+- [`foundry_eval_create()`](https://farach.github.io/foundryR/reference/foundry_eval_create.md)
+  : Create an evaluation
+- [`foundry_evals()`](https://farach.github.io/foundryR/reference/foundry_evals.md)
+  : List evaluations
+- [`foundry_eval_get()`](https://farach.github.io/foundryR/reference/foundry_eval_get.md)
+  : Retrieve an evaluation
+- [`foundry_eval_delete()`](https://farach.github.io/foundryR/reference/foundry_eval_delete.md)
+  : Delete an evaluation
+- [`foundry_eval_run_create()`](https://farach.github.io/foundryR/reference/foundry_eval_run_create.md)
+  : Create an evaluation run
+- [`foundry_eval_runs()`](https://farach.github.io/foundryR/reference/foundry_eval_runs.md)
+  : List evaluation runs
+- [`foundry_eval_run_get()`](https://farach.github.io/foundryR/reference/foundry_eval_run_get.md)
+  : Retrieve an evaluation run
+- [`foundry_eval_run_cancel()`](https://farach.github.io/foundryR/reference/foundry_eval_run_cancel.md)
+  : Cancel an evaluation run
+- [`foundry_eval_run_output_items()`](https://farach.github.io/foundryR/reference/foundry_eval_run_output_items.md)
+  : List evaluation run output items
+
 ## Validation and provenance
 
 Validate LLM annotation against human labels, measure

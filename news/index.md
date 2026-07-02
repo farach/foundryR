@@ -13,6 +13,25 @@ Azure AI Foundry.
   [`foundry_protected_material()`](https://farach.github.io/foundryR/reference/foundry_protected_material.md),
   [`foundry_blocklists()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md),
   and related blocklist item functions (roadmap 2026 H2).
+- Added cloud evaluation workflows with grader constructors
+  ([`foundry_grader_string_check()`](https://farach.github.io/foundryR/reference/foundry_grader_string_check.md),
+  [`foundry_grader_text_similarity()`](https://farach.github.io/foundryR/reference/foundry_grader_text_similarity.md),
+  [`foundry_grader_label_model()`](https://farach.github.io/foundryR/reference/foundry_grader_label_model.md),
+  [`foundry_grader_score_model()`](https://farach.github.io/foundryR/reference/foundry_grader_score_model.md),
+  and
+  [`foundry_grader_azure_ai()`](https://farach.github.io/foundryR/reference/foundry_grader_azure_ai.md)
+  for `builtin.*` evaluators), evaluation and run lifecycle functions
+  ([`foundry_eval_create()`](https://farach.github.io/foundryR/reference/foundry_eval_create.md),
+  [`foundry_evals()`](https://farach.github.io/foundryR/reference/foundry_evals.md),
+  [`foundry_eval_get()`](https://farach.github.io/foundryR/reference/foundry_eval_get.md),
+  [`foundry_eval_delete()`](https://farach.github.io/foundryR/reference/foundry_eval_delete.md),
+  [`foundry_eval_run_create()`](https://farach.github.io/foundryR/reference/foundry_eval_run_create.md),
+  [`foundry_eval_runs()`](https://farach.github.io/foundryR/reference/foundry_eval_runs.md),
+  [`foundry_eval_run_get()`](https://farach.github.io/foundryR/reference/foundry_eval_run_get.md),
+  [`foundry_eval_run_cancel()`](https://farach.github.io/foundryR/reference/foundry_eval_run_cancel.md)),
+  and
+  [`foundry_eval_run_output_items()`](https://farach.github.io/foundryR/reference/foundry_eval_run_output_items.md),
+  which returns per-row grader scores as a tibble (roadmap 2026 H2).
 - Added preview Content Safety operations:
   [`foundry_protected_code()`](https://farach.github.io/foundryR/reference/foundry_protected_code.md)
   for protected-material-in-code detection,
