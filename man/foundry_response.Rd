@@ -29,6 +29,8 @@ foundry_response(
   parse_json = !is.null(text_format),
   api_key = NULL,
   endpoint = NULL,
+  agent = NULL,
+  agent_version = NULL,
   ...
 )
 }
@@ -98,7 +100,17 @@ include.}
 
 \item{api_key}{Character. Optional API key override.}
 
-\item{endpoint}{Character. Optional endpoint override.}
+\item{endpoint}{Character. Optional endpoint override. When \code{agent} is
+supplied this is treated as the project endpoint override.}
+
+\item{agent}{Character or list. Optional agent to run instead of a bare
+model: an agent name, a \code{\link[=foundry_agent_reference]{foundry_agent_reference()}} object, or a one-row
+tibble from \code{\link[=foundry_agent_create]{foundry_agent_create()}}. When supplied, \code{model} is ignored,
+\code{agent_reference} is sent in the request body, and the call is routed to
+the project-scoped endpoint.}
+
+\item{agent_version}{Character. Optional agent version to pin when \code{agent} is
+a bare name. Omit to use the latest version.}
 
 \item{...}{Additional request body parameters passed to the Responses API.}
 }

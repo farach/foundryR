@@ -155,6 +155,19 @@ reference:
       - schema_object
       - as_foundry_schema
 
+  - title: Agents
+    desc: >
+      Create, list, and manage named, versioned prompt agents on the Foundry
+      Agent Service, then run a stored agent by name through
+      [foundry_response()] with `agent_reference`.
+    contents:
+      - foundry_agent_create
+      - foundry_agents
+      - foundry_agent_get
+      - foundry_agent_delete
+      - foundry_agent_versions
+      - foundry_agent_reference
+
   - title: Conversations and vector stores
     desc: >
       Manage server-side Responses API conversations and Azure-hosted vector

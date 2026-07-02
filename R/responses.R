@@ -47,7 +47,15 @@
 #' @param parse_json Logical. Whether to parse `output_text` as JSON into the
 #'   `structured` list-column. Defaults to `TRUE` when `text_format` is supplied.
 #' @param api_key Character. Optional API key override.
-#' @param endpoint Character. Optional endpoint override.
+#' @param endpoint Character. Optional endpoint override. When `agent` is
+#'   supplied this is treated as the project endpoint override.
+#' @param agent Character or list. Optional agent to run instead of a bare
+#'   model: an agent name, a [foundry_agent_reference()] object, or a one-row
+#'   tibble from [foundry_agent_create()]. When supplied, `model` is ignored,
+#'   `agent_reference` is sent in the request body, and the call is routed to
+#'   the project-scoped endpoint.
+#' @param agent_version Character. Optional agent version to pin when `agent` is
+#'   a bare name. Omit to use the latest version.
 #' @param ... Additional request body parameters passed to the Responses API.
 #'
 #' @return A one-row tibble with response metadata, generated text, parsed
@@ -108,15 +116,24 @@ foundry_response <- function(input,
                              parse_json = !is.null(text_format),
                              api_key = NULL,
                              endpoint = NULL,
+                             agent = NULL,
+                             agent_version = NULL,
                              ...) {
 
   input <- foundry_validate_response_input(input)
-  model <- foundry_resolve_model(model)
 
-  body <- list(
-    model = model,
-    input = input
-  )
+  if (is.null(agent)) {
+    model <- foundry_resolve_model(model)
+    body <- list(
+      model = model,
+      input = input
+    )
+  } else {
+    body <- list(
+      agent_reference = foundry_agent_reference_object(agent, version = agent_version),
+      input = input
+    )
+  }
 
   if (!is.null(instructions)) {
     foundry_check_character_scalar(instructions, "instructions")
@@ -220,13 +237,24 @@ foundry_response <- function(input,
     }
   }
 
-  req <- foundry_build_v1_request(
-    path = "responses",
-    body = body,
-    method = "POST",
-    api_key = api_key,
-    endpoint = endpoint
-  )
+  if (is.null(agent)) {
+    req <- foundry_build_v1_request(
+      path = "responses",
+      body = body,
+      method = "POST",
+      api_key = api_key,
+      endpoint = endpoint
+    )
+  } else {
+    req <- foundry_build_project_request(
+      path = "openai/v1/responses",
+      body = body,
+      method = "POST",
+      api_key = api_key,
+      endpoint = endpoint,
+      api_version = NULL
+    )
+  }
 
   result <- foundry_perform(req)
   foundry_parse_response(result, parse_json = parse_json)
