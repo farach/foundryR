@@ -105,6 +105,10 @@ Azure AI Foundry.
   [`foundry_speak()`](https://farach.github.io/foundryR/reference/foundry_speak.md)
   for v1 preview text-to-speech output saved to local audio files.
 - Added
+  [`foundry_cache_clear()`](https://farach.github.io/foundryR/reference/foundry_cache_clear.md)
+  to remove embeddings cached on disk by
+  `step_foundry_embed(cache = "disk")` (roadmap 2026 H2).
+- Added
   [`foundry_video_job_create()`](https://farach.github.io/foundryR/reference/foundry_video_job_create.md),
   [`foundry_video_jobs()`](https://farach.github.io/foundryR/reference/foundry_video_jobs.md),
   [`foundry_video_job_get()`](https://farach.github.io/foundryR/reference/foundry_video_job_get.md),
@@ -116,6 +120,19 @@ Azure AI Foundry.
 
 ### Improvements
 
+- [`as_foundry_schema()`](https://farach.github.io/foundryR/reference/as_foundry_schema.md)
+  now converts
+  [`ellmer::type_object()`](https://ellmer.tidyverse.org/reference/type_boolean.html)
+  specifications to strict JSON Schema, so ellmer users can reuse
+  existing type definitions in
+  [`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
+  and
+  [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+  (roadmap 2026 H2).
+- [`foundry_agreement()`](https://farach.github.io/foundryR/reference/foundry_agreement.md)
+  now reports Krippendorff’s alpha alongside Cohen’s and Fleiss’ kappa,
+  using when installed and a base-R nominal fallback otherwise (roadmap
+  2026 H2).
 - [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
   now accepts `reasoning_effort` and returns `reasoning_tokens` and
   `cached_input_tokens` when chat-completions responses report those
@@ -158,6 +175,10 @@ Azure AI Foundry.
   now computes all pairwise cosine similarities with a single vectorized
   matrix product, supports `top_k`, and can return a similarity matrix
   with `as_matrix = TRUE` (roadmap 2026 H2).
+- [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
+  now supports `cache = "disk"` with an optional `cache_dir` to persist
+  embeddings across bakes, and builds embedding columns from a single
+  matrix instead of a per-cell fill loop (roadmap 2026 H2).
 
 ### Documentation and package metadata
 

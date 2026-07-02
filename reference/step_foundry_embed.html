@@ -83,6 +83,8 @@ modeling tasks such as classification, regression, or clustering.</p>
 <span>  dimensions <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prefix <span class="op">=</span> <span class="st">"emb_"</span>,</span>
 <span>  keep_original <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cache <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"disk"</span><span class="op">)</span>,</span>
+<span>  cache_dir <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  columns <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  skip <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  id <span class="op">=</span> <span class="fu">recipes</span><span class="fu">::</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/rand_id.html" class="external-link">rand_id</a></span><span class="op">(</span><span class="st">"foundry_embed"</span><span class="op">)</span></span>
@@ -136,6 +138,19 @@ Default: <code>"emb_"</code>. Columns will be named <code>{prefix}{original_col}
 <dt id="arg-keep-original">keep_original<a class="anchor" aria-label="anchor" href="#arg-keep-original"></a></dt>
 <dd><p>Logical. Should the original text column(s) be retained?
 Default: <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-cache">cache<a class="anchor" aria-label="anchor" href="#arg-cache"></a></dt>
+<dd><p>Character. Embedding cache mode. <code>"none"</code> (default) always calls
+the API; <code>"disk"</code> caches each text's embedding on disk (keyed on the text,
+model, and dimensions) so cross-validation folds and repeated bakes reuse
+embeddings instead of re-calling the API.</p></dd>
+
+
+<dt id="arg-cache-dir">cache_dir<a class="anchor" aria-label="anchor" href="#arg-cache-dir"></a></dt>
+<dd><p>Character. Directory for the disk cache. Defaults to
+<code>tools::R_user_dir("foundryR", "cache")</code>. Clear it with
+<code><a href="foundry_cache_clear.html">foundry_cache_clear()</a></code>.</p></dd>
 
 
 <dt id="arg-columns">columns<a class="anchor" aria-label="anchor" href="#arg-columns"></a></dt>
@@ -192,9 +207,10 @@ row.</p>
 <h3 id="performance-considerations">Performance considerations<a class="anchor" aria-label="anchor" href="#performance-considerations"></a></h3>
 
 
-<p>Embedding generation requires API calls for each row of data. For large
-datasets, consider:</p><ul><li><p>Using <code>skip = TRUE</code> during cross-validation to avoid redundant API calls</p></li>
-<li><p>Pre-computing embeddings for training data and caching the results</p></li>
+<p>Embedding generation requires API calls for each unique text value. For large
+datasets or resampling, consider:</p><ul><li><p>Setting <code>cache = "disk"</code> so repeated bakes and cross-validation folds reuse
+embeddings instead of re-calling the API</p></li>
+<li><p>Using <code>skip = TRUE</code> during cross-validation to avoid redundant API calls</p></li>
 <li><p>Using batch processing strategies for very large datasets</p></li>
 </ul></div>
 

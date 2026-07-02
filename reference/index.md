@@ -193,6 +193,8 @@ Add Foundry text embeddings to tidymodels recipes.
   : Print method for step_foundry_embed
 - [`required_pkgs(`*`<step_foundry_embed>`*`)`](https://farach.github.io/foundryR/reference/required_pkgs.step_foundry_embed.md)
   : Required packages for step_foundry_embed
+- [`foundry_cache_clear()`](https://farach.github.io/foundryR/reference/foundry_cache_clear.md)
+  : Clear the foundryR embedding cache
 
 ## Chat completions
 

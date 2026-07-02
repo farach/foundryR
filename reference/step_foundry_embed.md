@@ -17,6 +17,8 @@ step_foundry_embed(
   dimensions = NULL,
   prefix = "emb_",
   keep_original = FALSE,
+  cache = c("none", "disk"),
+  cache_dir = NULL,
   columns = NULL,
   skip = FALSE,
   id = recipes::rand_id("foundry_embed")
@@ -70,6 +72,19 @@ tidy(x, ...)
   Logical. Should the original text column(s) be retained? Default:
   `FALSE`.
 
+- cache:
+
+  Character. Embedding cache mode. `"none"` (default) always calls the
+  API; `"disk"` caches each text's embedding on disk (keyed on the text,
+  model, and dimensions) so cross-validation folds and repeated bakes
+  reuse embeddings instead of re-calling the API.
+
+- cache_dir:
+
+  Character. Directory for the disk cache. Defaults to
+  `tools::R_user_dir("foundryR", "cache")`. Clear it with
+  [`foundry_cache_clear()`](https://farach.github.io/foundryR/reference/foundry_cache_clear.md).
+
 - columns:
 
   Character vector. Internal use only. Stores column names after
@@ -121,13 +136,14 @@ values for that row.
 
 ### Performance considerations
 
-Embedding generation requires API calls for each row of data. For large
-datasets, consider:
+Embedding generation requires API calls for each unique text value. For
+large datasets or resampling, consider:
+
+- Setting `cache = "disk"` so repeated bakes and cross-validation folds
+  reuse embeddings instead of re-calling the API
 
 - Using `skip = TRUE` during cross-validation to avoid redundant API
   calls
-
-- Pre-computing embeddings for training data and caching the results
 
 - Using batch processing strategies for very large datasets
 

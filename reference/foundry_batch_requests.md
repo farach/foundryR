@@ -94,5 +94,5 @@ foundry_batch_requests(jobs, input = "text", path = path, model = "gpt-4.1")
 #> # A tibble: 1 × 3
 #>   path                                   requests endpoint     
 #>   <chr>                                     <int> <chr>        
-#> 1 /tmp/Rtmp64jPZC/file1a463a5a1e35.jsonl        2 /v1/responses
+#> 1 /tmp/RtmpyyhOlF/file1a13417cf44c.jsonl        2 /v1/responses
 ```
