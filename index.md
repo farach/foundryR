@@ -22,13 +22,6 @@ Its strongest path is dataframe in, dataframe out.
 
 ## Installation
 
-Install from CRAN after release:
-
-``` r
-
-install.packages("foundryR")
-```
-
 Install the development version from GitHub:
 
 ``` r
