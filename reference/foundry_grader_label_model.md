@@ -45,7 +45,7 @@ A named list describing a `label_model` grader.
 ``` r
 foundry_grader_label_model(
   name = "relevance-label",
-  model = "gpt-5.5",
+  model = "gpt-5-nano",
   input = list(
     foundry_eval_item("Is the answer relevant? {{sample.output_text}}")
   ),
@@ -59,7 +59,7 @@ foundry_grader_label_model(
 #> [1] "relevance-label"
 #> 
 #> $model
-#> [1] "gpt-5.5"
+#> [1] "gpt-5-nano"
 #> 
 #> $input
 #> $input[[1]]

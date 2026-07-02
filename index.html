@@ -132,9 +132,9 @@
 <p>For persistent configuration, add deployment names and credentials to <code>.Renviron</code>:</p>
 <pre class="text"><code>AZURE_FOUNDRY_ENDPOINT=https://&lt;resource-name&gt;.openai.azure.com
 AZURE_FOUNDRY_KEY=your-api-key
-AZURE_FOUNDRY_MODEL=my-gpt4
-AZURE_FOUNDRY_EMBED_MODEL=my-embedding-deployment</code></pre>
-<p>The value passed to <code>model =</code> is the Azure deployment name, not necessarily the base model name. If you deploy base model <code>gpt-4o-mini</code> as deployment <code>my-gpt4</code>, use <code>model = "my-gpt4"</code>.</p>
+AZURE_FOUNDRY_MODEL=gpt-5-nano
+AZURE_FOUNDRY_EMBED_MODEL=text-embedding-3-small</code></pre>
+<p><code>AZURE_FOUNDRY_MODEL</code> and <code>AZURE_FOUNDRY_EMBED_MODEL</code> hold the deployment names you chose in Azure, which need not match the base model names. The examples below omit <code>model =</code> and resolve the deployment from <code>AZURE_FOUNDRY_MODEL</code>, so you can swap models without editing code.</p>
 <p>The outputs below are real responses, recorded once against live Azure resources and replayed here without credentials.</p>
 </div>
 <div class="section level2">
@@ -202,7 +202,7 @@ AZURE_FOUNDRY_EMBED_MODEL=my-embedding-deployment</code></pre>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">recipe</span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span><span class="va">text</span>, model <span class="op">=</span> <span class="st">"my-embedding-deployment"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span><span class="va">text</span>, model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -210,11 +210,10 @@ AZURE_FOUNDRY_EMBED_MODEL=my-embedding-deployment</code></pre>
 </h2>
 <p><code><a href="reference/foundry_response.html">foundry_response()</a></code> wraps the Azure OpenAI v1 Responses API for stateful turns, web search, structured outputs, token accounting, and raw response capture.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">first</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/foundry_response.html">foundry_response</a></span><span class="op">(</span><span class="st">"Define catastrophic forgetting."</span>, model <span class="op">=</span> <span class="st">"my-gpt4"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">first</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/foundry_response.html">foundry_response</a></span><span class="op">(</span><span class="st">"Define catastrophic forgetting."</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Explain it for a college freshman."</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"my-gpt4"</span>,</span>
 <span>  previous_response_id <span class="op">=</span> <span class="va">first</span><span class="op">$</span><span class="va">response_id</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>User-defined R tools use the Responses API function-calling contract:</p>
@@ -231,8 +230,7 @@ AZURE_FOUNDRY_EMBED_MODEL=my-embedding-deployment</code></pre>
 <span></span>
 <span><span class="fu"><a href="reference/foundry_agent.html">foundry_agent</a></span><span class="op">(</span></span>
 <span>  <span class="st">"What is the weather in San Francisco?"</span>,</span>
-<span>  tools <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">weather_tool</span><span class="op">)</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"my-gpt4"</span></span>
+<span>  tools <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">weather_tool</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Streaming is an intentional scope choice: the package focuses on reproducible, tibble-returning analytical workflows. Use <a href="https://ellmer.tidyverse.org/" class="external-link"><code>ellmer</code></a> for interactive streaming chat.</p>
 </div>

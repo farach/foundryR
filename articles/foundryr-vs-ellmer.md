@@ -120,8 +120,7 @@ become data.
 
 foundry_extract(
   c("The lesson was clear.", "I wanted more examples."),
-  schema = sentiment_schema,
-  model = "gpt-5.5"
+  schema = sentiment_schema
 )
 ```
 

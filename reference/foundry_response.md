@@ -201,12 +201,11 @@ chaining, the previous response must have been stored.
 
 ``` r
 if (FALSE) { # \dontrun{
-foundry_response("Summarize retrieval-augmented generation.", model = "gpt-5.5")
+foundry_response("Summarize retrieval-augmented generation.")
 
-first <- foundry_response("Define catastrophic forgetting.", model = "gpt-5.5")
+first <- foundry_response("Define catastrophic forgetting.")
 foundry_response(
   "Explain it for a college freshman.",
-  model = "gpt-5.5",
   previous_response_id = first$response_id
 )
 } # }

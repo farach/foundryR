@@ -30,7 +30,7 @@ A tibble with deletion status.
 
 ``` r
 if (FALSE) { # \dontrun{
-response <- foundry_response("Hello", model = "gpt-5.5")
+response <- foundry_response("Hello")
 foundry_response_delete(response$response_id)
 } # }
 ```

@@ -8,7 +8,7 @@ Before writing R code, create or identify:
 1.  An Azure OpenAI resource or Azure AI Foundry project with an OpenAI
     endpoint.
 2.  At least one chat or Responses API deployment, for example
-    `gpt-5.5`.
+    `gpt-5-nano`.
 3.  An embedding deployment, for example `text-embedding-3-small`, if
     you plan to use embeddings.
 4.  A Content Safety resource if you plan to use moderation,
@@ -24,8 +24,8 @@ their deployment names.
 >
 > The value you pass to `model =` is the deployment name you chose in
 > Azure, not necessarily the base model name. If you deploy base model
-> `gpt-5.5` with deployment name `my-gpt4`, use `model = "my-gpt4"` in
-> foundryR. The same rule applies to embedding deployments.
+> `gpt-5-nano` with deployment name `my-gpt4`, use `model = "my-gpt4"`
+> in foundryR. The same rule applies to embedding deployments.
 
 ## Install foundryR
 
@@ -33,13 +33,6 @@ their deployment names.
 
 install.packages("pak")
 pak::pak("farach/foundryR")
-```
-
-After CRAN release, install with:
-
-``` r
-
-install.packages("foundryR")
 ```
 
 ## Configure credentials
@@ -104,7 +97,7 @@ Test a specific deployment:
 
 ``` r
 
-foundry_check_setup(model = "gpt-5.5")
+foundry_check_setup(model = "gpt-5-nano")
 ```
 
 If you need to see deployments exposed by the v1 model metadata
@@ -119,16 +112,15 @@ models[, c("id", "owned_by")]
 ## First Responses API call
 
 The Responses API is the newer v1 surface for stateful turns, strict
-structured outputs, tools, and richer token metadata:
+structured outputs, tools, and richer token metadata. The examples below
+omit `model =`, so foundryR reads the deployment from
+`AZURE_FOUNDRY_MODEL`; pass `model =` to target a specific deployment.
 
 ``` r
 
 library(foundryR)
 
-response <- foundry_response(
-  "Answer in one sentence: what is R?",
-  model = "gpt-5.5"
-)
+response <- foundry_response("Answer in one sentence: what is R?")
 
 response$output_text
 ```
@@ -139,7 +131,6 @@ Chain a follow-up turn with `previous_response_id`:
 
 follow_up <- foundry_response(
   "Explain why that matters for data analysis in one sentence.",
-  model = "gpt-5.5",
   previous_response_id = response$response_id
 )
 
@@ -164,8 +155,7 @@ schema <- list(
 
 foundry_extract(
   c("The tutorial was clear.", "I needed more examples."),
-  schema = schema,
-  model = "gpt-5.5"
+  schema = schema
 )
 ```
 
@@ -233,7 +223,7 @@ Chat completions are still available for simple assistant replies:
 
 ``` r
 
-foundry_chat("Answer in one sentence: what is the tidyverse?", model = "gpt-5.5")
+foundry_chat("Answer in one sentence: what is the tidyverse?")
 ```
 
 For interactive streaming chat and chat-first agent workflows, use

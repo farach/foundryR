@@ -29,7 +29,7 @@ foundry_grader_azure_ai(
 - initialization_parameters:
 
   List. Optional parameters passed to the evaluator, e.g.
-  `list(model = "gpt-5.5")` for model-graded evaluators.
+  `list(model = "gpt-5-nano")` for model-graded evaluators.
 
 - data_mapping:
 
@@ -52,7 +52,7 @@ A named list describing an `azure_ai_evaluator` grader.
 foundry_grader_azure_ai(
   name = "coherence",
   evaluator_name = "builtin.coherence",
-  initialization_parameters = list(model = "gpt-5.5"),
+  initialization_parameters = list(model = "gpt-5-nano"),
   data_mapping = list(
     query = "{{item.query}}",
     response = "{{sample.output_text}}"
@@ -69,7 +69,7 @@ foundry_grader_azure_ai(
 #> 
 #> $initialization_parameters
 #> $initialization_parameters$model
-#> [1] "gpt-5.5"
+#> [1] "gpt-5-nano"
 #> 
 #> 
 #> $data_mapping

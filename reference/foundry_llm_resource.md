@@ -37,7 +37,7 @@ A named list matching the Content Safety `LLMResource` schema.
 ``` r
 foundry_llm_resource(
   endpoint = "https://your-openai.openai.azure.com",
-  deployment_name = "gpt-5.5"
+  deployment_name = "gpt-5-nano"
 )
 #> $resourceType
 #> [1] "AzureOpenAI"
@@ -46,6 +46,6 @@ foundry_llm_resource(
 #> [1] "https://your-openai.openai.azure.com"
 #> 
 #> $azureOpenAIDeploymentName
-#> [1] "gpt-5.5"
+#> [1] "gpt-5-nano"
 #> 
 ```

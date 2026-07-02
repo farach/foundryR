@@ -90,8 +90,7 @@ and geographic boundaries, and tool usage can incur additional costs.
 ``` r
 if (FALSE) { # \dontrun{
 foundry_web_search(
-  "What are the latest Azure AI Foundry Responses API updates?",
-  model = "gpt-5.5"
+  "What are the latest Azure AI Foundry Responses API updates?"
 )
 } # }
 ```
