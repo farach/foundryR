@@ -27,10 +27,8 @@ docs/
 tests/testthat/_snaps/
 
 # Environment
+.Renviron
 .Renviron.local
-
-# Claude Code
-.claude/
 
 # Internal working docs (kept locally, never published)
 /PINBOARD.md

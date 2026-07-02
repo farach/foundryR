@@ -3,13 +3,13 @@
 ^\.Rproj\.user$
 ^cran-comments\.md$
 ^README\.Rmd$
-^CLAUDE\.md$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
 ^\.github$
 ^codecov\.yml$
-^\.claude$
+^\.Renviron$
+^\.Renviron\.local$
 ^data-raw$
 ^dev$
 ^PINBOARD\.md$
