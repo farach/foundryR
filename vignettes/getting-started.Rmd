@@ -7,11 +7,20 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
+fixture_dir <- "getting-started"
+recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
+have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
+run_api <- recording || have_fixtures
+
+if (run_api) {
+  httptest2::start_vignette(fixture_dir)
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE
+  eval = run_api
 )
 ```
 
@@ -36,19 +45,19 @@ deployments page to create model deployments and record their deployment names.
 >
 > The value you pass to `model =` is the deployment name you chose in Azure, not
 > necessarily the base model name. If you deploy base model `gpt-4o-mini` with
-> deployment name `my-gpt4`, use `model = "my-gpt4"` in foundryR. The same rule
+> deployment name `my-gpt4`, use `model = "gpt-4.1"` in foundryR. The same rule
 > applies to embedding deployments.
 
 ## Install foundryR
 
-```{r install}
+```{r install, eval = FALSE}
 install.packages("pak")
 pak::pak("farach/foundryR")
 ```
 
 After CRAN release, install with:
 
-```{r install-cran}
+```{r install-cran, eval = FALSE}
 install.packages("foundryR")
 ```
 
@@ -56,7 +65,7 @@ install.packages("foundryR")
 
 Set credentials for the current R session:
 
-```{r config-session}
+```{r config-session, eval = FALSE}
 library(foundryR)
 
 foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
@@ -65,14 +74,14 @@ foundry_set_key("your-api-key")
 
 For persistent local configuration, use `store = TRUE`:
 
-```{r config-persistent}
+```{r config-persistent, eval = FALSE}
 foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), store = TRUE)
 foundry_set_key("your-api-key", store = TRUE)
 ```
 
 You can also edit `.Renviron` directly:
 
-```{r edit-renviron}
+```{r edit-renviron, eval = FALSE}
 usethis::edit_r_environ()
 ```
 
@@ -91,7 +100,7 @@ API keys are convenient for local testing. For enterprise environments that
 already use service principals, managed identity, or Azure role-based access
 control, use a Microsoft Entra ID bearer token:
 
-```{r entra-token}
+```{r entra-token, eval = FALSE}
 foundry_set_token("your-entra-token")
 ```
 
@@ -100,19 +109,19 @@ API key are configured, the token takes precedence for supported calls.
 
 ## Validate setup
 
-```{r check-setup}
+```{r check-setup, eval = FALSE}
 foundry_check_setup()
 ```
 
 Test a specific deployment:
 
-```{r check-setup-model}
-foundry_check_setup(model = "my-gpt4")
+```{r check-setup-model, eval = FALSE}
+foundry_check_setup(model = "gpt-4.1")
 ```
 
 If you need to see deployments exposed by the v1 model metadata endpoint, use:
 
-```{r models}
+```{r models, eval = FALSE}
 models <- foundry_models()
 models[, c("id", "owned_by")]
 ```
@@ -123,9 +132,11 @@ The Responses API is the newer v1 surface for stateful turns, strict structured
 outputs, tools, and richer token metadata:
 
 ```{r first-response}
+library(foundryR)
+
 response <- foundry_response(
-  "Define retrieval-augmented generation in two sentences.",
-  model = "my-gpt4"
+  "Answer in one sentence: what is R?",
+  model = "gpt-4.1"
 )
 
 response$output_text
@@ -135,8 +146,8 @@ Chain a follow-up turn with `previous_response_id`:
 
 ```{r response-chain}
 follow_up <- foundry_response(
-  "Explain it for a first-year graduate student.",
-  model = "my-gpt4",
+  "Explain why that matters for data analysis in one sentence.",
+  model = "gpt-4.1",
   previous_response_id = response$response_id
 )
 
@@ -161,7 +172,7 @@ schema <- list(
 foundry_extract(
   c("The tutorial was clear.", "I needed more examples."),
   schema = schema,
-  model = "my-gpt4"
+  model = "gpt-4.1"
 )
 ```
 
@@ -179,7 +190,7 @@ texts <- c(
   "The assignment instructions were easy to follow."
 )
 
-embeddings <- foundry_embed(texts, model = "my-embedding-deployment")
+embeddings <- foundry_embed(texts, model = "text-embedding-3-small")
 foundry_similarity(embeddings)
 ```
 
@@ -189,7 +200,7 @@ Content Safety uses a separate Azure AI Content Safety resource. In the Azure
 portal, create an Azure AI Content Safety resource, open **Keys and Endpoint**,
 then configure foundryR:
 
-```{r content-safety-config}
+```{r content-safety-config, eval = FALSE}
 foundry_set_content_safety_endpoint(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"))
 foundry_set_content_safety_key("your-content-safety-key")
 ```
@@ -208,6 +219,9 @@ grounded <- foundry_groundedness(
 )
 
 shield <- foundry_shield(user_prompt = "Summarize this document.")
+
+grounded
+shield
 ```
 
 Most foundryR calls stay within your Azure OpenAI or Content Safety resources.
@@ -220,7 +234,7 @@ costs. Do not send secrets or regulated data to web-search prompts.
 Chat completions are still available for simple assistant replies:
 
 ```{r first-chat}
-foundry_chat("What is the tidyverse?", model = "my-gpt4")
+foundry_chat("Answer in one sentence: what is the tidyverse?", model = "gpt-4.1")
 ```
 
 For interactive streaming chat and chat-first agent workflows, use ellmer.
@@ -232,3 +246,9 @@ For interactive streaming chat and chat-first agent workflows, use ellmer.
 - `vignette("responses-api")` covers Responses API tools and web search.
 - `vignette("content-safety")` covers moderation, groundedness, and shields.
 - `vignette("tidymodels")` covers `step_foundry_embed()`.
+
+```{r cleanup, include = FALSE}
+if (run_api) {
+  httptest2::end_vignette()
+}
+```

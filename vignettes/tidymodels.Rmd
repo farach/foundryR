@@ -7,20 +7,21 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
+fixture_dir <- "tidymodels"
+recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
+have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
+run_api <- recording || have_fixtures
+
+if (run_api) {
+  httptest2::start_vignette(fixture_dir)
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE
+  eval = run_api
 )
-
-foundryr_vignette_cache <- function(name) {
-  path <- system.file("extdata", "vignette-cache", name, package = "foundryR")
-  if (!nzchar(path)) {
-    path <- file.path("..", "inst", "extdata", "vignette-cache", name)
-  }
-  path
-}
 ```
 
 ## Introduction
@@ -48,7 +49,7 @@ By converting text to embeddings within a recipe, you get:
 
 Install tidymodels if you haven't already:
 
-```{r install}
+```{r install, eval = FALSE}
 install.packages("tidymodels")
 ```
 
@@ -64,67 +65,43 @@ Use `step_foundry_embed()` to add embedding generation to your recipe:
 library(tidymodels)
 library(foundryR)
 
-# Sample data with text and outcome
 reviews <- tibble(
   text = c(
-    "This product is amazing, highly recommend!",
-    "Terrible quality, waste of money",
-    "Good value for the price",
-    "Disappointed with the purchase",
-    "Exceeded my expectations",
-    "Would not buy again"
+    "This product is useful and easy to use.",
+    "The setup was confusing and slow.",
+    "The examples were clear and helpful.",
+    "I needed better instructions."
   ),
-  sentiment = factor(c("positive", "negative", "positive",
-                       "negative", "positive", "negative"))
+  sentiment = factor(c("positive", "negative", "positive", "negative"))
 )
 
-# Create recipe with embedding step
+
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
-    model = "text-embedding-3-small",  # Your deployment name
-    keep_original = FALSE         # Remove original text column
+    model = "text-embedding-3-small",
+    keep_original = FALSE
   )
 
 recipe_spec
-#> Recipe
-#>
-#> Inputs:
-#>
-#>       role #variables
-#>    outcome          1
-#>  predictor          1
-#>
-#> Operations:
-#>
-#> Azure AI Foundry embeddings for text
 ```
 
 ### Preparing and Baking the Recipe
 
 ```{r prep-bake}
-# Prepare the recipe (generates embeddings for training data)
 prepped_recipe <- prep(recipe_spec, training = reviews)
 
-# Bake to transform data
 baked_data <- bake(prepped_recipe, new_data = NULL)
 baked_data
-#> # A tibble: 6 × 1,537
-#>   sentiment text_embed_001 text_embed_002 text_embed_003 ... text_embed_1536
-#>   <fct>              <dbl>          <dbl>          <dbl>             <dbl>
-#> 1 positive          0.0234        -0.0156         0.0089           0.0123
-#> 2 negative         -0.0145         0.0234        -0.0067          -0.0089
-#> 3 positive          0.0178        -0.0123         0.0145           0.0098
-#> ...
 ```
 
 The text column is replaced with 1,536 numeric embedding dimensions (the exact number depends on your embedding model).
 
 ## Complete ML Pipeline Example
 
-Here's a full example building a sentiment classifier:
+Here's a full example building a sentiment classifier. It is shown as code only because fitting and resampling would repeat embedding API calls:
 
-```{r full-pipeline}
+```{r full-pipeline, eval = FALSE}
 library(tidymodels)
 library(foundryR)
 
@@ -182,11 +159,6 @@ predictions <- predict(fitted_workflow, test_data) %>%
 # Evaluate
 predictions %>%
   metrics(truth = sentiment, estimate = .pred_class)
-#> # A tibble: 2 × 3
-#>   .metric  .estimator .estimate
-#>   <chr>    <chr>          <dbl>
-#> 1 accuracy binary         1
-#> 2 kap      binary         1
 ```
 
 ## Advanced Options
@@ -195,7 +167,7 @@ predictions %>%
 
 Some models support dimension reduction for faster processing:
 
-```{r dimensions}
+```{r dimensions, eval = FALSE}
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
@@ -214,7 +186,7 @@ Lower dimensions mean:
 
 Process multiple text columns independently:
 
-```{r multi-column}
+```{r multi-column, eval = FALSE}
 # Data with multiple text fields
 data <- tibble(
   title = c("Great Product", "Terrible Experience"),
@@ -234,7 +206,7 @@ recipe_spec <- recipe(outcome ~ ., data = data) %>%
 
 Sometimes you want both the text and embeddings:
 
-```{r keep-original}
+```{r keep-original, eval = FALSE}
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
@@ -249,7 +221,7 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
 
 Control the naming of embedding columns:
 
-```{r prefix}
+```{r prefix, eval = FALSE}
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
@@ -273,7 +245,7 @@ saved embeddings.
 
 ```{r precompute}
 embedded_reviews <- foundry_embed(
-  reviews$review_text,
+  reviews$text,
   model = "text-embedding-3-small"
 )
 
@@ -284,6 +256,8 @@ precomputed <- bind_cols(
   reviews["sentiment"],
   embedding_cols
 )
+
+precomputed[, 1:4]
 ```
 
 Use the recipe step when preprocessing needs to be self-contained. Precompute
@@ -294,7 +268,7 @@ when cost, rate limits, or repeated resampling runs matter more.
 Embeddings are generated during `prep()`, so cross-validation follows the usual
 tidymodels recipe lifecycle:
 
-```{r cv}
+```{r cv, eval = FALSE}
 # Create CV folds
 folds <- vfold_cv(train_data, v = 5, strata = sentiment)
 
@@ -307,61 +281,12 @@ cv_results <- fit_resamples(
 
 # Collect metrics
 collect_metrics(cv_results)
-#> # A tibble: 2 × 6
-#>   .metric  .estimator  mean     n std_err .config
-#>   <chr>    <chr>      <dbl> <int>   <dbl> <chr>
-#> 1 accuracy binary     0.875     5  0.0559 Preprocessor1_Model1
-#> 2 roc_auc  binary     0.925     5  0.0433 Preprocessor1_Model1
-```
-
-The rendered evaluation outputs below use precomputed, illustrative data from a
-representative resampling run. They are rendered during the documentation build
-without Azure credentials.
-
-```{r tidymodels-metrics-rendered, eval = TRUE, echo = FALSE}
-tidymodels_cache <- readRDS(foundryr_vignette_cache("tidymodels.rds"))
-
-tidymodels_cache$metrics |>
-  dplyr::mutate(.estimate = round(.estimate, 3)) |>
-  gt::gt() |>
-  gt::cols_label(
-    .metric = "Metric",
-    .estimator = "Estimator",
-    .estimate = "Estimate",
-    .config = "Configuration"
-  ) |>
-  gt::fmt_number(columns = .estimate, decimals = 3) |>
-  gt::tab_header(title = "Embedding classifier evaluation metrics") |>
-  gt::tab_options(table.font.names = "Inter")
-```
-
-```{r tidymodels-roc-rendered, eval = TRUE, echo = FALSE, fig.alt = "ROC curve for a cached embedding classifier evaluation."}
-ggplot2::ggplot(
-  tidymodels_cache$roc,
-  ggplot2::aes(x = 1 - specificity, y = sensitivity)
-) +
-  ggplot2::geom_abline(
-    slope = 1,
-    intercept = 0,
-    linetype = "dashed",
-    color = "#767676"
-  ) +
-  ggplot2::geom_line(color = "#0078D4", linewidth = 1.1) +
-  ggplot2::geom_point(color = "#0078D4", size = 2.2) +
-  ggplot2::coord_equal() +
-  ggplot2::labs(
-    title = "ROC curve for a classifier built on cached embeddings",
-    x = "False positive rate",
-    y = "True positive rate"
-  ) +
-  ggplot2::theme_minimal(base_size = 12) +
-  ggplot2::theme(panel.grid.minor = ggplot2::element_blank())
 ```
 
 ## Hyperparameter tuning
 
 Tune the embedding dimensions alongside model hyperparameters:
-```{r tuning}
+```{r tuning, eval = FALSE}
 # Recipe with tunable dimensions
 tunable_recipe <- recipe(sentiment ~ text, data = train_data) %>%
   step_foundry_embed(
@@ -428,7 +353,7 @@ Each embedding call incurs API costs. Strategies to manage costs:
 
 With 1,536 dimensions per text and thousands of observations, memory can grow quickly:
 
-```{r memory}
+```{r memory, eval = FALSE}
 # Estimate memory for 10,000 texts
 n_texts <- 10000
 n_dims <- 1536
@@ -436,7 +361,6 @@ bytes_per_double <- 8
 
 memory_mb <- (n_texts * n_dims * bytes_per_double) / 1024^2
 print(paste(round(memory_mb), "MB for embeddings alone"))
-#> [1] "117 MB for embeddings alone"
 ```
 
 Consider dimension reduction for large datasets.
@@ -447,7 +371,7 @@ Consider dimension reduction for large datasets.
 
 If you run `prep()` multiple times, column names may conflict:
 
-```{r troubleshoot}
+```{r troubleshoot, eval = FALSE}
 # Use a unique prefix if reusing recipes
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(text, model = "my-model",
@@ -458,7 +382,7 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
 
 If you hit rate limits during prep:
 
-```{r rate-limit}
+```{r rate-limit, eval = FALSE}
 # Prepare in smaller batches
 small_sample <- reviews %>% slice_sample(n = 100)
 prepped <- prep(recipe_spec, training = small_sample)
@@ -468,7 +392,7 @@ prepped <- prep(recipe_spec, training = small_sample)
 
 Ensure credentials are set before creating recipes:
 
-```{r credentials}
+```{r credentials, eval = FALSE}
 # Check setup
 foundry_check_setup()
 
@@ -482,3 +406,9 @@ foundry_set_key("your-api-key")
 - Learn about [Text Embeddings](embeddings.html) in depth
 - Explore [Content Safety](content-safety.html) for responsible AI
 - Read the [tidymodels documentation](https://www.tidymodels.org/) for more preprocessing options
+
+```{r cleanup, include = FALSE}
+if (run_api) {
+  httptest2::end_vignette()
+}
+```

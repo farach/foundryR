@@ -15,6 +15,7 @@ Initial development release of foundryR, a tidy interface to Microsoft Azure AI 
 - Added `foundry_image_edit()` for v1 preview image editing with local image and optional mask uploads.
 - Added `foundry_response_cancel()` and `foundry_response_input_items()` for background Responses API workflows and response introspection (roadmap 2026 H2).
 - Added `foundry_set_project_endpoint()`, `foundry_get_project_endpoint()`, `foundry_set_token_provider()`, and `foundry_token_azure_cli()` for project-scoped APIs and refreshable Microsoft Entra authentication (roadmap 2026 H2).
+- Added `foundry_token_azure_identity()`, a refreshable Microsoft Entra ID token provider backed by \pkg{AzureAuth} that supports service principals, managed identity, and interactive or device-code flows (roadmap 2026 H2).
 - Added `foundry_set_speech_endpoint()`, `foundry_set_speech_key()`, `foundry_transcribe()`, and `foundry_translate_audio()` for LLM Speech and MAI-Transcribe workflows.
 - Added `foundry_set_token()` for Microsoft Entra ID bearer-token authentication across Foundry requests.
 - Added `foundry_speak()` for v1 preview text-to-speech output saved to local audio files.
@@ -22,6 +23,8 @@ Initial development release of foundryR, a tidy interface to Microsoft Azure AI 
 - Added `foundry_video_job_create()`, `foundry_video_jobs()`, `foundry_video_job_get()`, `foundry_video_job_delete()`, `foundry_video_get()`, and `foundry_video_download()` for preview video job management and content downloads.
 
 ## Improvements
+
+- `foundry_groundedness()` now supports the Content Safety correction feature via `correction = TRUE` with a bring-your-own Azure OpenAI deployment described by the new `foundry_llm_resource()`, returning a `correction_text` column, and surfaces per-segment `ungrounded_reasons` when `reasoning = TRUE` (roadmap 2026 H2).
 
 - `as_foundry_schema()` now converts `ellmer::type_object()` specifications to strict JSON Schema, so ellmer users can reuse existing type definitions in `foundry_extract()` and `foundry_response()` (roadmap 2026 H2).
 - `foundry_agreement()` now reports Krippendorff's alpha alongside Cohen's and Fleiss' kappa, using \pkg{irr} when installed and a base-R nominal fallback otherwise (roadmap 2026 H2).

@@ -100,7 +100,7 @@ test_that("foundry_groundedness returns tibble for grounded response", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 1)
-  expect_named(result, c("grounded", "grounded_pct", "ungrounded_pct", "ungrounded_segments"))
+  expect_named(result, c("grounded", "grounded_pct", "ungrounded_pct", "ungrounded_segments", "ungrounded_reasons", "correction_text"))
 })
 
 test_that("foundry_groundedness returns TRUE for grounded content", {
@@ -237,6 +237,132 @@ test_that("foundry_groundedness accepts Summarization task", {
 })
 
 # ============================================================================
+# Correction (mitigating) and reasoning output Tests
+# ============================================================================
+
+test_that("foundry_llm_resource builds the LLMResource shape", {
+  res <- foundry_llm_resource(
+    endpoint = "https://my-openai.openai.azure.com",
+    deployment_name = "gpt-4o"
+  )
+
+  expect_equal(res$resourceType, "AzureOpenAI")
+  expect_equal(res$azureOpenAIEndpoint, "https://my-openai.openai.azure.com")
+  expect_equal(res$azureOpenAIDeploymentName, "gpt-4o")
+})
+
+test_that("foundry_groundedness rejects correction without an llm_resource", {
+  setup_content_safety_env()
+
+  expect_error(
+    foundry_groundedness(
+      text = "The patient name is Kevin.",
+      grounding_sources = "The patient name is Jane.",
+      task = "Summarization",
+      correction = TRUE
+    ),
+    "requires an Azure OpenAI resource"
+  )
+})
+
+test_that("foundry_groundedness validates malformed llm_resource", {
+  setup_content_safety_env()
+
+  expect_error(
+    foundry_groundedness(
+      text = "Test",
+      grounding_sources = "Source",
+      task = "Summarization",
+      llm_resource = list(azureOpenAIEndpoint = "https://x")
+    ),
+    "azureOpenAIDeploymentName"
+  )
+})
+
+test_that("foundry_groundedness sends mitigating and llmResource and returns correction_text", {
+  setup_content_safety_env()
+
+  captured <- NULL
+  resp <- mock_httr2_response(list(
+    ungroundedDetected = TRUE,
+    ungroundedPercentage = 1,
+    ungroundedDetails = list(list(
+      text = "The patient name is Kevin.",
+      reason = "Grounding source states the name is Jane."
+    )),
+    correctionText = "The patient name is Jane."
+  ))
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      resp
+    },
+    .package = "httr2"
+  )
+
+  result <- foundry_groundedness(
+    text = "The patient name is Kevin.",
+    grounding_sources = "The patient name is Jane.",
+    task = "Summarization",
+    domain = "Medical",
+    correction = TRUE,
+    llm_resource = foundry_llm_resource(
+      endpoint = "https://my-openai.openai.azure.com",
+      deployment_name = "gpt-4o"
+    )
+  )
+
+  expect_true(captured$body$data$mitigating)
+  expect_equal(captured$body$data$llmResource$azureOpenAIDeploymentName, "gpt-4o")
+  expect_equal(result$correction_text, "The patient name is Jane.")
+  expect_false(result$grounded)
+})
+
+test_that("foundry_groundedness surfaces reasons aligned with segments", {
+  setup_content_safety_env()
+
+  resp <- mock_httr2_response(list(
+    ungroundedDetected = TRUE,
+    ungroundedPercentage = 0.5,
+    ungroundedDetails = list(
+      list(text = "Population is 12 million.", reason = "Source gives no figure."),
+      list(text = "Founded in 1850.", reason = "Source says 1900.")
+    )
+  ))
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) resp,
+    .package = "httr2"
+  )
+
+  result <- foundry_groundedness(
+    text = "Population is 12 million. Founded in 1850.",
+    grounding_sources = "A large city founded in 1900.",
+    task = "Summarization",
+    reasoning = TRUE
+  )
+
+  expect_equal(result$ungrounded_segments[[1]],
+               c("Population is 12 million.", "Founded in 1850."))
+  expect_equal(result$ungrounded_reasons[[1]],
+               c("Source gives no figure.", "Source says 1900."))
+  expect_true(is.na(result$correction_text))
+})
+
+test_that("foundry_groundedness validates the correction flag", {
+  setup_content_safety_env()
+
+  expect_error(
+    foundry_groundedness(
+      text = "Test",
+      grounding_sources = "Source",
+      task = "Summarization",
+      correction = "yes"
+    ),
+    "correction"
+  )
+})
+
+# ============================================================================
 # Integration Test (requires real credentials)
 # ============================================================================
 
@@ -259,6 +385,6 @@ test_that("foundry_groundedness returns tibble with real API", {
   )
 
   expect_s3_class(result, "tbl_df")
-  expect_named(result, c("grounded", "grounded_pct", "ungrounded_pct", "ungrounded_segments"))
+  expect_named(result, c("grounded", "grounded_pct", "ungrounded_pct", "ungrounded_segments", "ungrounded_reasons", "correction_text"))
   expect_type(result$grounded, "logical")
 })

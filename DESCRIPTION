@@ -28,6 +28,7 @@ Imports:
     rlang,
     tibble
 Suggests:
+    AzureAuth,
     base64enc,
     ellmer,
     ggplot2,

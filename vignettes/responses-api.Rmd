@@ -7,11 +7,20 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
+fixture_dir <- "responses-api"
+recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
+have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
+run_api <- recording || have_fixtures
+
+if (run_api) {
+  httptest2::start_vignette(fixture_dir)
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE
+  eval = run_api
 )
 ```
 
@@ -36,11 +45,8 @@ response are returned as tibble columns.
 ```{r basic-response}
 library(foundryR)
 
-foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
-foundry_set_key("your-api-key")
-
 foundry_response(
-  "Summarize retrieval-augmented generation in two sentences.",
+  "Answer in one sentence: what is retrieval-augmented generation?",
   model = "gpt-4.1"
 )
 ```
@@ -62,12 +68,12 @@ the previous `response_id`:
 
 ```{r stateful-turns}
 first <- foundry_response(
-  "Define catastrophic forgetting.",
+  "Define catastrophic forgetting in one sentence.",
   model = "gpt-4.1"
 )
 
 second <- foundry_response(
-  "Explain it for a college freshman.",
+  "Explain it for a college freshman in one sentence.",
   model = "gpt-4.1",
   previous_response_id = first$response_id
 )
@@ -130,7 +136,7 @@ The Responses API function-calling contract uses tool definitions with
 builds the tool schema and keeps the R function reference for local execution.
 `foundry_agent()` runs the bounded call, execute, return-output loop.
 
-```{r function-tools}
+```{r function-tools, eval = FALSE}
 get_weather <- function(location) {
   list(location = location, temperature = "70 F")
 }
@@ -148,7 +154,7 @@ weather_tool <- foundry_tool(
 turns <- foundry_agent(
   "What is the weather in San Francisco?",
   tools = list(weather_tool),
-  model = "my-gpt4",
+  model = "gpt-4.1",
   max_iterations = 4
 )
 
@@ -165,7 +171,7 @@ Microsoft documents remote Model Context Protocol tools for the Responses API.
 foundryR does not add a separate MCP helper yet because `foundry_response()`
 already accepts raw Responses API tool objects:
 
-```{r mcp-tool}
+```{r mcp-tool, eval = FALSE}
 mcp_tool <- list(
   type = "mcp",
   server_label = "my_mcp_server",
@@ -175,7 +181,7 @@ mcp_tool <- list(
 
 foundry_response(
   "Use the MCP server if it helps answer the question.",
-  model = "my-gpt4",
+  model = "gpt-4.1",
   tools = list(mcp_tool)
 )
 ```
@@ -188,7 +194,7 @@ organization has approved.
 `foundry_web_search()` uses the Responses API `web_search` tool and parses URL
 citations into a tidy list-column:
 
-```{r web-search}
+```{r web-search, eval = FALSE}
 answer <- foundry_web_search(
   "What changed recently in Azure AI Foundry Responses API?",
   model = "gpt-4.1",
@@ -202,7 +208,7 @@ answer$tool_calls[[1]]
 
 You can optionally provide approximate location fields:
 
-```{r web-search-location}
+```{r web-search-location, eval = FALSE}
 foundry_web_search(
   "Find a recent AI research event near me.",
   model = "gpt-4.1",
@@ -228,7 +234,7 @@ sensitive research data in web-search prompts.
 Microsoft for reasoning models. `foundry_chat()` accepts the chat-completions
 shape, `reasoning_effort = "medium"`.
 
-```{r reasoning}
+```{r reasoning, eval = FALSE}
 foundry_response(
   "Compare the two arguments and identify the weaker premise.",
   model = "my-reasoning-deployment",
@@ -255,3 +261,9 @@ and simple assistant replies.
 Use `foundry_response()` when you need newer v1 capabilities: stateful response
 IDs, built-in tools, structured output formats, richer output items, or a
 forward-looking API surface for new Microsoft Foundry model capabilities.
+
+```{r cleanup, include = FALSE}
+if (run_api) {
+  httptest2::end_vignette()
+}
+```

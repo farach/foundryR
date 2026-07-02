@@ -11,6 +11,8 @@ foundry_groundedness(
   domain = c("Generic", "Medical"),
   task = c("QnA", "Summarization"),
   reasoning = FALSE,
+  correction = FALSE,
+  llm_resource = NULL,
   endpoint = NULL,
   api_key = NULL,
   api_version = "2024-09-15-preview"
@@ -38,7 +40,19 @@ the response should be grounded in.}
 }}
 
 \item{reasoning}{Logical. If \code{TRUE}, includes reasoning for ungrounded
-segments in the response. Default: \code{FALSE}.}
+segments in the response. Requires a linked or supplied \code{llm_resource}.
+Default: \code{FALSE}.}
+
+\item{correction}{Logical. If \code{TRUE}, requests corrected text that is
+consistent with the grounding sources (the Content Safety "mitigating"
+feature). Requires \code{llm_resource} and \code{api_version >= "2024-09-15-preview"}.
+The corrected text is returned in the \code{correction_text} column. Default:
+\code{FALSE}.}
+
+\item{llm_resource}{List or \code{NULL}. Connection details for a bring-your-own
+Azure OpenAI deployment, used when \code{reasoning = TRUE} or
+\code{correction = TRUE}. Build it with \code{\link[=foundry_llm_resource]{foundry_llm_resource()}}. Default:
+\code{NULL}.}
 
 \item{endpoint}{Character. Optional. The Azure Content Safety endpoint URL.
 
@@ -62,6 +76,12 @@ Value between 0 and 1.}
 \item{ungrounded_segments}{List. A character vector of text segments identified as ungrounded.
 Empty character vector if fully grounded.
 }
+\item{ungrounded_reasons}{List. A character vector, aligned with
+\code{ungrounded_segments}, holding the model's explanation for each
+segment when \code{reasoning = TRUE}. \code{NA} entries appear when no
+explanation was returned.}
+\item{correction_text}{Character. The corrected, grounding-consistent
+text returned when \code{correction = TRUE}, otherwise \code{NA}.}
 }
 }
 \description{
@@ -138,5 +158,19 @@ detailed_result <- foundry_groundedness(
   query = "When was the product released?",
   reasoning = TRUE
 )
+
+# Request corrected text (requires a bring-your-own Azure OpenAI deployment)
+corrected <- foundry_groundedness(
+  text = "The patient name is Kevin.",
+  grounding_sources = "The patient name is Jane.",
+  task = "Summarization",
+  domain = "Medical",
+  correction = TRUE,
+  llm_resource = foundry_llm_resource(
+    endpoint = "https://your-openai.openai.azure.com",
+    deployment_name = "gpt-4o"
+  )
+)
+corrected$correction_text
 }
 }

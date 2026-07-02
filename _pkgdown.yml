@@ -94,6 +94,7 @@ reference:
       - foundry_set_token
       - foundry_set_token_provider
       - foundry_token_azure_cli
+      - foundry_token_azure_identity
       - foundry_set_endpoint
       - foundry_get_endpoint
       - foundry_set_project_endpoint
@@ -118,6 +119,7 @@ reference:
       - foundry_blocklist_add_items
       - foundry_blocklist_remove_items
       - foundry_groundedness
+      - foundry_llm_resource
       - foundry_shield
       - foundry_set_content_safety_key
       - foundry_set_content_safety_endpoint

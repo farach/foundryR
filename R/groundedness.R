@@ -18,7 +18,17 @@
 #'   - `"QnA"` (default): Question-and-answer task. Requires `query` parameter.
 #'   - `"Summarization"`: Text summarization task. `query` is optional.
 #' @param reasoning Logical. If `TRUE`, includes reasoning for ungrounded
-#'   segments in the response. Default: `FALSE`.
+#'   segments in the response. Requires a linked or supplied `llm_resource`.
+#'   Default: `FALSE`.
+#' @param correction Logical. If `TRUE`, requests corrected text that is
+#'   consistent with the grounding sources (the Content Safety "mitigating"
+#'   feature). Requires `llm_resource` and `api_version >= "2024-09-15-preview"`.
+#'   The corrected text is returned in the `correction_text` column. Default:
+#'   `FALSE`.
+#' @param llm_resource List or `NULL`. Connection details for a bring-your-own
+#'   Azure OpenAI deployment, used when `reasoning = TRUE` or
+#'   `correction = TRUE`. Build it with [foundry_llm_resource()]. Default:
+#'   `NULL`.
 #' @param endpoint Character. Optional. The Azure Content Safety endpoint URL.
 #'
 #'   Defaults to the `AZURE_CONTENT_SAFETY_ENDPOINT` environment variable.
@@ -38,6 +48,12 @@
 #'     \item{ungrounded_segments}{List. A character vector of text segments identified as ungrounded.
 #'       Empty character vector if fully grounded.
 #'     }
+#'     \item{ungrounded_reasons}{List. A character vector, aligned with
+#'       `ungrounded_segments`, holding the model's explanation for each
+#'       segment when `reasoning = TRUE`. `NA` entries appear when no
+#'       explanation was returned.}
+#'     \item{correction_text}{Character. The corrected, grounding-consistent
+#'       text returned when `correction = TRUE`, otherwise `NA`.}
 #'   }
 #'
 #' @details
@@ -106,6 +122,20 @@
 #'   query = "When was the product released?",
 #'   reasoning = TRUE
 #' )
+#'
+#' # Request corrected text (requires a bring-your-own Azure OpenAI deployment)
+#' corrected <- foundry_groundedness(
+#'   text = "The patient name is Kevin.",
+#'   grounding_sources = "The patient name is Jane.",
+#'   task = "Summarization",
+#'   domain = "Medical",
+#'   correction = TRUE,
+#'   llm_resource = foundry_llm_resource(
+#'     endpoint = "https://your-openai.openai.azure.com",
+#'     deployment_name = "gpt-4o"
+#'   )
+#' )
+#' corrected$correction_text
 #' }
 foundry_groundedness <- function(text,
                                   grounding_sources,
@@ -113,6 +143,8 @@ foundry_groundedness <- function(text,
                                   domain = c("Generic", "Medical"),
                                   task = c("QnA", "Summarization"),
                                   reasoning = FALSE,
+                                  correction = FALSE,
+                                  llm_resource = NULL,
                                   endpoint = NULL,
                                   api_key = NULL,
                                   api_version = "2024-09-15-preview") {
@@ -181,6 +213,22 @@ foundry_groundedness <- function(text,
     cli::cli_abort("{.arg reasoning} must be TRUE or FALSE.")
   }
 
+  # Validate correction parameter
+  if (!is.logical(correction) || length(correction) != 1 || is.na(correction)) {
+    cli::cli_abort("{.arg correction} must be TRUE or FALSE.")
+  }
+
+  # Validate llm_resource, and require it for correction
+  if (!is.null(llm_resource)) {
+    llm_resource <- foundry_validate_llm_resource(llm_resource)
+  }
+  if (correction && is.null(llm_resource)) {
+    cli::cli_abort(c(
+      "Groundedness correction requires an Azure OpenAI resource.",
+      "i" = "Pass {.arg llm_resource = foundry_llm_resource(endpoint, deployment_name)}."
+    ))
+  }
+
   # Build request body
   body <- list(
     domain = domain,
@@ -189,6 +237,14 @@ foundry_groundedness <- function(text,
     groundingSources = as.list(grounding_sources),
     reasoning = reasoning
   )
+
+  if (correction) {
+    body$mitigating <- TRUE
+  }
+
+  if (!is.null(llm_resource)) {
+    body$llmResource <- llm_resource
+  }
 
   # Add qna object if query is provided
   if (!is.null(query) && query != "") {
@@ -227,22 +283,101 @@ foundry_groundedness <- function(text,
   ungrounded_detected <- result$ungroundedDetected %||% FALSE
   ungrounded_pct <- result$ungroundedPercentage %||% 0
 
-  # Extract ungrounded segments
-  ungrounded_segments <- character(0)
-  if (!is.null(result$ungroundedDetails) && length(result$ungroundedDetails) > 0) {
-    ungrounded_segments <- vapply(result$ungroundedDetails, function(detail) {
-      detail$text %||% NA_character_
-    }, character(1))
-    ungrounded_segments <- ungrounded_segments[!is.na(ungrounded_segments)]
-  }
+  # Extract ungrounded segments and their reasons, aligned by index
+  details <- result$ungroundedDetails %||% list()
+  segment_text <- vapply(
+    details,
+    function(detail) detail$text %||% NA_character_,
+    character(1)
+  )
+  segment_reason <- vapply(
+    details,
+    function(detail) detail$reason %||% NA_character_,
+    character(1)
+  )
+  keep <- !is.na(segment_text)
+  ungrounded_segments <- segment_text[keep]
+  ungrounded_reasons <- segment_reason[keep]
+
+  # Corrected text is a top-level sibling, present only when correction is on
+  correction_text <- result$correctionText %||% NA_character_
 
   # Build result tibble
   tibble::tibble(
     grounded = !ungrounded_detected,
     grounded_pct = 1 - ungrounded_pct,
     ungrounded_pct = ungrounded_pct,
-    ungrounded_segments = list(ungrounded_segments)
+    ungrounded_segments = list(ungrounded_segments),
+    ungrounded_reasons = list(ungrounded_reasons),
+    correction_text = correction_text
   )
+}
+
+
+#' Describe a bring-your-own Azure OpenAI resource for groundedness
+#'
+#' Build the `llm_resource` argument for [foundry_groundedness()]. Reasoning and
+#' correction both rely on an Azure OpenAI deployment (typically a provisioned
+#' GPT-4o) that Content Safety calls on your behalf.
+#'
+#' @param endpoint Character. The Azure OpenAI resource endpoint, for example
+#'   `"https://your-openai.openai.azure.com"`.
+#' @param deployment_name Character. The Azure OpenAI deployment name to use.
+#' @param resource_type Character. The resource type. Only `"AzureOpenAI"` is
+#'   currently supported.
+#'
+#' @return A named list matching the Content Safety `LLMResource` schema.
+#' @export
+#'
+#' @examples
+#' foundry_llm_resource(
+#'   endpoint = "https://your-openai.openai.azure.com",
+#'   deployment_name = "gpt-4o"
+#' )
+foundry_llm_resource <- function(endpoint,
+                                 deployment_name,
+                                 resource_type = "AzureOpenAI") {
+  foundry_check_character_scalar(endpoint, "endpoint")
+  foundry_check_character_scalar(deployment_name, "deployment_name")
+  foundry_check_character_scalar(resource_type, "resource_type")
+
+  list(
+    resourceType = resource_type,
+    azureOpenAIEndpoint = endpoint,
+    azureOpenAIDeploymentName = deployment_name
+  )
+}
+
+
+# Coerce and validate a user-supplied llm_resource into the API's LLMResource
+# shape. Accepts the output of foundry_llm_resource() or an equivalent raw list.
+foundry_validate_llm_resource <- function(llm_resource) {
+  if (!is.list(llm_resource) || is.null(names(llm_resource))) {
+    cli::cli_abort(c(
+      "{.arg llm_resource} must be a named list.",
+      "i" = "Build it with {.fn foundry_llm_resource}."
+    ))
+  }
+
+  endpoint <- llm_resource$azureOpenAIEndpoint
+  deployment <- llm_resource$azureOpenAIDeploymentName
+
+  if (is.null(endpoint) || !is.character(endpoint) || length(endpoint) != 1L ||
+      is.na(endpoint) || endpoint == "") {
+    cli::cli_abort(c(
+      "{.arg llm_resource} must include a non-empty {.field azureOpenAIEndpoint}.",
+      "i" = "Build it with {.fn foundry_llm_resource}."
+    ))
+  }
+  if (is.null(deployment) || !is.character(deployment) ||
+      length(deployment) != 1L || is.na(deployment) || deployment == "") {
+    cli::cli_abort(c(
+      "{.arg llm_resource} must include a non-empty {.field azureOpenAIDeploymentName}.",
+      "i" = "Build it with {.fn foundry_llm_resource}."
+    ))
+  }
+
+  llm_resource
 }
 
 

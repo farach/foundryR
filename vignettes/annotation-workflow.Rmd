@@ -7,20 +7,21 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
+fixture_dir <- "annotation-workflow"
+recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
+have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
+run_api <- recording || have_fixtures
+
+if (run_api) {
+  httptest2::start_vignette(fixture_dir)
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE
+  eval = run_api
 )
-
-foundryr_vignette_cache <- function(name) {
-  path <- system.file("extdata", "vignette-cache", name, package = "foundryR")
-  if (!nzchar(path)) {
-    path <- file.path("..", "inst", "extdata", "vignette-cache", name)
-  }
-  path
-}
 ```
 
 Open-ended survey responses are valuable because respondents can say what the
@@ -87,7 +88,7 @@ annotations <- foundry_extract(
     "Code each survey response for a course evaluation.",
     "Use the respondent's words. Do not infer facts that are not stated."
   ),
-  model = "my-gpt4"
+  model = "gpt-4.1"
 )
 
 coded <- bind_cols(responses, annotations)
@@ -99,14 +100,14 @@ coded
 Interactive extraction is useful while designing the schema. For larger jobs,
 write a JSONL request file and submit it to Azure's Batch API.
 
-```{r batch}
+```{r batch, eval = FALSE}
 jsonl <- tempfile(fileext = ".jsonl")
 
 foundry_batch_requests(
   responses,
   input = "response",
   path = jsonl,
-  model = "my-gpt4",
+  model = "gpt-4.1",
   endpoint = "/v1/responses",
   body = list(
     instructions = paste(
@@ -142,7 +143,7 @@ codebook, or build semantic search over the responses.
 ```{r embeddings}
 embeddings <- foundry_embed(
   responses$response,
-  model = "my-embedding-deployment"
+  model = "text-embedding-3-small"
 )
 
 similarity <- foundry_similarity(embeddings)
@@ -196,14 +197,9 @@ review <- coded |>
 review
 ```
 
-The rendered table and chart below use precomputed, illustrative data from a
-representative run. They are rendered during the documentation build without
-Azure credentials.
+The rendered table and chart below summarize the live extraction results.
 
-```{r review-table-rendered, eval = TRUE, echo = FALSE}
-annotation_cache <- readRDS(foundryr_vignette_cache("annotation-workflow.rds"))
-review <- annotation_cache$review
-
+```{r review-table-rendered, echo = FALSE}
 review |>
   dplyr::mutate(
     needs_followup = ifelse(needs_followup, "Review", "No review"),
@@ -222,7 +218,7 @@ review |>
   gt::tab_options(table.font.names = "Inter")
 ```
 
-```{r sentiment-theme-chart, eval = TRUE, echo = FALSE, fig.alt = "Bar chart of survey response themes by sentiment."}
+```{r sentiment-theme-chart, echo = FALSE, fig.alt = "Bar chart of survey response themes by sentiment."}
 theme_counts <- review |>
   dplyr::count(primary_theme, sentiment, name = "responses")
 
@@ -254,3 +250,9 @@ ggplot2::ggplot(
 The workflow leaves a trail: raw response, extracted labels, model metadata,
 embedding similarity, and groundedness checks. That trail is the reason foundryR
 returns tibbles instead of hiding results inside client objects.
+
+```{r cleanup, include = FALSE}
+if (run_api) {
+  httptest2::end_vignette()
+}
+```

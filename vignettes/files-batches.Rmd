@@ -7,14 +7,24 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
+fixture_dir <- "files-batches"
+recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
+have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
+run_api <- recording || have_fixtures
+
+if (run_api) {
+  httptest2::start_vignette(fixture_dir)
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = run_api
 )
 ```
 
-```{r setup}
+```{r libraries}
 library(foundryR)
 ```
 
@@ -68,34 +78,8 @@ batch <- foundry_batch_create(
 )
 ```
 
-The returned objects are tidy tibbles:
-
-```{r upload-create-output}
-file <- tibble::tibble(
-  file_id = "file_abc123",
-  filename = basename(jsonl),
-  purpose = "batch",
-  status = "processed",
-  bytes = file.size(jsonl),
-  created_at = as.POSIXct("2026-06-24 12:00:00", tz = "UTC")
-)
-
-batch <- tibble::tibble(
-  batch_id = "batch_abc123",
-  status = "validating",
-  endpoint = "/v1/responses",
-  input_file_id = file$file_id,
-  output_file_id = NA_character_,
-  error_file_id = NA_character_,
-  completion_window = "24h",
-  request_counts_total = 3L,
-  request_counts_completed = 0L,
-  request_counts_failed = 0L
-)
-
-file
-batch
-```
+The returned objects include service identifiers, status fields, file sizes,
+completion windows, and request counts.
 
 ## Poll and download results
 
@@ -110,12 +94,8 @@ foundry_file_download(
 
 Output files are JSONL too. Read a few lines first before parsing a large job:
 
-```{r output-shape}
-output_lines <- c(
-  '{"custom_id":"resp-001","response":{"body":{"output_text":"positive"}}}',
-  '{"custom_id":"resp-002","response":{"body":{"output_text":"neutral"}}}'
-)
-
+```{r output-shape, eval = FALSE}
+output_lines <- readLines("batch-output.jsonl", n = 2)
 head(output_lines)
 ```
 
@@ -125,3 +105,9 @@ head(output_lines)
 - Use stable `custom_id` values so results join back to your data frame.
 - Store prompts and schema versions with your analysis code for reproducibility.
 - Download both output and error files when a batch finishes.
+
+```{r cleanup, include = FALSE}
+if (run_api) {
+  httptest2::end_vignette()
+}
+```
