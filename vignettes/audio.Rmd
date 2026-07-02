@@ -7,144 +7,135 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
+# This vignette runs against recorded, credential-free API fixtures. The
+# fixtures are recorded once by a maintainer with real Azure Speech credentials
+# (data-raw/record-doc-outputs.R) and committed under vignettes/audio/. When the
+# fixtures are present every foundry_*() call below executes and shows its real
+# output; when they are absent the API chunks are not evaluated so the vignette
+# still builds anywhere without credentials. No output on this page is fabricated.
+fixture_dir <- "audio"
+recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
+have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
+run_api <- recording || have_fixtures
+
+if (run_api) {
+  httptest2::start_vignette(fixture_dir)
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = run_api
 )
 ```
 
-```{r setup}
+```{r library, eval = TRUE}
 library(foundryR)
 ```
 
 Audio is one of the most useful Foundry additions for researchers. You can
 transcribe interviews, lectures, field recordings, meetings, and focus groups,
-then keep the result in a tibble with segment-level timing for downstream
-coding or analysis.
+then keep the result in a tibble with segment-level timing for downstream coding
+or analysis.
 
 ## Configure Speech in Foundry Tools
 
 MAI-Transcribe models are exposed through the LLM Speech API. Configure the
-Speech resource once per session:
+Speech resource once per session. This chunk is illustrative and is not run when
+the vignette builds:
 
 ```{r configure-speech, eval = FALSE}
 foundry_set_speech_endpoint(Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT"))
 foundry_set_speech_key("your-speech-key")
+
+# For keyless authentication, set a bearer token instead of a key:
+foundry_set_token("your-entra-id-access-token")
 ```
 
-For keyless authentication, set a bearer token instead of a key:
+## A real, public-domain sample
 
-```{r configure-token, eval = FALSE}
-foundry_set_token("your-entra-id-access-token")
+The examples below use a short excerpt from John F. Kennedy's 1961 inaugural
+address ("And so, my fellow Americans..."). This clip ships with the package and
+is the de facto "hello, world" of open-source speech recognition, so the
+transcript is easy to check against a recording everyone knows.
+
+```{r sample}
+sample_audio <- system.file("extdata/samples/jfk.wav", package = "foundryR")
+basename(sample_audio)
 ```
 
 ## Transcribe an audio file
 
-```{r transcribe-call, eval = FALSE}
+`foundry_transcribe()` returns one row per file. The `text` column holds the
+transcript and the `phrases` list-column holds segment-level timing.
+
+```{r transcribe}
 transcript <- foundry_transcribe(
-  "interview.mp3",
+  sample_audio,
   model = "mai-transcribe-1.5",
-  locales = "en-US",
-  phrase_list = c("foundryR", "tidymodels")
+  locales = "en-US"
 )
+
+transcript$text
 ```
 
-A successful transcription returns one row per file. The `phrases` column is a
-list-column with segment timing.
+The segment timing lives in the `phrases` list-column, one row per recognized
+phrase:
 
-```{r transcribe-output}
-phrases <- tibble::tibble(
-  text = c(
-    "We used foundryR to transcribe the interview.",
-    "Then we coded the responses in R."
-  ),
-  locale = c("en-us", "en-us"),
-  offset_ms = c(0L, 3280L),
-  duration_ms = c(3120L, 2600L),
-  confidence = c(0, 0),
-  speaker = c(NA_character_, NA_character_),
-  words = list(list(), list())
-)
-
-transcript <- tibble::tibble(
-  file = "interview.mp3",
-  task = "transcribe",
-  model = "mai-transcribe-1.5",
-  text = paste(phrases$text, collapse = " "),
-  duration_ms = 5880L,
-  language = "en-us",
-  phrases = list(phrases)
-)
-
-transcript[, c("file", "task", "model", "text", "duration_ms")]
+```{r transcribe-phrases}
 head(transcript$phrases[[1]])
-```
-
-## Translate multilingual recordings
-
-Use `foundry_translate_audio()` when you want an analysis corpus in a common
-language.
-
-```{r translate-call, eval = FALSE}
-translation <- foundry_translate_audio(
-  "interview-es.mp3",
-  target_language = "en",
-  prompt = "Use concise research-note style."
-)
-```
-
-```{r translate-output}
-translation <- tibble::tibble(
-  file = "interview-es.mp3",
-  task = "translate",
-  model = NA_character_,
-  text = "The participant described the workflow as fast and easy to learn.",
-  duration_ms = 4210L,
-  language = "en",
-  phrases = list(tibble::tibble(
-    text = "The participant described the workflow as fast and easy to learn.",
-    locale = "en",
-    offset_ms = 0L,
-    duration_ms = 4210L,
-    confidence = 0,
-    speaker = NA_character_,
-    words = list(list())
-  ))
-)
-
-translation[, c("file", "task", "text", "duration_ms")]
 ```
 
 ## Synthesize speech
 
 `foundry_speak()` writes binary audio to disk and returns the file path and byte
 count. This is useful for experiment stimuli, accessibility assets, and demos.
+Use your text-to-speech deployment name for `model`.
 
-```{r speak-call, eval = FALSE}
+```{r speak}
 speech <- foundry_speak(
-  "Welcome to the study.",
+  "Welcome to the foundryR audio vignette.",
   model = "tts-1",
   voice = "alloy",
-  path = "welcome.mp3"
+  path = tempfile(fileext = ".mp3")
 )
+
+speech[, c("bytes", "model", "voice", "format")]
 ```
 
-```{r speak-output}
-speech <- tibble::tibble(
-  path = "welcome.mp3",
-  bytes = 18432L,
+## Translate multilingual recordings
+
+Use `foundry_translate_audio()` when you want an analysis corpus in a common
+language. To keep this example fully reproducible we first synthesize a short
+Spanish clip, then translate it back to English -- both are real API calls.
+
+```{r translate}
+spanish_clip <- foundry_speak(
+  "La reunion de investigacion fue clara y muy util.",
   model = "tts-1",
   voice = "alloy",
-  format = "mp3"
+  path = tempfile(fileext = ".mp3")
 )
 
-speech
+translation <- foundry_translate_audio(
+  spanish_clip$path,
+  target_language = "en"
+)
+
+translation$text
 ```
 
 ## Notes for researchers
 
-- Use `head(transcript$phrases[[1]])` before processing long recordings.
+- Inspect `head(transcript$phrases[[1]])` before processing long recordings so
+  you know the segment structure your coding scheme has to handle.
 - Keep raw audio out of your project repository; store transcripts and IDs.
 - MAI-Transcribe preview limitations include no diarization for MAI-Transcribe
   models and no prompt tuning for MAI-Transcribe 1.0.
+
+```{r cleanup, include = FALSE}
+if (run_api) {
+  httptest2::end_vignette()
+}
+```

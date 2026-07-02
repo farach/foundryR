@@ -7,18 +7,39 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
+# The Azure-backed example on this page runs against recorded, credential-free
+# fixtures (recorded once with data-raw/record-doc-outputs.R and committed under
+# vignettes/foundryr-vs-ellmer/). The ellmer -> foundryR schema conversion is a
+# pure-local call and always runs when ellmer is installed, so its real output is
+# shown everywhere. Nothing here is fabricated.
+fixture_dir <- "foundryr-vs-ellmer"
+recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
+have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
+run_api <- recording || have_fixtures
+have_ellmer <- requireNamespace("ellmer", quietly = TRUE)
+
+if (run_api) {
+  httptest2::start_vignette(fixture_dir)
+}
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = FALSE
+  eval = run_api
 )
+```
+
+```{r library, eval = TRUE}
+library(foundryR)
 ```
 
 foundryR and ellmer both make language-model work possible from R. They are not
 substitutes for every use case. ellmer is the better fit for provider-portable
 chat. foundryR is the better fit when the work is tied to Azure AI Foundry and
-the output needs to become data.
+the output needs to become data. The two are complementary: you can describe a
+structure once with ellmer's type system and hand it to foundryR for strict,
+tibble-shaped extraction.
 
 ## Comparison
 
@@ -59,41 +80,55 @@ streaming, or applications that may move between providers.
 foundryR deliberately does not implement streaming. For streaming chat in R, use
 ellmer.
 
-## Example: strict extraction with foundryR
+## Interop: reuse an ellmer type as a foundryR schema
 
-```{r extraction-example}
-library(foundryR)
+If you already describe your data with ellmer's type system, you do not have to
+rewrite it. `as_foundry_schema()` converts an `ellmer::type_object()` into the
+strict JSON Schema that `foundry_extract()` expects. This conversion is a local
+operation -- no network, no credentials -- so its output is shown here directly.
 
-schema <- list(
-  type = "object",
-  properties = list(
-    sentiment = list(type = "string", enum = c("positive", "negative", "neutral")),
-    theme = list(type = "string")
+```{r ellmer-interop, eval = have_ellmer}
+library(ellmer)
+
+# Describe the structure you want with ellmer's type system.
+sentiment_spec <- type_object(
+  sentiment = type_enum(
+    c("positive", "negative", "neutral"),
+    description = "Overall sentiment of the response."
   ),
-  required = c("sentiment", "theme"),
-  additionalProperties = FALSE
+  theme = type_string("A short theme label for the response.")
 )
 
+# Convert it into a foundryR schema for strict extraction.
+sentiment_schema <- as_foundry_schema(sentiment_spec)
+str(sentiment_schema)
+```
+
+## Extraction with foundryR
+
+Hand the converted schema to `foundry_extract()`. foundryR sends each input
+through the Responses API with strict decoding and returns one tidy row per
+input -- the model's output has already become data.
+
+```{r extraction-example, eval = run_api && have_ellmer}
 foundry_extract(
   c("The lesson was clear.", "I wanted more examples."),
-  schema = schema,
-  model = "my-gpt4"
+  schema = sentiment_schema,
+  model = "gpt-4.1-mini"
 )
 ```
 
-## Example: Azure Content Safety as a pipeline gate
-
-```{r safety-example}
-answer <- "The study enrolled 120 participants."
-source <- "The study enrolled 120 participants."
-
-foundry_groundedness(
-  text = answer,
-  grounding_sources = source,
-  query = "How many participants were enrolled?",
-  task = "QnA"
-)
-```
+You can also build the same schema natively with foundryR's `foundry_schema()`
+and `schema_*()` constructors when you would rather not depend on ellmer. See
+`vignette("responses-api")` for the native path, and `vignette("content-safety")`
+for using Azure Content Safety as a pipeline gate.
 
 The practical rule is simple: use ellmer when you need the best R chat client,
-and use foundryR when you need Azure AI Foundry results as data.
+and use foundryR when you need Azure AI Foundry results as data -- and use
+`as_foundry_schema()` when you want both.
+
+```{r cleanup, include = FALSE}
+if (run_api) {
+  httptest2::end_vignette()
+}
+```
