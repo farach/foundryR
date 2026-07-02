@@ -233,6 +233,8 @@ foundry_agent_delete <- function(name,
 #' List versions of a Foundry agent
 #'
 #' @param name Character. Agent name.
+#' @param limit Integer. Optional maximum number of agent versions to return.
+#' @param after Character. Optional pagination cursor.
 #' @inheritParams foundry_agent_create
 #'
 #' @return A tibble with one row per agent version.

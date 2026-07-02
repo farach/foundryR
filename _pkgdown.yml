@@ -334,7 +334,7 @@ articles:
   - title: Integrations
     navbar: ~
     contents:
-      - onet2r-integration
+      - articles/onet2r-integration
 
 footer:
   structure:

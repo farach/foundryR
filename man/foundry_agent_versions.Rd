@@ -17,6 +17,10 @@ foundry_agent_versions(
 \arguments{
 \item{name}{Character. Agent name.}
 
+\item{limit}{Integer. Optional maximum number of agent versions to return.}
+
+\item{after}{Character. Optional pagination cursor.}
+
 \item{api_key}{Character. Optional API key. Falls back to configured auth.}
 
 \item{token}{Character. Optional bearer token. Falls back to configured auth.}
