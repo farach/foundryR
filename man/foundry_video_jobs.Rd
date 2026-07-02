@@ -34,7 +34,7 @@ foundry_video_jobs(
 A tibble with one row per video job.
 }
 \description{
-List Microsoft Foundry video generation jobs
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 \dontrun{

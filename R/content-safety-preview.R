@@ -1,5 +1,8 @@
 #' Detect protected material in code
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' Check source code for matches against public code repositories using the
 #' Azure AI Content Safety protected-material-for-code detector. This is the
 #' code counterpart to [foundry_protected_material()], useful for flagging
@@ -93,6 +96,9 @@ foundry_code_citations_tibble <- function(citations) {
 
 #' Moderate an image together with its text
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' Analyze an image and optional accompanying text in a single multimodal
 #' Content Safety call. Optical character recognition can read text embedded in
 #' the image so that harmful captions or overlays are caught alongside the
@@ -173,6 +179,9 @@ foundry_moderate_multimodal <- function(image,
 
 
 #' Check an agent transcript for task adherence
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
 #'
 #' Evaluate whether an agent's tool calls and responses stayed aligned with the
 #' user's request using the Azure AI Content Safety task-adherence detector.

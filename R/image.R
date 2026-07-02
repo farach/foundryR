@@ -383,6 +383,9 @@ foundry_parse_image_response <- function(result,
 
 #' Edit an image with Microsoft Foundry
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' Use the v1 preview image edits endpoint to edit one or more input images with
 #' a text prompt.
 #'

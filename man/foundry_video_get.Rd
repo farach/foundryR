@@ -27,7 +27,7 @@ foundry_video_get(
 A one-row tibble with generation metadata.
 }
 \description{
-Retrieve a Microsoft Foundry video generation
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 \dontrun{

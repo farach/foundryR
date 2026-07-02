@@ -1,5 +1,8 @@
 #' Create a Microsoft Foundry video generation job
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' Start a v1 preview video generation job. Video generation is a preview
 #' feature and returns a job that should be polled with `foundry_video_job_get()`.
 #'
@@ -86,6 +89,9 @@ foundry_video_job_create <- function(prompt,
 
 #' List Microsoft Foundry video generation jobs
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param limit Integer. Maximum number of jobs to return.
 #' @param before,after Character. Optional pagination cursors.
 #' @param statuses Character vector. Optional status filters.
@@ -134,6 +140,9 @@ foundry_video_jobs <- function(limit = 20L,
 
 #' Retrieve a Microsoft Foundry video generation job
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param job_id Character. Video generation job ID.
 #' @inheritParams foundry_video_job_create
 #'
@@ -163,6 +172,9 @@ foundry_video_job_get <- function(job_id,
 
 
 #' Delete a Microsoft Foundry video generation job
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
 #'
 #' @param job_id Character. Video generation job ID.
 #' @inheritParams foundry_video_job_create
@@ -195,6 +207,9 @@ foundry_video_job_delete <- function(job_id,
 
 #' Retrieve a Microsoft Foundry video generation
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param generation_id Character. Video generation ID.
 #' @inheritParams foundry_video_job_create
 #'
@@ -224,6 +239,9 @@ foundry_video_get <- function(generation_id,
 
 
 #' Download Microsoft Foundry generated video content
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
 #'
 #' @param generation_id Character. Video generation ID.
 #' @param path Character. Local file path for the downloaded content.

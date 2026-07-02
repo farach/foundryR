@@ -34,6 +34,8 @@ matched code citation.}
 }
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Check source code for matches against public code repositories using the
 Azure AI Content Safety protected-material-for-code detector. This is the
 code counterpart to \code{\link[=foundry_protected_material]{foundry_protected_material()}}, useful for flagging

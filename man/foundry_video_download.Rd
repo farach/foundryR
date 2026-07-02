@@ -38,7 +38,7 @@ A tibble with the local path, bytes written, generation ID, and
 content type.
 }
 \description{
-Download Microsoft Foundry generated video content
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 \dontrun{

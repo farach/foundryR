@@ -49,6 +49,8 @@ foundry_image_edit(
 A tibble with edited image data and metadata.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Use the v1 preview image edits endpoint to edit one or more input images with
 a text prompt.
 }

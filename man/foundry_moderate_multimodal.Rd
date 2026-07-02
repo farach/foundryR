@@ -39,6 +39,8 @@ A tibble with one row per harm category, matching
 (0, 2, 4, 6).
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Analyze an image and optional accompanying text in a single multimodal
 Content Safety call. Optical character recognition can read text embedded in
 the image so that harmful captions or overlays are caught alongside the

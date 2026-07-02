@@ -211,6 +211,9 @@ foundry_translate_audio <- function(file,
 
 #' Generate speech audio from text
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' Use the Microsoft Foundry v1 preview speech endpoint to synthesize audio and
 #' save it to a local file.
 #'

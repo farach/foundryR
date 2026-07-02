@@ -27,7 +27,7 @@ foundry_video_job_get(
 A one-row tibble with job metadata.
 }
 \description{
-Retrieve a Microsoft Foundry video generation job
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \examples{
 \dontrun{

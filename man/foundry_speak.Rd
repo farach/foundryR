@@ -50,6 +50,8 @@ foundry_speak(
 A tibble with the output path, byte count, model, voice, and format.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Use the Microsoft Foundry v1 preview speech endpoint to synthesize audio and
 save it to a local file.
 }

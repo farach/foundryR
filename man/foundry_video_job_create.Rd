@@ -47,6 +47,8 @@ inpainting workflows.}
 A one-row tibble with job metadata and the raw job in a list-column.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Start a v1 preview video generation job. Video generation is a preview
 feature and returns a job that should be polled with \code{foundry_video_job_get()}.
 }

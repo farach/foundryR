@@ -23,6 +23,7 @@ Imports:
     dplyr,
     httr2 (>= 1.0.0),
     jsonlite,
+    lifecycle,
     magrittr,
     purrr,
     rlang,
