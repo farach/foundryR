@@ -121,94 +121,65 @@ available with <code>api = "deployment"</code>.</p>
 </h2>
 <p>Image models may be deployed on the same Azure OpenAI resource as
 your text models, or on a separate resource. Use the image-specific
-helpers only when the resource or key differs.</p>
+helpers only when the resource or key differs. This setup chunk is
+illustrative and is not run:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/foundry_set_key.html">foundry_set_key</a></span><span class="op">(</span><span class="st">"your-api-key"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/foundry_set_image_endpoint.html">foundry_set_image_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_IMAGE_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_image_endpoint.html">foundry_set_image_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_IMAGE_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/foundry_set_image_key.html">foundry_set_image_key</a></span><span class="op">(</span><span class="st">"your-image-api-key"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>AZURE_FOUNDRY_IMAGE_MODEL <span class="op">=</span> <span class="st">"my-image-deployment"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="generate-images">Generate images<a class="anchor" aria-label="anchor" href="#generate-images"></a>
+<h2 id="generate-an-image">Generate an image<a class="anchor" aria-label="anchor" href="#generate-an-image"></a>
 </h2>
+<p><code><a href="../reference/foundry_image.html">foundry_image()</a></code> returns one row per generated image with
+the prompt, any model-revised prompt, the output format, and the image
+bytes (as a URL or base64, depending on the model). Here we ask for a
+small, compressed JPEG so the recorded fixture stays light.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">image</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_image.html">foundry_image</a></span><span class="op">(</span></span>
-<span>  <span class="st">"A clean data science illustration of survey responses becoming a chart"</span>,</span>
+<span>  <span class="st">"A friendly red panda reading a book, flat vector illustration"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"gpt-image-1"</span>,</span>
 <span>  size <span class="op">=</span> <span class="st">"1024x1024"</span>,</span>
-<span>  output_format <span class="op">=</span> <span class="st">"png"</span>,</span>
-<span>  background <span class="op">=</span> <span class="st">"opaque"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">image</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  prompt <span class="op">=</span> <span class="st">"A clean data science illustration of survey responses becoming a chart"</span>,</span>
-<span>  revised_prompt <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  url <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  b64_json <span class="op">=</span> <span class="st">"&lt;base64 image bytes&gt;"</span>,</span>
-<span>  output_format <span class="op">=</span> <span class="st">"png"</span>,</span>
-<span>  created <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2026-06-24 12:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>
+<span>  quality <span class="op">=</span> <span class="st">"low"</span>,</span>
+<span>  output_format <span class="op">=</span> <span class="st">"jpeg"</span>,</span>
+<span>  output_compression <span class="op">=</span> <span class="fl">40</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">image</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"prompt"</span>, <span class="st">"url"</span>, <span class="st">"b64_json"</span>, <span class="st">"output_format"</span>, <span class="st">"created"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
-<span><span class="co">#&gt;   prompt                        url   b64_json output_format created            </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A clean data science illustr… <span style="color: #BB0000;">NA</span>    &lt;base64… png           2026-06-24 <span style="color: #949494;">12:00:00</span></span></span></code></pre></div>
-<p>Use model-supported options such as <code>size</code>,
-<code>quality</code>, <code>output_format</code>,
-<code>background</code>, and <code>moderation</code> when you need a
-specific asset format:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_image.html">foundry_image</a></span><span class="op">(</span></span>
-<span>  <span class="st">"A simple report illustration showing coded survey responses"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-image-1"</span>,</span>
-<span>  size <span class="op">=</span> <span class="st">"1792x1024"</span>,</span>
-<span>  output_format <span class="op">=</span> <span class="st">"png"</span>,</span>
-<span>  background <span class="op">=</span> <span class="st">"opaque"</span>,</span>
-<span>  moderation <span class="op">=</span> <span class="st">"auto"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Save generated image bytes with
-<code><a href="../reference/foundry_save_image.html">foundry_save_image()</a></code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_save_image.html">foundry_save_image</a></span><span class="op">(</span><span class="va">image</span>, <span class="st">"survey-chart.png"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">image</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"prompt"</span>, <span class="st">"revised_prompt"</span>, <span class="st">"output_format"</span>, <span class="st">"created"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+<p>Decode the returned bytes to a file with
+<code><a href="../reference/foundry_save_image.html">foundry_save_image()</a></code> and display the result:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">img_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".jpeg"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/foundry_save_image.html">foundry_save_image</a></span><span class="op">(</span><span class="va">image</span>, <span class="va">img_path</span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html" class="external-link">include_graphics</a></span><span class="op">(</span><span class="va">img_path</span><span class="op">)</span></span></code></pre></div>
 <p>Image URLs are temporary. Save images that belong in reports,
 stimuli, or audited records.</p>
 </div>
 <div class="section level2">
-<h2 id="edit-images">Edit images<a class="anchor" aria-label="anchor" href="#edit-images"></a>
+<h2 id="edit-an-image">Edit an image<a class="anchor" aria-label="anchor" href="#edit-an-image"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/foundry_image_edit.html">foundry_image_edit()</a></code> takes an existing image and a
+prompt. The call below is illustrative (it needs an image file on disk)
+and is not run here:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">edited</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_image_edit.html">foundry_image_edit</a></span><span class="op">(</span></span>
-<span>  image <span class="op">=</span> <span class="st">"survey-chart.png"</span>,</span>
-<span>  prompt <span class="op">=</span> <span class="st">"Use a blue Microsoft-inspired color palette."</span>,</span>
+<span>  image <span class="op">=</span> <span class="va">img_path</span>,</span>
+<span>  prompt <span class="op">=</span> <span class="st">"Use a blue, Microsoft-inspired color palette."</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"gpt-image-1"</span>,</span>
-<span>  output_format <span class="op">=</span> <span class="st">"png"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">edited</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  prompt <span class="op">=</span> <span class="st">"Use a blue Microsoft-inspired color palette."</span>,</span>
-<span>  revised_prompt <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  url <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  b64_json <span class="op">=</span> <span class="st">"&lt;base64 edited image bytes&gt;"</span>,</span>
-<span>  output_format <span class="op">=</span> <span class="st">"png"</span>,</span>
-<span>  created <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2026-06-24 12:05:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>
+<span>  output_format <span class="op">=</span> <span class="st">"jpeg"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">edited</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"prompt"</span>, <span class="st">"b64_json"</span>, <span class="st">"output_format"</span>, <span class="st">"created"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
-<span><span class="co">#&gt;   prompt                              b64_json output_format created            </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                               <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> Use a blue Microsoft-inspired colo… &lt;base64… png           2026-06-24 <span style="color: #949494;">12:05:00</span></span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/foundry_save_image.html">foundry_save_image</a></span><span class="op">(</span><span class="va">edited</span>, <span class="st">"red-panda-blue.jpeg"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="start-a-video-generation-job">Start a video generation job<a class="anchor" aria-label="anchor" href="#start-a-video-generation-job"></a>
+<h2 id="generate-video-preview">Generate video (preview)<a class="anchor" aria-label="anchor" href="#generate-video-preview"></a>
 </h2>
-<p>Video generation is a preview, long-running workflow. Create a job,
-poll it, and download content after a generation succeeds.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p>Video generation is a preview, long-running workflow: create a job,
+poll it, and download the content once a generation succeeds. Because
+the job is asynchronous these calls are shown for reference and are not
+run here:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">job</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_video_job_create.html">foundry_video_job_create</a></span><span class="op">(</span></span>
 <span>  <span class="st">"A short animation of dots clustering into groups"</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"my-video-model"</span>,</span>
@@ -217,29 +188,10 @@ poll it, and download content after a generation succeeds.</p>
 <span>  n_seconds <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/foundry_video_job_get.html">foundry_video_job_get</a></span><span class="op">(</span><span class="va">job</span><span class="op">$</span><span class="va">job_id</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">job</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  job_id <span class="op">=</span> <span class="st">"videojob_abc123"</span>,</span>
-<span>  status <span class="op">=</span> <span class="st">"running"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"my-video-model"</span>,</span>
-<span>  prompt <span class="op">=</span> <span class="st">"A short animation of dots clustering into groups"</span>,</span>
-<span>  width <span class="op">=</span> <span class="fl">1280L</span>,</span>
-<span>  height <span class="op">=</span> <span class="fl">720L</span>,</span>
-<span>  n_seconds <span class="op">=</span> <span class="fl">5L</span>,</span>
-<span>  n_variants <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  created_at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2026-06-24 12:10:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">job</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_video_job_get.html">foundry_video_job_get</a></span><span class="op">(</span><span class="va">job</span><span class="op">$</span><span class="va">job_id</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">job</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 9</span></span></span>
-<span><span class="co">#&gt;   job_id          status  model         prompt width height n_seconds n_variants</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> videojob_abc123 running my-video-mod… A sho…  <span style="text-decoration: underline;">1</span>280    720         5          1</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 1 more variable: created_at &lt;dttm&gt;</span></span></span></code></pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_video_download.html">foundry_video_download</a></span><span class="op">(</span></span>
-<span>  generation_id <span class="op">=</span> <span class="st">"vidgen_abc123"</span>,</span>
+<span><span class="fu"><a href="../reference/foundry_video_download.html">foundry_video_download</a></span><span class="op">(</span></span>
+<span>  generation_id <span class="op">=</span> <span class="va">job</span><span class="op">$</span><span class="va">generation_id</span>,</span>
 <span>  path <span class="op">=</span> <span class="st">"cluster-animation.mp4"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>

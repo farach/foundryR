@@ -121,132 +121,92 @@ for downstream coding or analysis.</p>
 <h2 id="configure-speech-in-foundry-tools">Configure Speech in Foundry Tools<a class="anchor" aria-label="anchor" href="#configure-speech-in-foundry-tools"></a>
 </h2>
 <p>MAI-Transcribe models are exposed through the LLM Speech API.
-Configure the Speech resource once per session:</p>
+Configure the Speech resource once per session. This chunk is
+illustrative and is not run when the vignette builds:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_speech_endpoint.html">foundry_set_speech_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_SPEECH_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/foundry_set_speech_key.html">foundry_set_speech_key</a></span><span class="op">(</span><span class="st">"your-speech-key"</span><span class="op">)</span></span></code></pre></div>
-<p>For keyless authentication, set a bearer token instead of a key:</p>
+<span><span class="fu"><a href="../reference/foundry_set_speech_key.html">foundry_set_speech_key</a></span><span class="op">(</span><span class="st">"your-speech-key"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># For keyless authentication, set a bearer token instead of a key:</span></span>
+<span><span class="fu"><a href="../reference/foundry_set_token.html">foundry_set_token</a></span><span class="op">(</span><span class="st">"your-entra-id-access-token"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="a-real-public-domain-sample">A real, public-domain sample<a class="anchor" aria-label="anchor" href="#a-real-public-domain-sample"></a>
+</h2>
+<p>The examples below use a short excerpt from John F. Kennedy’s 1961
+inaugural address (“And so, my fellow Americans…”). This clip ships with
+the package and is the de facto “hello, world” of open-source speech
+recognition, so the transcript is easy to check against a recording
+everyone knows.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_token.html">foundry_set_token</a></span><span class="op">(</span><span class="st">"your-entra-id-access-token"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">sample_audio</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/samples/jfk.wav"</span>, package <span class="op">=</span> <span class="st">"foundryR"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">sample_audio</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="transcribe-an-audio-file">Transcribe an audio file<a class="anchor" aria-label="anchor" href="#transcribe-an-audio-file"></a>
 </h2>
+<p><code><a href="../reference/foundry_transcribe.html">foundry_transcribe()</a></code> returns one row per file. The
+<code>text</code> column holds the transcript and the
+<code>phrases</code> list-column holds segment-level timing.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">transcript</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_transcribe.html">foundry_transcribe</a></span><span class="op">(</span></span>
-<span>  <span class="st">"interview.mp3"</span>,</span>
+<span>  <span class="va">sample_audio</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"mai-transcribe-1.5"</span>,</span>
-<span>  locales <span class="op">=</span> <span class="st">"en-US"</span>,</span>
-<span>  phrase_list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"foundryR"</span>, <span class="st">"tidymodels"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>A successful transcription returns one row per file. The
-<code>phrases</code> column is a list-column with segment timing.</p>
+<span>  locales <span class="op">=</span> <span class="st">"en-US"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">transcript</span><span class="op">$</span><span class="va">text</span></span></code></pre></div>
+<p>The segment timing lives in the <code>phrases</code> list-column, one
+row per recognized phrase:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">phrases</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  text <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"We used foundryR to transcribe the interview."</span>,</span>
-<span>    <span class="st">"Then we coded the responses in R."</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  locale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"en-us"</span>, <span class="st">"en-us"</span><span class="op">)</span>,</span>
-<span>  offset_ms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="fl">3280L</span><span class="op">)</span>,</span>
-<span>  duration_ms <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3120L</span>, <span class="fl">2600L</span><span class="op">)</span>,</span>
-<span>  confidence <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
-<span>  speaker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">NA_character_</span>, <span class="cn">NA_character_</span><span class="op">)</span>,</span>
-<span>  words <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">transcript</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  file <span class="op">=</span> <span class="st">"interview.mp3"</span>,</span>
-<span>  task <span class="op">=</span> <span class="st">"transcribe"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"mai-transcribe-1.5"</span>,</span>
-<span>  text <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">phrases</span><span class="op">$</span><span class="va">text</span>, collapse <span class="op">=</span> <span class="st">" "</span><span class="op">)</span>,</span>
-<span>  duration_ms <span class="op">=</span> <span class="fl">5880L</span>,</span>
-<span>  language <span class="op">=</span> <span class="st">"en-us"</span>,</span>
-<span>  phrases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">phrases</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">transcript</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"file"</span>, <span class="st">"task"</span>, <span class="st">"model"</span>, <span class="st">"text"</span>, <span class="st">"duration_ms"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
-<span><span class="co">#&gt;   file          task       model              text                   duration_ms</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> interview.mp3 transcribe mai-transcribe-1.5 We used foundryR to t…        <span style="text-decoration: underline;">5</span>880</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">transcript</span><span class="op">$</span><span class="va">phrases</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 7</span></span></span>
-<span><span class="co">#&gt;   text                    locale offset_ms duration_ms confidence speaker words </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;list&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> We used foundryR to tr… en-us          0        <span style="text-decoration: underline;">3</span>120          0 <span style="color: #BB0000;">NA</span>      <span style="color: #949494;">&lt;list&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> Then we coded the resp… en-us       <span style="text-decoration: underline;">3</span>280        <span style="text-decoration: underline;">2</span>600          0 <span style="color: #BB0000;">NA</span>      <span style="color: #949494;">&lt;list&gt;</span></span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="translate-multilingual-recordings">Translate multilingual recordings<a class="anchor" aria-label="anchor" href="#translate-multilingual-recordings"></a>
-</h2>
-<p>Use <code><a href="../reference/foundry_translate_audio.html">foundry_translate_audio()</a></code> when you want an analysis
-corpus in a common language.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">translation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_translate_audio.html">foundry_translate_audio</a></span><span class="op">(</span></span>
-<span>  <span class="st">"interview-es.mp3"</span>,</span>
-<span>  target_language <span class="op">=</span> <span class="st">"en"</span>,</span>
-<span>  prompt <span class="op">=</span> <span class="st">"Use concise research-note style."</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">translation</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  file <span class="op">=</span> <span class="st">"interview-es.mp3"</span>,</span>
-<span>  task <span class="op">=</span> <span class="st">"translate"</span>,</span>
-<span>  model <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  text <span class="op">=</span> <span class="st">"The participant described the workflow as fast and easy to learn."</span>,</span>
-<span>  duration_ms <span class="op">=</span> <span class="fl">4210L</span>,</span>
-<span>  language <span class="op">=</span> <span class="st">"en"</span>,</span>
-<span>  phrases <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>    text <span class="op">=</span> <span class="st">"The participant described the workflow as fast and easy to learn."</span>,</span>
-<span>    locale <span class="op">=</span> <span class="st">"en"</span>,</span>
-<span>    offset_ms <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>    duration_ms <span class="op">=</span> <span class="fl">4210L</span>,</span>
-<span>    confidence <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    speaker <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>    words <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">translation</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"file"</span>, <span class="st">"task"</span>, <span class="st">"text"</span>, <span class="st">"duration_ms"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
-<span><span class="co">#&gt;   file             task      text                                    duration_ms</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> interview-es.mp3 translate The participant described the workflow…        <span style="text-decoration: underline;">4</span>210</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">transcript</span><span class="op">$</span><span class="va">phrases</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="synthesize-speech">Synthesize speech<a class="anchor" aria-label="anchor" href="#synthesize-speech"></a>
 </h2>
 <p><code><a href="../reference/foundry_speak.html">foundry_speak()</a></code> writes binary audio to disk and returns
 the file path and byte count. This is useful for experiment stimuli,
-accessibility assets, and demos.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+accessibility assets, and demos. Use your text-to-speech deployment name
+for <code>model</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">speech</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_speak.html">foundry_speak</a></span><span class="op">(</span></span>
-<span>  <span class="st">"Welcome to the study."</span>,</span>
+<span>  <span class="st">"Welcome to the foundryR audio vignette."</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"tts-1"</span>,</span>
 <span>  voice <span class="op">=</span> <span class="st">"alloy"</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"welcome.mp3"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">speech</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  path <span class="op">=</span> <span class="st">"welcome.mp3"</span>,</span>
-<span>  bytes <span class="op">=</span> <span class="fl">18432L</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"tts-1"</span>,</span>
-<span>  voice <span class="op">=</span> <span class="st">"alloy"</span>,</span>
-<span>  format <span class="op">=</span> <span class="st">"mp3"</span></span>
+<span>  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".mp3"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">speech</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
-<span><span class="co">#&gt;   path        bytes model voice format</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> welcome.mp3 <span style="text-decoration: underline;">18</span>432 tts-1 alloy mp3</span></span></code></pre></div>
+<span><span class="va">speech</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bytes"</span>, <span class="st">"model"</span>, <span class="st">"voice"</span>, <span class="st">"format"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="translate-multilingual-recordings">Translate multilingual recordings<a class="anchor" aria-label="anchor" href="#translate-multilingual-recordings"></a>
+</h2>
+<p>Use <code><a href="../reference/foundry_translate_audio.html">foundry_translate_audio()</a></code> when you want an analysis
+corpus in a common language. To keep this example fully reproducible we
+first synthesize a short Spanish clip, then translate it back to English
+– both are real API calls.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">spanish_clip</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_speak.html">foundry_speak</a></span><span class="op">(</span></span>
+<span>  <span class="st">"La reunion de investigacion fue clara y muy util."</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"tts-1"</span>,</span>
+<span>  voice <span class="op">=</span> <span class="st">"alloy"</span>,</span>
+<span>  path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".mp3"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">translation</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_translate_audio.html">foundry_translate_audio</a></span><span class="op">(</span></span>
+<span>  <span class="va">spanish_clip</span><span class="op">$</span><span class="va">path</span>,</span>
+<span>  target_language <span class="op">=</span> <span class="st">"en"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">translation</span><span class="op">$</span><span class="va">text</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="notes-for-researchers">Notes for researchers<a class="anchor" aria-label="anchor" href="#notes-for-researchers"></a>
 </h2>
 <ul>
-<li>Use <code>head(transcript$phrases[[1]])</code> before processing
-long recordings.</li>
+<li>Inspect <code>head(transcript$phrases[[1]])</code> before processing
+long recordings so you know the segment structure your coding scheme has
+to handle.</li>
 <li>Keep raw audio out of your project repository; store transcripts and
 IDs.</li>
 <li>MAI-Transcribe preview limitations include no diarization for

@@ -101,10 +101,24 @@
 
     
     
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; foundryR - Tidy Azure AI Foundry workflows</span></span>
+<span><span class="co">#&gt; ==========================================</span></span>
+<span><span class="co">#&gt; * Check your setup:</span></span>
+<span><span class="co">#&gt;   foundry_check_setup()</span></span>
+<span><span class="co">#&gt; * Set your API key: foundry_set_key()</span></span>
+<span><span class="co">#&gt; * Set your endpoint: foundry_set_endpoint()</span></span>
+<span><span class="co">#&gt; * Get started: ?foundry_response, ?foundry_groundedness</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; New to Azure? See the README for setup instructions.</span></span></code></pre></div>
 <p>foundryR and ellmer both make language-model work possible from R.
 They are not substitutes for every use case. ellmer is the better fit
 for provider-portable chat. foundryR is the better fit when the work is
-tied to Azure AI Foundry and the output needs to become data.</p>
+tied to Azure AI Foundry and the output needs to become data. The two
+are complementary: you can describe a structure once with ellmer’s type
+system and hand it to foundryR for strict, tibble-shaped extraction.</p>
 <div class="section level2">
 <h2 id="comparison">Comparison<a class="anchor" aria-label="anchor" href="#comparison"></a>
 </h2>
@@ -202,43 +216,64 @@ that may move between providers.</p>
 chat in R, use ellmer.</p>
 </div>
 <div class="section level2">
-<h2 id="example-strict-extraction-with-foundryr">Example: strict extraction with foundryR<a class="anchor" aria-label="anchor" href="#example-strict-extraction-with-foundryr"></a>
+<h2 id="interop-reuse-an-ellmer-type-as-a-foundryr-schema">Interop: reuse an ellmer type as a foundryR schema<a class="anchor" aria-label="anchor" href="#interop-reuse-an-ellmer-type-as-a-foundryr-schema"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
+<p>If you already describe your data with ellmer’s type system, you do
+not have to rewrite it. <code><a href="../reference/as_foundry_schema.html">as_foundry_schema()</a></code> converts an
+<code><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">ellmer::type_object()</a></code> into the strict JSON Schema that
+<code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> expects. This conversion is a local
+operation – no network, no credentials – so its output is shown here
+directly.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  type <span class="op">=</span> <span class="st">"object"</span>,</span>
-<span>  properties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    sentiment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"string"</span>, enum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"positive"</span>, <span class="st">"negative"</span>, <span class="st">"neutral"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    theme <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"string"</span><span class="op">)</span></span>
+<span><span class="co"># Describe the structure you want with ellmer's type system.</span></span>
+<span><span class="va">sentiment_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">type_object</a></span><span class="op">(</span></span>
+<span>  sentiment <span class="op">=</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">type_enum</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"positive"</span>, <span class="st">"negative"</span>, <span class="st">"neutral"</span><span class="op">)</span>,</span>
+<span>    description <span class="op">=</span> <span class="st">"Overall sentiment of the response."</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  required <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sentiment"</span>, <span class="st">"theme"</span><span class="op">)</span>,</span>
-<span>  additionalProperties <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  theme <span class="op">=</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">type_string</a></span><span class="op">(</span><span class="st">"A short theme label for the response."</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/foundry_extract.html">foundry_extract</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"The lesson was clear."</span>, <span class="st">"I wanted more examples."</span><span class="op">)</span>,</span>
-<span>  schema <span class="op">=</span> <span class="va">schema</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"my-gpt4"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Convert it into a foundryR schema for strict extraction.</span></span>
+<span><span class="va">sentiment_schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_foundry_schema.html">as_foundry_schema</a></span><span class="op">(</span><span class="va">sentiment_spec</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sentiment_schema</span><span class="op">)</span></span>
+<span><span class="co">#&gt; List of 4</span></span>
+<span><span class="co">#&gt;  $ type                : chr "object"</span></span>
+<span><span class="co">#&gt;  $ properties          :List of 2</span></span>
+<span><span class="co">#&gt;   ..$ sentiment:List of 3</span></span>
+<span><span class="co">#&gt;   .. ..$ type       : chr "string"</span></span>
+<span><span class="co">#&gt;   .. ..$ enum       : 'AsIs' chr [1:3] "positive" "negative" "neutral"</span></span>
+<span><span class="co">#&gt;   .. ..$ description: chr "Overall sentiment of the response."</span></span>
+<span><span class="co">#&gt;   ..$ theme    :List of 2</span></span>
+<span><span class="co">#&gt;   .. ..$ type       : chr "string"</span></span>
+<span><span class="co">#&gt;   .. ..$ description: chr "A short theme label for the response."</span></span>
+<span><span class="co">#&gt;  $ required            : 'AsIs' chr [1:2] "sentiment" "theme"</span></span>
+<span><span class="co">#&gt;  $ additionalProperties: logi FALSE</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="example-azure-content-safety-as-a-pipeline-gate">Example: Azure Content Safety as a pipeline gate<a class="anchor" aria-label="anchor" href="#example-azure-content-safety-as-a-pipeline-gate"></a>
+<h2 id="extraction-with-foundryr">Extraction with foundryR<a class="anchor" aria-label="anchor" href="#extraction-with-foundryr"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">answer</span> <span class="op">&lt;-</span> <span class="st">"The study enrolled 120 participants."</span></span>
-<span><span class="va">source</span> <span class="op">&lt;-</span> <span class="st">"The study enrolled 120 participants."</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/foundry_groundedness.html">foundry_groundedness</a></span><span class="op">(</span></span>
-<span>  text <span class="op">=</span> <span class="va">answer</span>,</span>
-<span>  grounding_sources <span class="op">=</span> <span class="va">source</span>,</span>
-<span>  query <span class="op">=</span> <span class="st">"How many participants were enrolled?"</span>,</span>
-<span>  task <span class="op">=</span> <span class="st">"QnA"</span></span>
+<p>Hand the converted schema to <code><a href="../reference/foundry_extract.html">foundry_extract()</a></code>. foundryR
+sends each input through the Responses API with strict decoding and
+returns one tidy row per input – the model’s output has already become
+data.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_extract.html">foundry_extract</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"The lesson was clear."</span>, <span class="st">"I wanted more examples."</span><span class="op">)</span>,</span>
+<span>  schema <span class="op">=</span> <span class="va">sentiment_schema</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-4.1-mini"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>You can also build the same schema natively with foundryR’s
+<code><a href="../reference/foundry_schema.html">foundry_schema()</a></code> and <code>schema_*()</code> constructors
+when you would rather not depend on ellmer. See
+<code><a href="../articles/responses-api.html">vignette("responses-api")</a></code> for the native path, and
+<code><a href="../articles/content-safety.html">vignette("content-safety")</a></code> for using Azure Content Safety
+as a pipeline gate.</p>
 <p>The practical rule is simple: use ellmer when you need the best R
 chat client, and use foundryR when you need Azure AI Foundry results as
-data.</p>
+data – and use <code><a href="../reference/as_foundry_schema.html">as_foundry_schema()</a></code> when you want both.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
