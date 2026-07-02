@@ -22,6 +22,14 @@ foundry_agent_versions(
 
   Character. Agent name.
 
+- limit:
+
+  Integer. Optional maximum number of agent versions to return.
+
+- after:
+
+  Character. Optional pagination cursor.
+
 - api_key:
 
   Character. Optional API key. Falls back to configured auth.

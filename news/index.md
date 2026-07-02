@@ -255,9 +255,22 @@ Azure AI Foundry.
   Responses API workflows, strict extraction, embeddings, batch jobs,
   and research annotation workflows, with chat completions kept as a
   maintained convenience layer.
-- Key vignettes now render precomputed gt tables and ggplot2 charts from
-  cached illustrative data, so examples show the tibble outputs without
-  calling Azure during documentation builds.
+- The README, vignettes, and website articles now show real Azure AI
+  Foundry output. Each documentation page runs once against live
+  resources with `data-raw/record-doc-outputs.R`, which captures every
+  API response as a sanitized fixture; all later builds (R CMD check,
+  pkgdown, CRAN, CI) replay those fixtures and render the real tibbles,
+  images, and audio with no credentials and no network calls. When
+  fixtures are absent the API chunks simply do not evaluate, so nothing
+  is fabricated.
+- Added an onet2r integration as a website-only pkgdown article that
+  pulls real occupation data from O\*NET, embeds it with
+  [`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md),
+  ranks occupations by semantic similarity, and summarizes the top match
+  with
+  [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md);
+  the redactor now strips the O\*NET `X-API-Key` header so its fixtures
+  carry no secrets.
 - Media helpers are grouped as experimental media while the core
   research surface is documented separately.
 - Media documentation now uses one image and video generation vignette

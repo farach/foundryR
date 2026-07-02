@@ -1,5 +1,7 @@
 # Check an agent transcript for task adherence
 
+**\[experimental\]**
+
 Evaluate whether an agent's tool calls and responses stayed aligned with
 the user's request using the Azure AI Content Safety task-adherence
 detector. This flags agents that take unrequested or unsafe actions.

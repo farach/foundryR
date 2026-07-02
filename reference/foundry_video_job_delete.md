@@ -1,6 +1,6 @@
 # Delete a Microsoft Foundry video generation job
 
-Delete a Microsoft Foundry video generation job
+**\[experimental\]**
 
 ## Usage
 

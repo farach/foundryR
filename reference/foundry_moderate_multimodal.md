@@ -1,5 +1,7 @@
 # Moderate an image together with its text
 
+**\[experimental\]**
+
 Analyze an image and optional accompanying text in a single multimodal
 Content Safety call. Optical character recognition can read text
 embedded in the image so that harmful captions or overlays are caught

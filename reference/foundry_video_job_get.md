@@ -1,6 +1,6 @@
 # Retrieve a Microsoft Foundry video generation job
 
-Retrieve a Microsoft Foundry video generation job
+**\[experimental\]**
 
 ## Usage
 

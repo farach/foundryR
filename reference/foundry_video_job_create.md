@@ -1,5 +1,7 @@
 # Create a Microsoft Foundry video generation job
 
+**\[experimental\]**
+
 Start a v1 preview video generation job. Video generation is a preview
 feature and returns a job that should be polled with
 [`foundry_video_job_get()`](https://farach.github.io/foundryR/reference/foundry_video_job_get.md).

@@ -1,5 +1,7 @@
 # Detect protected material in code
 
+**\[experimental\]**
+
 Check source code for matches against public code repositories using the
 Azure AI Content Safety protected-material-for-code detector. This is
 the code counterpart to

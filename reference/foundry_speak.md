@@ -1,5 +1,7 @@
 # Generate speech audio from text
 
+**\[experimental\]**
+
 Use the Microsoft Foundry v1 preview speech endpoint to synthesize audio
 and save it to a local file.
 

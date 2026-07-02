@@ -317,11 +317,11 @@ content, detect hallucinations, and protect against prompt injection.
 - [`foundry_moderate_image()`](https://farach.github.io/foundryR/reference/foundry_moderate_image.md)
   : Moderate image content
 - [`foundry_moderate_multimodal()`](https://farach.github.io/foundryR/reference/foundry_moderate_multimodal.md)
-  : Moderate an image together with its text
+  **\[experimental\]** : Moderate an image together with its text
 - [`foundry_protected_material()`](https://farach.github.io/foundryR/reference/foundry_protected_material.md)
   : Detect protected material in text
 - [`foundry_protected_code()`](https://farach.github.io/foundryR/reference/foundry_protected_code.md)
-  : Detect protected material in code
+  **\[experimental\]** : Detect protected material in code
 - [`foundry_blocklists()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
   [`foundry_blocklist_create()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
   [`foundry_blocklist_get()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
@@ -337,7 +337,7 @@ content, detect hallucinations, and protect against prompt injection.
 - [`foundry_shield()`](https://farach.github.io/foundryR/reference/foundry_shield.md)
   : Shield Prompt from Injection Attacks
 - [`foundry_task_adherence()`](https://farach.github.io/foundryR/reference/foundry_task_adherence.md)
-  : Check an agent transcript for task adherence
+  **\[experimental\]** : Check an agent transcript for task adherence
 - [`foundry_agent_tool()`](https://farach.github.io/foundryR/reference/foundry_agent_tool.md)
   : Describe an agent tool for task adherence
 - [`foundry_agent_tool_call()`](https://farach.github.io/foundryR/reference/foundry_agent_tool_call.md)
@@ -567,7 +567,7 @@ through LLM Speech, and synthesize text-to-speech audio files.
 - [`foundry_translate_audio()`](https://farach.github.io/foundryR/reference/foundry_translate_audio.md)
   : Translate an audio file with Microsoft Foundry
 - [`foundry_speak()`](https://farach.github.io/foundryR/reference/foundry_speak.md)
-  : Generate speech audio from text
+  **\[experimental\]** : Generate speech audio from text
 
 ## Experimental media
 
@@ -577,7 +577,7 @@ preview video generation jobs.
 - [`foundry_image()`](https://farach.github.io/foundryR/reference/foundry_image.md)
   : Generate Images with DALL-E
 - [`foundry_image_edit()`](https://farach.github.io/foundryR/reference/foundry_image_edit.md)
-  : Edit an image with Microsoft Foundry
+  **\[experimental\]** : Edit an image with Microsoft Foundry
 - [`foundry_save_image()`](https://farach.github.io/foundryR/reference/foundry_save_image.md)
   : Save Generated Image to File
 - [`foundry_set_image_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_image_endpoint.md)
@@ -585,17 +585,19 @@ preview video generation jobs.
 - [`foundry_set_image_key()`](https://farach.github.io/foundryR/reference/foundry_set_image_key.md)
   : Set Image Generation API Key
 - [`foundry_video_job_create()`](https://farach.github.io/foundryR/reference/foundry_video_job_create.md)
-  : Create a Microsoft Foundry video generation job
+  **\[experimental\]** : Create a Microsoft Foundry video generation job
 - [`foundry_video_jobs()`](https://farach.github.io/foundryR/reference/foundry_video_jobs.md)
-  : List Microsoft Foundry video generation jobs
+  **\[experimental\]** : List Microsoft Foundry video generation jobs
 - [`foundry_video_job_get()`](https://farach.github.io/foundryR/reference/foundry_video_job_get.md)
-  : Retrieve a Microsoft Foundry video generation job
+  **\[experimental\]** : Retrieve a Microsoft Foundry video generation
+  job
 - [`foundry_video_job_delete()`](https://farach.github.io/foundryR/reference/foundry_video_job_delete.md)
-  : Delete a Microsoft Foundry video generation job
+  **\[experimental\]** : Delete a Microsoft Foundry video generation job
 - [`foundry_video_get()`](https://farach.github.io/foundryR/reference/foundry_video_get.md)
-  : Retrieve a Microsoft Foundry video generation
+  **\[experimental\]** : Retrieve a Microsoft Foundry video generation
 - [`foundry_video_download()`](https://farach.github.io/foundryR/reference/foundry_video_download.md)
-  : Download Microsoft Foundry generated video content
+  **\[experimental\]** : Download Microsoft Foundry generated video
+  content
 
 ## Model discovery
 

@@ -10,10 +10,10 @@ articles:
   foundryr-vs-ellmer: foundryr-vs-ellmer.html
   getting-started: getting-started.html
   media-generation: media-generation.html
-  onet2r-integration: onet2r-integration.html
+  articles/onet2r-integration: onet2r-integration.html
   responses-api: responses-api.html
   tidymodels: tidymodels.html
-last_built: 2026-07-02T10:47Z
+last_built: 2026-07-02T11:30Z
 urls:
   reference: https://farach.github.io/foundryR/reference
   article: https://farach.github.io/foundryR/articles

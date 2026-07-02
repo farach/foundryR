@@ -1,5 +1,7 @@
 # Edit an image with Microsoft Foundry
 
+**\[experimental\]**
+
 Use the v1 preview image edits endpoint to edit one or more input images
 with a text prompt.
 
