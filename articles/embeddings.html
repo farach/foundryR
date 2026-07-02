@@ -121,115 +121,89 @@ keywords.</li>
 “car” are semantically similar, even though they share no letters.</p>
 </div>
 <div class="section level2">
-<h2 id="generating-embeddings-with-foundry_embed">Generating Embeddings with foundry_embed()<a class="anchor" aria-label="anchor" href="#generating-embeddings-with-foundry_embed"></a>
+<h2 id="generating-embeddings-with-foundry_embed">Generating embeddings with foundry_embed()<a class="anchor" aria-label="anchor" href="#generating-embeddings-with-foundry_embed"></a>
 </h2>
-<p>The <code><a href="../reference/foundry_embed.html">foundry_embed()</a></code> function converts text into
-embedding vectors:</p>
+<p>The examples below embed real sentences from Jane Austen’s <em>Pride
+and Prejudice</em>, available in the <code>janeaustenr</code> package.
+Using a well-known public-domain text makes the output easy to reason
+about: the opening lines share vocabulary and sentiment, so their
+embeddings should sit close together.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Single text</span></span>
-<span><span class="va">embedding</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="st">"Machine learning is transforming industries"</span>,</span>
-<span>                           model <span class="op">=</span> <span class="st">"my-embeddings"</span><span class="op">)</span></span>
-<span><span class="va">embedding</span></span>
-<span><span class="co">#&gt; # A tibble: 1 x 3</span></span>
-<span><span class="co">#&gt;   text                                       embedding      n_dims</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                                      &lt;list&gt;          &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1 Machine learning is transforming industries &lt;dbl [1,536]&gt;   1536</span></span></code></pre></div>
+<span><span class="va">austen_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."</span>,</span>
+<span>  <span class="st">"However little known the feelings or views of such a man may be on his first entering a neighbourhood."</span>,</span>
+<span>  <span class="st">"Mr. Bennet was so odd a mixture of quick parts, sarcastic humour, reserve, and caprice."</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">embedding</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">austen_lines</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span><span class="op">)</span></span>
+<span><span class="va">embedding</span></span></code></pre></div>
 <p>The result is a tibble with:</p>
 <ul>
 <li>
-<code>text</code>: The original input text</li>
+<code>text</code>: the original input text.</li>
 <li>
-<code>embedding</code>: A list-column containing the numeric
-vector</li>
+<code>embedding</code>: a list-column holding the numeric
+vector.</li>
 <li>
-<code>n_dims</code>: The dimensionality of the embedding</li>
+<code>n_dims</code>: the dimensionality of the embedding.</li>
 </ul>
 <div class="section level3">
-<h3 id="embedding-multiple-texts">Embedding Multiple Texts<a class="anchor" aria-label="anchor" href="#embedding-multiple-texts"></a>
+<h3 id="embedding-multiple-texts">Embedding multiple texts<a class="anchor" aria-label="anchor" href="#embedding-multiple-texts"></a>
 </h3>
-<p>Pass a character vector to embed multiple texts in one call:</p>
+<p>Pass a character vector to embed several texts in one call:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">documents</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"The quick brown fox jumps over the lazy dog"</span>,</span>
-<span>  <span class="st">"A fast auburn fox leaps above a sleepy canine"</span>,</span>
-<span>  <span class="st">"The stock market closed higher today"</span>,</span>
-<span>  <span class="st">"Financial markets saw gains in afternoon trading"</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">doc_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">documents</span>, model <span class="op">=</span> <span class="st">"my-embeddings"</span><span class="op">)</span></span>
-<span><span class="va">doc_embeddings</span></span>
-<span><span class="co">#&gt; # A tibble: 4 x 3</span></span>
-<span><span class="co">#&gt;   text                                            embedding      n_dims</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                                           &lt;list&gt;          &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1 The quick brown fox jumps over the lazy dog     &lt;dbl [1,536]&gt;    1536</span></span>
-<span><span class="co">#&gt; 2 A fast auburn fox leaps above a sleepy canine   &lt;dbl [1,536]&gt;    1536</span></span>
-<span><span class="co">#&gt; 3 The stock market closed higher today            &lt;dbl [1,536]&gt;    1536</span></span>
-<span><span class="co">#&gt; 4 Financial markets saw gains in afternoon trading &lt;dbl [1,536]&gt;   1536</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">doc_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">austen_lines</span>, model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span><span class="op">)</span></span>
+<span><span class="va">doc_embeddings</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="controlling-dimensions">Controlling Dimensions<a class="anchor" aria-label="anchor" href="#controlling-dimensions"></a>
+<h3 id="controlling-dimensions">Controlling dimensions<a class="anchor" aria-label="anchor" href="#controlling-dimensions"></a>
 </h3>
-<p>Some embedding models (like <code>text-embedding-3-small</code> and
-<code>text-embedding-3-large</code>) support reducing the output
-dimensions. Smaller dimensions mean faster similarity computations and
-less storage, with some trade-off in precision:</p>
+<p>The <code>text-embedding-3-small</code> and
+<code>text-embedding-3-large</code> models can return shorter vectors.
+Smaller dimensions mean faster similarity computations and less storage,
+with some trade-off in precision:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Reduce to 256 dimensions (model must support this)</span></span>
-<span><span class="va">compact_embedding</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span></span>
-<span>  <span class="st">"Hello, world!"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"my-text-embedding-3-small"</span>,</span>
+<code class="sourceCode R"><span><span class="va">compact</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span></span>
+<span>  <span class="va">austen_lines</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,</span>
 <span>  dimensions <span class="op">=</span> <span class="fl">256</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">compact_embedding</span><span class="op">$</span><span class="va">n_dims</span></span>
-<span><span class="co">#&gt; [1] 256</span></span></code></pre></div>
+<span><span class="va">compact</span><span class="op">$</span><span class="va">n_dims</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="computing-similarity-with-foundry_similarity">Computing Similarity with foundry_similarity()<a class="anchor" aria-label="anchor" href="#computing-similarity-with-foundry_similarity"></a>
+<h2 id="computing-similarity-with-foundry_similarity">Computing similarity with foundry_similarity()<a class="anchor" aria-label="anchor" href="#computing-similarity-with-foundry_similarity"></a>
 </h2>
-<p>Cosine similarity measures how similar two embeddings are, with
-values ranging from -1 (opposite) to 1 (identical). The
-<code><a href="../reference/foundry_similarity.html">foundry_similarity()</a></code> function computes pairwise
-similarities for all embeddings in a tibble:</p>
+<p>Cosine similarity measures how close two embeddings are, from -1
+(opposite) to 1 (identical). <code><a href="../reference/foundry_similarity.html">foundry_similarity()</a></code> computes
+every pairwise similarity in a tibble of embeddings. Here we contrast
+the Austen lines with two sentences from a different domain so the split
+is visible.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">texts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">"I love programming in R"</span>,</span>
-<span>  <span class="st">"R is my favorite language for data analysis"</span>,</span>
-<span>  <span class="st">"The weather is nice today"</span>,</span>
-<span>  <span class="st">"It's sunny and warm outside"</span></span>
+<code class="sourceCode R"><span><span class="va">mixed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife."</span>,</span>
+<span>  <span class="st">"Mr. Bennet was so odd a mixture of quick parts, sarcastic humour, reserve, and caprice."</span>,</span>
+<span>  <span class="st">"The quarterly revenue report showed a sharp rise in cloud subscriptions."</span>,</span>
+<span>  <span class="st">"Analysts raised their earnings forecast after the strong cloud numbers."</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">texts</span>, model <span class="op">=</span> <span class="st">"my-embeddings"</span><span class="op">)</span></span>
-<span><span class="va">similarities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_similarity.html">foundry_similarity</a></span><span class="op">(</span><span class="va">embeddings</span><span class="op">)</span></span>
-<span><span class="va">similarities</span></span>
-<span><span class="co">#&gt; # A tibble: 6 x 3</span></span>
-<span><span class="co">#&gt;   text_1                                   text_2                              similarity</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                                    &lt;chr&gt;                                    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 The weather is nice today                It's sunny and warm outside              0.934</span></span>
-<span><span class="co">#&gt; 2 I love programming in R                  R is my favorite language for da...      0.912</span></span>
-<span><span class="co">#&gt; 3 I love programming in R                  The weather is nice today                0.723</span></span>
-<span><span class="co">#&gt; 4 I love programming in R                  It's sunny and warm outside              0.698</span></span>
-<span><span class="co">#&gt; 5 R is my favorite language for data an... The weather is nice today                0.687</span></span>
-<span><span class="co">#&gt; 6 R is my favorite language for data an... It's sunny and warm outside              0.672</span></span></code></pre></div>
-<p>Results are sorted by similarity (highest first). Notice how texts
-about similar topics (R programming, weather) have higher similarity
-scores with each other.</p>
-<p>The rendered outputs below use precomputed, illustrative data from a
-representative run. They are rendered during the documentation build
-without Azure credentials.</p>
-<p><img src="embeddings_files/figure-html/similarity-heatmap-rendered-1.png" class="r-plt" alt="Heatmap of cosine similarity across four short texts." width="700"></p>
+<span><span class="va">similarities</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">mixed</span>, model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/foundry_similarity.html">foundry_similarity</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">similarities</span></span></code></pre></div>
+<p>Results are sorted by similarity. The two Austen lines pair together
+and the two finance lines pair together, while cross-domain pairs score
+lower.</p>
 </div>
 <div class="section level2">
-<h2 id="use-case-finding-similar-documents">Use Case: Finding Similar Documents<a class="anchor" aria-label="anchor" href="#use-case-finding-similar-documents"></a>
+<h2 id="use-case-finding-similar-documents">Use case: finding similar documents<a class="anchor" aria-label="anchor" href="#use-case-finding-similar-documents"></a>
 </h2>
-<p>A common application is finding documents most similar to a query.
-Here is how to implement a simple semantic search:</p>
+<p>A common application is ranking documents by relevance to a query.
+Embed the documents and the query, then sort by cosine similarity:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Your document collection</span></span>
 <span><span class="va">documents</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"How to install R packages using install.packages()"</span>,</span>
 <span>  <span class="st">"Data visualization with ggplot2 in R"</span>,</span>
@@ -239,586 +213,58 @@ Here is how to implement a simple semantic search:</p>
 <span>  <span class="st">"Deep learning with TensorFlow and Keras"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Embed all documents</span></span>
-<span><span class="va">doc_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">documents</span>, model <span class="op">=</span> <span class="st">"my-embeddings"</span><span class="op">)</span></span>
+<span><span class="va">doc_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">documents</span>, model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span><span class="op">)</span></span>
+<span><span class="va">query_embedding</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span></span>
+<span>  <span class="st">"How do I create charts and graphs in R?"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># User query</span></span>
-<span><span class="va">query</span> <span class="op">&lt;-</span> <span class="st">"How do I create charts and graphs in R?"</span></span>
-<span><span class="va">query_embedding</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">query</span>, model <span class="op">=</span> <span class="st">"my-embeddings"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Compute similarity between query and each document</span></span>
-<span><span class="va">compute_similarity</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">emb1</span>, <span class="va">emb2</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">emb1</span> <span class="op">*</span> <span class="va">emb2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">emb1</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">emb2</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span></span>
+<span><span class="va">cosine</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">a</span> <span class="op">*</span> <span class="va">b</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">a</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">b</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">query_vec</span> <span class="op">&lt;-</span> <span class="va">query_embedding</span><span class="op">$</span><span class="va">embedding</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="va">doc_embeddings</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    similarity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">embedding</span>, <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="fu">compute_similarity</span><span class="op">(</span><span class="va">query_vec</span>, <span class="va">e</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">similarity</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">text</span>, <span class="va">similarity</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Top 3 most relevant documents</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">results</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 3 x 2</span></span>
-<span><span class="co">#&gt;   text                                          similarity</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;                                              &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 Data visualization with ggplot2 in R              0.891</span></span>
-<span><span class="co">#&gt; 2 How to install R packages using install.packages() 0.812</span></span>
-<span><span class="co">#&gt; 3 Building web applications with Shiny              0.756</span></span></code></pre></div>
-<div id="mwlefoodfi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#mwlefoodfi table {
-  font-family: Inter;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#mwlefoodfi thead, #mwlefoodfi tbody, #mwlefoodfi tfoot, #mwlefoodfi tr, #mwlefoodfi td, #mwlefoodfi th {
-  border-style: none;
-}
-
-#mwlefoodfi p {
-  margin: 0;
-  padding: 0;
-}
-
-#mwlefoodfi .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#mwlefoodfi .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#mwlefoodfi .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#mwlefoodfi .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#mwlefoodfi .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#mwlefoodfi .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#mwlefoodfi .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#mwlefoodfi .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#mwlefoodfi .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#mwlefoodfi .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#mwlefoodfi .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#mwlefoodfi .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#mwlefoodfi .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#mwlefoodfi .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#mwlefoodfi .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#mwlefoodfi .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#mwlefoodfi .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#mwlefoodfi .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#mwlefoodfi .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#mwlefoodfi .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#mwlefoodfi .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#mwlefoodfi .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#mwlefoodfi .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#mwlefoodfi .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#mwlefoodfi .gt_left {
-  text-align: left;
-}
-
-#mwlefoodfi .gt_center {
-  text-align: center;
-}
-
-#mwlefoodfi .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#mwlefoodfi .gt_font_normal {
-  font-weight: normal;
-}
-
-#mwlefoodfi .gt_font_bold {
-  font-weight: bold;
-}
-
-#mwlefoodfi .gt_font_italic {
-  font-style: italic;
-}
-
-#mwlefoodfi .gt_super {
-  font-size: 65%;
-}
-
-#mwlefoodfi .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#mwlefoodfi .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#mwlefoodfi .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#mwlefoodfi .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#mwlefoodfi .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#mwlefoodfi .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#mwlefoodfi .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#mwlefoodfi .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#mwlefoodfi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="gt_heading">
-<td colspan="3" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Nearest documents for a charting query</td>
-    </tr>
-<tr class="gt_col_headings">
-<th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="rank">Rank</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="text">Document</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="similarity">Cosine similarity</th>
-    </tr>
-</thead>
-<tbody class="gt_table_body">
-<tr>
-<td headers="rank" class="gt_row gt_right">1</td>
-<td headers="text" class="gt_row gt_left">Data visualization with ggplot2 in R</td>
-<td headers="similarity" class="gt_row gt_right">0.891</td>
-</tr>
-<tr>
-<td headers="rank" class="gt_row gt_right">2</td>
-<td headers="text" class="gt_row gt_left">How to install R packages using install.packages()</td>
-<td headers="similarity" class="gt_row gt_right">0.812</td>
-</tr>
-<tr>
-<td headers="rank" class="gt_row gt_right">3</td>
-<td headers="text" class="gt_row gt_left">Building web applications with Shiny</td>
-<td headers="similarity" class="gt_row gt_right">0.756</td>
-</tr>
-</tbody>
-</table>
-</div>
+<span><span class="va">doc_embeddings</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>similarity <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">embedding</span>, <span class="va">cosine</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, b <span class="op">=</span> <span class="va">query_vec</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">similarity</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">text</span>, <span class="va">similarity</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="use-case-clustering-text">Use Case: Clustering Text<a class="anchor" aria-label="anchor" href="#use-case-clustering-text"></a>
+<h2 id="use-case-clustering-text">Use case: clustering text<a class="anchor" aria-label="anchor" href="#use-case-clustering-text"></a>
 </h2>
-<p>Embeddings work well as features for clustering algorithms. Here is
-an example using <code><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">stats::kmeans()</a></code> to group similar
-texts:</p>
+<p>Embeddings work well as features for clustering. Here
+<code><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">stats::kmeans()</a></code> groups a mix of programming, food, and
+sports sentences without any labels:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Sample texts to cluster</span></span>
-<span><span class="va">texts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="co"># Tech/Programming cluster</span></span>
+<code class="sourceCode R"><span><span class="va">texts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Python is great for machine learning"</span>,</span>
 <span>  <span class="st">"R excels at statistical analysis"</span>,</span>
 <span>  <span class="st">"JavaScript powers modern web applications"</span>,</span>
-<span>  <span class="st">"SQL is essential for database queries"</span>,</span>
-<span>  <span class="co"># Food cluster</span></span>
-<span><span class="st">"Italian pasta with tomato sauce"</span>,</span>
+<span>  <span class="st">"Italian pasta with tomato sauce"</span>,</span>
 <span>  <span class="st">"Sushi is a popular Japanese dish"</span>,</span>
 <span>  <span class="st">"French croissants are flaky and buttery"</span>,</span>
-<span>  <span class="st">"Mexican tacos with fresh salsa"</span>,</span>
-<span>  <span class="co"># Sports cluster</span></span>
 <span>  <span class="st">"Soccer is the world's most popular sport"</span>,</span>
 <span>  <span class="st">"Basketball requires speed and agility"</span>,</span>
-<span>  <span class="st">"Tennis matches can last for hours"</span>,</span>
-<span>  <span class="st">"Swimming is excellent cardiovascular exercise"</span></span>
+<span>  <span class="st">"Tennis matches can last for hours"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Generate embeddings</span></span>
-<span><span class="va">embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">texts</span>, model <span class="op">=</span> <span class="st">"my-embeddings"</span><span class="op">)</span></span>
+<span><span class="va">cluster_embeddings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">texts</span>, model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span><span class="op">)</span></span>
+<span><span class="va">embedding_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">cluster_embeddings</span><span class="op">$</span><span class="va">embedding</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Convert list-column to matrix for kmeans</span></span>
-<span><span class="va">embedding_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">rbind</span>, <span class="va">embeddings</span><span class="op">$</span><span class="va">embedding</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Cluster into 3 groups</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
 <span><span class="va">clusters</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/kmeans.html" class="external-link">kmeans</a></span><span class="op">(</span><span class="va">embedding_matrix</span>, centers <span class="op">=</span> <span class="fl">3</span>, nstart <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Add cluster assignments to our data</span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="va">embeddings</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cluster <span class="op">=</span> <span class="va">clusters</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">text</span>, <span class="va">cluster</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">results</span></span>
-<span><span class="co">#&gt; # A tibble: 12 x 2</span></span>
-<span><span class="co">#&gt;    text                                       cluster</span></span>
-<span><span class="co">#&gt;    &lt;chr&gt;                                        &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1 Python is great for machine learning             1</span></span>
-<span><span class="co">#&gt;  2 R excels at statistical analysis                 1</span></span>
-<span><span class="co">#&gt;  3 JavaScript powers modern web applications        1</span></span>
-<span><span class="co">#&gt;  4 SQL is essential for database queries            1</span></span>
-<span><span class="co">#&gt;  5 Italian pasta with tomato sauce                  2</span></span>
-<span><span class="co">#&gt;  6 Sushi is a popular Japanese dish                 2</span></span>
-<span><span class="co">#&gt;  7 French croissants are flaky and buttery          2</span></span>
-<span><span class="co">#&gt;  8 Mexican tacos with fresh salsa                   2</span></span>
-<span><span class="co">#&gt;  9 Soccer is the world's most popular sport         3</span></span>
-<span><span class="co">#&gt; 10 Basketball requires speed and agility            3</span></span>
-<span><span class="co">#&gt; 11 Tennis matches can last for hours                3</span></span>
-<span><span class="co">#&gt; 12 Swimming is excellent cardiovascular exercise    3</span></span></code></pre></div>
-<p>The algorithm successfully grouped texts by topic (programming, food,
-sports) without any labeled training data.</p>
-<p><img src="embeddings_files/figure-html/embedding-projection-rendered-1.png" class="r-plt" alt="Two-dimensional embedding projection with programming, food, and sports clusters." width="700"></p>
+<span><span class="va">cluster_embeddings</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>cluster <span class="op">=</span> <span class="va">clusters</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">text</span>, <span class="va">cluster</span><span class="op">)</span></span></code></pre></div>
+<p>The clusters recover the three topics from the raw text alone.</p>
 </div>
 <div class="section level2">
-<h2 id="tips-for-working-with-embeddings">Tips for Working with Embeddings<a class="anchor" aria-label="anchor" href="#tips-for-working-with-embeddings"></a>
+<h2 id="tips-for-working-with-embeddings">Tips for working with embeddings<a class="anchor" aria-label="anchor" href="#tips-for-working-with-embeddings"></a>
 </h2>
 <div class="section level3">
-<h3 id="choosing-a-model">Choosing a Model<a class="anchor" aria-label="anchor" href="#choosing-a-model"></a>
+<h3 id="choosing-a-model">Choosing a model<a class="anchor" aria-label="anchor" href="#choosing-a-model"></a>
 </h3>
-<p>Azure AI Foundry offers several embedding models:</p>
 <table class="table">
 <colgroup>
 <col width="28%">
@@ -848,70 +294,45 @@ sports) without any labeled training data.</p>
 </tr>
 </tbody>
 </table>
-<p>For most use cases, <code>text-embedding-3-small</code> offers a good
-balance of quality and cost.</p>
+<p>For most use cases, <code>text-embedding-3-small</code> balances
+quality and cost.</p>
 </div>
 <div class="section level3">
-<h3 id="dimension-trade-offs">Dimension Trade-offs<a class="anchor" aria-label="anchor" href="#dimension-trade-offs"></a>
+<h3 id="dimension-trade-offs">Dimension trade-offs<a class="anchor" aria-label="anchor" href="#dimension-trade-offs"></a>
 </h3>
-<p>Higher dimensions generally capture more nuance but:</p>
-<ul>
-<li>Require more storage space</li>
-<li>Take longer to compute similarities</li>
-<li>May not significantly improve results for simple tasks</li>
-</ul>
-<p>Consider using reduced dimensions (256-512) for large-scale
-applications where speed matters more than precision.</p>
+<p>Higher dimensions capture more nuance but need more storage, take
+longer to compare, and may not improve simple tasks. Consider reduced
+dimensions (256-512) for large-scale applications where speed matters
+more than precision.</p>
 </div>
 <div class="section level3">
-<h3 id="handling-large-document-collections">Handling Large Document Collections<a class="anchor" aria-label="anchor" href="#handling-large-document-collections"></a>
+<h3 id="handling-large-collections">Handling large collections<a class="anchor" aria-label="anchor" href="#handling-large-collections"></a>
 </h3>
-<p>For large collections, consider:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Batch processing</strong>: Embed documents in batches to
-avoid rate limits</li>
+<strong>Batch processing</strong>: embed documents in batches to
+respect rate limits.</li>
 <li>
-<strong>Caching</strong>: Store embeddings in a database rather than
-regenerating them</li>
+<strong>Caching</strong>: store embeddings in a database rather than
+regenerating them.</li>
 <li>
-<strong>Approximate nearest neighbors</strong>: Use libraries like
-<code>RcppAnnoy</code> for faster similarity search on large
-datasets</li>
+<strong>Approximate nearest neighbors</strong>: use libraries like
+<code>RcppAnnoy</code> for fast similarity search on large
+datasets.</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Example: Processing in batches</span></span>
+<code class="sourceCode R"><span><span class="co"># Example: process a large collection in batches. Not run here.</span></span>
 <span><span class="va">batch_embed</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">texts</span>, <span class="va">model</span>, <span class="va">batch_size</span> <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">n_batches</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">texts</span><span class="op">)</span> <span class="op">/</span> <span class="va">batch_size</span><span class="op">)</span></span>
 <span>  <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">vector</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="va">n_batches</span><span class="op">)</span></span>
-<span></span>
 <span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_batches</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="va">start_idx</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">i</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">*</span> <span class="va">batch_size</span> <span class="op">+</span> <span class="fl">1</span></span>
 <span>    <span class="va">end_idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">min</a></span><span class="op">(</span><span class="va">i</span> <span class="op">*</span> <span class="va">batch_size</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">texts</span><span class="op">)</span><span class="op">)</span></span>
-<span>    <span class="va">batch_texts</span> <span class="op">&lt;-</span> <span class="va">texts</span><span class="op">[</span><span class="va">start_idx</span><span class="op">:</span><span class="va">end_idx</span><span class="op">]</span></span>
-<span></span>
-<span>    <span class="va">results</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">batch_texts</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
-<span></span>
-<span>    <span class="co"># Brief pause to respect rate limits</span></span>
+<span>    <span class="va">results</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span><span class="va">texts</span><span class="op">[</span><span class="va">start_idx</span><span class="op">:</span><span class="va">end_idx</span><span class="op">]</span>, model <span class="op">=</span> <span class="va">model</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/Sys.sleep.html" class="external-link">Sys.sleep</a></span><span class="op">(</span><span class="fl">0.5</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
-<span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="preprocessing-text">Preprocessing Text<a class="anchor" aria-label="anchor" href="#preprocessing-text"></a>
-</h3>
-<p>For best results:</p>
-<ul>
-<li>Remove excessive whitespace and special characters</li>
-<li>Consider whether to include or exclude punctuation based on your use
-case</li>
-<li>For long documents, embed meaningful chunks (paragraphs, sentences)
-rather than entire documents</li>
-<li>Normalize text (lowercase) if case distinctions are not important
-for your application</li>
-</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
