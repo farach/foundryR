@@ -31,3 +31,8 @@ tests/testthat/_snaps/
 
 # Claude Code
 .claude/
+
+# Internal working docs (kept locally, never published)
+/PINBOARD.md
+/sessions/
+/dev/
