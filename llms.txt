@@ -316,8 +316,12 @@ content, detect hallucinations, and protect against prompt injection.
   : Moderate Text Content
 - [`foundry_moderate_image()`](https://farach.github.io/foundryR/reference/foundry_moderate_image.md)
   : Moderate image content
+- [`foundry_moderate_multimodal()`](https://farach.github.io/foundryR/reference/foundry_moderate_multimodal.md)
+  : Moderate an image together with its text
 - [`foundry_protected_material()`](https://farach.github.io/foundryR/reference/foundry_protected_material.md)
   : Detect protected material in text
+- [`foundry_protected_code()`](https://farach.github.io/foundryR/reference/foundry_protected_code.md)
+  : Detect protected material in code
 - [`foundry_blocklists()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
   [`foundry_blocklist_create()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
   [`foundry_blocklist_get()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
@@ -332,6 +336,14 @@ content, detect hallucinations, and protect against prompt injection.
   : Describe a bring-your-own Azure OpenAI resource for groundedness
 - [`foundry_shield()`](https://farach.github.io/foundryR/reference/foundry_shield.md)
   : Shield Prompt from Injection Attacks
+- [`foundry_task_adherence()`](https://farach.github.io/foundryR/reference/foundry_task_adherence.md)
+  : Check an agent transcript for task adherence
+- [`foundry_agent_tool()`](https://farach.github.io/foundryR/reference/foundry_agent_tool.md)
+  : Describe an agent tool for task adherence
+- [`foundry_agent_tool_call()`](https://farach.github.io/foundryR/reference/foundry_agent_tool_call.md)
+  : Describe an agent tool call for task adherence
+- [`foundry_agent_message()`](https://farach.github.io/foundryR/reference/foundry_agent_message.md)
+  : Describe an agent message for task adherence
 - [`foundry_set_content_safety_key()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_key.md)
   : Set Azure Content Safety API Key
 - [`foundry_set_content_safety_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_endpoint.md)

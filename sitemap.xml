@@ -22,6 +22,9 @@
 <url><loc>https://farach.github.io/foundryR/reference/batch_vector.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/content_safety_error_body.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_agent.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_agent_message.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_agent_tool.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_agent_tool_call.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_agreement.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_batch_cancel.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_batch_create.html</loc></url>
@@ -63,10 +66,12 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_models.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_moderate.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_moderate_image.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_moderate_multimodal.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_parse_chat_response.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_parse_image_response.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_parse_response.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_perform.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_protected_code.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_protected_material.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_provenance.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_response.html</loc></url>
@@ -90,6 +95,7 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_shield.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_similarity.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_speak.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_task_adherence.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_token_azure_cli.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_token_azure_identity.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_tool.html</loc></url>

@@ -13,6 +13,18 @@ Azure AI Foundry.
   [`foundry_protected_material()`](https://farach.github.io/foundryR/reference/foundry_protected_material.md),
   [`foundry_blocklists()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md),
   and related blocklist item functions (roadmap 2026 H2).
+- Added preview Content Safety operations:
+  [`foundry_protected_code()`](https://farach.github.io/foundryR/reference/foundry_protected_code.md)
+  for protected-material-in-code detection,
+  [`foundry_moderate_multimodal()`](https://farach.github.io/foundryR/reference/foundry_moderate_multimodal.md)
+  for image-with-text moderation, and
+  [`foundry_task_adherence()`](https://farach.github.io/foundryR/reference/foundry_task_adherence.md)
+  (with
+  [`foundry_agent_tool()`](https://farach.github.io/foundryR/reference/foundry_agent_tool.md),
+  [`foundry_agent_tool_call()`](https://farach.github.io/foundryR/reference/foundry_agent_tool_call.md),
+  and
+  [`foundry_agent_message()`](https://farach.github.io/foundryR/reference/foundry_agent_message.md)
+  builders) for agent task-adherence checks (roadmap 2026 H2).
 - Added Responses API conversation and vector store helpers, including
   [`foundry_conversation_create()`](https://farach.github.io/foundryR/reference/foundry_conversations.md),
   [`foundry_conversations()`](https://farach.github.io/foundryR/reference/foundry_conversations.md),
