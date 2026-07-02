@@ -12,3 +12,6 @@
 ^\.claude$
 ^data-raw$
 ^dev$
+^PINBOARD\.md$
+^sessions$
+^tools$
