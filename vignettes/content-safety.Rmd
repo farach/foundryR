@@ -317,7 +317,7 @@ Combine all three safety features for comprehensive protection:
 ```{r safe-pipeline, eval = FALSE}
 library(dplyr)
 
-safe_ai_response <- function(user_input, context_docs, model = "gpt-5.5") {
+safe_ai_response <- function(user_input, context_docs, model = NULL) {
   # Step 1: Check user input for attacks
   shield_result <- foundry_shield(
     user_prompt = user_input,

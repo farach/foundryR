@@ -67,7 +67,7 @@ later be run by name through \code{\link[=foundry_response]{foundry_response()}}
 \dontrun{
 foundry_agent_create(
   name = "france-facts",
-  model = "gpt-5.5",
+  model = "gpt-5-nano",
   instructions = "You answer questions about France concisely."
 )
 }

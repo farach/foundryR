@@ -58,7 +58,7 @@ foundry_agent_reference <- function(name, version = NULL) {
 #' \dontrun{
 #' foundry_agent_create(
 #'   name = "france-facts",
-#'   model = "gpt-5.5",
+#'   model = "gpt-5-nano",
 #'   instructions = "You answer questions about France concisely."
 #' )
 #' }

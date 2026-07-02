@@ -132,7 +132,7 @@
 #'   correction = TRUE,
 #'   llm_resource = foundry_llm_resource(
 #'     endpoint = "https://your-openai.openai.azure.com",
-#'     deployment_name = "gpt-5.5"
+#'     deployment_name = "gpt-5-nano"
 #'   )
 #' )
 #' corrected$correction_text
@@ -332,7 +332,7 @@ foundry_groundedness <- function(text,
 #' @examples
 #' foundry_llm_resource(
 #'   endpoint = "https://your-openai.openai.azure.com",
-#'   deployment_name = "gpt-5.5"
+#'   deployment_name = "gpt-5-nano"
 #' )
 foundry_llm_resource <- function(endpoint,
                                  deployment_name,

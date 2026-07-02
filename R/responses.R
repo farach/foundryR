@@ -83,12 +83,11 @@
 #'
 #' @examples
 #' \dontrun{
-#' foundry_response("Summarize retrieval-augmented generation.", model = "gpt-5.5")
+#' foundry_response("Summarize retrieval-augmented generation.")
 #'
-#' first <- foundry_response("Define catastrophic forgetting.", model = "gpt-5.5")
+#' first <- foundry_response("Define catastrophic forgetting.")
 #' foundry_response(
 #'   "Explain it for a college freshman.",
-#'   model = "gpt-5.5",
 #'   previous_response_id = first$response_id
 #' )
 #' }
@@ -378,8 +377,7 @@ foundry_tool <- function(fun,
 #'
 #' foundry_agent(
 #'   "What is the weather in San Francisco?",
-#'   tools = list(weather_tool),
-#'   model = "gpt-5.5"
+#'   tools = list(weather_tool)
 #' )
 #' }
 foundry_agent <- function(input,
@@ -465,7 +463,7 @@ foundry_agent <- function(input,
 #'
 #' @examples
 #' \dontrun{
-#' response <- foundry_response("Hello", model = "gpt-5.5")
+#' response <- foundry_response("Hello")
 #' foundry_response_retrieve(response$response_id)
 #' }
 foundry_response_retrieve <- function(response_id,
@@ -496,7 +494,7 @@ foundry_response_retrieve <- function(response_id,
 #'
 #' @examples
 #' \dontrun{
-#' response <- foundry_response("Hello", model = "gpt-5.5")
+#' response <- foundry_response("Hello")
 #' foundry_response_delete(response$response_id)
 #' }
 foundry_response_delete <- function(response_id,
@@ -651,8 +649,7 @@ foundry_response_input_items <- function(response_id,
 #'
 #' foundry_extract(
 #'   c("I love using R with Azure.", "The workflow was slow and confusing."),
-#'   schema = schema,
-#'   model = "gpt-5.5"
+#'   schema = schema
 #' )
 #' }
 foundry_extract <- function(text,
@@ -953,8 +950,7 @@ foundry_extract_error_row <- function(i,
 #' @examples
 #' \dontrun{
 #' foundry_web_search(
-#'   "What are the latest Azure AI Foundry Responses API updates?",
-#'   model = "gpt-5.5"
+#'   "What are the latest Azure AI Foundry Responses API updates?"
 #' )
 #' }
 foundry_web_search <- function(query,

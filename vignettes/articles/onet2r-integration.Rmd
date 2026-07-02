@@ -175,8 +175,7 @@ summary <- foundry_chat(
     "Summarize this occupation for someone considering a career change,",
     "in two sentences:\n\n",
     top_occupation$description
-  ),
-  model = "gpt-5.5"
+  )
 )
 
 cat(summary$content)

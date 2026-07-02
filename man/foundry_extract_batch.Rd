@@ -65,6 +65,6 @@ joined back to the input rows.
 \dontrun{
 jobs <- data.frame(text = c("Great service.", "Slow support."))
 schema <- foundry_schema(sentiment = schema_string())
-foundry_extract_batch(jobs, text_col = "text", schema = schema, model = "gpt-5.5")
+foundry_extract_batch(jobs, text_col = "text", schema = schema, model = "gpt-5-nano")
 }
 }

@@ -58,13 +58,14 @@ For persistent configuration, add deployment names and credentials to
 ``` text
 AZURE_FOUNDRY_ENDPOINT=https://<resource-name>.openai.azure.com
 AZURE_FOUNDRY_KEY=your-api-key
-AZURE_FOUNDRY_MODEL=my-gpt4
-AZURE_FOUNDRY_EMBED_MODEL=my-embedding-deployment
+AZURE_FOUNDRY_MODEL=gpt-5-nano
+AZURE_FOUNDRY_EMBED_MODEL=text-embedding-3-small
 ```
 
-The value passed to `model =` is the Azure deployment name, not
-necessarily the base model name. If you deploy base model `gpt-4o-mini`
-as deployment `my-gpt4`, use `model = "my-gpt4"`.
+`AZURE_FOUNDRY_MODEL` and `AZURE_FOUNDRY_EMBED_MODEL` hold the
+deployment names you chose in Azure, which need not match the base model
+names. The examples below omit `model =` and resolve the deployment from
+`AZURE_FOUNDRY_MODEL`, so you can swap models without editing code.
 
 The outputs below are real responses, recorded once against live Azure
 resources and replayed here without credentials.
@@ -154,7 +155,7 @@ Use `step_foundry_embed()` when embeddings are part of a model recipe:
 library(tidymodels)
 
 recipe(sentiment ~ text, data = reviews) |>
-  step_foundry_embed(text, model = "my-embedding-deployment") |>
+  step_foundry_embed(text, model = "text-embedding-3-small") |>
   step_normalize(all_numeric_predictors())
 ```
 
@@ -165,11 +166,10 @@ stateful turns, web search, structured outputs, token accounting, and
 raw response capture.
 
 ``` r
-first <- foundry_response("Define catastrophic forgetting.", model = "my-gpt4")
+first <- foundry_response("Define catastrophic forgetting.")
 
 foundry_response(
   "Explain it for a college freshman.",
-  model = "my-gpt4",
   previous_response_id = first$response_id
 )
 ```
@@ -189,8 +189,7 @@ weather_tool <- foundry_tool(
 
 foundry_agent(
   "What is the weather in San Francisco?",
-  tools = list(weather_tool),
-  model = "my-gpt4"
+  tools = list(weather_tool)
 )
 ```
 

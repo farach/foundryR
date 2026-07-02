@@ -113,8 +113,7 @@ input -- the model's output has already become data.
 ```{r extraction-example, eval = run_api && have_ellmer}
 foundry_extract(
   c("The lesson was clear.", "I wanted more examples."),
-  schema = sentiment_schema,
-  model = "gpt-5.5"
+  schema = sentiment_schema
 )
 ```
 

@@ -36,6 +36,6 @@ other v1 helpers.
 \examples{
 \dontrun{
 foundry_models()
-foundry_models("gpt-5.5")
+foundry_models("gpt-5-nano")
 }
 }

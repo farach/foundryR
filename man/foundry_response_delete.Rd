@@ -21,7 +21,7 @@ Delete a stored Responses API response
 }
 \examples{
 \dontrun{
-response <- foundry_response("Hello", model = "gpt-5.5")
+response <- foundry_response("Hello")
 foundry_response_delete(response$response_id)
 }
 }

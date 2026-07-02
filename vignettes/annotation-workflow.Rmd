@@ -87,8 +87,7 @@ annotations <- foundry_extract(
   instructions = paste(
     "Code each survey response for a course evaluation.",
     "Use the respondent's words. Do not infer facts that are not stated."
-  ),
-  model = "gpt-5.5"
+  )
 )
 
 coded <- bind_cols(responses, annotations)
@@ -107,7 +106,7 @@ foundry_batch_requests(
   responses,
   input = "response",
   path = jsonl,
-  model = "gpt-5.5",
+  model = "gpt-5-nano",
   endpoint = "/v1/responses",
   body = list(
     instructions = paste(

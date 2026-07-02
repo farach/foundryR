@@ -31,7 +31,7 @@ subset of those labels as passing. The model must support structured outputs.
 \examples{
 foundry_grader_label_model(
   name = "relevance-label",
-  model = "gpt-5.5",
+  model = "gpt-5-nano",
   input = list(
     foundry_eval_item("Is the answer relevant? {{sample.output_text}}")
   ),

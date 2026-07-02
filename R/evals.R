@@ -142,7 +142,7 @@ foundry_grader_text_similarity <- function(input,
 #' @examples
 #' foundry_grader_label_model(
 #'   name = "relevance-label",
-#'   model = "gpt-5.5",
+#'   model = "gpt-5-nano",
 #'   input = list(
 #'     foundry_eval_item("Is the answer relevant? {{sample.output_text}}")
 #'   ),
@@ -201,7 +201,7 @@ foundry_grader_label_model <- function(name,
 #' @examples
 #' foundry_grader_score_model(
 #'   name = "helpfulness",
-#'   model = "gpt-5.5",
+#'   model = "gpt-5-nano",
 #'   input = list(
 #'     foundry_eval_item("Rate helpfulness 0-1: {{sample.output_text}}")
 #'   ),
@@ -246,7 +246,7 @@ foundry_grader_score_model <- function(name,
 #' @param name Character. Grader name shown in results.
 #' @param evaluator_name Character. The evaluator ID, e.g. `"builtin.coherence"`.
 #' @param initialization_parameters List. Optional parameters passed to the
-#'   evaluator, e.g. `list(model = "gpt-5.5")` for model-graded evaluators.
+#'   evaluator, e.g. `list(model = "gpt-5-nano")` for model-graded evaluators.
 #' @param data_mapping Named list. Optional mapping from evaluator inputs to
 #'   dataset templates, e.g. `list(query = "{{item.query}}", response =
 #'   "{{sample.output_text}}")`.
@@ -260,7 +260,7 @@ foundry_grader_score_model <- function(name,
 #' foundry_grader_azure_ai(
 #'   name = "coherence",
 #'   evaluator_name = "builtin.coherence",
-#'   initialization_parameters = list(model = "gpt-5.5"),
+#'   initialization_parameters = list(model = "gpt-5-nano"),
 #'   data_mapping = list(
 #'     query = "{{item.query}}",
 #'     response = "{{sample.output_text}}"

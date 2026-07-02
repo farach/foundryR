@@ -61,5 +61,5 @@ with \code{foundry_file_upload(..., purpose = "batch")} and submitted with
 \examples{
 jobs <- data.frame(text = c("Summarize this.", "Extract entities."))
 path <- tempfile(fileext = ".jsonl")
-foundry_batch_requests(jobs, input = "text", path = path, model = "gpt-5.5")
+foundry_batch_requests(jobs, input = "text", path = path, model = "gpt-5-nano")
 }
