@@ -5,6 +5,7 @@ Initial development release of foundryR, a tidy interface to Microsoft Azure AI 
 ## New features
 
 - Added Content Safety image moderation, protected-material detection, and text blocklist helpers with `foundry_moderate_image()`, `foundry_protected_material()`, `foundry_blocklists()`, and related blocklist item functions (roadmap 2026 H2).
+- Added preview Content Safety operations: `foundry_protected_code()` for protected-material-in-code detection, `foundry_moderate_multimodal()` for image-with-text moderation, and `foundry_task_adherence()` (with `foundry_agent_tool()`, `foundry_agent_tool_call()`, and `foundry_agent_message()` builders) for agent task-adherence checks (roadmap 2026 H2).
 - Added Responses API conversation and vector store helpers, including `foundry_conversation_create()`, `foundry_conversations()`, `foundry_vector_store_create()`, `foundry_vector_search()`, and `foundry_tool_file_search()` (roadmap 2026 H2).
 - Added schema constructors with `foundry_schema()`, `schema_string()`, `schema_enum()`, `schema_number()`, `schema_integer()`, `schema_boolean()`, `schema_array()`, `schema_object()`, and `as_foundry_schema()` for strict structured-output schemas (roadmap 2026 H2).
 - Added validation helpers `foundry_agreement()`, `foundry_consistency()`, and `foundry_provenance()` for publication-oriented annotation checks and reproducibility metadata (roadmap 2026 H2).

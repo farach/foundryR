@@ -110,7 +110,9 @@ reference:
     contents:
       - foundry_moderate
       - foundry_moderate_image
+      - foundry_moderate_multimodal
       - foundry_protected_material
+      - foundry_protected_code
       - foundry_blocklists
       - foundry_blocklist_create
       - foundry_blocklist_get
@@ -121,6 +123,10 @@ reference:
       - foundry_groundedness
       - foundry_llm_resource
       - foundry_shield
+      - foundry_task_adherence
+      - foundry_agent_tool
+      - foundry_agent_tool_call
+      - foundry_agent_message
       - foundry_set_content_safety_key
       - foundry_set_content_safety_endpoint
 
