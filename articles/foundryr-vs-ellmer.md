@@ -3,16 +3,6 @@
 ``` r
 
 library(foundryR)
-#> 
-#> foundryR - Tidy Azure AI Foundry workflows
-#> ==========================================
-#> * Check your setup:
-#>   foundry_check_setup()
-#> * Set your API key: foundry_set_key()
-#> * Set your endpoint: foundry_set_endpoint()
-#> * Get started: ?foundry_response, ?foundry_groundedness
-#> 
-#> New to Azure? See the README for setup instructions.
 ```
 
 foundryR and ellmer both make language-model work possible from R. They
@@ -122,6 +112,12 @@ foundry_extract(
   c("The lesson was clear.", "I wanted more examples."),
   schema = sentiment_schema
 )
+#> # A tibble: 2 × 10
+#>   .input_idx .input_text     .response_id .status .output_text .error .error_msg
+#>        <int> <chr>           <chr>        <chr>   <chr>        <lgl>  <chr>     
+#> 1          1 The lesson was… resp_06e39d… comple… "{\"sentime… FALSE  NA        
+#> 2          2 I wanted more … resp_031136… comple… "{\"sentime… FALSE  NA        
+#> # ℹ 3 more variables: raw_response <list>, sentiment <chr>, theme <chr>
 ```
 
 You can also build the same schema natively with foundryR’s

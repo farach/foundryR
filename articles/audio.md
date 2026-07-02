@@ -3,16 +3,6 @@
 ``` r
 
 library(foundryR)
-#> 
-#> foundryR - Tidy Azure AI Foundry workflows
-#> ==========================================
-#> * Check your setup:
-#>   foundry_check_setup()
-#> * Set your API key: foundry_set_key()
-#> * Set your endpoint: foundry_set_endpoint()
-#> * Get started: ?foundry_response, ?foundry_groundedness
-#> 
-#> New to Azure? See the README for setup instructions.
 ```
 
 Audio is one of the most useful Foundry additions for researchers. You

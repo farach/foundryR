@@ -123,6 +123,7 @@ library(foundryR)
 response <- foundry_response("Answer in one sentence: what is R?")
 
 response$output_text
+#> [1] "R is a free, open-source programming language and environment for statistical computing and graphics, widely used for data analysis and visualization."
 ```
 
 Chain a follow-up turn with `previous_response_id`:
@@ -135,6 +136,7 @@ follow_up <- foundry_response(
 )
 
 follow_up$output_text
+#> [1] "Because R<U+2019>s free, open-source nature plus its extensive ecosystem of packages for data manipulation, statistics, modeling, and high-quality graphics enables powerful, reproducible data analysis and visualization without licensing constraints."
 ```
 
 ## First strict extraction
@@ -157,6 +159,12 @@ foundry_extract(
   c("The tutorial was clear.", "I needed more examples."),
   schema = schema
 )
+#> # A tibble: 2 × 10
+#>   .input_idx .input_text     .response_id .status .output_text .error .error_msg
+#>        <int> <chr>           <chr>        <chr>   <chr>        <lgl>  <chr>     
+#> 1          1 The tutorial w… resp_0e928a… comple… "{\"sentime… FALSE  NA        
+#> 2          2 I needed more … resp_01f233… comple… "{\"sentime… FALSE  NA        
+#> # ℹ 3 more variables: raw_response <list>, sentiment <chr>, topic <chr>
 ```
 
 [`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
@@ -177,6 +185,12 @@ texts <- c(
 
 embeddings <- foundry_embed(texts, model = "text-embedding-3-small")
 foundry_similarity(embeddings)
+#> # A tibble: 3 × 3
+#>   text_1                            text_2                            similarity
+#>   <chr>                             <chr>                                  <dbl>
+#> 1 The tutorial was clear.           The assignment instructions were…      0.580
+#> 2 The tutorial was clear.           The lecture needed more examples.      0.337
+#> 3 The lecture needed more examples. The assignment instructions were…      0.290
 ```
 
 ## Configure Content Safety
@@ -208,7 +222,16 @@ grounded <- foundry_groundedness(
 shield <- foundry_shield(user_prompt = "Summarize this document.")
 
 grounded
+#> # A tibble: 1 × 6
+#>   grounded grounded_pct ungrounded_pct ungrounded_segments ungrounded_reasons
+#>   <lgl>           <dbl>          <int> <list>              <list>            
+#> 1 TRUE                1              0 <chr [0]>           <chr [0]>         
+#> # ℹ 1 more variable: correction_text <chr>
 shield
+#> # A tibble: 1 × 3
+#>   source      content                  attack_detected
+#>   <chr>       <chr>                    <lgl>          
+#> 1 user_prompt Summarize this document. FALSE
 ```
 
 Most foundryR calls stay within your Azure OpenAI or Content Safety
@@ -224,6 +247,12 @@ Chat completions are still available for simple assistant replies:
 ``` r
 
 foundry_chat("Answer in one sentence: what is the tidyverse?")
+#> # A tibble: 1 × 9
+#>   role      content          model finish_reason prompt_tokens completion_tokens
+#>   <chr>     <chr>            <chr> <chr>                 <int>             <int>
+#> 1 assistant The tidyverse i… gpt-… stop                     17               312
+#> # ℹ 3 more variables: reasoning_tokens <int>, cached_input_tokens <int>,
+#> #   total_tokens <int>
 ```
 
 For interactive streaming chat and chat-first agent workflows, use

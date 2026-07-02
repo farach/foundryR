@@ -127,7 +127,15 @@ deployment from <code>AZURE_FOUNDRY_MODEL</code>. Set it once, or pass
 <span></span>
 <span><span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Answer in one sentence: what is retrieval-augmented generation?"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 17</span></span></span>
+<span><span class="co">#&gt;   response_id     status model output_text structured structured_error citations</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> resp_08bfb26cf… compl… gpt-… Retrieval-… <span style="color: #949494;">&lt;NULL&gt;</span>     <span style="color: #BB0000;">NA</span>               <span style="color: #949494;">&lt;tibble&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 10 more variables: tool_calls &lt;list&gt;, refusal &lt;chr&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   incomplete_reason &lt;chr&gt;, created_at &lt;dttm&gt;, input_tokens &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   output_tokens &lt;int&gt;, reasoning_tokens &lt;int&gt;, cached_input_tokens &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   total_tokens &lt;int&gt;, raw_response &lt;list&gt;</span></span></span></code></pre></div>
 <p>The result includes:</p>
 <ul>
 <li>
@@ -161,7 +169,8 @@ by passing the previous <code>response_id</code>:</p>
 <span>  previous_response_id <span class="op">=</span> <span class="va">first</span><span class="op">$</span><span class="va">response_id</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">second</span><span class="op">$</span><span class="va">output_text</span></span></code></pre></div>
+<span><span class="va">second</span><span class="op">$</span><span class="va">output_text</span></span>
+<span><span class="co">#&gt; [1] "Catastrophic forgetting is when a model forgets how to do earlier tasks after being trained on new ones because the updates to its parameters overwrite or disrupt the previously learned knowledge."</span></span></code></pre></div>
 <p>If you do not want the service to store a response, pass
 <code>store = FALSE</code>. Stateful chaining with
 <code>previous_response_id</code> requires the previous response to be
@@ -204,7 +213,14 @@ must return data that conforms to the schema.</p>
 <span><span class="fu"><a href="../reference/foundry_extract.html">foundry_extract</a></span><span class="op">(</span></span>
 <span>  <span class="va">texts</span>,</span>
 <span>  schema <span class="op">=</span> <span class="va">schema</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 11</span></span></span>
+<span><span class="co">#&gt;   .input_idx .input_text     .response_id .status .output_text .error .error_msg</span></span>
+<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>          1 The new data p… resp_0daf26… comple… <span style="color: #949494;">"</span>{\"sentime… FALSE  <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>          2 Participants r… resp_0df47e… comple… <span style="color: #949494;">"</span>{\"sentime… FALSE  <span style="color: #BB0000;">NA</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: raw_response &lt;list&gt;, sentiment &lt;chr&gt;, entities &lt;list&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   summary &lt;chr&gt;</span></span></span></code></pre></div>
 <p>Top-level scalar fields become regular tibble columns. Arrays and
 nested objects become list-columns, which work naturally with tidyverse
 workflows.</p>

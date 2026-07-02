@@ -33,6 +33,14 @@ library(foundryR)
 foundry_response(
   "Answer in one sentence: what is retrieval-augmented generation?"
 )
+#> # A tibble: 1 × 17
+#>   response_id     status model output_text structured structured_error citations
+#>   <chr>           <chr>  <chr> <chr>       <list>     <chr>            <list>   
+#> 1 resp_08bfb26cf… compl… gpt-… Retrieval-… <NULL>     NA               <tibble> 
+#> # ℹ 10 more variables: tool_calls <list>, refusal <chr>,
+#> #   incomplete_reason <chr>, created_at <dttm>, input_tokens <int>,
+#> #   output_tokens <int>, reasoning_tokens <int>, cached_input_tokens <int>,
+#> #   total_tokens <int>, raw_response <list>
 ```
 
 The result includes:
@@ -63,6 +71,7 @@ second <- foundry_response(
 )
 
 second$output_text
+#> [1] "Catastrophic forgetting is when a model forgets how to do earlier tasks after being trained on new ones because the updates to its parameters overwrite or disrupt the previously learned knowledge."
 ```
 
 If you do not want the service to store a response, pass
@@ -110,6 +119,13 @@ foundry_extract(
   texts,
   schema = schema
 )
+#> # A tibble: 2 × 11
+#>   .input_idx .input_text     .response_id .status .output_text .error .error_msg
+#>        <int> <chr>           <chr>        <chr>   <chr>        <lgl>  <chr>     
+#> 1          1 The new data p… resp_0daf26… comple… "{\"sentime… FALSE  NA        
+#> 2          2 Participants r… resp_0df47e… comple… "{\"sentime… FALSE  NA        
+#> # ℹ 4 more variables: raw_response <list>, sentiment <chr>, entities <list>,
+#> #   summary <chr>
 ```
 
 Top-level scalar fields become regular tibble columns. Arrays and nested

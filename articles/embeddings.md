@@ -38,6 +38,10 @@ austen_lines <- c(
 
 embedding <- foundry_embed(austen_lines[1], model = "text-embedding-3-small")
 embedding
+#> # A tibble: 1 × 7
+#>   .input_idx text                embedding n_dims .error .error_msg raw_response
+#>        <int> <chr>               <list>     <int> <lgl>  <chr>      <list>      
+#> 1          1 It is a truth univ… <dbl>       1536 FALSE  NA         <named list>
 ```
 
 The result is a tibble with:
@@ -54,6 +58,12 @@ Pass a character vector to embed several texts in one call:
 
 doc_embeddings <- foundry_embed(austen_lines, model = "text-embedding-3-small")
 doc_embeddings
+#> # A tibble: 3 × 7
+#>   .input_idx text                embedding n_dims .error .error_msg raw_response
+#>        <int> <chr>               <list>     <int> <lgl>  <chr>      <list>      
+#> 1          1 It is a truth univ… <dbl>       1536 FALSE  NA         <named list>
+#> 2          2 However little kno… <dbl>       1536 FALSE  NA         <named list>
+#> 3          3 Mr. Bennet was so … <dbl>       1536 FALSE  NA         <named list>
 ```
 
 ### Controlling dimensions
@@ -70,6 +80,7 @@ compact <- foundry_embed(
   dimensions = 256
 )
 compact$n_dims
+#> [1] 256
 ```
 
 ## Computing similarity with foundry_similarity()
@@ -93,11 +104,23 @@ mixed <- c(
 similarities <- foundry_embed(mixed, model = "text-embedding-3-small") |>
   foundry_similarity()
 similarities
+#> # A tibble: 6 × 3
+#>   text_1                                                       text_2 similarity
+#>   <chr>                                                        <chr>       <dbl>
+#> 1 The quarterly revenue report showed a sharp rise in cloud s… Analy…     0.625 
+#> 2 It is a truth universally acknowledged, that a single man i… Mr. B…     0.324 
+#> 3 Mr. Bennet was so odd a mixture of quick parts, sarcastic h… The q…     0.0692
+#> 4 Mr. Bennet was so odd a mixture of quick parts, sarcastic h… Analy…     0.0684
+#> 5 It is a truth universally acknowledged, that a single man i… The q…     0.0444
+#> 6 It is a truth universally acknowledged, that a single man i… Analy…     0.0146
 ```
 
 Results are sorted by similarity. The two Austen lines pair together and
 the two finance lines pair together, while cross-domain pairs score
 lower.
+
+![Heatmap of cosine similarity across four sentences from two
+domains.](embeddings_files/figure-html/similarity-heatmap-1.png)
 
 ## Use case: finding similar documents
 
@@ -107,6 +130,14 @@ the documents and the query, then sort by cosine similarity:
 ``` r
 
 library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 
 documents <- c(
   "How to install R packages using install.packages()",
@@ -131,6 +162,12 @@ doc_embeddings |>
   arrange(desc(similarity)) |>
   select(text, similarity) |>
   head(3)
+#> # A tibble: 3 × 2
+#>   text                                               similarity
+#>   <chr>                                                   <dbl>
+#> 1 Data visualization with ggplot2 in R                    0.668
+#> 2 How to install R packages using install.packages()      0.458
+#> 3 Building web applications with Shiny                    0.377
 ```
 
 ## Use case: clustering text
@@ -163,7 +200,22 @@ cluster_embeddings |>
   mutate(cluster = clusters$cluster) |>
   arrange(cluster) |>
   select(text, cluster)
+#> # A tibble: 9 × 2
+#>   text                                      cluster
+#>   <chr>                                       <int>
+#> 1 Python is great for machine learning            1
+#> 2 R excels at statistical analysis                1
+#> 3 JavaScript powers modern web applications       1
+#> 4 Italian pasta with tomato sauce                 2
+#> 5 Sushi is a popular Japanese dish                2
+#> 6 French croissants are flaky and buttery         2
+#> 7 Soccer is the world's most popular sport        3
+#> 8 Basketball requires speed and agility           3
+#> 9 Tennis matches can last for hours               3
 ```
+
+![Two-dimensional PCA projection of sentence embeddings, colored by
+k-means cluster.](embeddings_files/figure-html/projection-1.png)
 
 The clusters recover the three topics from the raw text alone.
 
