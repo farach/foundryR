@@ -29,7 +29,8 @@ local({
     AZURE_FOUNDRY_SPEECH_KEY       = "not-a-real-key",
     AZURE_CONTENT_SAFETY_ENDPOINT  = "https://example.cognitiveservices.azure.com",
     AZURE_CONTENT_SAFETY_KEY       = "not-a-real-key",
-    AZURE_FOUNDRY_PROJECT_ENDPOINT = "https://example.services.ai.azure.com/api/projects/demo"
+    AZURE_FOUNDRY_PROJECT_ENDPOINT = "https://example.services.ai.azure.com/api/projects/demo",
+    ONET_API_KEY                   = "not-a-real-key"
   )
   for (nm in names(placeholders)) {
     if (!nzchar(Sys.getenv(nm))) {
@@ -66,7 +67,7 @@ local({
 .foundry_doc_secrets <- local({
   keys <- c(
     "AZURE_FOUNDRY_KEY", "AZURE_FOUNDRY_IMAGE_KEY", "AZURE_FOUNDRY_SPEECH_KEY",
-    "AZURE_CONTENT_SAFETY_KEY", "AZURE_FOUNDRY_TOKEN"
+    "AZURE_CONTENT_SAFETY_KEY", "AZURE_FOUNDRY_TOKEN", "ONET_API_KEY"
   )
   vals <- vapply(keys, Sys.getenv, character(1))
   unname(vals[nzchar(vals) & vals != "not-a-real-key"])
@@ -75,7 +76,7 @@ local({
 httptest2::set_redactor(function(response) {
   response <- httptest2::redact_headers(
     response,
-    c("api-key", "Authorization", "Ocp-Apim-Subscription-Key")
+    c("api-key", "Authorization", "Ocp-Apim-Subscription-Key", "X-API-Key")
   )
   for (real_host in names(.foundry_doc_host_map)) {
     response <- httptest2::gsub_response(

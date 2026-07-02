@@ -62,7 +62,8 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
     content_safety = "AZURE_CONTENT_SAFETY_ENDPOINT",
     image          = "AZURE_FOUNDRY_IMAGE_ENDPOINT",
     speech         = "AZURE_FOUNDRY_SPEECH_ENDPOINT",
-    project        = "AZURE_FOUNDRY_PROJECT_ENDPOINT"
+    project        = "AZURE_FOUNDRY_PROJECT_ENDPOINT",
+    onet           = "ONET_API_KEY"
   )
   have <- function(service) nzchar(Sys.getenv(optional[[service]]))
 
@@ -79,7 +80,8 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
     list(name = "media-generation",    path = "vignettes/media-generation.Rmd",    dir = "vignettes/media-generation",    services = c("image")),
     list(name = "files-batches",       path = "vignettes/files-batches.Rmd",       dir = "vignettes/files-batches",       services = character()),
     list(name = "tidymodels",          path = "vignettes/tidymodels.Rmd",          dir = "vignettes/tidymodels",          services = character()),
-    list(name = "foundryr-vs-ellmer",  path = "vignettes/foundryr-vs-ellmer.Rmd",  dir = "vignettes/foundryr-vs-ellmer",  services = character())
+    list(name = "foundryr-vs-ellmer",  path = "vignettes/foundryr-vs-ellmer.Rmd",  dir = "vignettes/foundryr-vs-ellmer",  services = character()),
+    list(name = "onet2r-integration",  path = "vignettes/articles/onet2r-integration.Rmd", dir = "vignettes/articles/onet2r-integration", services = c("onet"))
   )
 
   if (!is.null(only)) {

@@ -1,0 +1,198 @@
+---
+title: "Integrating foundryR with onet2r"
+output: rmarkdown::html_vignette
+---
+
+```{r setup, include = FALSE}
+# This article runs against recorded, credential-free API fixtures. When the
+# fixtures are present (recorded once with data-raw/record-doc-outputs.R and
+# committed under vignettes/articles/onet2r-integration/), every onet_*() and
+# foundry_*() call below is executed and its real output is shown. When they are
+# absent -- or when onet2r is not installed -- the API chunks are not evaluated,
+# so the article still builds anywhere with no O*NET or Azure credentials.
+#
+# onet2r is a GitHub-only package, which is why this is a pkgdown article rather
+# than a shipped vignette: the article documents the integration on the website
+# without adding a non-CRAN dependency to the package build.
+fixture_dir <- "onet2r-integration"
+recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
+have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
+have_onet2r <- requireNamespace("onet2r", quietly = TRUE)
+run_api <- recording || have_fixtures
+can_run <- run_api && have_onet2r
+
+if (run_api) {
+  httptest2::start_vignette(fixture_dir)
+}
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = can_run
+)
+```
+
+## Why combine the two packages
+
+[onet2r](https://github.com/farach/onet2r) reads the U.S. Department of Labor's
+O\*NET database: occupation titles, descriptions, skills, tasks, and technology
+requirements for roughly a thousand occupations. It returns tidy tibbles.
+
+foundryR turns text into data with Azure AI Foundry: embeddings for semantic
+comparison, and chat completions for summarization. The two fit together
+naturally because onet2r produces the text that foundryR reasons over, and both
+speak tibbles.
+
+This article builds one end-to-end workflow: pull real occupations from O\*NET,
+embed their titles, and rank them against a plain-language query by meaning
+rather than by keyword. It closes by summarizing the top match's real O\*NET
+description with a chat model.
+
+## Setup
+
+onet2r is on GitHub, not CRAN. Install both packages with pak:
+
+```{r install, eval = FALSE}
+# install.packages("pak")
+pak::pak("farach/foundryR")
+pak::pak("farach/onet2r")
+```
+
+Each package reads its own credentials from the environment, so nothing secret
+appears in your code:
+
+```{r credentials, eval = FALSE}
+# Azure AI Foundry (foundryR)
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
+foundry_set_key(Sys.getenv("AZURE_FOUNDRY_KEY"))
+
+# O*NET (onet2r) reads ONET_API_KEY. Register for a free key at
+# https://services.onetcenter.org/developer/ then set:
+Sys.setenv(ONET_API_KEY = "your-onet-key")
+```
+
+```{r libraries}
+library(foundryR)
+library(onet2r)
+library(dplyr)
+```
+
+## Reading occupation data from O\*NET
+
+`onet_search()` matches occupations by keyword and returns a tibble of `code`
+and `title`:
+
+```{r onet-search}
+security_matches <- onet_search("information security")
+security_matches
+```
+
+`onet_occupation()` returns the full record for one occupation code as a list.
+The `description` field is the plain-language summary O\*NET writes for each job:
+
+```{r onet-occupation}
+analyst <- onet_occupation("15-1212.00")
+analyst$title
+substr(analyst$description, 1, 220)
+```
+
+## Building a semantic search index
+
+Keyword search only finds occupations whose titles contain the words you typed.
+Embeddings find occupations by meaning. Start by pulling a block of occupations
+and embedding their titles.
+
+`onet_occupations()` lists occupations in O\*NET-SOC code order; the first 150
+codes span management, business, and computer occupations.
+
+```{r corpus}
+occupations <- onet_occupations(end = 150)
+
+title_embeddings <- foundry_embed(
+  occupations$title,
+  model = "text-embedding-3-small"
+)
+
+occupation_index <- occupations |>
+  mutate(embedding = title_embeddings$embedding)
+
+occupation_index
+```
+
+`foundry_embed()` returns one row per input with the vector in a list-column, so
+attaching it back onto the occupation tibble keeps everything in one frame.
+
+## Searching by meaning
+
+Embed a natural-language query the same way, then rank every occupation by cosine
+similarity to it. The query below shares no words with the official titles it
+should surface.
+
+```{r semantic-search}
+query <- "protecting company networks and data from hackers and cyber attacks"
+
+query_vec <- foundry_embed(query, model = "text-embedding-3-small")$embedding[[1]]
+
+cosine <- function(a, b) sum(a * b) / (sqrt(sum(a^2)) * sqrt(sum(b^2)))
+
+ranked <- occupation_index |>
+  mutate(similarity = vapply(embedding, cosine, numeric(1), b = query_vec)) |>
+  arrange(desc(similarity)) |>
+  select(code, title, similarity)
+
+head(ranked, 5)
+```
+
+The top results are the security- and network-focused occupations, even though
+the query never uses their title words. That is the advantage of embeddings over
+keyword lookup: "protecting data from hackers" resolves to "Information Security
+Analysts" on meaning alone.
+
+## Inspecting skills for a match
+
+Skill, knowledge, and task endpoints each return a tidy tibble, so they drop
+straight into a dplyr pipeline. Here are the first rows of the skills table for
+the top match:
+
+```{r skills}
+top_code <- ranked$code[1]
+
+onet_skills(top_code) |>
+  head()
+```
+
+## Summarizing the match with a chat model
+
+The pieces combine cleanly: take the real O\*NET description for the top match and
+ask a chat model to rewrite it for a specific audience. `foundry_chat()` takes the
+prompt as `message` and returns a tibble; the generated text is in `content`.
+
+```{r ai-summary}
+top_occupation <- onet_occupation(top_code)
+
+summary <- foundry_chat(
+  message = paste(
+    "Summarize this occupation for someone considering a career change,",
+    "in two sentences:\n\n",
+    top_occupation$description
+  ),
+  model = "gpt-4o-mini"
+)
+
+cat(summary$content)
+```
+
+## Where to take it
+
+This workflow generalizes past a single query. Embed the whole occupation index
+once, cache it, and you have a reusable semantic job-matcher: score a resume or a
+free-text career interest against every occupation, cluster occupations by skill
+profile, or flag near-duplicate roles. onet2r supplies the authoritative text and
+foundryR turns it into comparable numbers and readable summaries -- all in
+tibbles.
+
+```{r cleanup, include = FALSE}
+if (run_api) {
+  httptest2::end_vignette()
+}
+```

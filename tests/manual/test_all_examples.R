@@ -244,7 +244,7 @@ if (chat_model == "") {
     )
 
     result <- foundry_chat(
-      prompt = occupation_data,
+      message = occupation_data,
       system = "You are a career counselor. Provide a brief 2-sentence summary.",
       model = chat_model
     )
