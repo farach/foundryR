@@ -14,9 +14,18 @@ knitr::opts_chunk$set(
   out.width = "100%"
 )
 
+# Emit plain-text tibble output. Without this, pillar/cli detect a colour-capable
+# session during recording and bake ANSI escape codes into README.md, which
+# GitHub and CRAN render as literal "[90m...[39m" garbage.
+options(cli.num_colors = 1, crayon.enabled = FALSE)
+
 fixture_dir <- "tools/readme-fixtures"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
-have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
+# httptest2::start_vignette() prepends "vignettes/" to the fixture path whenever a
+# vignettes/ directory is present (as it is when README.Rmd renders from the package
+# root), so look for the recorded fixtures in the same place it writes them.
+fixture_path <- if (dir.exists("vignettes")) file.path("vignettes", fixture_dir) else fixture_dir
+have_fixtures <- dir.exists(fixture_path) && length(list.files(fixture_path)) > 0
 run_api <- recording || have_fixtures
 
 if (run_api) {

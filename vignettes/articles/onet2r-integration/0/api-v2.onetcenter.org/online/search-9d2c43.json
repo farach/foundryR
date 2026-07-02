@@ -1,0 +1,168 @@
+{
+    "start": 1,
+    "end": 20,
+    "total": 756,
+    "next": "https://api-v2.onetcenter.org/online/search?keyword=information%20security&start=21&end=40",
+    "occupation": [
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/15-1299.05/",
+            "code": "15-1299.05",
+            "title": "Information Security Engineers",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/15-1212.00/",
+            "code": "15-1212.00",
+            "title": "Information Security Analysts",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/13-1199.07/",
+            "code": "13-1199.07",
+            "title": "Security Management Specialists",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/11-3013.01/",
+            "code": "11-3013.01",
+            "title": "Security Managers",
+            "tags": {
+
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/33-1091.00/",
+            "code": "33-1091.00",
+            "title": "First-Line Supervisors of Security Workers",
+            "tags": {
+
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/15-1299.04/",
+            "code": "15-1299.04",
+            "title": "Penetration Testers",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/33-9093.00/",
+            "code": "33-9093.00",
+            "title": "Transportation Security Screeners",
+            "tags": {
+
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/33-9032.00/",
+            "code": "33-9032.00",
+            "title": "Security Guards",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/49-2098.00/",
+            "code": "49-2098.00",
+            "title": "Security and Fire Alarm Systems Installers",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/15-1299.06/",
+            "code": "15-1299.06",
+            "title": "Digital Forensics Analysts",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/15-1241.00/",
+            "code": "15-1241.00",
+            "title": "Computer Network Architects",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/11-3021.00/",
+            "code": "11-3021.00",
+            "title": "Computer and Information Systems Managers",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/15-1242.00/",
+            "code": "15-1242.00",
+            "title": "Database Administrators",
+            "tags": {
+
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/33-3021.06/",
+            "code": "33-3021.06",
+            "title": "Intelligence Analysts",
+            "tags": {
+
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/15-1231.00/",
+            "code": "15-1231.00",
+            "title": "Computer Network Support Specialists",
+            "tags": {
+
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/29-9021.00/",
+            "code": "29-9021.00",
+            "title": "Health Information Technologists and Medical Registrars",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/15-1299.07/",
+            "code": "15-1299.07",
+            "title": "Blockchain Engineers",
+            "tags": {
+                "bright_outlook": true
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/53-2022.00/",
+            "code": "53-2022.00",
+            "title": "Airfield Operations Specialists",
+            "tags": {
+
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/43-5031.00/",
+            "code": "43-5031.00",
+            "title": "Public Safety Telecommunicators",
+            "tags": {
+
+            }
+        },
+        {
+            "href": "https://api-v2.onetcenter.org/online/occupations/15-1244.00/",
+            "code": "15-1244.00",
+            "title": "Network and Computer Systems Administrators",
+            "tags": {
+
+            }
+        }
+    ]
+}

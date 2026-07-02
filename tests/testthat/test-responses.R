@@ -171,6 +171,74 @@ test_that("foundry_extract flattens structured output", {
   expect_equal(result$.error, FALSE)
 })
 
+test_that("foundry_extract reconciles array fields of differing lengths across rows", {
+  setup_mock_env()
+  resp_multi <- mock_httr2_response(mock_response_api_response(
+    output_text = "{\"sentiment\":\"positive\",\"entities\":[\"pipeline\",\"coding\"]}"
+  ))
+  resp_single <- mock_httr2_response(mock_response_api_response(
+    output_text = "{\"sentiment\":\"neutral\",\"entities\":[\"consent form\"]}"
+  ))
+
+  testthat::local_mocked_bindings(
+    req_perform_parallel = function(reqs, ...) list(resp_multi, resp_single),
+    .package = "httr2"
+  )
+
+  schema <- list(
+    type = "object",
+    properties = list(
+      sentiment = list(type = "string", enum = c("positive", "negative", "neutral")),
+      entities = list(type = "array", items = list(type = "string"))
+    ),
+    required = c("sentiment", "entities"),
+    additionalProperties = FALSE
+  )
+
+  result <- foundry_extract(
+    c("The pipeline halved coding time.", "Confusion about the consent form."),
+    schema = schema,
+    model = "gpt-4.1"
+  )
+
+  expect_s3_class(result, "tbl_df")
+  expect_equal(nrow(result), 2L)
+  expect_true(is.list(result$entities))
+  expect_identical(result$entities[[1]], c("pipeline", "coding"))
+  expect_identical(result$entities[[2]], "consent form")
+  expect_equal(result$sentiment, c("positive", "neutral"))
+  expect_false(any(result$.error))
+})
+
+test_that("foundry_reconcile_row_types coerces mixed list/atomic columns and leaves others", {
+  rows <- list(
+    tibble::tibble(sentiment = "positive", entities = list(c("a", "b"))),
+    tibble::tibble(sentiment = "neutral", entities = "c")
+  )
+  out <- dplyr::bind_rows(foundry_reconcile_row_types(rows))
+
+  expect_true(is.list(out$entities))
+  expect_identical(out$entities[[1]], c("a", "b"))
+  expect_identical(out$entities[[2]], "c")
+  expect_type(out$sentiment, "character")
+})
+
+test_that("foundry_reconcile_row_types tolerates empty, single, and NULL-padded input", {
+  expect_length(foundry_reconcile_row_types(list()), 0L)
+
+  one <- list(tibble::tibble(a = 1))
+  expect_identical(foundry_reconcile_row_types(one), one)
+
+  padded <- list(
+    NULL,
+    tibble::tibble(a = "x", b = list(1:2)),
+    tibble::tibble(a = "y", b = 3)
+  )
+  out <- dplyr::bind_rows(foundry_reconcile_row_types(padded))
+  expect_equal(nrow(out), 2L)
+  expect_true(is.list(out$b))
+})
+
 test_that("foundry_extract preserves dataframe input and row errors", {
   setup_mock_env()
   mock_response <- mock_response_api_response(output_text = "{\"label\":\"yes\"}")

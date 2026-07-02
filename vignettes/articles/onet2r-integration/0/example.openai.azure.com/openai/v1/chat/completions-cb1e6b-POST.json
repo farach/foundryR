@@ -1,0 +1,102 @@
+{
+    "choices": [
+        {
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+                "annotations": [
+
+                ],
+                "content": "This role develops and maintains business continuity and disaster recovery strategies, including risk assessments, business impact analyses, strategy selection, and documentation of procedures. It also plans, conducts, and debriefs regular mock-disaster exercises to test plan adequacy, updates procedures accordingly, and acts as the coordinator for continuity efforts after a disruption.",
+                "refusal": null,
+                "role": "assistant"
+            }
+        }
+    ],
+    "created": 1783017256,
+    "id": "chatcmpl-DxGWmfbrOXjRL15zCADnlVEzzcH4w",
+    "model": "gpt-5-nano-2025-08-07",
+    "object": "chat.completion",
+    "prompt_filter_results": [
+        {
+            "prompt_index": 0,
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            }
+        }
+    ],
+    "service_tier": "default",
+    "system_fingerprint": null,
+    "usage": {
+        "completion_tokens": 588,
+        "completion_tokens_details": {
+            "accepted_prediction_tokens": 0,
+            "audio_tokens": 0,
+            "reasoning_tokens": 512,
+            "rejected_prediction_tokens": 0
+        },
+        "latency_checkpoint": {
+            "engine_tbt_ms": 8,
+            "engine_ttft_ms": 33,
+            "engine_ttlt_ms": 4936,
+            "pre_inference_ms": 119,
+            "service_tbt_ms": 8,
+            "service_ttft_ms": 248,
+            "service_ttlt_ms": 5157,
+            "total_duration_ms": 5047,
+            "user_visible_ttft_ms": 129
+        },
+        "prompt_tokens": 99,
+        "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cached_tokens": 0
+        },
+        "total_tokens": 687
+    }
+}

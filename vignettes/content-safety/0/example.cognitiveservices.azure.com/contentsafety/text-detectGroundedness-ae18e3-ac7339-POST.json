@@ -1,0 +1,19 @@
+{
+    "ungroundedDetected": true,
+    "ungroundedPercentage": 0.56,
+    "ungroundedDetails": [
+        {
+            "text": "It was released in 2020 and has over 10,000 downloads on CRAN.",
+            "offset": {
+                "utf8": 49,
+                "utf16": 49,
+                "codePoint": 49
+            },
+            "length": {
+                "utf8": 62,
+                "utf16": 62,
+                "codePoint": 62
+            }
+        }
+    ]
+}

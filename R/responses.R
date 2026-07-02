@@ -785,16 +785,11 @@ foundry_extract <- function(text,
     )
   })
 
-  responses <- if (length(requests) == 0L) {
-    list()
-  } else {
-    httr2::req_perform_parallel(
-      requests,
-      on_error = "continue",
-      progress = progress,
-      max_active = max_active
-    )
-  }
+  responses <- foundry_req_perform_many(
+    requests,
+    progress = progress,
+    max_active = max_active
+  )
 
   for (j in seq_along(responses)) {
     i <- valid_idx[j]
@@ -806,11 +801,45 @@ foundry_extract <- function(text,
     )
   }
 
-  out <- dplyr::bind_rows(rows)
+  out <- dplyr::bind_rows(foundry_reconcile_row_types(rows))
   if (data_input) {
     out <- dplyr::bind_cols(input_data, out)
   }
   out
+}
+
+
+# Reconcile per-row column types before row-binding extraction results.
+#
+# A schema array field is materialised as a list-column when a response returns
+# two or more elements, but collapses to an atomic scalar when it returns one (or
+# zero) elements. Across input texts the same field can therefore arrive as a
+# list in one row and an atomic vector in another, which makes `dplyr::bind_rows()`
+# abort with an incompatible-type error. For any field that is a list-column in at
+# least one row and atomic in another, wrap the atomic cells so every row presents
+# a consistent list-column. Fields that are consistently typed are left untouched.
+foundry_reconcile_row_types <- function(rows) {
+  filled <- which(!vapply(rows, is.null, logical(1)))
+  if (length(filled) < 2L) {
+    return(rows)
+  }
+  all_cols <- unique(unlist(lapply(rows[filled], names), use.names = FALSE))
+  for (nm in all_cols) {
+    is_list_col <- vapply(filled, function(k) {
+      if (!nm %in% names(rows[[k]])) NA else is.list(rows[[k]][[nm]])
+    }, logical(1))
+    present <- !is.na(is_list_col)
+    mixed <- any(is_list_col[present]) && !all(is_list_col[present])
+    if (!mixed) {
+      next
+    }
+    for (k in filled[present]) {
+      if (!is.list(rows[[k]][[nm]])) {
+        rows[[k]][[nm]] <- list(rows[[k]][[nm]])
+      }
+    }
+  }
+  rows
 }
 
 

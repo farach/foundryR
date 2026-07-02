@@ -1,6 +1,10 @@
 ---
 title: "Integrating foundryR with onet2r"
 output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Integrating foundryR with onet2r}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}

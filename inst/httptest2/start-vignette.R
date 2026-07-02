@@ -39,6 +39,14 @@ local({
   }
 })
 
+# Batched foundryR calls (foundry_embed(), foundry_extract()) use
+# httr2::req_perform_parallel() by default, which bypasses httptest2's mocking
+# hook so those requests can neither be recorded nor replayed. Force the
+# sequential request path here so every documented call is captured on record and
+# served from fixtures on replay. This runs in both modes, so it is a no-op for
+# builds that make no API calls.
+options(foundryR.sequential_requests = TRUE)
+
 # Map each configured real host to a placeholder so fixture paths and bodies are
 # portable. Evaluated at source time: during recording the environment holds the
 # real hosts; during replay it holds the placeholders above, which makes the

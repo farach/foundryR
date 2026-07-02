@@ -191,7 +191,7 @@ test_that("foundry_chat returns tibble with real API", {
   result <- foundry_chat(
     "Say 'test' and nothing else",
     model = Sys.getenv("AZURE_FOUNDRY_MODEL"),
-    max_tokens = 10
+    max_completion_tokens = 512
   )
 
   expect_s3_class(result, "tbl_df")

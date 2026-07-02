@@ -1,0 +1,162 @@
+{
+    "id": "resp_0f6676fddbf3459a006a46ae02847481978948a69125fd58fe",
+    "object": "response",
+    "created_at": 1783016962,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1783016977,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1600,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 8162,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_0f6676fddbf3459a006a46ae02effc8197830b5f818e5bfcda",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "msg_0f6676fddbf3459a006a46ae0e1ed48197b547df6499221190",
+            "type": "message",
+            "status": "completed",
+            "content": [
+                {
+                    "type": "output_text",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ],
+                    "text": "Catastrophic forgetting is when a model suddenly forgets how to do old tasks after you teach it new tasks. It happens because the model<U+2019>s parameters are shared across tasks, and updating them to fit the new task can overwrite what was learned for the old task.\n\nSimple way to think about it:\n- Imagine you<U+2019>re learning two subjects that use the same brain skills. After you spend a lot of time on the second subject, your recall or performance on the first subject drops because your practice reshapes your <U+201C>mental wiring<U+201D> to fit the second one.\n\nA concrete example:\n- A neural network is trained to recognize handwritten digits (0<U+2013>9). Then you fine-tune the same network to recognize clothing items. After fine-tuning, its accuracy on digits drops a lot, even though you didn<U+2019>t remove any digit data. The updates to improve clothing recognition changed the shared features that also helped with digits.\n\nWhy it happens:\n- The model learns by adjusting shared parameters to minimize error on new data. If old and new tasks require different or conflicting settings in those same parameters, the updates for the new task can disrupt what was learned for the old task.\n\nWhy it matters:\n- It<U+2019>s a big hurdle for continual or lifelong learning, where a system should continually learn new things without ruining what it already knows.\n\nQuick ways researchers try to reduce it (high level):\n- Replay or rehearsal: occasionally train on old examples while learning new tasks.\n- Regularization: constrain updates so they don<U+2019>t move too far from what was good for old tasks (e.g., elastic weight consolidation).\n- Separate modules or architectures: give each task its own parts of the model or add new capacity.\n- Task-aware approaches: use methods that keep old task knowledge separate from new task updates.\n\nIf you want, tell me your course or dataset, and I can tailor the explanation or give a simple mini-example to illustrate it."
+                }
+            ],
+            "role": "assistant"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": "resp_0f6676fddbf3459a006a46adfe90d0819782cef48a2f07aaff",
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "text"
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tools": [
+
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 84,
+        "input_tokens_details": {
+            "cached_tokens": 0
+        },
+        "output_tokens": 1646,
+        "output_tokens_details": {
+            "reasoning_tokens": 1216
+        },
+        "total_tokens": 1730
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

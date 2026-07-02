@@ -149,17 +149,13 @@ foundry_embed_batch <- function(text,
     }
   })
 
-  # Perform all requests in parallel
-  responses <- if (length(requests) == 0L) {
-    list()
-  } else {
-    httr2::req_perform_parallel(
+  # Perform all requests, capturing per-request errors (see
+  # foundry_req_perform_many for the parallel/sequential switch).
+  responses <- foundry_req_perform_many(
     requests,
-    on_error = "continue",
     progress = progress,
     max_active = max_active
-    )
-  }
+  )
 
   # Process responses and combine results
   results <- purrr::imap_dfr(responses, function(resp, batch_idx) {

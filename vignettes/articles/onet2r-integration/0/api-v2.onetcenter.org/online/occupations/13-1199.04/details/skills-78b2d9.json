@@ -1,0 +1,148 @@
+{
+    "start": 1,
+    "end": 20,
+    "total": 35,
+    "next": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/details/skills?start=21&end=35",
+    "element": [
+        {
+            "id": "2.A.1.b",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.A.1.b",
+            "name": "Active Listening",
+            "description": "Giving full attention to what other people are saying, taking time to understand the points being made, asking questions as appropriate, and not interrupting at inappropriate times.",
+            "importance": 78
+        },
+        {
+            "id": "2.B.2.i",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.2.i",
+            "name": "Complex Problem Solving",
+            "description": "Identifying complex problems and reviewing related information to develop and evaluate options and implement solutions.",
+            "importance": 78
+        },
+        {
+            "id": "2.A.2.a",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.A.2.a",
+            "name": "Critical Thinking",
+            "description": "Using logic and reasoning to identify the strengths and weaknesses of alternative solutions, conclusions, or approaches to problems.",
+            "importance": 78
+        },
+        {
+            "id": "2.B.4.e",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.4.e",
+            "name": "Judgment and Decision Making",
+            "description": "Considering the relative costs and benefits of potential actions to choose the most appropriate one.",
+            "importance": 78
+        },
+        {
+            "id": "2.A.2.b",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.A.2.b",
+            "name": "Active Learning",
+            "description": "Understanding the implications of new information for both current and future problem-solving and decision-making.",
+            "importance": 75
+        },
+        {
+            "id": "2.A.1.a",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.A.1.a",
+            "name": "Reading Comprehension",
+            "description": "Understanding written sentences and paragraphs in work-related documents.",
+            "importance": 75
+        },
+        {
+            "id": "2.A.1.d",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.A.1.d",
+            "name": "Speaking",
+            "description": "Talking to others to convey information effectively.",
+            "importance": 75
+        },
+        {
+            "id": "2.B.4.g",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.4.g",
+            "name": "Systems Analysis",
+            "description": "Determining how a system should work and how changes in conditions, operations, and the environment will affect outcomes.",
+            "importance": 75
+        },
+        {
+            "id": "2.B.4.h",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.4.h",
+            "name": "Systems Evaluation",
+            "description": "Identifying measures or indicators of system performance and the actions needed to improve or correct performance, relative to the goals of the system.",
+            "importance": 75
+        },
+        {
+            "id": "2.A.1.c",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.A.1.c",
+            "name": "Writing",
+            "description": "Communicating effectively in writing as appropriate for the needs of the audience.",
+            "importance": 75
+        },
+        {
+            "id": "2.B.1.b",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.1.b",
+            "name": "Coordination",
+            "description": "Adjusting actions in relation to others' actions.",
+            "importance": 69
+        },
+        {
+            "id": "2.A.2.d",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.A.2.d",
+            "name": "Monitoring",
+            "description": "Monitoring/Assessing performance of yourself, other individuals, or organizations to make improvements or take corrective action.",
+            "importance": 66
+        },
+        {
+            "id": "2.B.1.a",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.1.a",
+            "name": "Social Perceptiveness",
+            "description": "Being aware of others' reactions and understanding why they react as they do.",
+            "importance": 60
+        },
+        {
+            "id": "2.B.1.e",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.1.e",
+            "name": "Instructing",
+            "description": "Teaching others how to do something.",
+            "importance": 56
+        },
+        {
+            "id": "2.A.2.c",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.A.2.c",
+            "name": "Learning Strategies",
+            "description": "Selecting and using training/instructional methods and procedures appropriate for the situation when learning or teaching new things.",
+            "importance": 56
+        },
+        {
+            "id": "2.B.5.a",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.5.a",
+            "name": "Time Management",
+            "description": "Managing one's own time and the time of others.",
+            "importance": 56
+        },
+        {
+            "id": "2.B.5.d",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.5.d",
+            "name": "Management of Personnel Resources",
+            "description": "Motivating, developing, and directing people as they work, identifying the best people for the job.",
+            "importance": 53
+        },
+        {
+            "id": "2.B.1.d",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.1.d",
+            "name": "Negotiation",
+            "description": "Bringing others together and trying to reconcile differences.",
+            "importance": 53
+        },
+        {
+            "id": "2.B.1.c",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.1.c",
+            "name": "Persuasion",
+            "description": "Persuading others to change their minds or behavior.",
+            "importance": 53
+        },
+        {
+            "id": "2.B.1.f",
+            "related": "https://api-v2.onetcenter.org/online/occupations/13-1199.04/related/skills/2.B.1.f",
+            "name": "Service Orientation",
+            "description": "Actively looking for ways to help people.",
+            "importance": 53
+        }
+    ]
+}

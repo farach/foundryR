@@ -273,6 +273,44 @@ foundry_perform_raw <- function(req) {
 }
 
 
+#' Perform Many Requests
+#'
+#' Internal helper that performs a list of httr2 requests. By default it uses
+#' `httr2::req_perform_parallel()` for speed. When the option
+#' `foundryR.sequential_requests` is `TRUE`, the requests are performed one at a
+#' time with `httr2::req_perform()` instead.
+#'
+#' Parallel requests bypass httr2's mocking hook, so the sequential path is what
+#' lets httptest2 record and replay documentation fixtures for batched calls such
+#' as `foundry_embed()` and `foundry_extract()` (see
+#' `inst/httptest2/start-vignette.R`). Both paths return a list, in request order,
+#' whose elements are either an httr2 response or the error condition raised for
+#' that request, mirroring `req_perform_parallel(on_error = "continue")`.
+#'
+#' @param reqs A list of httr2 request objects.
+#' @param progress Passed to `httr2::req_perform_parallel()`.
+#' @param max_active Passed to `httr2::req_perform_parallel()`.
+#'
+#' @return A list of responses or error conditions, in the order of `reqs`.
+#' @keywords internal
+foundry_req_perform_many <- function(reqs, progress = FALSE, max_active = 10) {
+  if (length(reqs) == 0L) {
+    return(list())
+  }
+  if (isTRUE(getOption("foundryR.sequential_requests", FALSE))) {
+    return(lapply(reqs, function(req) {
+      tryCatch(httr2::req_perform(req), error = function(e) e)
+    }))
+  }
+  httr2::req_perform_parallel(
+    reqs,
+    on_error = "continue",
+    progress = progress,
+    max_active = max_active
+  )
+}
+
+
 foundry_write_raw_response <- function(req, path, overwrite = FALSE) {
   if (file.exists(path) && !isTRUE(overwrite)) {
     cli::cli_abort(c(
