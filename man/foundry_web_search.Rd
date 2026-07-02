@@ -65,7 +65,7 @@ boundaries, and tool usage can incur additional costs.
 \dontrun{
 foundry_web_search(
   "What are the latest Azure AI Foundry Responses API updates?",
-  model = "gpt-4.1"
+  model = "gpt-5.5"
 )
 }
 }

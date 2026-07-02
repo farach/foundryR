@@ -168,7 +168,7 @@ corrected <- foundry_groundedness(
   correction = TRUE,
   llm_resource = foundry_llm_resource(
     endpoint = "https://your-openai.openai.azure.com",
-    deployment_name = "gpt-4o"
+    deployment_name = "gpt-5.5"
   )
 )
 corrected$correction_text

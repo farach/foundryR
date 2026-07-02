@@ -26,6 +26,6 @@ GPT-4o) that Content Safety calls on your behalf.
 \examples{
 foundry_llm_resource(
   endpoint = "https://your-openai.openai.azure.com",
-  deployment_name = "gpt-4o"
+  deployment_name = "gpt-5.5"
 )
 }

@@ -72,7 +72,7 @@ foundry_agreement <- function(data, estimate, truth) {
 #' @examples
 #' \dontrun{
 #' schema <- foundry_schema(label = schema_enum(c("yes", "no")))
-#' foundry_consistency(c("Example text"), schema, n = 3, model = "gpt-4.1")
+#' foundry_consistency(c("Example text"), schema, n = 3, model = "gpt-5.5")
 #' }
 foundry_consistency <- function(text, schema, n = 3L, ...) {
   if (!is.character(text)) {

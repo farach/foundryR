@@ -18,7 +18,7 @@ foundry_grader_azure_ai(
 \item{evaluator_name}{Character. The evaluator ID, e.g. \code{"builtin.coherence"}.}
 
 \item{initialization_parameters}{List. Optional parameters passed to the
-evaluator, e.g. \code{list(model = "gpt-4.1-mini")} for model-graded evaluators.}
+evaluator, e.g. \code{list(model = "gpt-5.5")} for model-graded evaluators.}
 
 \item{data_mapping}{Named list. Optional mapping from evaluator inputs to
 dataset templates, e.g. \code{list(query = "{{item.query}}", response = "{{sample.output_text}}")}.}
@@ -38,7 +38,7 @@ is only available on the project-scoped Foundry endpoint.
 foundry_grader_azure_ai(
   name = "coherence",
   evaluator_name = "builtin.coherence",
-  initialization_parameters = list(model = "gpt-4.1-mini"),
+  initialization_parameters = list(model = "gpt-5.5"),
   data_mapping = list(
     query = "{{item.query}}",
     response = "{{sample.output_text}}"

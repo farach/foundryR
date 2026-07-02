@@ -77,7 +77,7 @@ weather_tool <- foundry_tool(
 foundry_agent(
   "What is the weather in San Francisco?",
   tools = list(weather_tool),
-  model = "gpt-4.1"
+  model = "gpt-5.5"
 )
 }
 }

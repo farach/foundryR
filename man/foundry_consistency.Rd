@@ -26,6 +26,6 @@ jobs; this helper intentionally keeps the local loop simple.
 \examples{
 \dontrun{
 schema <- foundry_schema(label = schema_enum(c("yes", "no")))
-foundry_consistency(c("Example text"), schema, n = 3, model = "gpt-4.1")
+foundry_consistency(c("Example text"), schema, n = 3, model = "gpt-5.5")
 }
 }

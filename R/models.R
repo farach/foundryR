@@ -18,7 +18,7 @@
 #' @examples
 #' \dontrun{
 #' foundry_models()
-#' foundry_models("gpt-4.1")
+#' foundry_models("gpt-5.5")
 #' }
 foundry_models <- function(model = NULL,
                            api_key = NULL,

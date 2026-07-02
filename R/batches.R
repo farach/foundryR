@@ -27,7 +27,7 @@
 #' @examples
 #' jobs <- data.frame(text = c("Summarize this.", "Extract entities."))
 #' path <- tempfile(fileext = ".jsonl")
-#' foundry_batch_requests(jobs, input = "text", path = path, model = "gpt-4.1")
+#' foundry_batch_requests(jobs, input = "text", path = path, model = "gpt-5.5")
 foundry_batch_requests <- function(data,
                                    input,
                                    path,
@@ -285,7 +285,7 @@ foundry_batch_wait <- function(batch_id,
 #' \dontrun{
 #' jobs <- data.frame(text = c("Great service.", "Slow support."))
 #' schema <- foundry_schema(sentiment = schema_string())
-#' foundry_extract_batch(jobs, text_col = "text", schema = schema, model = "gpt-4.1")
+#' foundry_extract_batch(jobs, text_col = "text", schema = schema, model = "gpt-5.5")
 #' }
 foundry_extract_batch <- function(data,
                                   text_col,

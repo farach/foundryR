@@ -20,7 +20,7 @@ local({
   placeholders <- list(
     AZURE_FOUNDRY_ENDPOINT         = "https://example.openai.azure.com",
     AZURE_FOUNDRY_KEY              = "not-a-real-key",
-    AZURE_FOUNDRY_MODEL            = "gpt-4o-mini",
+    AZURE_FOUNDRY_MODEL            = "gpt-5.5",
     AZURE_FOUNDRY_EMBED_MODEL      = "text-embedding-3-small",
     AZURE_FOUNDRY_IMAGE_ENDPOINT   = "https://example.openai.azure.com",
     AZURE_FOUNDRY_IMAGE_KEY        = "not-a-real-key",
