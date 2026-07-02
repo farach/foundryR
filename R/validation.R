@@ -1,7 +1,9 @@
 #' Compute agreement metrics for LLM annotation
 #'
 #' Compare model labels with human or gold-standard labels using common
-#' publication-friendly metrics.
+#' publication-friendly metrics: accuracy, macro precision/recall/F1, Cohen's
+#' kappa, and Krippendorff's alpha (using \pkg{irr} when installed, otherwise a
+#' base-R nominal implementation).
 #'
 #' @param data Data frame containing estimates and truth.
 #' @param estimate Character. Column name with model labels.
@@ -39,13 +41,14 @@ foundry_agreement <- function(data, estimate, truth) {
   }
 
   tibble::tibble(
-    metric = c("accuracy", "precision_macro", "recall_macro", "f1_macro", "cohen_kappa"),
+    metric = c("accuracy", "precision_macro", "recall_macro", "f1_macro", "cohen_kappa", "krippendorff_alpha"),
     value = c(
       mean(estimate_values == truth_values),
       foundry_macro_precision(estimate_values, truth_values),
       foundry_macro_recall(estimate_values, truth_values),
       foundry_macro_f1(estimate_values, truth_values),
-      foundry_cohen_kappa(estimate_values, truth_values)
+      foundry_cohen_kappa(estimate_values, truth_values),
+      foundry_krippendorff_alpha(estimate_values, truth_values)
     ),
     n = length(estimate_values)
   )
@@ -182,4 +185,28 @@ foundry_cohen_kappa <- function(estimate, truth) {
   expected <- sum(estimate_prop * truth_prop)
   if (expected == 1) return(NA_real_)
   as.numeric((observed - expected) / (1 - expected))
+}
+
+
+foundry_krippendorff_alpha <- function(estimate, truth) {
+  # Prefer irr's implementation when available; fall back to a base-R nominal
+  # Krippendorff's alpha for two coders with no missing values.
+  if (requireNamespace("irr", quietly = TRUE)) {
+    levels <- sort(unique(c(estimate, truth)))
+    ratings <- rbind(
+      match(estimate, levels),
+      match(truth, levels)
+    )
+    alpha <- irr::kripp.alpha(ratings, method = "nominal")$value
+    return(as.numeric(alpha))
+  }
+
+  n_units <- length(estimate)
+  n <- 2L * n_units
+  values <- c(estimate, truth)
+  value_counts <- table(values)
+  disagreements <- sum(estimate != truth)
+  denominator <- n^2 - sum(as.numeric(value_counts)^2)
+  if (denominator == 0) return(NA_real_)
+  1 - (n - 1) * (2 * disagreements) / denominator
 }

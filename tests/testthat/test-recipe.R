@@ -533,6 +533,83 @@ test_that("bake.step_foundry_embed handles NA in embeddings", {
 })
 
 # ============================================================================
+# Disk cache
+# ============================================================================
+
+test_that("step_foundry_embed stores cache configuration", {
+  df <- data.frame(text = c("a", "b"), outcome = c(1, 0), stringsAsFactors = FALSE)
+
+  rec <- recipe(outcome ~ text, data = df) %>%
+    step_foundry_embed(text, model = "test", cache = "disk", cache_dir = "cache/here")
+
+  expect_equal(rec$steps[[1]]$cache, "disk")
+  expect_equal(rec$steps[[1]]$cache_dir, "cache/here")
+})
+
+test_that("step_foundry_embed rejects unknown cache modes", {
+  df <- data.frame(text = c("a", "b"), outcome = c(1, 0), stringsAsFactors = FALSE)
+
+  expect_error(
+    recipe(outcome ~ text, data = df) %>%
+      step_foundry_embed(text, cache = "memory"),
+    "cache"
+  )
+})
+
+test_that("bake.step_foundry_embed with disk cache reuses stored embeddings", {
+  skip_if_not_installed("withr")
+  setup_mock_env()
+
+  cache_dir <- withr::local_tempdir()
+  df <- data.frame(
+    text = c("Hello", "World"),
+    outcome = c(1, 0),
+    stringsAsFactors = FALSE
+  )
+
+  rec <- recipe(outcome ~ text, data = df) %>%
+    step_foundry_embed(text, model = "test", cache = "disk", cache_dir = cache_dir)
+
+  n_dims <- 4
+  requested <- character(0)
+  testthat::local_mocked_bindings(
+    foundry_embed = function(text, ...) {
+      requested <<- c(requested, text)
+      tibble::tibble(
+        text = text,
+        embedding = lapply(seq_along(text), function(i) as.numeric(seq_len(n_dims))),
+        n_dims = rep(n_dims, length(text))
+      )
+    },
+    .package = "foundryR"
+  )
+
+  # prep() retains and bakes the training data, populating the cache once.
+  prepped <- prep(rec, training = df)
+  expect_setequal(requested, c("Hello", "World"))
+  expect_length(list.files(cache_dir, pattern = "\\.rds$"), 2L)
+
+  # A fresh bake on the same text is served entirely from disk: no new calls.
+  requested <- character(0)
+  baked <- bake(prepped, new_data = df)
+  expect_length(requested, 0L)
+  expect_true(all(paste0("emb_text_", seq_len(n_dims)) %in% names(baked)))
+})
+
+test_that("foundry_cache_clear removes cached embedding files", {
+  skip_if_not_installed("withr")
+
+  cache_dir <- withr::local_tempdir()
+  saveRDS(1:3, file.path(cache_dir, "one.rds"))
+  saveRDS(4:6, file.path(cache_dir, "two.rds"))
+
+  removed <- suppressMessages(foundry_cache_clear(cache_dir))
+
+  expect_equal(removed, 2L)
+  expect_length(list.files(cache_dir, pattern = "\\.rds$"), 0L)
+})
+
+# ============================================================================
 # Integration Test (requires real credentials)
 # ============================================================================
 

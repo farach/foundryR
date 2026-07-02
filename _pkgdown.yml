@@ -218,6 +218,7 @@ reference:
       - prep.step_foundry_embed
       - print.step_foundry_embed
       - required_pkgs.step_foundry_embed
+      - foundry_cache_clear
 
   - title: Chat completions
     desc: >

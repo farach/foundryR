@@ -18,7 +18,9 @@ A tibble with one row per metric.
 }
 \description{
 Compare model labels with human or gold-standard labels using common
-publication-friendly metrics.
+publication-friendly metrics: accuracy, macro precision/recall/F1, Cohen's
+kappa, and Krippendorff's alpha (using \pkg{irr} when installed, otherwise a
+base-R nominal implementation).
 }
 \examples{
 labels <- data.frame(

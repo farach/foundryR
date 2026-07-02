@@ -18,10 +18,13 @@ Initial development release of foundryR, a tidy interface to Microsoft Azure AI 
 - Added `foundry_set_speech_endpoint()`, `foundry_set_speech_key()`, `foundry_transcribe()`, and `foundry_translate_audio()` for LLM Speech and MAI-Transcribe workflows.
 - Added `foundry_set_token()` for Microsoft Entra ID bearer-token authentication across Foundry requests.
 - Added `foundry_speak()` for v1 preview text-to-speech output saved to local audio files.
+- Added `foundry_cache_clear()` to remove embeddings cached on disk by `step_foundry_embed(cache = "disk")` (roadmap 2026 H2).
 - Added `foundry_video_job_create()`, `foundry_video_jobs()`, `foundry_video_job_get()`, `foundry_video_job_delete()`, `foundry_video_get()`, and `foundry_video_download()` for preview video job management and content downloads.
 
 ## Improvements
 
+- `as_foundry_schema()` now converts `ellmer::type_object()` specifications to strict JSON Schema, so ellmer users can reuse existing type definitions in `foundry_extract()` and `foundry_response()` (roadmap 2026 H2).
+- `foundry_agreement()` now reports Krippendorff's alpha alongside Cohen's and Fleiss' kappa, using \pkg{irr} when installed and a base-R nominal fallback otherwise (roadmap 2026 H2).
 - `foundry_chat()` now accepts `reasoning_effort` and returns `reasoning_tokens` and `cached_input_tokens` when chat-completions responses report those fields.
 - `foundry_chat()` now defaults to the `/openai/v1/chat/completions` endpoint while keeping `api = "deployment"` as a legacy escape hatch (roadmap 2026 H2).
 - `foundry_embed()` now uses the `/openai/v1/embeddings` array endpoint by default, returns row-level `.error` and `.error_msg` fields, and keeps `api = "deployment"` as a legacy escape hatch (roadmap 2026 H2).
@@ -32,6 +35,7 @@ Initial development release of foundryR, a tidy interface to Microsoft Azure AI 
 - `foundry_response()` now accepts background, conversation, prompt-cache, parallel-tool-call, max-tool-call, safety-identifier, and reasoning-summary controls from the v1 Responses API (roadmap 2026 H2).
 - `foundry_response()` accepts `foundry_tool()` objects in `tools`, strips local R function references from request bodies, and returns `cached_input_tokens` when the Responses API reports cached input tokens.
 - `foundry_similarity()` now computes all pairwise cosine similarities with a single vectorized matrix product, supports `top_k`, and can return a similarity matrix with `as_matrix = TRUE` (roadmap 2026 H2).
+- `step_foundry_embed()` now supports `cache = "disk"` with an optional `cache_dir` to persist embeddings across bakes, and builds embedding columns from a single matrix instead of a per-cell fill loop (roadmap 2026 H2).
 
 ## Documentation and package metadata
 

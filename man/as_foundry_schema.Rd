@@ -7,7 +7,8 @@
 as_foundry_schema(x)
 }
 \arguments{
-\item{x}{Object to convert.}
+\item{x}{Object to convert. Either a foundryR/JSON Schema list or an ellmer
+\code{type_object()} specification.}
 }
 \value{
 A JSON Schema represented as an R list.
@@ -15,5 +16,8 @@ A JSON Schema represented as an R list.
 \description{
 \code{as_foundry_schema()} is a small validation/conversion helper. It returns raw
 JSON Schema lists unchanged, so code can accept either schemas built with
-foundryR constructors or hand-written JSON Schema lists.
+foundryR constructors or hand-written JSON Schema lists. If the \pkg{ellmer}
+package is installed, \code{ellmer::type_object()} specifications are converted to
+the equivalent strict JSON Schema, so ellmer users can pass their existing
+type definitions to \code{\link[=foundry_extract]{foundry_extract()}} and \code{\link[=foundry_response]{foundry_response()}}.
 }

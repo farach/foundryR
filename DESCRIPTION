@@ -29,15 +29,19 @@ Imports:
     tibble
 Suggests:
     base64enc,
+    ellmer,
     ggplot2,
     gt,
     irlba,
+    irr,
     knitr,
     recipes,
     rmarkdown,
+    S7,
     testthat (>= 3.0.0),
     tidymodels,
     tidyr,
-    withr
+    withr,
+    yardstick
 Config/testthat/edition: 3
 VignetteBuilder: knitr

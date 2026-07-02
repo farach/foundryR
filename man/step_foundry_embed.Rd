@@ -14,6 +14,8 @@ step_foundry_embed(
   dimensions = NULL,
   prefix = "emb_",
   keep_original = FALSE,
+  cache = c("none", "disk"),
+  cache_dir = NULL,
   columns = NULL,
   skip = FALSE,
   id = recipes::rand_id("foundry_embed")
@@ -47,6 +49,15 @@ Default: \code{"emb_"}. Columns will be named \verb{\{prefix\}\{original_col\}_\
 
 \item{keep_original}{Logical. Should the original text column(s) be retained?
 Default: \code{FALSE}.}
+
+\item{cache}{Character. Embedding cache mode. \code{"none"} (default) always calls
+the API; \code{"disk"} caches each text's embedding on disk (keyed on the text,
+model, and dimensions) so cross-validation folds and repeated bakes reuse
+embeddings instead of re-calling the API.}
+
+\item{cache_dir}{Character. Directory for the disk cache. Defaults to
+\code{tools::R_user_dir("foundryR", "cache")}. Clear it with
+\code{\link[=foundry_cache_clear]{foundry_cache_clear()}}.}
 
 \item{columns}{Character vector. Internal use only. Stores column names after
 training.}
@@ -93,11 +104,12 @@ row.
 
 \subsection{Performance considerations}{
 
-Embedding generation requires API calls for each row of data. For large
-datasets, consider:
+Embedding generation requires API calls for each unique text value. For large
+datasets or resampling, consider:
 \itemize{
+\item Setting \code{cache = "disk"} so repeated bakes and cross-validation folds reuse
+embeddings instead of re-calling the API
 \item Using \code{skip = TRUE} during cross-validation to avoid redundant API calls
-\item Pre-computing embeddings for training data and caching the results
 \item Using batch processing strategies for very large datasets
 }
 }

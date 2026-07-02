@@ -158,18 +158,76 @@ schema_object <- function(...,
 #'
 #' `as_foundry_schema()` is a small validation/conversion helper. It returns raw
 #' JSON Schema lists unchanged, so code can accept either schemas built with
-#' foundryR constructors or hand-written JSON Schema lists.
+#' foundryR constructors or hand-written JSON Schema lists. If the \pkg{ellmer}
+#' package is installed, `ellmer::type_object()` specifications are converted to
+#' the equivalent strict JSON Schema, so ellmer users can pass their existing
+#' type definitions to [foundry_extract()] and [foundry_response()].
 #'
-#' @param x Object to convert.
+#' @param x Object to convert. Either a foundryR/JSON Schema list or an ellmer
+#'   `type_object()` specification.
 #'
 #' @return A JSON Schema represented as an R list.
 #' @export
 as_foundry_schema <- function(x) {
+  if (inherits(x, "ellmer::Type")) {
+    return(foundry_preserve_schema_arrays(ellmer_type_to_schema(x)))
+  }
+
   if (is.list(x) && identical(x$type %||% NULL, "object")) {
     return(foundry_preserve_schema_arrays(x))
   }
 
   cli::cli_abort("{.arg x} is not a supported schema object.")
+}
+
+
+ellmer_type_to_schema <- function(x) {
+  if (!inherits(x, "ellmer::TypeObject")) {
+    cli::cli_abort(
+      "Only {.code ellmer::type_object()} specifications convert to a foundryR schema."
+    )
+  }
+  ellmer_convert_type(x)
+}
+
+
+ellmer_convert_type <- function(type) {
+  description <- ellmer_prop(type, "description")
+
+  if (inherits(type, "ellmer::TypeObject")) {
+    properties <- ellmer_prop(type, "properties") %||% list()
+    required <- names(properties)[vapply(
+      properties,
+      function(p) isTRUE(ellmer_prop(p, "required")),
+      logical(1)
+    )]
+    out <- list(
+      type = "object",
+      properties = lapply(properties, ellmer_convert_type),
+      required = I(as.character(required)),
+      additionalProperties = isTRUE(ellmer_prop(type, "additional_properties"))
+    )
+  } else if (inherits(type, "ellmer::TypeEnum")) {
+    out <- list(type = "string", enum = I(as.character(ellmer_prop(type, "values"))))
+  } else if (inherits(type, "ellmer::TypeArray")) {
+    out <- list(
+      type = "array",
+      items = ellmer_convert_type(ellmer_prop(type, "items"))
+    )
+  } else if (inherits(type, "ellmer::TypeBasic")) {
+    out <- list(type = ellmer_prop(type, "type"))
+  } else {
+    cli::cli_abort("Unsupported ellmer type: {.cls {class(type)}}.")
+  }
+
+  if (!is.null(description)) out$description <- description
+  out
+}
+
+
+ellmer_prop <- function(x, name) {
+  # ellmer types are S7 objects, so S7 is always available alongside them.
+  S7::prop(x, name)
 }
 
 
