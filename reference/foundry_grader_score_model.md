@@ -50,7 +50,7 @@ A named list describing a `score_model` grader.
 ``` r
 foundry_grader_score_model(
   name = "helpfulness",
-  model = "gpt-4.1",
+  model = "gpt-5.5",
   input = list(
     foundry_eval_item("Rate helpfulness 0-1: {{sample.output_text}}")
   ),
@@ -63,7 +63,7 @@ foundry_grader_score_model(
 #> [1] "helpfulness"
 #> 
 #> $model
-#> [1] "gpt-4.1"
+#> [1] "gpt-5.5"
 #> 
 #> $input
 #> $input[[1]]

@@ -32,7 +32,7 @@ request_file <- foundry_batch_requests(
   survey,
   input = "response",
   path = jsonl,
-  model = "gpt-4.1",
+  model = "gpt-5.5",
   custom_id = "id",
   body = list(
     instructions = "Classify the response sentiment as positive, neutral, or negative."

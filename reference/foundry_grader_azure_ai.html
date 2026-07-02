@@ -97,7 +97,7 @@ is only available on the project-scoped Foundry endpoint.</p>
 
 <dt id="arg-initialization-parameters">initialization_parameters<a class="anchor" aria-label="anchor" href="#arg-initialization-parameters"></a></dt>
 <dd><p>List. Optional parameters passed to the
-evaluator, e.g. <code>list(model = "gpt-4.1-mini")</code> for model-graded evaluators.</p></dd>
+evaluator, e.g. <code>list(model = "gpt-5.5")</code> for model-graded evaluators.</p></dd>
 
 
 <dt id="arg-data-mapping">data_mapping<a class="anchor" aria-label="anchor" href="#arg-data-mapping"></a></dt>
@@ -120,7 +120,7 @@ the latest version on the service when omitted.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">foundry_grader_azure_ai</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"coherence"</span>,</span></span>
 <span class="r-in"><span>  evaluator_name <span class="op">=</span> <span class="st">"builtin.coherence"</span>,</span></span>
-<span class="r-in"><span>  initialization_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-4.1-mini"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  initialization_parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-5.5"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  data_mapping <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    query <span class="op">=</span> <span class="st">"{{item.query}}"</span>,</span></span>
 <span class="r-in"><span>    response <span class="op">=</span> <span class="st">"{{sample.output_text}}"</span></span></span>
@@ -137,7 +137,7 @@ the latest version on the service when omitted.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $initialization_parameters</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $initialization_parameters$model</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "gpt-4.1-mini"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "gpt-5.5"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $data_mapping</span>

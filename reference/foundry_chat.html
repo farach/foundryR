@@ -203,19 +203,19 @@ keeps the legacy deployment-path endpoint.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co"># Simple chat</span></span></span>
-<span class="r-in"><span><span class="fu">foundry_chat</span><span class="op">(</span><span class="st">"What is the capital of France?"</span>, model <span class="op">=</span> <span class="st">"gpt-4"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">foundry_chat</span><span class="op">(</span><span class="st">"What is the capital of France?"</span>, model <span class="op">=</span> <span class="st">"gpt-5.5"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># With system prompt</span></span></span>
 <span class="r-in"><span><span class="fu">foundry_chat</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"Explain tibbles"</span>,</span></span>
 <span class="r-in"><span>  system <span class="op">=</span> <span class="st">"You are a helpful R programming tutor. Be concise."</span>,</span></span>
-<span class="r-in"><span>  model <span class="op">=</span> <span class="st">"gpt-4"</span></span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="st">"gpt-5.5"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># With parameters (use max_completion_tokens for newer models)</span></span></span>
 <span class="r-in"><span><span class="fu">foundry_chat</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"Write a haiku about data science"</span>,</span></span>
-<span class="r-in"><span>  model <span class="op">=</span> <span class="st">"gpt-4"</span>,</span></span>
+<span class="r-in"><span>  model <span class="op">=</span> <span class="st">"gpt-5.5"</span>,</span></span>
 <span class="r-in"><span>  temperature <span class="op">=</span> <span class="fl">0.9</span>,</span></span>
 <span class="r-in"><span>  max_completion_tokens <span class="op">=</span> <span class="fl">100</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -225,7 +225,7 @@ keeps the legacy deployment-path endpoint.</p></dd>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>role <span class="op">=</span> <span class="st">"user"</span>, content <span class="op">=</span> <span class="st">"My name is Alex"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>role <span class="op">=</span> <span class="st">"assistant"</span>, content <span class="op">=</span> <span class="st">"Hello Alex! How can I help you?"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">foundry_chat</span><span class="op">(</span><span class="st">"What's my name?"</span>, model <span class="op">=</span> <span class="st">"gpt-4"</span>, history <span class="op">=</span> <span class="va">history</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">foundry_chat</span><span class="op">(</span><span class="st">"What's my name?"</span>, model <span class="op">=</span> <span class="st">"gpt-5.5"</span>, history <span class="op">=</span> <span class="va">history</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

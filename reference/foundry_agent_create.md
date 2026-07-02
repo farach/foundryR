@@ -100,7 +100,7 @@ A one-row tibble describing the created agent.
 if (FALSE) { # \dontrun{
 foundry_agent_create(
   name = "france-facts",
-  model = "gpt-4.1-mini",
+  model = "gpt-5.5",
   instructions = "You answer questions about France concisely."
 )
 } # }

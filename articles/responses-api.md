@@ -28,7 +28,7 @@ library(foundryR)
 
 foundry_response(
   "Answer in one sentence: what is retrieval-augmented generation?",
-  model = "gpt-4.1"
+  model = "gpt-5.5"
 )
 ```
 
@@ -52,12 +52,12 @@ passing the previous `response_id`:
 
 first <- foundry_response(
   "Define catastrophic forgetting in one sentence.",
-  model = "gpt-4.1"
+  model = "gpt-5.5"
 )
 
 second <- foundry_response(
   "Explain it for a college freshman in one sentence.",
-  model = "gpt-4.1",
+  model = "gpt-5.5",
   previous_response_id = first$response_id
 )
 
@@ -108,7 +108,7 @@ texts <- c(
 foundry_extract(
   texts,
   schema = schema,
-  model = "gpt-4.1"
+  model = "gpt-5.5"
 )
 ```
 
@@ -146,7 +146,7 @@ weather_tool <- foundry_tool(
 turns <- foundry_agent(
   "What is the weather in San Francisco?",
   tools = list(weather_tool),
-  model = "gpt-4.1",
+  model = "gpt-5.5",
   max_iterations = 4
 )
 
@@ -176,7 +176,7 @@ mcp_tool <- list(
 
 foundry_response(
   "Use the MCP server if it helps answer the question.",
-  model = "gpt-4.1",
+  model = "gpt-5.5",
   tools = list(mcp_tool)
 )
 ```
@@ -194,7 +194,7 @@ tidy list-column:
 
 answer <- foundry_web_search(
   "What changed recently in Azure AI Foundry Responses API?",
-  model = "gpt-4.1",
+  model = "gpt-5.5",
   search_context_size = "high"
 )
 
@@ -209,7 +209,7 @@ You can optionally provide approximate location fields:
 
 foundry_web_search(
   "Find a recent AI research event near me.",
-  model = "gpt-4.1",
+  model = "gpt-5.5",
   country = "US",
   region = "Washington",
   city = "Seattle",

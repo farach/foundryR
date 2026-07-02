@@ -158,7 +158,7 @@ summary <- foundry_chat(
     "in two sentences:\n\n",
     top_occupation$description
   ),
-  model = "gpt-4o-mini"
+  model = "gpt-5.5"
 )
 
 cat(summary$content)

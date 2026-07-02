@@ -147,19 +147,19 @@ A tibble with columns:
 ``` r
 if (FALSE) { # \dontrun{
 # Simple chat
-foundry_chat("What is the capital of France?", model = "gpt-4")
+foundry_chat("What is the capital of France?", model = "gpt-5.5")
 
 # With system prompt
 foundry_chat(
   "Explain tibbles",
   system = "You are a helpful R programming tutor. Be concise.",
-  model = "gpt-4"
+  model = "gpt-5.5"
 )
 
 # With parameters (use max_completion_tokens for newer models)
 foundry_chat(
   "Write a haiku about data science",
-  model = "gpt-4",
+  model = "gpt-5.5",
   temperature = 0.9,
   max_completion_tokens = 100
 )
@@ -169,6 +169,6 @@ history <- list(
   list(role = "user", content = "My name is Alex"),
   list(role = "assistant", content = "Hello Alex! How can I help you?")
 )
-foundry_chat("What's my name?", model = "gpt-4", history = history)
+foundry_chat("What's my name?", model = "gpt-5.5", history = history)
 } # }
 ```

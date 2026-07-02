@@ -124,7 +124,7 @@ columns.</p>
 <span></span>
 <span><span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Answer in one sentence: what is retrieval-augmented generation?"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span></span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-5.5"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>The result includes:</p>
 <ul>
@@ -152,12 +152,12 @@ by passing the previous <code>response_id</code>:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">first</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Define catastrophic forgetting in one sentence."</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span></span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-5.5"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">second</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Explain it for a college freshman in one sentence."</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-5.5"</span>,</span>
 <span>  previous_response_id <span class="op">=</span> <span class="va">first</span><span class="op">$</span><span class="va">response_id</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -204,7 +204,7 @@ must return data that conforms to the schema.</p>
 <span><span class="fu"><a href="../reference/foundry_extract.html">foundry_extract</a></span><span class="op">(</span></span>
 <span>  <span class="va">texts</span>,</span>
 <span>  schema <span class="op">=</span> <span class="va">schema</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span></span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-5.5"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Top-level scalar fields become regular tibble columns. Arrays and
 nested objects become list-columns, which work naturally with tidyverse
@@ -238,7 +238,7 @@ return-output loop.</p>
 <span><span class="va">turns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_agent.html">foundry_agent</a></span><span class="op">(</span></span>
 <span>  <span class="st">"What is the weather in San Francisco?"</span>,</span>
 <span>  tools <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">weather_tool</span><span class="op">)</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-5.5"</span>,</span>
 <span>  max_iterations <span class="op">=</span> <span class="fl">4</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -265,7 +265,7 @@ objects:</p>
 <span></span>
 <span><span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Use the MCP server if it helps answer the question."</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-5.5"</span>,</span>
 <span>  tools <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mcp_tool</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Only attach MCP servers you trust and whose data-handling behavior
@@ -280,7 +280,7 @@ list-column:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">answer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_web_search.html">foundry_web_search</a></span><span class="op">(</span></span>
 <span>  <span class="st">"What changed recently in Azure AI Foundry Responses API?"</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-5.5"</span>,</span>
 <span>  search_context_size <span class="op">=</span> <span class="st">"high"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -291,7 +291,7 @@ list-column:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_web_search.html">foundry_web_search</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Find a recent AI research event near me."</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-4.1"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-5.5"</span>,</span>
 <span>  country <span class="op">=</span> <span class="st">"US"</span>,</span>
 <span>  region <span class="op">=</span> <span class="st">"Washington"</span>,</span>
 <span>  city <span class="op">=</span> <span class="st">"Seattle"</span>,</span>

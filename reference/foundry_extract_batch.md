@@ -95,6 +95,6 @@ A batch tibble when `wait = FALSE`, or parsed result rows when
 if (FALSE) { # \dontrun{
 jobs <- data.frame(text = c("Great service.", "Slow support."))
 schema <- foundry_schema(sentiment = schema_string())
-foundry_extract_batch(jobs, text_col = "text", schema = schema, model = "gpt-4.1")
+foundry_extract_batch(jobs, text_col = "text", schema = schema, model = "gpt-5.5")
 } # }
 ```

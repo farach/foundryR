@@ -118,7 +118,7 @@ schema <- list(
 foundry_extract(
   c("I love using R with Azure.", "The workflow was slow and confusing."),
   schema = schema,
-  model = "gpt-4.1"
+  model = "gpt-5.5"
 )
 } # }
 ```
