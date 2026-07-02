@@ -22,9 +22,15 @@
 <url><loc>https://farach.github.io/foundryR/reference/batch_vector.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/content_safety_error_body.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_agent.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_agent_create.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_agent_delete.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_agent_get.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_agent_message.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_agent_reference.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_agent_tool.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_agent_tool_call.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_agent_versions.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_agents.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_agreement.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_batch_cancel.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_batch_create.html</loc></url>

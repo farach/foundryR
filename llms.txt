@@ -386,6 +386,25 @@ answers.
 - [`as_foundry_schema()`](https://farach.github.io/foundryR/reference/as_foundry_schema.md)
   : Convert an object to a foundryR JSON Schema
 
+## Agents
+
+Create, list, and manage named, versioned prompt agents on the Foundry
+Agent Service, then run a stored agent by name through
+\[foundry_response()\] with `agent_reference`.
+
+- [`foundry_agent_create()`](https://farach.github.io/foundryR/reference/foundry_agent_create.md)
+  : Create a Foundry agent
+- [`foundry_agents()`](https://farach.github.io/foundryR/reference/foundry_agents.md)
+  : List Foundry agents
+- [`foundry_agent_get()`](https://farach.github.io/foundryR/reference/foundry_agent_get.md)
+  : Retrieve a Foundry agent
+- [`foundry_agent_delete()`](https://farach.github.io/foundryR/reference/foundry_agent_delete.md)
+  : Delete a Foundry agent
+- [`foundry_agent_versions()`](https://farach.github.io/foundryR/reference/foundry_agent_versions.md)
+  : List versions of a Foundry agent
+- [`foundry_agent_reference()`](https://farach.github.io/foundryR/reference/foundry_agent_reference.md)
+  : Reference a Foundry agent from the Responses API
+
 ## Conversations and vector stores
 
 Manage server-side Responses API conversations and Azure-hosted vector

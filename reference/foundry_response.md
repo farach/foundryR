@@ -33,6 +33,8 @@ foundry_response(
   parse_json = !is.null(text_format),
   api_key = NULL,
   endpoint = NULL,
+  agent = NULL,
+  agent_version = NULL,
   ...
 )
 ```
@@ -147,7 +149,23 @@ foundry_response(
 
 - endpoint:
 
-  Character. Optional endpoint override.
+  Character. Optional endpoint override. When `agent` is supplied this
+  is treated as the project endpoint override.
+
+- agent:
+
+  Character or list. Optional agent to run instead of a bare model: an
+  agent name, a
+  [`foundry_agent_reference()`](https://farach.github.io/foundryR/reference/foundry_agent_reference.md)
+  object, or a one-row tibble from
+  [`foundry_agent_create()`](https://farach.github.io/foundryR/reference/foundry_agent_create.md).
+  When supplied, `model` is ignored, `agent_reference` is sent in the
+  request body, and the call is routed to the project-scoped endpoint.
+
+- agent_version:
+
+  Character. Optional agent version to pin when `agent` is a bare name.
+  Omit to use the latest version.
 
 - ...:
 

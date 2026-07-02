@@ -7,6 +7,19 @@ Azure AI Foundry.
 
 ### New features
 
+- Added Agent Service support for named, versioned prompt agents with
+  [`foundry_agent_create()`](https://farach.github.io/foundryR/reference/foundry_agent_create.md),
+  [`foundry_agents()`](https://farach.github.io/foundryR/reference/foundry_agents.md),
+  [`foundry_agent_get()`](https://farach.github.io/foundryR/reference/foundry_agent_get.md),
+  [`foundry_agent_delete()`](https://farach.github.io/foundryR/reference/foundry_agent_delete.md),
+  and
+  [`foundry_agent_versions()`](https://farach.github.io/foundryR/reference/foundry_agent_versions.md),
+  plus a new `agent` argument on
+  [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+  (backed by
+  [`foundry_agent_reference()`](https://farach.github.io/foundryR/reference/foundry_agent_reference.md))
+  that runs a stored agent by name through the project-scoped Responses
+  endpoint (roadmap 2026 H2).
 - Added Content Safety image moderation, protected-material detection,
   and text blocklist helpers with
   [`foundry_moderate_image()`](https://farach.github.io/foundryR/reference/foundry_moderate_image.md),

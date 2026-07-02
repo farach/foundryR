@@ -99,6 +99,8 @@ tools such as web search, and request schema-constrained structured output.</p>
 <span>  parse_json <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">text_format</span><span class="op">)</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  agent <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  agent_version <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -217,7 +219,21 @@ include.</p></dd>
 
 
 <dt id="arg-endpoint">endpoint<a class="anchor" aria-label="anchor" href="#arg-endpoint"></a></dt>
-<dd><p>Character. Optional endpoint override.</p></dd>
+<dd><p>Character. Optional endpoint override. When <code>agent</code> is
+supplied this is treated as the project endpoint override.</p></dd>
+
+
+<dt id="arg-agent">agent<a class="anchor" aria-label="anchor" href="#arg-agent"></a></dt>
+<dd><p>Character or list. Optional agent to run instead of a bare
+model: an agent name, a <code><a href="foundry_agent_reference.html">foundry_agent_reference()</a></code> object, or a one-row
+tibble from <code><a href="foundry_agent_create.html">foundry_agent_create()</a></code>. When supplied, <code>model</code> is ignored,
+<code>agent_reference</code> is sent in the request body, and the call is routed to
+the project-scoped endpoint.</p></dd>
+
+
+<dt id="arg-agent-version">agent_version<a class="anchor" aria-label="anchor" href="#arg-agent-version"></a></dt>
+<dd><p>Character. Optional agent version to pin when <code>agent</code> is
+a bare name. Omit to use the latest version.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
