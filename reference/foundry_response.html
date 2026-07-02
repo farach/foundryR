@@ -85,7 +85,15 @@ tools such as web search, and request schema-constrained structured output.</p>
 <span>  temperature <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  top_p <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  reasoning_effort <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  reasoning_summary <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  store <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  background <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  conversation <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prompt_cache_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  prompt_cache_retention <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  parallel_tool_calls <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  max_tool_calls <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  safety_identifier <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  include <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  parse_json <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">text_format</span><span class="op">)</span>,</span>
@@ -151,11 +159,43 @@ reasoning-only models that reject sampling parameters.</p></dd>
 <code>reasoning = list(effort = ...)</code>.</p></dd>
 
 
+<dt id="arg-reasoning-summary">reasoning_summary<a class="anchor" aria-label="anchor" href="#arg-reasoning-summary"></a></dt>
+<dd><p>Character. Optional reasoning summary mode for
+models that support it.</p></dd>
+
+
 <dt id="arg-store">store<a class="anchor" aria-label="anchor" href="#arg-store"></a></dt>
 <dd><p>Logical or NULL. Whether the service should store the response.
 The API stores responses by default when this is omitted. Set <code>FALSE</code> for
 stateless calls; use <code>TRUE</code> or omit it when chaining with
 <code>previous_response_id</code>.</p></dd>
+
+
+<dt id="arg-background">background<a class="anchor" aria-label="anchor" href="#arg-background"></a></dt>
+<dd><p>Logical. Whether to run the response in the background.</p></dd>
+
+
+<dt id="arg-conversation">conversation<a class="anchor" aria-label="anchor" href="#arg-conversation"></a></dt>
+<dd><p>Character. Optional conversation ID for server-side
+conversation state.</p></dd>
+
+
+<dt id="arg-prompt-cache-key-prompt-cache-retention">prompt_cache_key, prompt_cache_retention<a class="anchor" aria-label="anchor" href="#arg-prompt-cache-key-prompt-cache-retention"></a></dt>
+<dd><p>Optional prompt-cache controls.</p></dd>
+
+
+<dt id="arg-parallel-tool-calls">parallel_tool_calls<a class="anchor" aria-label="anchor" href="#arg-parallel-tool-calls"></a></dt>
+<dd><p>Logical. Whether the service may call tools in
+parallel.</p></dd>
+
+
+<dt id="arg-max-tool-calls">max_tool_calls<a class="anchor" aria-label="anchor" href="#arg-max-tool-calls"></a></dt>
+<dd><p>Integer. Optional maximum number of tool calls.</p></dd>
+
+
+<dt id="arg-safety-identifier">safety_identifier<a class="anchor" aria-label="anchor" href="#arg-safety-identifier"></a></dt>
+<dd><p>Character. Optional stable end-user identifier for
+safety monitoring.</p></dd>
 
 
 <dt id="arg-metadata">metadata<a class="anchor" aria-label="anchor" href="#arg-metadata"></a></dt>

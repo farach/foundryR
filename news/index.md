@@ -7,6 +7,39 @@ Azure AI Foundry.
 
 ### New features
 
+- Added Content Safety image moderation, protected-material detection,
+  and text blocklist helpers with
+  [`foundry_moderate_image()`](https://farach.github.io/foundryR/reference/foundry_moderate_image.md),
+  [`foundry_protected_material()`](https://farach.github.io/foundryR/reference/foundry_protected_material.md),
+  [`foundry_blocklists()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md),
+  and related blocklist item functions (roadmap 2026 H2).
+- Added Responses API conversation and vector store helpers, including
+  [`foundry_conversation_create()`](https://farach.github.io/foundryR/reference/foundry_conversations.md),
+  [`foundry_conversations()`](https://farach.github.io/foundryR/reference/foundry_conversations.md),
+  [`foundry_vector_store_create()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md),
+  [`foundry_vector_search()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md),
+  and
+  [`foundry_tool_file_search()`](https://farach.github.io/foundryR/reference/foundry_tool_file_search.md)
+  (roadmap 2026 H2).
+- Added schema constructors with
+  [`foundry_schema()`](https://farach.github.io/foundryR/reference/foundry_schema.md),
+  [`schema_string()`](https://farach.github.io/foundryR/reference/schema_constructors.md),
+  [`schema_enum()`](https://farach.github.io/foundryR/reference/schema_constructors.md),
+  [`schema_number()`](https://farach.github.io/foundryR/reference/schema_constructors.md),
+  [`schema_integer()`](https://farach.github.io/foundryR/reference/schema_constructors.md),
+  [`schema_boolean()`](https://farach.github.io/foundryR/reference/schema_constructors.md),
+  [`schema_array()`](https://farach.github.io/foundryR/reference/schema_constructors.md),
+  [`schema_object()`](https://farach.github.io/foundryR/reference/schema_constructors.md),
+  and
+  [`as_foundry_schema()`](https://farach.github.io/foundryR/reference/as_foundry_schema.md)
+  for strict structured-output schemas (roadmap 2026 H2).
+- Added validation helpers
+  [`foundry_agreement()`](https://farach.github.io/foundryR/reference/foundry_agreement.md),
+  [`foundry_consistency()`](https://farach.github.io/foundryR/reference/foundry_consistency.md),
+  and
+  [`foundry_provenance()`](https://farach.github.io/foundryR/reference/foundry_provenance.md)
+  for publication-oriented annotation checks and reproducibility
+  metadata (roadmap 2026 H2).
 - Added v1 Batch API workflows with
   [`foundry_batch_create()`](https://farach.github.io/foundryR/reference/foundry_batch_create.md),
   [`foundry_batches()`](https://farach.github.io/foundryR/reference/foundry_batches.md),
@@ -31,9 +64,32 @@ Azure AI Foundry.
   for a bounded Responses API function-calling loop with user-defined R
   tools.
 - Added
+  [`foundry_batch_results()`](https://farach.github.io/foundryR/reference/foundry_batch_results.md),
+  [`foundry_batch_wait()`](https://farach.github.io/foundryR/reference/foundry_batch_wait.md),
+  [`foundry_extract_batch()`](https://farach.github.io/foundryR/reference/foundry_extract_batch.md),
+  and
+  [`foundry_usage()`](https://farach.github.io/foundryR/reference/foundry_usage.md)
+  to complete the batch annotation loop from JSONL requests through
+  parsed tibble results and user-supplied cost summaries (roadmap 2026
+  H2).
+- Added
   [`foundry_image_edit()`](https://farach.github.io/foundryR/reference/foundry_image_edit.md)
   for v1 preview image editing with local image and optional mask
   uploads.
+- Added
+  [`foundry_response_cancel()`](https://farach.github.io/foundryR/reference/foundry_response_cancel.md)
+  and
+  [`foundry_response_input_items()`](https://farach.github.io/foundryR/reference/foundry_response_input_items.md)
+  for background Responses API workflows and response introspection
+  (roadmap 2026 H2).
+- Added
+  [`foundry_set_project_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_project_endpoint.md),
+  [`foundry_get_project_endpoint()`](https://farach.github.io/foundryR/reference/foundry_get_project_endpoint.md),
+  [`foundry_set_token_provider()`](https://farach.github.io/foundryR/reference/foundry_set_token_provider.md),
+  and
+  [`foundry_token_azure_cli()`](https://farach.github.io/foundryR/reference/foundry_token_azure_cli.md)
+  for project-scoped APIs and refreshable Microsoft Entra authentication
+  (roadmap 2026 H2).
 - Added
   [`foundry_set_speech_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_speech_endpoint.md),
   [`foundry_set_speech_key()`](https://farach.github.io/foundryR/reference/foundry_set_speech_key.md),
@@ -64,17 +120,34 @@ Azure AI Foundry.
   now accepts `reasoning_effort` and returns `reasoning_tokens` and
   `cached_input_tokens` when chat-completions responses report those
   fields.
+- [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
+  now defaults to the `/openai/v1/chat/completions` endpoint while
+  keeping `api = "deployment"` as a legacy escape hatch (roadmap 2026
+  H2).
+- [`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md)
+  now uses the `/openai/v1/embeddings` array endpoint by default,
+  returns row-level `.error` and `.error_msg` fields, and keeps
+  `api = "deployment"` as a legacy escape hatch (roadmap 2026 H2).
 - [`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
-  uses strict JSON Schema mode by default for supported Responses API
-  models.
+  now accepts data frames with `text_col`, preserves original columns,
+  runs requests in parallel, and returns parse or HTTP failures as
+  `.error` rows instead of aborting the whole job (roadmap 2026 H2).
 - [`foundry_image()`](https://farach.github.io/foundryR/reference/foundry_image.md)
   now uses the v1 preview image generation endpoint by default, supports
   newer image options such as `output_format`, `output_compression`,
   `background`, and `moderation`, and keeps the legacy deployment
   endpoint available with `api = "deployment"`.
+- [`foundry_moderate()`](https://farach.github.io/foundryR/reference/foundry_moderate.md)
+  now supports Content Safety blocklists and keeps raw response payloads
+  in list-columns (roadmap 2026 H2).
 - [`foundry_models()`](https://farach.github.io/foundryR/reference/foundry_models.md)
   now calls the v1 model and deployment metadata endpoints instead of
   sending a dummy chat request.
+- [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+  now accepts background, conversation, prompt-cache,
+  parallel-tool-call, max-tool-call, safety-identifier, and
+  reasoning-summary controls from the v1 Responses API (roadmap 2026
+  H2).
 - [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
   accepts
   [`foundry_tool()`](https://farach.github.io/foundryR/reference/foundry_tool.md)
@@ -83,7 +156,8 @@ Azure AI Foundry.
   reports cached input tokens.
 - [`foundry_similarity()`](https://farach.github.io/foundryR/reference/foundry_similarity.md)
   now computes all pairwise cosine similarities with a single vectorized
-  matrix product instead of a nested R loop.
+  matrix product, supports `top_k`, and can return a similarity matrix
+  with `as_matrix = TRUE` (roadmap 2026 H2).
 
 ### Documentation and package metadata
 

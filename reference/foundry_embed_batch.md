@@ -17,6 +17,7 @@ foundry_embed_batch(
   batch_size = 100L,
   max_active = 10L,
   progress = TRUE,
+  api = c("v1", "deployment"),
   api_key = NULL,
   api_version = NULL
 )
@@ -50,6 +51,12 @@ foundry_embed_batch(
 - progress:
 
   Logical. Whether to show a progress bar. Default: TRUE.
+
+- api:
+
+  Character. Endpoint style. `"v1"` (default) sends requests to
+  `/openai/v1/embeddings` with `model` in the JSON body. `"deployment"`
+  keeps the legacy deployment-path endpoint.
 
 - api_key:
 
@@ -87,6 +94,11 @@ A tibble with columns:
 - .error_msg:
 
   Character. Error message if failed, NA otherwise.
+
+- raw_response:
+
+  List. Raw parsed response payload for successful rows, or NULL for
+  failed rows.
 
 ## Examples
 

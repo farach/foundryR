@@ -79,13 +79,16 @@ free-text records into analyzable variables.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">foundry_extract</span><span class="op">(</span></span>
 <span>  <span class="va">text</span>,</span>
-<span>  <span class="va">schema</span>,</span>
+<span>  schema <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  text_col <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  instructions <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  schema_name <span class="op">=</span> <span class="st">"ExtractedData"</span>,</span>
 <span>  strict <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  flatten <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  store <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  max_active <span class="op">=</span> <span class="fl">5L</span>,</span>
+<span>  progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -97,11 +100,17 @@ free-text records into analyzable variables.</p>
 
 
 <dl><dt id="arg-text">text<a class="anchor" aria-label="anchor" href="#arg-text"></a></dt>
-<dd><p>Character vector. Texts to extract from.</p></dd>
+<dd><p>Character vector or data frame. Texts to extract from, or a data
+frame containing a text column.</p></dd>
 
 
 <dt id="arg-schema">schema<a class="anchor" aria-label="anchor" href="#arg-schema"></a></dt>
 <dd><p>List. JSON Schema object describing the fields to extract.</p></dd>
+
+
+<dt id="arg-text-col">text_col<a class="anchor" aria-label="anchor" href="#arg-text-col"></a></dt>
+<dd><p>Character. Column name containing text when <code>text</code> is a data
+frame.</p></dd>
 
 
 <dt id="arg-instructions">instructions<a class="anchor" aria-label="anchor" href="#arg-instructions"></a></dt>
@@ -131,6 +140,15 @@ parsed data is returned in a <code>.data</code> list-column.</p></dd>
 <dt id="arg-store">store<a class="anchor" aria-label="anchor" href="#arg-store"></a></dt>
 <dd><p>Logical. Whether to store Responses API objects. Defaults to
 <code>FALSE</code> because bulk extraction often processes sensitive research data.</p></dd>
+
+
+<dt id="arg-max-active">max_active<a class="anchor" aria-label="anchor" href="#arg-max-active"></a></dt>
+<dd><p>Integer. Maximum number of concurrent requests.</p></dd>
+
+
+<dt id="arg-progress">progress<a class="anchor" aria-label="anchor" href="#arg-progress"></a></dt>
+<dd><p>Logical. Whether to show a progress bar for parallel
+extraction.</p></dd>
 
 
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>

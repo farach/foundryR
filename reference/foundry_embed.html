@@ -78,6 +78,8 @@ and corresponding embedding vectors stored as a list-column.</p>
 <span>  <span class="va">text</span>,</span>
 <span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  dimensions <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  batch_size <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  api <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"v1"</span>, <span class="st">"deployment"</span><span class="op">)</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_version <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -101,6 +103,17 @@ Defaults to the environment variable <code>AZURE_FOUNDRY_EMBED_MODEL</code>.</p>
 embeddings. Only supported by some models (e.g., text-embedding-3).</p></dd>
 
 
+<dt id="arg-batch-size">batch_size<a class="anchor" aria-label="anchor" href="#arg-batch-size"></a></dt>
+<dd><p>Integer. Number of texts to include in each request.
+Default: 100.</p></dd>
+
+
+<dt id="arg-api">api<a class="anchor" aria-label="anchor" href="#arg-api"></a></dt>
+<dd><p>Character. Endpoint style. <code>"v1"</code> (default) sends requests to
+<code>/openai/v1/embeddings</code> with <code>model</code> in the JSON body. <code>"deployment"</code> keeps
+the legacy deployment-path endpoint.</p></dd>
+
+
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
 <dd><p>Character. Optional API key override.</p></dd>
 
@@ -119,6 +132,15 @@ embeddings. Only supported by some models (e.g., text-embedding-3).</p></dd>
 
 <dt>n_dims</dt>
 <dd><p>Integer. The dimensionality of the embedding.</p></dd>
+
+<dt>.input_idx</dt>
+<dd><p>Integer. Original input index.</p></dd>
+
+<dt>.error</dt>
+<dd><p>Logical. Whether the row failed.</p></dd>
+
+<dt>.error_msg</dt>
+<dd><p>Character. Error message for failed rows.</p></dd>
 
 
 </dl></div>

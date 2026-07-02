@@ -11,10 +11,18 @@ functions manage authentication for all API calls.
   : Set Azure AI Foundry API Key
 - [`foundry_set_token()`](https://farach.github.io/foundryR/reference/foundry_set_token.md)
   : Set Azure AI Foundry Bearer Token
+- [`foundry_set_token_provider()`](https://farach.github.io/foundryR/reference/foundry_set_token_provider.md)
+  : Set a Microsoft Entra ID token provider
+- [`foundry_token_azure_cli()`](https://farach.github.io/foundryR/reference/foundry_token_azure_cli.md)
+  : Create an Azure CLI token provider
 - [`foundry_set_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_endpoint.md)
   : Set Azure AI Foundry Endpoint
 - [`foundry_get_endpoint()`](https://farach.github.io/foundryR/reference/foundry_get_endpoint.md)
   : Get Azure AI Foundry Endpoint
+- [`foundry_set_project_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_project_endpoint.md)
+  : Set Azure AI Foundry project endpoint
+- [`foundry_get_project_endpoint()`](https://farach.github.io/foundryR/reference/foundry_get_project_endpoint.md)
+  : Get Azure AI Foundry project endpoint
 - [`foundry_set_speech_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_speech_endpoint.md)
   : Set Microsoft Foundry Speech endpoint
 - [`foundry_set_speech_key()`](https://farach.github.io/foundryR/reference/foundry_set_speech_key.md)
@@ -27,6 +35,18 @@ content, detect hallucinations, and protect against prompt injection.
 
 - [`foundry_moderate()`](https://farach.github.io/foundryR/reference/foundry_moderate.md)
   : Moderate Text Content
+- [`foundry_moderate_image()`](https://farach.github.io/foundryR/reference/foundry_moderate_image.md)
+  : Moderate image content
+- [`foundry_protected_material()`](https://farach.github.io/foundryR/reference/foundry_protected_material.md)
+  : Detect protected material in text
+- [`foundry_blocklists()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
+  [`foundry_blocklist_create()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
+  [`foundry_blocklist_get()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
+  [`foundry_blocklist_delete()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
+  [`foundry_blocklist_items()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
+  [`foundry_blocklist_add_items()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
+  [`foundry_blocklist_remove_items()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md)
+  : Manage Content Safety text blocklists
 - [`foundry_groundedness()`](https://farach.github.io/foundryR/reference/foundry_groundedness.md)
   : Detect Groundedness of LLM Responses
 - [`foundry_shield()`](https://farach.github.io/foundryR/reference/foundry_shield.md)
@@ -52,10 +72,53 @@ answers.
   : Retrieve a stored Responses API response
 - [`foundry_response_delete()`](https://farach.github.io/foundryR/reference/foundry_response_delete.md)
   : Delete a stored Responses API response
+- [`foundry_response_cancel()`](https://farach.github.io/foundryR/reference/foundry_response_cancel.md)
+  : Cancel a background Responses API response
+- [`foundry_response_input_items()`](https://farach.github.io/foundryR/reference/foundry_response_input_items.md)
+  : List input items for a Responses API response
 - [`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
   : Extract structured data from text using JSON Schema
 - [`foundry_web_search()`](https://farach.github.io/foundryR/reference/foundry_web_search.md)
   : Search the web with the Responses API
+- [`foundry_schema()`](https://farach.github.io/foundryR/reference/foundry_schema.md)
+  : Build a strict JSON Schema object
+- [`schema_string()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
+  [`schema_enum()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
+  [`schema_number()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
+  [`schema_integer()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
+  [`schema_boolean()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
+  [`schema_array()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
+  [`schema_object()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
+  : Schema constructors for structured outputs
+- [`as_foundry_schema()`](https://farach.github.io/foundryR/reference/as_foundry_schema.md)
+  : Convert an object to a foundryR JSON Schema
+
+## Conversations and vector stores
+
+Manage server-side Responses API conversations and Azure-hosted vector
+stores for shared retrieval workflows.
+
+- [`foundry_conversation_create()`](https://farach.github.io/foundryR/reference/foundry_conversations.md)
+  [`foundry_conversations()`](https://farach.github.io/foundryR/reference/foundry_conversations.md)
+  [`foundry_conversation_get()`](https://farach.github.io/foundryR/reference/foundry_conversations.md)
+  [`foundry_conversation_update()`](https://farach.github.io/foundryR/reference/foundry_conversations.md)
+  [`foundry_conversation_delete()`](https://farach.github.io/foundryR/reference/foundry_conversations.md)
+  [`foundry_conversation_items()`](https://farach.github.io/foundryR/reference/foundry_conversations.md)
+  [`foundry_conversation_items_add()`](https://farach.github.io/foundryR/reference/foundry_conversations.md)
+  : Manage Responses API conversations
+- [`foundry_vector_store_create()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md)
+  [`foundry_vector_stores()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md)
+  [`foundry_vector_store_get()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md)
+  [`foundry_vector_store_modify()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md)
+  [`foundry_vector_store_delete()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md)
+  [`foundry_vector_store_files()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md)
+  [`foundry_vector_store_file_add()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md)
+  [`foundry_vector_store_file_remove()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md)
+  [`foundry_vector_store_file_batch()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md)
+  [`foundry_vector_search()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md)
+  : Manage Azure OpenAI vector stores
+- [`foundry_tool_file_search()`](https://farach.github.io/foundryR/reference/foundry_tool_file_search.md)
+  : Create a file-search tool definition
 
 ## Text embeddings
 
@@ -94,6 +157,26 @@ jobs for large-scale annotation, extraction, and classification.
   : Retrieve a Microsoft Foundry batch
 - [`foundry_batch_cancel()`](https://farach.github.io/foundryR/reference/foundry_batch_cancel.md)
   : Cancel a Microsoft Foundry batch
+- [`foundry_batch_wait()`](https://farach.github.io/foundryR/reference/foundry_batch_wait.md)
+  : Wait for a Microsoft Foundry batch to finish
+- [`foundry_batch_results()`](https://farach.github.io/foundryR/reference/foundry_batch_results.md)
+  : Parse completed Microsoft Foundry batch results
+- [`foundry_extract_batch()`](https://farach.github.io/foundryR/reference/foundry_extract_batch.md)
+  : Extract structured data with the Batch API
+- [`foundry_usage()`](https://farach.github.io/foundryR/reference/foundry_usage.md)
+  : Summarise token usage for foundryR results
+
+## Validation and provenance
+
+Validate LLM annotation against human labels, measure
+repeated-extraction consistency, and record reproducibility metadata.
+
+- [`foundry_agreement()`](https://farach.github.io/foundryR/reference/foundry_agreement.md)
+  : Compute agreement metrics for LLM annotation
+- [`foundry_consistency()`](https://farach.github.io/foundryR/reference/foundry_consistency.md)
+  : Measure repeated-extraction consistency
+- [`foundry_provenance()`](https://farach.github.io/foundryR/reference/foundry_provenance.md)
+  : Capture model and schema provenance
 
 ## tidymodels integration
 

@@ -78,6 +78,8 @@ hate speech, sexual content, self-harm, and violence.</p>
 <span>  <span class="va">text</span>,</span>
 <span>  categories <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Hate"</span>, <span class="st">"Sexual"</span>, <span class="st">"SelfHarm"</span>, <span class="st">"Violence"</span><span class="op">)</span>,</span>
 <span>  output_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"FourSeverityLevels"</span>, <span class="st">"EightSeverityLevels"</span><span class="op">)</span>,</span>
+<span>  blocklists <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  halt_on_blocklist <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_version <span class="op">=</span> <span class="st">"2024-09-01"</span></span>
@@ -102,6 +104,15 @@ hate speech, sexual content, self-harm, and violence.</p>
 <dd><p>Character. Severity level granularity. One of
 <code>"FourSeverityLevels"</code> (returns 0, 2, 4, 6) or <code>"EightSeverityLevels"</code>
 (returns 0-7). Default: <code>"FourSeverityLevels"</code>.</p></dd>
+
+
+<dt id="arg-blocklists">blocklists<a class="anchor" aria-label="anchor" href="#arg-blocklists"></a></dt>
+<dd><p>Character vector of Content Safety blocklist names to apply.</p></dd>
+
+
+<dt id="arg-halt-on-blocklist">halt_on_blocklist<a class="anchor" aria-label="anchor" href="#arg-halt-on-blocklist"></a></dt>
+<dd><p>Logical. Whether the service should halt category
+analysis when blocklist content is found.</p></dd>
 
 
 <dt id="arg-endpoint">endpoint<a class="anchor" aria-label="anchor" href="#arg-endpoint"></a></dt>

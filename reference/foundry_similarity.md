@@ -6,7 +6,7 @@ Useful for finding semantically similar texts.
 ## Usage
 
 ``` r
-foundry_similarity(data, text_col = "text")
+foundry_similarity(data, text_col = "text", top_k = NULL, as_matrix = FALSE)
 ```
 
 ## Arguments
@@ -20,6 +20,15 @@ foundry_similarity(data, text_col = "text")
 - text_col:
 
   Character. Name of the column containing text labels. Default: "text".
+
+- top_k:
+
+  Integer. Optional maximum number of most-similar pairs to return.
+
+- as_matrix:
+
+  Logical. If `TRUE`, return the full cosine-similarity matrix instead
+  of a long pairwise tibble.
 
 ## Value
 

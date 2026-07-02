@@ -16,6 +16,11 @@ foundry_batch_requests(
   endpoint = "/v1/responses",
   custom_id = NULL,
   body = list(),
+  schema = NULL,
+  schema_name = "ExtractedData",
+  strict = TRUE,
+  instructions = NULL,
+  body_columns = NULL,
   overwrite = FALSE
 )
 ```
@@ -51,6 +56,27 @@ foundry_batch_requests(
 
   List. Additional request body fields added to each request.
 
+- schema:
+
+  List. Optional JSON Schema for structured Responses API output.
+
+- schema_name:
+
+  Character. Name for `schema` when supplied.
+
+- strict:
+
+  Logical. Whether structured output should be strict.
+
+- instructions:
+
+  Character. Optional instructions for Responses API requests.
+
+- body_columns:
+
+  Character vector. Optional column names whose per-row values should be
+  added to each request body.
+
 - overwrite:
 
   Logical. Whether to overwrite an existing file.
@@ -68,5 +94,5 @@ foundry_batch_requests(jobs, input = "text", path = path, model = "gpt-4.1")
 #> # A tibble: 1 × 3
 #>   path                                   requests endpoint     
 #>   <chr>                                     <int> <chr>        
-#> 1 /tmp/Rtmpm9X4Ar/file19ce7424fe46.jsonl        2 /v1/responses
+#> 1 /tmp/Rtmp64jPZC/file1a463a5a1e35.jsonl        2 /v1/responses
 ```

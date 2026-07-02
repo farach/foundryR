@@ -84,6 +84,7 @@ batches concurrently while tracking errors gracefully.</p>
 <span>  batch_size <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  max_active <span class="op">=</span> <span class="fl">10L</span>,</span>
 <span>  progress <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  api <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"v1"</span>, <span class="st">"deployment"</span><span class="op">)</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_version <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -120,6 +121,12 @@ Default: 100.</p></dd>
 <dd><p>Logical. Whether to show a progress bar. Default: TRUE.</p></dd>
 
 
+<dt id="arg-api">api<a class="anchor" aria-label="anchor" href="#arg-api"></a></dt>
+<dd><p>Character. Endpoint style. <code>"v1"</code> (default) sends requests to
+<code>/openai/v1/embeddings</code> with <code>model</code> in the JSON body. <code>"deployment"</code> keeps
+the legacy deployment-path endpoint.</p></dd>
+
+
 <dt id="arg-api-key">api_key<a class="anchor" aria-label="anchor" href="#arg-api-key"></a></dt>
 <dd><p>Character. Optional API key override.</p></dd>
 
@@ -148,6 +155,10 @@ May contain multiple embeddings per batch response.</p></dd>
 
 <dt>.error_msg</dt>
 <dd><p>Character. Error message if failed, NA otherwise.</p></dd>
+
+<dt>raw_response</dt>
+<dd><p>List. Raw parsed response payload for successful rows,
+or NULL for failed rows.</p></dd>
 
 
 </dl></div>

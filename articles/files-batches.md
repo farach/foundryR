@@ -51,9 +51,9 @@ request_file <- foundry_batch_requests(
 
 request_file
 #> # A tibble: 1 × 3
-#>   path                                  requests endpoint     
-#>   <chr>                                    <int> <chr>        
-#> 1 /tmp/Rtmp8JOI3g/file1ff4a37d0a0.jsonl        3 /v1/responses
+#>   path                                   requests endpoint     
+#>   <chr>                                     <int> <chr>        
+#> 1 /tmp/RtmpNEphIo/file21d24a14f10a.jsonl        3 /v1/responses
 head(readLines(jsonl), 2)
 #> [1] "{\"custom_id\":\"resp-001\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-4.1\",\"input\":\"The workshop was clear and practical.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"     
 #> [2] "{\"custom_id\":\"resp-002\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-4.1\",\"input\":\"I liked the examples but wanted more time.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"
@@ -102,9 +102,9 @@ batch <- tibble::tibble(
 
 file
 #> # A tibble: 1 × 6
-#>   file_id     filename              purpose status    bytes created_at         
-#>   <chr>       <chr>                 <chr>   <chr>     <dbl> <dttm>             
-#> 1 file_abc123 file1ff4a37d0a0.jsonl batch   processed   672 2026-06-24 12:00:00
+#>   file_id     filename               purpose status    bytes created_at         
+#>   <chr>       <chr>                  <chr>   <chr>     <dbl> <dttm>             
+#> 1 file_abc123 file21d24a14f10a.jsonl batch   processed   672 2026-06-24 12:00:00
 batch
 #> # A tibble: 1 × 10
 #>   batch_id     status     endpoint    input_file_id output_file_id error_file_id

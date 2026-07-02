@@ -11,6 +11,8 @@ foundry_moderate(
   text,
   categories = c("Hate", "Sexual", "SelfHarm", "Violence"),
   output_type = c("FourSeverityLevels", "EightSeverityLevels"),
+  blocklists = NULL,
+  halt_on_blocklist = FALSE,
   endpoint = NULL,
   api_key = NULL,
   api_version = "2024-09-01"
@@ -35,6 +37,15 @@ foundry_moderate(
   Character. Severity level granularity. One of `"FourSeverityLevels"`
   (returns 0, 2, 4, 6) or `"EightSeverityLevels"` (returns 0-7).
   Default: `"FourSeverityLevels"`.
+
+- blocklists:
+
+  Character vector of Content Safety blocklist names to apply.
+
+- halt_on_blocklist:
+
+  Logical. Whether the service should halt category analysis when
+  blocklist content is found.
 
 - endpoint:
 

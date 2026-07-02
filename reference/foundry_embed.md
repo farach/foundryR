@@ -11,6 +11,8 @@ foundry_embed(
   text,
   model = NULL,
   dimensions = NULL,
+  batch_size = 100L,
+  api = c("v1", "deployment"),
   api_key = NULL,
   api_version = NULL
 )
@@ -31,6 +33,16 @@ foundry_embed(
 
   Integer. Optional. The number of dimensions for the output embeddings.
   Only supported by some models (e.g., text-embedding-3).
+
+- batch_size:
+
+  Integer. Number of texts to include in each request. Default: 100.
+
+- api:
+
+  Character. Endpoint style. `"v1"` (default) sends requests to
+  `/openai/v1/embeddings` with `model` in the JSON body. `"deployment"`
+  keeps the legacy deployment-path endpoint.
 
 - api_key:
 
@@ -55,6 +67,18 @@ A tibble with columns:
 - n_dims:
 
   Integer. The dimensionality of the embedding.
+
+- .input_idx:
+
+  Integer. Original input index.
+
+- .error:
+
+  Logical. Whether the row failed.
+
+- .error_msg:
+
+  Character. Error message for failed rows.
 
 ## Details
 

@@ -20,6 +20,7 @@ foundry_chat(
   presence_penalty = NULL,
   stop = NULL,
   reasoning_effort = NULL,
+  api = c("v1", "deployment"),
   api_key = NULL,
   api_version = NULL,
   ...
@@ -82,6 +83,12 @@ foundry_chat(
 
   Character. Optional reasoning effort (`"low"`, `"medium"`, or
   `"high"`) for reasoning models that accept this control.
+
+- api:
+
+  Character. Endpoint style. `"v1"` (default) sends requests to
+  `/openai/v1/chat/completions` with `model` in the JSON body.
+  `"deployment"` keeps the legacy deployment-path endpoint.
 
 - api_key:
 

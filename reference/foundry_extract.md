@@ -10,13 +10,16 @@ abstraction, and converting free-text records into analyzable variables.
 ``` r
 foundry_extract(
   text,
-  schema,
+  schema = NULL,
+  text_col = NULL,
   instructions = NULL,
   schema_name = "ExtractedData",
   strict = TRUE,
   model = NULL,
   flatten = TRUE,
   store = FALSE,
+  max_active = 5L,
+  progress = TRUE,
   api_key = NULL,
   endpoint = NULL,
   ...
@@ -27,11 +30,16 @@ foundry_extract(
 
 - text:
 
-  Character vector. Texts to extract from.
+  Character vector or data frame. Texts to extract from, or a data frame
+  containing a text column.
 
 - schema:
 
   List. JSON Schema object describing the fields to extract.
+
+- text_col:
+
+  Character. Column name containing text when `text` is a data frame.
 
 - instructions:
 
@@ -61,6 +69,14 @@ foundry_extract(
 
   Logical. Whether to store Responses API objects. Defaults to `FALSE`
   because bulk extraction often processes sensitive research data.
+
+- max_active:
+
+  Integer. Maximum number of concurrent requests.
+
+- progress:
+
+  Logical. Whether to show a progress bar for parallel extraction.
 
 - api_key:
 
