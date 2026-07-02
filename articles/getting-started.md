@@ -24,7 +24,7 @@ their deployment names.
 >
 > The value you pass to `model =` is the deployment name you chose in
 > Azure, not necessarily the base model name. If you deploy base model
-> `gpt-4o-mini` with deployment name `my-gpt4`, use `model = "my-gpt4"`
+> `gpt-4o-mini` with deployment name `my-gpt4`, use `model = "gpt-4.1"`
 > in foundryR. The same rule applies to embedding deployments.
 
 ## Install foundryR
@@ -104,7 +104,7 @@ Test a specific deployment:
 
 ``` r
 
-foundry_check_setup(model = "my-gpt4")
+foundry_check_setup(model = "gpt-4.1")
 ```
 
 If you need to see deployments exposed by the v1 model metadata
@@ -123,9 +123,11 @@ structured outputs, tools, and richer token metadata:
 
 ``` r
 
+library(foundryR)
+
 response <- foundry_response(
-  "Define retrieval-augmented generation in two sentences.",
-  model = "my-gpt4"
+  "Answer in one sentence: what is R?",
+  model = "gpt-4.1"
 )
 
 response$output_text
@@ -136,8 +138,8 @@ Chain a follow-up turn with `previous_response_id`:
 ``` r
 
 follow_up <- foundry_response(
-  "Explain it for a first-year graduate student.",
-  model = "my-gpt4",
+  "Explain why that matters for data analysis in one sentence.",
+  model = "gpt-4.1",
   previous_response_id = response$response_id
 )
 
@@ -163,7 +165,7 @@ schema <- list(
 foundry_extract(
   c("The tutorial was clear.", "I needed more examples."),
   schema = schema,
-  model = "my-gpt4"
+  model = "gpt-4.1"
 )
 ```
 
@@ -183,7 +185,7 @@ texts <- c(
   "The assignment instructions were easy to follow."
 )
 
-embeddings <- foundry_embed(texts, model = "my-embedding-deployment")
+embeddings <- foundry_embed(texts, model = "text-embedding-3-small")
 foundry_similarity(embeddings)
 ```
 
@@ -214,6 +216,9 @@ grounded <- foundry_groundedness(
 )
 
 shield <- foundry_shield(user_prompt = "Summarize this document.")
+
+grounded
+shield
 ```
 
 Most foundryR calls stay within your Azure OpenAI or Content Safety
@@ -228,7 +233,7 @@ Chat completions are still available for simple assistant replies:
 
 ``` r
 
-foundry_chat("What is the tidyverse?", model = "my-gpt4")
+foundry_chat("Answer in one sentence: what is the tidyverse?", model = "gpt-4.1")
 ```
 
 For interactive streaming chat and chat-first agent workflows, use

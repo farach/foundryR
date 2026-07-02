@@ -3,16 +3,6 @@
 ``` r
 
 library(foundryR)
-#> 
-#> foundryR - Tidy Azure AI Foundry workflows
-#> ==========================================
-#> * Check your setup:
-#>   foundry_check_setup()
-#> * Set your API key: foundry_set_key()
-#> * Set your endpoint: foundry_set_endpoint()
-#> * Get started: ?foundry_response, ?foundry_groundedness
-#> 
-#> New to Azure? See the README for setup instructions.
 ```
 
 The Batch API is useful when your research task has hundreds or
@@ -50,13 +40,7 @@ request_file <- foundry_batch_requests(
 )
 
 request_file
-#> # A tibble: 1 × 3
-#>   path                                  requests endpoint     
-#>   <chr>                                    <int> <chr>        
-#> 1 /tmp/RtmpdIPqIU/file20ccbcf5ad2.jsonl        3 /v1/responses
 head(readLines(jsonl), 2)
-#> [1] "{\"custom_id\":\"resp-001\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-4.1\",\"input\":\"The workshop was clear and practical.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"     
-#> [2] "{\"custom_id\":\"resp-002\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-4.1\",\"input\":\"I liked the examples but wanted more time.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"
 ```
 
 ## Upload and create a batch
@@ -74,45 +58,8 @@ batch <- foundry_batch_create(
 )
 ```
 
-The returned objects are tidy tibbles:
-
-``` r
-
-file <- tibble::tibble(
-  file_id = "file_abc123",
-  filename = basename(jsonl),
-  purpose = "batch",
-  status = "processed",
-  bytes = file.size(jsonl),
-  created_at = as.POSIXct("2026-06-24 12:00:00", tz = "UTC")
-)
-
-batch <- tibble::tibble(
-  batch_id = "batch_abc123",
-  status = "validating",
-  endpoint = "/v1/responses",
-  input_file_id = file$file_id,
-  output_file_id = NA_character_,
-  error_file_id = NA_character_,
-  completion_window = "24h",
-  request_counts_total = 3L,
-  request_counts_completed = 0L,
-  request_counts_failed = 0L
-)
-
-file
-#> # A tibble: 1 × 6
-#>   file_id     filename              purpose status    bytes created_at         
-#>   <chr>       <chr>                 <chr>   <chr>     <dbl> <dttm>             
-#> 1 file_abc123 file20ccbcf5ad2.jsonl batch   processed   672 2026-06-24 12:00:00
-batch
-#> # A tibble: 1 × 10
-#>   batch_id     status     endpoint    input_file_id output_file_id error_file_id
-#>   <chr>        <chr>      <chr>       <chr>         <chr>          <chr>        
-#> 1 batch_abc123 validating /v1/respon… file_abc123   NA             NA           
-#> # ℹ 4 more variables: completion_window <chr>, request_counts_total <int>,
-#> #   request_counts_completed <int>, request_counts_failed <int>
-```
+The returned objects include service identifiers, status fields, file
+sizes, completion windows, and request counts.
 
 ## Poll and download results
 
@@ -131,14 +78,8 @@ large job:
 
 ``` r
 
-output_lines <- c(
-  '{"custom_id":"resp-001","response":{"body":{"output_text":"positive"}}}',
-  '{"custom_id":"resp-002","response":{"body":{"output_text":"neutral"}}}'
-)
-
+output_lines <- readLines("batch-output.jsonl", n = 2)
 head(output_lines)
-#> [1] "{\"custom_id\":\"resp-001\",\"response\":{\"body\":{\"output_text\":\"positive\"}}}"
-#> [2] "{\"custom_id\":\"resp-002\",\"response\":{\"body\":{\"output_text\":\"neutral\"}}}"
 ```
 
 ## Practical advice

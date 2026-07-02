@@ -53,59 +53,35 @@ to add embedding generation to your recipe:
 library(tidymodels)
 library(foundryR)
 
-# Sample data with text and outcome
 reviews <- tibble(
   text = c(
-    "This product is amazing, highly recommend!",
-    "Terrible quality, waste of money",
-    "Good value for the price",
-    "Disappointed with the purchase",
-    "Exceeded my expectations",
-    "Would not buy again"
+    "This product is useful and easy to use.",
+    "The setup was confusing and slow.",
+    "The examples were clear and helpful.",
+    "I needed better instructions."
   ),
-  sentiment = factor(c("positive", "negative", "positive",
-                       "negative", "positive", "negative"))
+  sentiment = factor(c("positive", "negative", "positive", "negative"))
 )
 
-# Create recipe with embedding step
+
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
-    model = "text-embedding-3-small",  # Your deployment name
-    keep_original = FALSE         # Remove original text column
+    model = "text-embedding-3-small",
+    keep_original = FALSE
   )
 
 recipe_spec
-#> Recipe
-#>
-#> Inputs:
-#>
-#>       role #variables
-#>    outcome          1
-#>  predictor          1
-#>
-#> Operations:
-#>
-#> Azure AI Foundry embeddings for text
 ```
 
 ### Preparing and Baking the Recipe
 
 ``` r
 
-# Prepare the recipe (generates embeddings for training data)
 prepped_recipe <- prep(recipe_spec, training = reviews)
 
-# Bake to transform data
 baked_data <- bake(prepped_recipe, new_data = NULL)
 baked_data
-#> # A tibble: 6 × 1,537
-#>   sentiment text_embed_001 text_embed_002 text_embed_003 ... text_embed_1536
-#>   <fct>              <dbl>          <dbl>          <dbl>             <dbl>
-#> 1 positive          0.0234        -0.0156         0.0089           0.0123
-#> 2 negative         -0.0145         0.0234        -0.0067          -0.0089
-#> 3 positive          0.0178        -0.0123         0.0145           0.0098
-#> ...
 ```
 
 The text column is replaced with 1,536 numeric embedding dimensions (the
@@ -113,7 +89,9 @@ exact number depends on your embedding model).
 
 ## Complete ML Pipeline Example
 
-Here’s a full example building a sentiment classifier:
+Here’s a full example building a sentiment classifier. It is shown as
+code only because fitting and resampling would repeat embedding API
+calls:
 
 ``` r
 
@@ -174,11 +152,6 @@ predictions <- predict(fitted_workflow, test_data) %>%
 # Evaluate
 predictions %>%
   metrics(truth = sentiment, estimate = .pred_class)
-#> # A tibble: 2 × 3
-#>   .metric  .estimator .estimate
-#>   <chr>    <chr>          <dbl>
-#> 1 accuracy binary         1
-#> 2 kap      binary         1
 ```
 
 ## Advanced Options
@@ -273,7 +246,7 @@ save the resulting numeric columns, and resample the saved embeddings.
 ``` r
 
 embedded_reviews <- foundry_embed(
-  reviews$review_text,
+  reviews$text,
   model = "text-embedding-3-small"
 )
 
@@ -284,6 +257,8 @@ precomputed <- bind_cols(
   reviews["sentiment"],
   embedding_cols
 )
+
+precomputed[, 1:4]
 ```
 
 Use the recipe step when preprocessing needs to be self-contained.
@@ -310,28 +285,7 @@ cv_results <- fit_resamples(
 
 # Collect metrics
 collect_metrics(cv_results)
-#> # A tibble: 2 × 6
-#>   .metric  .estimator  mean     n std_err .config
-#>   <chr>    <chr>      <dbl> <int>   <dbl> <chr>
-#> 1 accuracy binary     0.875     5  0.0559 Preprocessor1_Model1
-#> 2 roc_auc  binary     0.925     5  0.0433 Preprocessor1_Model1
 ```
-
-The rendered evaluation outputs below use precomputed, illustrative data
-from a representative resampling run. They are rendered during the
-documentation build without Azure credentials.
-
-| Embedding classifier evaluation metrics |  |  |  |
-|----|----|----|----|
-| Metric | Estimator | Estimate | Configuration |
-| accuracy | binary | 0.875 | Preprocessor1_Model1 |
-| roc_auc | binary | 0.925 | Preprocessor1_Model1 |
-| kap | binary | 0.750 | Preprocessor1_Model1 |
-| sensitivity | binary | 0.900 | Preprocessor1_Model1 |
-| specificity | binary | 0.850 | Preprocessor1_Model1 |
-
-![ROC curve for a cached embedding classifier
-evaluation.](tidymodels_files/figure-html/tidymodels-roc-rendered-1.png)
 
 ## Hyperparameter tuning
 
@@ -418,7 +372,6 @@ bytes_per_double <- 8
 
 memory_mb <- (n_texts * n_dims * bytes_per_double) / 1024^2
 print(paste(round(memory_mb), "MB for embeddings alone"))
-#> [1] "117 MB for embeddings alone"
 ```
 
 Consider dimension reduction for large datasets.

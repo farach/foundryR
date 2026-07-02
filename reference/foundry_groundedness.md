@@ -15,6 +15,8 @@ foundry_groundedness(
   domain = c("Generic", "Medical"),
   task = c("QnA", "Summarization"),
   reasoning = FALSE,
+  correction = FALSE,
+  llm_resource = NULL,
   endpoint = NULL,
   api_key = NULL,
   api_version = "2024-09-15-preview"
@@ -57,7 +59,24 @@ foundry_groundedness(
 - reasoning:
 
   Logical. If `TRUE`, includes reasoning for ungrounded segments in the
-  response. Default: `FALSE`.
+  response. Requires a linked or supplied `llm_resource`. Default:
+  `FALSE`.
+
+- correction:
+
+  Logical. If `TRUE`, requests corrected text that is consistent with
+  the grounding sources (the Content Safety "mitigating" feature).
+  Requires `llm_resource` and `api_version >= "2024-09-15-preview"`. The
+  corrected text is returned in the `correction_text` column. Default:
+  `FALSE`.
+
+- llm_resource:
+
+  List or `NULL`. Connection details for a bring-your-own Azure OpenAI
+  deployment, used when `reasoning = TRUE` or `correction = TRUE`. Build
+  it with
+  [`foundry_llm_resource()`](https://farach.github.io/foundryR/reference/foundry_llm_resource.md).
+  Default: `NULL`.
 
 - endpoint:
 
@@ -98,6 +117,17 @@ A tibble with one row containing:
 
   List. A character vector of text segments identified as ungrounded.
   Empty character vector if fully grounded.
+
+- ungrounded_reasons:
+
+  List. A character vector, aligned with `ungrounded_segments`, holding
+  the model's explanation for each segment when `reasoning = TRUE`. `NA`
+  entries appear when no explanation was returned.
+
+- correction_text:
+
+  Character. The corrected, grounding-consistent text returned when
+  `correction = TRUE`, otherwise `NA`.
 
 ## Details
 
@@ -169,5 +199,19 @@ detailed_result <- foundry_groundedness(
   query = "When was the product released?",
   reasoning = TRUE
 )
+
+# Request corrected text (requires a bring-your-own Azure OpenAI deployment)
+corrected <- foundry_groundedness(
+  text = "The patient name is Kevin.",
+  grounding_sources = "The patient name is Jane.",
+  task = "Summarization",
+  domain = "Medical",
+  correction = TRUE,
+  llm_resource = foundry_llm_resource(
+    endpoint = "https://your-openai.openai.azure.com",
+    deployment_name = "gpt-4o"
+  )
+)
+corrected$correction_text
 } # }
 ```

@@ -102,17 +102,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; foundryR - Tidy Azure AI Foundry workflows</span></span>
-<span><span class="co">#&gt; ==========================================</span></span>
-<span><span class="co">#&gt; * Check your setup:</span></span>
-<span><span class="co">#&gt;   foundry_check_setup()</span></span>
-<span><span class="co">#&gt; * Set your API key: foundry_set_key()</span></span>
-<span><span class="co">#&gt; * Set your endpoint: foundry_set_endpoint()</span></span>
-<span><span class="co">#&gt; * Get started: ?foundry_response, ?foundry_groundedness</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; New to Azure? See the README for setup instructions.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span></code></pre></div>
 <p>The Batch API is useful when your research task has hundreds or
 thousands of independent rows: survey coding, abstract screening, entity
 extraction, document classification, or large-scale summarization.</p>
@@ -145,13 +135,7 @@ data frame into the JSON Lines shape expected by the Batch API.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">request_file</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">#&gt;   path                                  requests endpoint     </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> /tmp/RtmpdIPqIU/file20ccbcf5ad2.jsonl        3 /v1/responses</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">jsonl</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"custom_id\":\"resp-001\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-4.1\",\"input\":\"The workshop was clear and practical.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"     </span></span>
-<span><span class="co">#&gt; [2] "{\"custom_id\":\"resp-002\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-4.1\",\"input\":\"I liked the examples but wanted more time.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">jsonl</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="upload-and-create-a-batch">Upload and create a batch<a class="anchor" aria-label="anchor" href="#upload-and-create-a-batch"></a>
@@ -165,47 +149,13 @@ chunks are not run while building the vignette.</p>
 <span>  input_file_id <span class="op">=</span> <span class="va">file</span><span class="op">$</span><span class="va">file_id</span>,</span>
 <span>  endpoint <span class="op">=</span> <span class="st">"/v1/responses"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>The returned objects are tidy tibbles:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  file_id <span class="op">=</span> <span class="st">"file_abc123"</span>,</span>
-<span>  filename <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/basename.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">jsonl</span><span class="op">)</span>,</span>
-<span>  purpose <span class="op">=</span> <span class="st">"batch"</span>,</span>
-<span>  status <span class="op">=</span> <span class="st">"processed"</span>,</span>
-<span>  bytes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.info.html" class="external-link">file.size</a></span><span class="op">(</span><span class="va">jsonl</span><span class="op">)</span>,</span>
-<span>  created_at <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/as.POSIXlt.html" class="external-link">as.POSIXct</a></span><span class="op">(</span><span class="st">"2026-06-24 12:00:00"</span>, tz <span class="op">=</span> <span class="st">"UTC"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">batch</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
-<span>  batch_id <span class="op">=</span> <span class="st">"batch_abc123"</span>,</span>
-<span>  status <span class="op">=</span> <span class="st">"validating"</span>,</span>
-<span>  endpoint <span class="op">=</span> <span class="st">"/v1/responses"</span>,</span>
-<span>  input_file_id <span class="op">=</span> <span class="va">file</span><span class="op">$</span><span class="va">file_id</span>,</span>
-<span>  output_file_id <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  error_file_id <span class="op">=</span> <span class="cn">NA_character_</span>,</span>
-<span>  completion_window <span class="op">=</span> <span class="st">"24h"</span>,</span>
-<span>  request_counts_total <span class="op">=</span> <span class="fl">3L</span>,</span>
-<span>  request_counts_completed <span class="op">=</span> <span class="fl">0L</span>,</span>
-<span>  request_counts_failed <span class="op">=</span> <span class="fl">0L</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">file</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 6</span></span></span>
-<span><span class="co">#&gt;   file_id     filename              purpose status    bytes created_at         </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dttm&gt;</span>             </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> file_abc123 file20ccbcf5ad2.jsonl batch   processed   672 2026-06-24 <span style="color: #949494;">12:00:00</span></span></span>
-<span><span class="va">batch</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 10</span></span></span>
-<span><span class="co">#&gt;   batch_id     status     endpoint    input_file_id output_file_id error_file_id</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> batch_abc123 validating /v1/respon… file_abc123   <span style="color: #BB0000;">NA</span>             <span style="color: #BB0000;">NA</span>           </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: completion_window &lt;chr&gt;, request_counts_total &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   request_counts_completed &lt;int&gt;, request_counts_failed &lt;int&gt;</span></span></span></code></pre></div>
+<p>The returned objects include service identifiers, status fields, file
+sizes, completion windows, and request counts.</p>
 </div>
 <div class="section level2">
 <h2 id="poll-and-download-results">Poll and download results<a class="anchor" aria-label="anchor" href="#poll-and-download-results"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_batch_get.html">foundry_batch_get</a></span><span class="op">(</span><span class="va">batch</span><span class="op">$</span><span class="va">batch_id</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/foundry_file_download.html">foundry_file_download</a></span><span class="op">(</span></span>
@@ -214,15 +164,9 @@ chunks are not run while building the vignette.</p>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Output files are JSONL too. Read a few lines first before parsing a
 large job:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">output_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="st">'{"custom_id":"resp-001","response":{"body":{"output_text":"positive"}}}'</span>,</span>
-<span>  <span class="st">'{"custom_id":"resp-002","response":{"body":{"output_text":"neutral"}}}'</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output_lines</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"custom_id\":\"resp-001\",\"response\":{\"body\":{\"output_text\":\"positive\"}}}"</span></span>
-<span><span class="co">#&gt; [2] "{\"custom_id\":\"resp-002\",\"response\":{\"body\":{\"output_text\":\"neutral\"}}}"</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">output_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"batch-output.jsonl"</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output_lines</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="practical-advice">Practical advice<a class="anchor" aria-label="anchor" href="#practical-advice"></a>

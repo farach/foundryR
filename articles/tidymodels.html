@@ -160,58 +160,34 @@ your recipe:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Sample data with text and outcome</span></span>
 <span><span class="va">reviews</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  text <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"This product is amazing, highly recommend!"</span>,</span>
-<span>    <span class="st">"Terrible quality, waste of money"</span>,</span>
-<span>    <span class="st">"Good value for the price"</span>,</span>
-<span>    <span class="st">"Disappointed with the purchase"</span>,</span>
-<span>    <span class="st">"Exceeded my expectations"</span>,</span>
-<span>    <span class="st">"Would not buy again"</span></span>
+<span>    <span class="st">"This product is useful and easy to use."</span>,</span>
+<span>    <span class="st">"The setup was confusing and slow."</span>,</span>
+<span>    <span class="st">"The examples were clear and helpful."</span>,</span>
+<span>    <span class="st">"I needed better instructions."</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  sentiment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"positive"</span>, <span class="st">"negative"</span>, <span class="st">"positive"</span>,</span>
-<span>                       <span class="st">"negative"</span>, <span class="st">"positive"</span>, <span class="st">"negative"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  sentiment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"positive"</span>, <span class="st">"negative"</span>, <span class="st">"positive"</span>, <span class="st">"negative"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create recipe with embedding step</span></span>
+<span></span>
 <span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span></span>
 <span>    <span class="va">text</span>,</span>
-<span>    model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,  <span class="co"># Your deployment name</span></span>
-<span>    keep_original <span class="op">=</span> <span class="cn">FALSE</span>         <span class="co"># Remove original text column</span></span>
+<span>    model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,</span>
+<span>    keep_original <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
-<span><span class="va">recipe_spec</span></span>
-<span><span class="co">#&gt; Recipe</span></span>
-<span><span class="co">#&gt;</span></span>
-<span><span class="co">#&gt; Inputs:</span></span>
-<span><span class="co">#&gt;</span></span>
-<span><span class="co">#&gt;       role #variables</span></span>
-<span><span class="co">#&gt;    outcome          1</span></span>
-<span><span class="co">#&gt;  predictor          1</span></span>
-<span><span class="co">#&gt;</span></span>
-<span><span class="co">#&gt; Operations:</span></span>
-<span><span class="co">#&gt;</span></span>
-<span><span class="co">#&gt; Azure AI Foundry embeddings for text</span></span></code></pre></div>
+<span><span class="va">recipe_spec</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="preparing-and-baking-the-recipe">Preparing and Baking the Recipe<a class="anchor" aria-label="anchor" href="#preparing-and-baking-the-recipe"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Prepare the recipe (generates embeddings for training data)</span></span>
-<span><span class="va">prepped_recipe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/prep.html" class="external-link">prep</a></span><span class="op">(</span><span class="va">recipe_spec</span>, training <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">prepped_recipe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/prep.html" class="external-link">prep</a></span><span class="op">(</span><span class="va">recipe_spec</span>, training <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Bake to transform data</span></span>
 <span><span class="va">baked_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/bake.html" class="external-link">bake</a></span><span class="op">(</span><span class="va">prepped_recipe</span>, new_data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span><span class="va">baked_data</span></span>
-<span><span class="co">#&gt; # A tibble: 6 × 1,537</span></span>
-<span><span class="co">#&gt;   sentiment text_embed_001 text_embed_002 text_embed_003 ... text_embed_1536</span></span>
-<span><span class="co">#&gt;   &lt;fct&gt;              &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;             &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 positive          0.0234        -0.0156         0.0089           0.0123</span></span>
-<span><span class="co">#&gt; 2 negative         -0.0145         0.0234        -0.0067          -0.0089</span></span>
-<span><span class="co">#&gt; 3 positive          0.0178        -0.0123         0.0145           0.0098</span></span>
-<span><span class="co">#&gt; ...</span></span></code></pre></div>
+<span><span class="va">baked_data</span></span></code></pre></div>
 <p>The text column is replaced with 1,536 numeric embedding dimensions
 (the exact number depends on your embedding model).</p>
 </div>
@@ -219,7 +195,9 @@ your recipe:</p>
 <div class="section level2">
 <h2 id="complete-ml-pipeline-example">Complete ML Pipeline Example<a class="anchor" aria-label="anchor" href="#complete-ml-pipeline-example"></a>
 </h2>
-<p>Here’s a full example building a sentiment classifier:</p>
+<p>Here’s a full example building a sentiment classifier. It is shown as
+code only because fitting and resampling would repeat embedding API
+calls:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
@@ -277,12 +255,7 @@ your recipe:</p>
 <span></span>
 <span><span class="co"># Evaluate</span></span>
 <span><span class="va">predictions</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu">metrics</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">sentiment</span>, estimate <span class="op">=</span> <span class="va">.pred_class</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 2 × 3</span></span>
-<span><span class="co">#&gt;   .metric  .estimator .estimate</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 accuracy binary         1</span></span>
-<span><span class="co">#&gt; 2 kap      binary         1</span></span></code></pre></div>
+<span>  <span class="fu">metrics</span><span class="op">(</span>truth <span class="op">=</span> <span class="va">sentiment</span>, estimate <span class="op">=</span> <span class="va">.pred_class</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="advanced-options">Advanced Options<a class="anchor" aria-label="anchor" href="#advanced-options"></a>
@@ -364,7 +337,7 @@ once with <code><a href="../reference/foundry_embed.html">foundry_embed()</a></c
 and resample the saved embeddings.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">embedded_reviews</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span></span>
-<span>  <span class="va">reviews</span><span class="op">$</span><span class="va">review_text</span>,</span>
+<span>  <span class="va">reviews</span><span class="op">$</span><span class="va">text</span>,</span>
 <span>  model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -374,7 +347,9 @@ and resample the saved embeddings.</p>
 <span><span class="va">precomputed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_cols.html" class="external-link">bind_cols</a></span><span class="op">(</span></span>
 <span>  <span class="va">reviews</span><span class="op">[</span><span class="st">"sentiment"</span><span class="op">]</span>,</span>
 <span>  <span class="va">embedding_cols</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">precomputed</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span></span></code></pre></div>
 <p>Use the recipe step when preprocessing needs to be self-contained.
 Precompute when cost, rate limits, or repeated resampling runs matter
 more.</p>
@@ -396,511 +371,7 @@ cross-validation follows the usual tidymodels recipe lifecycle:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Collect metrics</span></span>
-<span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">cv_results</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 2 × 6</span></span>
-<span><span class="co">#&gt;   .metric  .estimator  mean     n std_err .config</span></span>
-<span><span class="co">#&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;</span></span>
-<span><span class="co">#&gt; 1 accuracy binary     0.875     5  0.0559 Preprocessor1_Model1</span></span>
-<span><span class="co">#&gt; 2 roc_auc  binary     0.925     5  0.0433 Preprocessor1_Model1</span></span></code></pre></div>
-<p>The rendered evaluation outputs below use precomputed, illustrative
-data from a representative resampling run. They are rendered during the
-documentation build without Azure credentials.</p>
-<div id="mwlefoodfi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#mwlefoodfi table {
-  font-family: Inter;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#mwlefoodfi thead, #mwlefoodfi tbody, #mwlefoodfi tfoot, #mwlefoodfi tr, #mwlefoodfi td, #mwlefoodfi th {
-  border-style: none;
-}
-
-#mwlefoodfi p {
-  margin: 0;
-  padding: 0;
-}
-
-#mwlefoodfi .gt_table {
-  display: table;
-  border-collapse: collapse;
-  line-height: normal;
-  margin-left: auto;
-  margin-right: auto;
-  color: #333333;
-  font-size: 16px;
-  font-weight: normal;
-  font-style: normal;
-  background-color: #FFFFFF;
-  width: auto;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #A8A8A8;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #A8A8A8;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_caption {
-  padding-top: 4px;
-  padding-bottom: 4px;
-}
-
-#mwlefoodfi .gt_title {
-  color: #333333;
-  font-size: 125%;
-  font-weight: initial;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-color: #FFFFFF;
-  border-bottom-width: 0;
-}
-
-#mwlefoodfi .gt_subtitle {
-  color: #333333;
-  font-size: 85%;
-  font-weight: initial;
-  padding-top: 3px;
-  padding-bottom: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-color: #FFFFFF;
-  border-top-width: 0;
-}
-
-#mwlefoodfi .gt_heading {
-  background-color: #FFFFFF;
-  text-align: center;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_bottom_border {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_col_headings {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_col_heading {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 6px;
-  padding-left: 5px;
-  padding-right: 5px;
-  overflow-x: hidden;
-}
-
-#mwlefoodfi .gt_column_spanner_outer {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: normal;
-  text-transform: inherit;
-  padding-top: 0;
-  padding-bottom: 0;
-  padding-left: 4px;
-  padding-right: 4px;
-}
-
-#mwlefoodfi .gt_column_spanner_outer:first-child {
-  padding-left: 0;
-}
-
-#mwlefoodfi .gt_column_spanner_outer:last-child {
-  padding-right: 0;
-}
-
-#mwlefoodfi .gt_column_spanner {
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: bottom;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  overflow-x: hidden;
-  display: inline-block;
-  width: 100%;
-}
-
-#mwlefoodfi .gt_spanner_row {
-  border-bottom-style: hidden;
-}
-
-#mwlefoodfi .gt_group_heading {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  text-align: left;
-}
-
-#mwlefoodfi .gt_empty_group_heading {
-  padding: 0.5px;
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  vertical-align: middle;
-}
-
-#mwlefoodfi .gt_from_md > :first-child {
-  margin-top: 0;
-}
-
-#mwlefoodfi .gt_from_md > :last-child {
-  margin-bottom: 0;
-}
-
-#mwlefoodfi .gt_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  margin: 10px;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-top-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-  vertical-align: middle;
-  overflow-x: hidden;
-}
-
-#mwlefoodfi .gt_stub {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#mwlefoodfi .gt_stub_row_group {
-  color: #333333;
-  background-color: #FFFFFF;
-  font-size: 100%;
-  font-weight: initial;
-  text-transform: inherit;
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-  padding-left: 5px;
-  padding-right: 5px;
-  vertical-align: top;
-}
-
-#mwlefoodfi .gt_row_group_first td {
-  border-top-width: 2px;
-}
-
-#mwlefoodfi .gt_row_group_first th {
-  border-top-width: 2px;
-}
-
-#mwlefoodfi .gt_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#mwlefoodfi .gt_first_summary_row {
-  border-top-style: solid;
-  border-top-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_first_summary_row.thick {
-  border-top-width: 2px;
-}
-
-#mwlefoodfi .gt_last_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_grand_summary_row {
-  color: #333333;
-  background-color: #FFFFFF;
-  text-transform: inherit;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#mwlefoodfi .gt_first_grand_summary_row {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-top-style: double;
-  border-top-width: 6px;
-  border-top-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_last_grand_summary_row_top {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom-style: double;
-  border-bottom-width: 6px;
-  border-bottom-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_striped {
-  background-color: rgba(128, 128, 128, 0.05);
-}
-
-#mwlefoodfi .gt_table_body {
-  border-top-style: solid;
-  border-top-width: 2px;
-  border-top-color: #D3D3D3;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_footnotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_footnote {
-  margin: 0px;
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#mwlefoodfi .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#mwlefoodfi .gt_sourcenote {
-  font-size: 90%;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#mwlefoodfi .gt_left {
-  text-align: left;
-}
-
-#mwlefoodfi .gt_center {
-  text-align: center;
-}
-
-#mwlefoodfi .gt_right {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-#mwlefoodfi .gt_font_normal {
-  font-weight: normal;
-}
-
-#mwlefoodfi .gt_font_bold {
-  font-weight: bold;
-}
-
-#mwlefoodfi .gt_font_italic {
-  font-style: italic;
-}
-
-#mwlefoodfi .gt_super {
-  font-size: 65%;
-}
-
-#mwlefoodfi .gt_footnote_marks {
-  font-size: 75%;
-  vertical-align: 0.4em;
-  position: initial;
-}
-
-#mwlefoodfi .gt_asterisk {
-  font-size: 100%;
-  vertical-align: 0;
-}
-
-#mwlefoodfi .gt_indent_1 {
-  text-indent: 5px;
-}
-
-#mwlefoodfi .gt_indent_2 {
-  text-indent: 10px;
-}
-
-#mwlefoodfi .gt_indent_3 {
-  text-indent: 15px;
-}
-
-#mwlefoodfi .gt_indent_4 {
-  text-indent: 20px;
-}
-
-#mwlefoodfi .gt_indent_5 {
-  text-indent: 25px;
-}
-
-#mwlefoodfi .katex-display {
-  display: inline-flex !important;
-  margin-bottom: 0.75em !important;
-}
-
-#mwlefoodfi div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
-  height: 0px !important;
-}
-</style>
-<table class="table gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-<thead>
-<tr class="gt_heading">
-<td colspan="4" class="gt_heading gt_title gt_font_normal gt_bottom_border" style>Embedding classifier evaluation metrics</td>
-    </tr>
-<tr class="gt_col_headings">
-<th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="a.metric">Metric</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="a.estimator">Estimator</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="a.estimate">Estimate</th>
-      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="a.config">Configuration</th>
-    </tr>
-</thead>
-<tbody class="gt_table_body">
-<tr>
-<td headers=".metric" class="gt_row gt_left">accuracy</td>
-<td headers=".estimator" class="gt_row gt_left">binary</td>
-<td headers=".estimate" class="gt_row gt_right">0.875</td>
-<td headers=".config" class="gt_row gt_left">Preprocessor1_Model1</td>
-</tr>
-<tr>
-<td headers=".metric" class="gt_row gt_left">roc_auc</td>
-<td headers=".estimator" class="gt_row gt_left">binary</td>
-<td headers=".estimate" class="gt_row gt_right">0.925</td>
-<td headers=".config" class="gt_row gt_left">Preprocessor1_Model1</td>
-</tr>
-<tr>
-<td headers=".metric" class="gt_row gt_left">kap</td>
-<td headers=".estimator" class="gt_row gt_left">binary</td>
-<td headers=".estimate" class="gt_row gt_right">0.750</td>
-<td headers=".config" class="gt_row gt_left">Preprocessor1_Model1</td>
-</tr>
-<tr>
-<td headers=".metric" class="gt_row gt_left">sensitivity</td>
-<td headers=".estimator" class="gt_row gt_left">binary</td>
-<td headers=".estimate" class="gt_row gt_right">0.900</td>
-<td headers=".config" class="gt_row gt_left">Preprocessor1_Model1</td>
-</tr>
-<tr>
-<td headers=".metric" class="gt_row gt_left">specificity</td>
-<td headers=".estimator" class="gt_row gt_left">binary</td>
-<td headers=".estimate" class="gt_row gt_right">0.850</td>
-<td headers=".config" class="gt_row gt_left">Preprocessor1_Model1</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p><img src="tidymodels_files/figure-html/tidymodels-roc-rendered-1.png" class="r-plt" alt="ROC curve for a cached embedding classifier evaluation." width="700"></p>
+<span><span class="fu">collect_metrics</span><span class="op">(</span><span class="va">cv_results</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="hyperparameter-tuning">Hyperparameter tuning<a class="anchor" aria-label="anchor" href="#hyperparameter-tuning"></a>
@@ -988,8 +459,7 @@ can grow quickly:</p>
 <span><span class="va">bytes_per_double</span> <span class="op">&lt;-</span> <span class="fl">8</span></span>
 <span></span>
 <span><span class="va">memory_mb</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">n_texts</span> <span class="op">*</span> <span class="va">n_dims</span> <span class="op">*</span> <span class="va">bytes_per_double</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1024</span><span class="op">^</span><span class="fl">2</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">memory_mb</span><span class="op">)</span>, <span class="st">"MB for embeddings alone"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "117 MB for embeddings alone"</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">memory_mb</span><span class="op">)</span>, <span class="st">"MB for embeddings alone"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Consider dimension reduction for large datasets.</p>
 </div>
 </div>

@@ -292,6 +292,8 @@ functions manage authentication for all API calls.
   : Set a Microsoft Entra ID token provider
 - [`foundry_token_azure_cli()`](https://farach.github.io/foundryR/reference/foundry_token_azure_cli.md)
   : Create an Azure CLI token provider
+- [`foundry_token_azure_identity()`](https://farach.github.io/foundryR/reference/foundry_token_azure_identity.md)
+  : Create a Microsoft Entra ID token provider using AzureAuth
 - [`foundry_set_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_endpoint.md)
   : Set Azure AI Foundry Endpoint
 - [`foundry_get_endpoint()`](https://farach.github.io/foundryR/reference/foundry_get_endpoint.md)
@@ -326,6 +328,8 @@ content, detect hallucinations, and protect against prompt injection.
   : Manage Content Safety text blocklists
 - [`foundry_groundedness()`](https://farach.github.io/foundryR/reference/foundry_groundedness.md)
   : Detect Groundedness of LLM Responses
+- [`foundry_llm_resource()`](https://farach.github.io/foundryR/reference/foundry_llm_resource.md)
+  : Describe a bring-your-own Azure OpenAI resource for groundedness
 - [`foundry_shield()`](https://farach.github.io/foundryR/reference/foundry_shield.md)
   : Shield Prompt from Injection Attacks
 - [`foundry_set_content_safety_key()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_key.md)

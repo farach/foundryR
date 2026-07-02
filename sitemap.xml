@@ -59,6 +59,7 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_groundedness.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_image.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_image_edit.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_llm_resource.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_models.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_moderate.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_moderate_image.html</loc></url>
@@ -90,6 +91,7 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_similarity.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_speak.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_token_azure_cli.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_token_azure_identity.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_tool.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_tool_file_search.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_transcribe.html</loc></url>

@@ -77,6 +77,7 @@
 <li>Added <code><a href="../reference/foundry_image_edit.html">foundry_image_edit()</a></code> for v1 preview image editing with local image and optional mask uploads.</li>
 <li>Added <code><a href="../reference/foundry_response_cancel.html">foundry_response_cancel()</a></code> and <code><a href="../reference/foundry_response_input_items.html">foundry_response_input_items()</a></code> for background Responses API workflows and response introspection (roadmap 2026 H2).</li>
 <li>Added <code><a href="../reference/foundry_set_project_endpoint.html">foundry_set_project_endpoint()</a></code>, <code><a href="../reference/foundry_get_project_endpoint.html">foundry_get_project_endpoint()</a></code>, <code><a href="../reference/foundry_set_token_provider.html">foundry_set_token_provider()</a></code>, and <code><a href="../reference/foundry_token_azure_cli.html">foundry_token_azure_cli()</a></code> for project-scoped APIs and refreshable Microsoft Entra authentication (roadmap 2026 H2).</li>
+<li>Added <code><a href="../reference/foundry_token_azure_identity.html">foundry_token_azure_identity()</a></code>, a refreshable Microsoft Entra ID token provider backed by  that supports service principals, managed identity, and interactive or device-code flows (roadmap 2026 H2).</li>
 <li>Added <code><a href="../reference/foundry_set_speech_endpoint.html">foundry_set_speech_endpoint()</a></code>, <code><a href="../reference/foundry_set_speech_key.html">foundry_set_speech_key()</a></code>, <code><a href="../reference/foundry_transcribe.html">foundry_transcribe()</a></code>, and <code><a href="../reference/foundry_translate_audio.html">foundry_translate_audio()</a></code> for LLM Speech and MAI-Transcribe workflows.</li>
 <li>Added <code><a href="../reference/foundry_set_token.html">foundry_set_token()</a></code> for Microsoft Entra ID bearer-token authentication across Foundry requests.</li>
 <li>Added <code><a href="../reference/foundry_speak.html">foundry_speak()</a></code> for v1 preview text-to-speech output saved to local audio files.</li>
@@ -85,32 +86,20 @@
 </ul></div>
 <div class="section level3">
 <h3 id="improvements-0-0-0-9000">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-0-0-9000"></a></h3>
-<ul><li>
-<code><a href="../reference/as_foundry_schema.html">as_foundry_schema()</a></code> now converts <code><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">ellmer::type_object()</a></code> specifications to strict JSON Schema, so ellmer users can reuse existing type definitions in <code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> and <code><a href="../reference/foundry_response.html">foundry_response()</a></code> (roadmap 2026 H2).</li>
-<li>
-<code><a href="../reference/foundry_agreement.html">foundry_agreement()</a></code> now reports Krippendorff’s alpha alongside Cohen’s and Fleiss’ kappa, using  when installed and a base-R nominal fallback otherwise (roadmap 2026 H2).</li>
-<li>
-<code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> now accepts <code>reasoning_effort</code> and returns <code>reasoning_tokens</code> and <code>cached_input_tokens</code> when chat-completions responses report those fields.</li>
-<li>
-<code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> now defaults to the <code>/openai/v1/chat/completions</code> endpoint while keeping <code>api = "deployment"</code> as a legacy escape hatch (roadmap 2026 H2).</li>
-<li>
-<code><a href="../reference/foundry_embed.html">foundry_embed()</a></code> now uses the <code>/openai/v1/embeddings</code> array endpoint by default, returns row-level <code>.error</code> and <code>.error_msg</code> fields, and keeps <code>api = "deployment"</code> as a legacy escape hatch (roadmap 2026 H2).</li>
-<li>
-<code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> now accepts data frames with <code>text_col</code>, preserves original columns, runs requests in parallel, and returns parse or HTTP failures as <code>.error</code> rows instead of aborting the whole job (roadmap 2026 H2).</li>
-<li>
-<code><a href="../reference/foundry_image.html">foundry_image()</a></code> now uses the v1 preview image generation endpoint by default, supports newer image options such as <code>output_format</code>, <code>output_compression</code>, <code>background</code>, and <code>moderation</code>, and keeps the legacy deployment endpoint available with <code>api = "deployment"</code>.</li>
-<li>
-<code><a href="../reference/foundry_moderate.html">foundry_moderate()</a></code> now supports Content Safety blocklists and keeps raw response payloads in list-columns (roadmap 2026 H2).</li>
-<li>
-<code><a href="../reference/foundry_models.html">foundry_models()</a></code> now calls the v1 model and deployment metadata endpoints instead of sending a dummy chat request.</li>
-<li>
-<code><a href="../reference/foundry_response.html">foundry_response()</a></code> now accepts background, conversation, prompt-cache, parallel-tool-call, max-tool-call, safety-identifier, and reasoning-summary controls from the v1 Responses API (roadmap 2026 H2).</li>
-<li>
-<code><a href="../reference/foundry_response.html">foundry_response()</a></code> accepts <code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> objects in <code>tools</code>, strips local R function references from request bodies, and returns <code>cached_input_tokens</code> when the Responses API reports cached input tokens.</li>
-<li>
-<code><a href="../reference/foundry_similarity.html">foundry_similarity()</a></code> now computes all pairwise cosine similarities with a single vectorized matrix product, supports <code>top_k</code>, and can return a similarity matrix with <code>as_matrix = TRUE</code> (roadmap 2026 H2).</li>
-<li>
-<code><a href="../reference/step_foundry_embed.html">step_foundry_embed()</a></code> now supports <code>cache = "disk"</code> with an optional <code>cache_dir</code> to persist embeddings across bakes, and builds embedding columns from a single matrix instead of a per-cell fill loop (roadmap 2026 H2).</li>
+<ul><li><p><code><a href="../reference/foundry_groundedness.html">foundry_groundedness()</a></code> now supports the Content Safety correction feature via <code>correction = TRUE</code> with a bring-your-own Azure OpenAI deployment described by the new <code><a href="../reference/foundry_llm_resource.html">foundry_llm_resource()</a></code>, returning a <code>correction_text</code> column, and surfaces per-segment <code>ungrounded_reasons</code> when <code>reasoning = TRUE</code> (roadmap 2026 H2).</p></li>
+<li><p><code><a href="../reference/as_foundry_schema.html">as_foundry_schema()</a></code> now converts <code><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">ellmer::type_object()</a></code> specifications to strict JSON Schema, so ellmer users can reuse existing type definitions in <code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> and <code><a href="../reference/foundry_response.html">foundry_response()</a></code> (roadmap 2026 H2).</p></li>
+<li><p><code><a href="../reference/foundry_agreement.html">foundry_agreement()</a></code> now reports Krippendorff’s alpha alongside Cohen’s and Fleiss’ kappa, using  when installed and a base-R nominal fallback otherwise (roadmap 2026 H2).</p></li>
+<li><p><code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> now accepts <code>reasoning_effort</code> and returns <code>reasoning_tokens</code> and <code>cached_input_tokens</code> when chat-completions responses report those fields.</p></li>
+<li><p><code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> now defaults to the <code>/openai/v1/chat/completions</code> endpoint while keeping <code>api = "deployment"</code> as a legacy escape hatch (roadmap 2026 H2).</p></li>
+<li><p><code><a href="../reference/foundry_embed.html">foundry_embed()</a></code> now uses the <code>/openai/v1/embeddings</code> array endpoint by default, returns row-level <code>.error</code> and <code>.error_msg</code> fields, and keeps <code>api = "deployment"</code> as a legacy escape hatch (roadmap 2026 H2).</p></li>
+<li><p><code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> now accepts data frames with <code>text_col</code>, preserves original columns, runs requests in parallel, and returns parse or HTTP failures as <code>.error</code> rows instead of aborting the whole job (roadmap 2026 H2).</p></li>
+<li><p><code><a href="../reference/foundry_image.html">foundry_image()</a></code> now uses the v1 preview image generation endpoint by default, supports newer image options such as <code>output_format</code>, <code>output_compression</code>, <code>background</code>, and <code>moderation</code>, and keeps the legacy deployment endpoint available with <code>api = "deployment"</code>.</p></li>
+<li><p><code><a href="../reference/foundry_moderate.html">foundry_moderate()</a></code> now supports Content Safety blocklists and keeps raw response payloads in list-columns (roadmap 2026 H2).</p></li>
+<li><p><code><a href="../reference/foundry_models.html">foundry_models()</a></code> now calls the v1 model and deployment metadata endpoints instead of sending a dummy chat request.</p></li>
+<li><p><code><a href="../reference/foundry_response.html">foundry_response()</a></code> now accepts background, conversation, prompt-cache, parallel-tool-call, max-tool-call, safety-identifier, and reasoning-summary controls from the v1 Responses API (roadmap 2026 H2).</p></li>
+<li><p><code><a href="../reference/foundry_response.html">foundry_response()</a></code> accepts <code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> objects in <code>tools</code>, strips local R function references from request bodies, and returns <code>cached_input_tokens</code> when the Responses API reports cached input tokens.</p></li>
+<li><p><code><a href="../reference/foundry_similarity.html">foundry_similarity()</a></code> now computes all pairwise cosine similarities with a single vectorized matrix product, supports <code>top_k</code>, and can return a similarity matrix with <code>as_matrix = TRUE</code> (roadmap 2026 H2).</p></li>
+<li><p><code><a href="../reference/step_foundry_embed.html">step_foundry_embed()</a></code> now supports <code>cache = "disk"</code> with an optional <code>cache_dir</code> to persist embeddings across bakes, and builds embedding columns from a single matrix instead of a per-cell fill loop (roadmap 2026 H2).</p></li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-and-package-metadata-0-0-0-9000">Documentation and package metadata<a class="anchor" aria-label="anchor" href="#documentation-and-package-metadata-0-0-0-9000"></a></h3>

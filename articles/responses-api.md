@@ -26,11 +26,8 @@ columns.
 
 library(foundryR)
 
-foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
-foundry_set_key("your-api-key")
-
 foundry_response(
-  "Summarize retrieval-augmented generation in two sentences.",
+  "Answer in one sentence: what is retrieval-augmented generation?",
   model = "gpt-4.1"
 )
 ```
@@ -54,12 +51,12 @@ passing the previous `response_id`:
 ``` r
 
 first <- foundry_response(
-  "Define catastrophic forgetting.",
+  "Define catastrophic forgetting in one sentence.",
   model = "gpt-4.1"
 )
 
 second <- foundry_response(
-  "Explain it for a college freshman.",
+  "Explain it for a college freshman in one sentence.",
   model = "gpt-4.1",
   previous_response_id = first$response_id
 )
@@ -149,7 +146,7 @@ weather_tool <- foundry_tool(
 turns <- foundry_agent(
   "What is the weather in San Francisco?",
   tools = list(weather_tool),
-  model = "my-gpt4",
+  model = "gpt-4.1",
   max_iterations = 4
 )
 
@@ -179,7 +176,7 @@ mcp_tool <- list(
 
 foundry_response(
   "Use the MCP server if it helps answer the question.",
-  model = "my-gpt4",
+  model = "gpt-4.1",
   tools = list(mcp_tool)
 )
 ```
