@@ -11,6 +11,7 @@ foundry_embed_batch(
   batch_size = 100L,
   max_active = 10L,
   progress = TRUE,
+  api = c("v1", "deployment"),
   api_key = NULL,
   api_version = NULL
 )
@@ -31,6 +32,10 @@ Default: 100.}
 
 \item{progress}{Logical. Whether to show a progress bar. Default: TRUE.}
 
+\item{api}{Character. Endpoint style. \code{"v1"} (default) sends requests to
+\verb{/openai/v1/embeddings} with \code{model} in the JSON body. \code{"deployment"} keeps
+the legacy deployment-path endpoint.}
+
 \item{api_key}{Character. Optional API key override.}
 
 \item{api_version}{Character. Optional API version override.}
@@ -45,6 +50,8 @@ May contain multiple embeddings per batch response.}
 \item{n_dims}{Integer. The dimensionality of the embedding, or NA if failed.}
 \item{.error}{Logical. TRUE if the request for this text failed.}
 \item{.error_msg}{Character. Error message if failed, NA otherwise.}
+\item{raw_response}{List. Raw parsed response payload for successful rows,
+or NULL for failed rows.}
 }
 }
 \description{

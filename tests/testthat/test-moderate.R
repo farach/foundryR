@@ -36,7 +36,10 @@ test_that("foundry_moderate handles empty input", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
-  expect_named(result, c("text", "category", "severity", "label"))
+  expect_named(result, c(
+    "text", "category", "severity", "label",
+    "blocklist_matches", "raw_response"
+  ))
 })
 
 # ============================================================================
@@ -68,7 +71,10 @@ test_that("foundry_moderate returns tibble with mocked safe response", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 4)  # 4 categories
-  expect_named(result, c("text", "category", "severity", "label"))
+  expect_named(result, c(
+    "text", "category", "severity", "label",
+    "blocklist_matches", "raw_response"
+  ))
 
   # All severities should be 0 (safe)
   expect_true(all(result$severity == 0))
@@ -171,6 +177,6 @@ test_that("foundry_moderate returns tibble with real API", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 4)
-  expect_named(result, c("text", "category", "severity", "label"))
+  expect_named(result, c("text", "category", "severity", "label", "blocklist_matches", "raw_response"))
   expect_true(all(result$category %in% c("Hate", "Sexual", "SelfHarm", "Violence")))
 })

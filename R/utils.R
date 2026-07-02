@@ -96,6 +96,38 @@ foundry_build_v1_request <- function(path,
 }
 
 
+foundry_build_project_request <- function(path,
+                                          body = NULL,
+                                          method = "POST",
+                                          api_key = NULL,
+                                          token = NULL,
+                                          endpoint = NULL,
+                                          api_version = "v1") {
+  base_url <- foundry_get_project_endpoint(endpoint = endpoint, required = TRUE)
+
+  path <- sub("^/+", "", path)
+  url <- paste0(base_url, "/", path)
+
+  req <- httr2::request(url) |>
+    httr2::req_method(method) |>
+    foundry_authenticate_request(api_key = api_key, token = token) |>
+    httr2::req_retry(max_tries = 3, backoff = ~ 2) |>
+    httr2::req_error(body = foundry_error_body)
+
+  if (!is.null(api_version)) {
+    req <- req |>
+      httr2::req_url_query(`api-version` = api_version)
+  }
+
+  if (!is.null(body)) {
+    req <- req |>
+      httr2::req_body_json(body)
+  }
+
+  req
+}
+
+
 foundry_authenticate_request <- function(req,
                                          api_key = NULL,
                                          token = NULL,
@@ -122,6 +154,12 @@ foundry_authenticate_request <- function(req,
     return(do.call(httr2::req_headers, c(list(req), headers)))
   }
 
+  provider_token <- foundry_token_from_provider(required = FALSE)
+  if (!is.null(provider_token)) {
+    return(req %>%
+      httr2::req_headers(Authorization = paste("Bearer", provider_token)))
+  }
+
   env_token <- token_getter(token = NULL, required = FALSE)
   if (!is.null(env_token)) {
     return(req %>%
@@ -138,7 +176,7 @@ foundry_authenticate_request <- function(req,
   if (required) {
     cli::cli_abort(c(
       "Azure AI Foundry authentication is required.",
-      "i" = "Set an API key with {.code foundry_set_key()} or set a bearer token with {.code foundry_set_token()}."
+      "i" = "Set an API key with {.code foundry_set_key()}, set a bearer token with {.code foundry_set_token()}, or configure a provider with {.code foundry_set_token_provider()}."
     ))
   }
 

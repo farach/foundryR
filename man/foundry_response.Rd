@@ -15,7 +15,15 @@ foundry_response(
   temperature = NULL,
   top_p = NULL,
   reasoning_effort = NULL,
+  reasoning_summary = NULL,
   store = NULL,
+  background = NULL,
+  conversation = NULL,
+  prompt_cache_key = NULL,
+  prompt_cache_retention = NULL,
+  parallel_tool_calls = NULL,
+  max_tool_calls = NULL,
+  safety_identifier = NULL,
   metadata = NULL,
   include = NULL,
   parse_json = !is.null(text_format),
@@ -57,10 +65,28 @@ reasoning-only models that reject sampling parameters.}
 \code{"medium"}, \code{"high"}, or a newer value supported by your model). Sent as
 \code{reasoning = list(effort = ...)}.}
 
+\item{reasoning_summary}{Character. Optional reasoning summary mode for
+models that support it.}
+
 \item{store}{Logical or NULL. Whether the service should store the response.
 The API stores responses by default when this is omitted. Set \code{FALSE} for
 stateless calls; use \code{TRUE} or omit it when chaining with
 \code{previous_response_id}.}
+
+\item{background}{Logical. Whether to run the response in the background.}
+
+\item{conversation}{Character. Optional conversation ID for server-side
+conversation state.}
+
+\item{prompt_cache_key, prompt_cache_retention}{Optional prompt-cache controls.}
+
+\item{parallel_tool_calls}{Logical. Whether the service may call tools in
+parallel.}
+
+\item{max_tool_calls}{Integer. Optional maximum number of tool calls.}
+
+\item{safety_identifier}{Character. Optional stable end-user identifier for
+safety monitoring.}
 
 \item{metadata}{List. Optional metadata to attach to the response.}
 

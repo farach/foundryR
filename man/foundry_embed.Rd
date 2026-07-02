@@ -8,6 +8,8 @@ foundry_embed(
   text,
   model = NULL,
   dimensions = NULL,
+  batch_size = 100L,
+  api = c("v1", "deployment"),
   api_key = NULL,
   api_version = NULL
 )
@@ -21,6 +23,13 @@ Defaults to the environment variable \code{AZURE_FOUNDRY_EMBED_MODEL}.}
 \item{dimensions}{Integer. Optional. The number of dimensions for the output
 embeddings. Only supported by some models (e.g., text-embedding-3).}
 
+\item{batch_size}{Integer. Number of texts to include in each request.
+Default: 100.}
+
+\item{api}{Character. Endpoint style. \code{"v1"} (default) sends requests to
+\verb{/openai/v1/embeddings} with \code{model} in the JSON body. \code{"deployment"} keeps
+the legacy deployment-path endpoint.}
+
 \item{api_key}{Character. Optional API key override.}
 
 \item{api_version}{Character. Optional API version override.}
@@ -31,6 +40,9 @@ A tibble with columns:
 \item{text}{Character. The original input text.}
 \item{embedding}{List. A numeric vector containing the embedding.}
 \item{n_dims}{Integer. The dimensionality of the embedding.}
+\item{.input_idx}{Integer. Original input index.}
+\item{.error}{Logical. Whether the row failed.}
+\item{.error_msg}{Character. Error message for failed rows.}
 }
 }
 \description{

@@ -9,6 +9,11 @@
 #'   Defaults to the environment variable `AZURE_FOUNDRY_EMBED_MODEL`.
 #' @param dimensions Integer. Optional. The number of dimensions for the output
 #'   embeddings. Only supported by some models (e.g., text-embedding-3).
+#' @param batch_size Integer. Number of texts to include in each request.
+#'   Default: 100.
+#' @param api Character. Endpoint style. `"v1"` (default) sends requests to
+#'   `/openai/v1/embeddings` with `model` in the JSON body. `"deployment"` keeps
+#'   the legacy deployment-path endpoint.
 #' @param api_key Character. Optional API key override.
 #' @param api_version Character. Optional API version override.
 #'
@@ -17,6 +22,9 @@
 #'     \item{text}{Character. The original input text.}
 #'     \item{embedding}{List. A numeric vector containing the embedding.}
 #'     \item{n_dims}{Integer. The dimensionality of the embedding.}
+#'     \item{.input_idx}{Integer. Original input index.}
+#'     \item{.error}{Logical. Whether the row failed.}
+#'     \item{.error_msg}{Character. Error message for failed rows.}
 #'   }
 #'
 #' @details
@@ -47,87 +55,21 @@
 foundry_embed <- function(text,
                            model = NULL,
                            dimensions = NULL,
+                           batch_size = 100L,
+                           api = c("v1", "deployment"),
                            api_key = NULL,
                            api_version = NULL) {
-
-  # Get model/deployment
-  if (is.null(model)) {
-    model <- Sys.getenv("AZURE_FOUNDRY_EMBED_MODEL")
-    if (model == "") {
-      cli::cli_abort(c(
-        "Embedding model/deployment name is required.",
-        "i" = "Specify {.arg model} or set the {.envvar AZURE_FOUNDRY_EMBED_MODEL} environment variable."
-      ))
-    }
-  }
-
-  # Warn if model name looks like a chat model
-
-  warn_if_chat_model(model, "foundry_embed")
-
-  # Handle empty input
-  if (length(text) == 0) {
-    return(tibble::tibble(
-      text = character(),
-      embedding = list(),
-      n_dims = integer()
-    ))
-  }
-
-  # Vectorize over inputs
-  purrr::map_dfr(seq_along(text), function(i) {
-    single_text <- text[i]
-
-    # Handle NA values
-    if (is.na(single_text)) {
-      return(tibble::tibble(
-        text = NA_character_,
-        embedding = list(NULL),
-        n_dims = NA_integer_
-      ))
-    }
-
-    # Build request body
-    body <- list(input = single_text)
-    if (!is.null(dimensions)) {
-      body$dimensions <- dimensions
-    }
-
-    # Build and perform request
-    req <- foundry_build_request(
-      deployment = model,
-      endpoint_path = "embeddings",
-      body = body,
-      api_key = api_key,
-      api_version = api_version
-    )
-
-    result <- tryCatch(
-      foundry_perform(req),
-      error = function(e) {
-        cli::cli_warn("Failed to embed text at index {i}: {conditionMessage(e)}")
-        return(NULL)
-      }
-    )
-
-    if (is.null(result)) {
-      return(tibble::tibble(
-        text = single_text,
-        embedding = list(NULL),
-        n_dims = NA_integer_
-      ))
-    }
-
-    # Extract embedding vector
-    emb_data <- result$data[[1]]
-    emb_vec <- unlist(emb_data$embedding)
-
-    tibble::tibble(
-      text = single_text,
-      embedding = list(emb_vec),
-      n_dims = length(emb_vec)
-    )
-  })
+  foundry_embed_batch(
+    text = text,
+    model = model,
+    dimensions = dimensions,
+    batch_size = batch_size,
+    max_active = 1L,
+    progress = FALSE,
+    api = api,
+    api_key = api_key,
+    api_version = api_version
+  )
 }
 
 
@@ -138,6 +80,9 @@ foundry_embed <- function(text,
 #'
 #' @param data A tibble from `foundry_embed()` containing an `embedding` list-column.
 #' @param text_col Character. Name of the column containing text labels. Default: "text".
+#' @param top_k Integer. Optional maximum number of most-similar pairs to return.
+#' @param as_matrix Logical. If `TRUE`, return the full cosine-similarity matrix
+#'   instead of a long pairwise tibble.
 #'
 #' @return A tibble with columns:
 #'   \describe{
@@ -154,7 +99,10 @@ foundry_embed <- function(text,
 #' embeddings <- foundry_embed(texts, model = "text-embedding-ada-002")
 #' foundry_similarity(embeddings)
 #' }
-foundry_similarity <- function(data, text_col = "text") {
+foundry_similarity <- function(data,
+                               text_col = "text",
+                               top_k = NULL,
+                               as_matrix = FALSE) {
 
   if (!inherits(data, "data.frame")) {
     cli::cli_abort("{.arg data} must be a data frame or tibble.")
@@ -171,6 +119,15 @@ foundry_similarity <- function(data, text_col = "text") {
   n <- nrow(data)
   if (n < 2) {
     cli::cli_abort("Need at least 2 rows to compute similarity.")
+  }
+  if (!is.logical(as_matrix) || length(as_matrix) != 1L || is.na(as_matrix)) {
+    cli::cli_abort("{.arg as_matrix} must be TRUE or FALSE.")
+  }
+  if (!is.null(top_k)) {
+    top_k <- as.integer(top_k)
+    if (is.na(top_k) || top_k < 1L) {
+      cli::cli_abort("{.arg top_k} must be a positive integer or NULL.")
+    }
   }
 
   # Filter out rows with NULL embeddings
@@ -198,16 +155,27 @@ foundry_similarity <- function(data, text_col = "text") {
 
   norms <- sqrt(rowSums(mat^2))
   unit <- mat / norms
+  labels <- data[[text_col]]
   sim_mat <- tcrossprod(unit)
+  dimnames(sim_mat) <- list(labels, labels)
+
+  if (isTRUE(as_matrix)) {
+    return(sim_mat)
+  }
 
   # Extract the upper triangle (i < j) as the unique pairs.
   pairs <- which(upper.tri(sim_mat), arr.ind = TRUE)
-  labels <- data[[text_col]]
 
-  tibble::tibble(
+  out <- tibble::tibble(
     text_1 = labels[pairs[, "row"]],
     text_2 = labels[pairs[, "col"]],
     similarity = sim_mat[pairs]
-  ) %>%
+  ) |>
     dplyr::arrange(dplyr::desc(similarity))
+
+  if (!is.null(top_k)) {
+    out <- utils::head(out, top_k)
+  }
+
+  out
 }

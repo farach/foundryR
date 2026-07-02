@@ -67,7 +67,10 @@ test_that("foundry_embed_batch handles empty input", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
-  expect_named(result, c(".input_idx", "text", "embedding", "n_dims", ".error", ".error_msg"))
+  expect_named(result, c(
+    ".input_idx", "text", "embedding", "n_dims",
+    ".error", ".error_msg", "raw_response"
+  ))
 })
 
 # ============================================================================
@@ -154,7 +157,10 @@ test_that("batch_vector handles batch_size of 1", {
 test_that("foundry_embed_batch returns correct column names", {
   result <- foundry_embed_batch(character(), model = "test")
 
-  expected_cols <- c(".input_idx", "text", "embedding", "n_dims", ".error", ".error_msg")
+  expected_cols <- c(
+    ".input_idx", "text", "embedding", "n_dims",
+    ".error", ".error_msg", "raw_response"
+  )
   expect_named(result, expected_cols)
 })
 

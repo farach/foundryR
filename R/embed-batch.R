@@ -14,6 +14,9 @@
 #'   Default: 100.
 #' @param max_active Integer. Maximum number of concurrent requests. Default: 10.
 #' @param progress Logical. Whether to show a progress bar. Default: TRUE.
+#' @param api Character. Endpoint style. `"v1"` (default) sends requests to
+#'   `/openai/v1/embeddings` with `model` in the JSON body. `"deployment"` keeps
+#'   the legacy deployment-path endpoint.
 #' @param api_key Character. Optional API key override.
 #' @param api_version Character. Optional API version override.
 #'
@@ -26,6 +29,8 @@
 #'     \item{n_dims}{Integer. The dimensionality of the embedding, or NA if failed.}
 #'     \item{.error}{Logical. TRUE if the request for this text failed.}
 #'     \item{.error_msg}{Character. Error message if failed, NA otherwise.}
+#'     \item{raw_response}{List. Raw parsed response payload for successful rows,
+#'       or NULL for failed rows.}
 #'   }
 #'
 #' @export
@@ -61,6 +66,7 @@ foundry_embed_batch <- function(text,
                                  batch_size = 100L,
                                  max_active = 10L,
                                  progress = TRUE,
+                                 api = c("v1", "deployment"),
                                  api_key = NULL,
                                  api_version = NULL) {
 
@@ -85,6 +91,7 @@ foundry_embed_batch <- function(text,
 
   batch_size <- as.integer(batch_size)
   max_active <- as.integer(max_active)
+  api <- match.arg(api)
 
   if (batch_size < 1L) {
     cli::cli_abort("{.arg batch_size} must be at least 1.")
@@ -102,21 +109,36 @@ foundry_embed_batch <- function(text,
       embedding = list(),
       n_dims = integer(),
       .error = logical(),
-      .error_msg = character()
+      .error_msg = character(),
+      raw_response = list()
     ))
   }
 
   # Split text into batches with their original indices
-  batches <- batch_vector(text, batch_size)
+  valid_idx <- which(!is.na(text))
+  na_idx <- which(is.na(text))
+  batches <- batch_indexed_vector(text, valid_idx, batch_size)
 
   # Build requests for each batch
   requests <- purrr::map(batches, function(batch_info) {
     # Build request body - Azure OpenAI accepts array of inputs
     body <- list(input = batch_info$values)
+    if (identical(api, "v1")) {
+    body$model <- model
+    }
     if (!is.null(dimensions)) {
-      body$dimensions <- dimensions
+    body$dimensions <- dimensions
     }
 
+    if (identical(api, "v1")) {
+    foundry_build_v1_request(
+      path = "embeddings",
+      body = body,
+      api_key = api_key,
+      api_version = api_version
+    )
+    } else {
+    body$model <- NULL
     foundry_build_request(
       deployment = model,
       endpoint_path = "embeddings",
@@ -124,14 +146,20 @@ foundry_embed_batch <- function(text,
       api_key = api_key,
       api_version = api_version
     )
+    }
   })
 
   # Perform all requests in parallel
-  responses <- httr2::req_perform_parallel(
+  responses <- if (length(requests) == 0L) {
+    list()
+  } else {
+    httr2::req_perform_parallel(
     requests,
     on_error = "continue",
-    progress = progress
-  )
+    progress = progress,
+    max_active = max_active
+    )
+  }
 
   # Process responses and combine results
   results <- purrr::imap_dfr(responses, function(resp, batch_idx) {
@@ -160,7 +188,8 @@ foundry_embed_batch <- function(text,
         embedding = replicate(length(indices), NULL, simplify = FALSE),
         n_dims = rep(NA_integer_, length(indices)),
         .error = rep(TRUE, length(indices)),
-        .error_msg = rep(error_msg, length(indices))
+        .error_msg = rep(error_msg, length(indices)),
+        raw_response = replicate(length(indices), NULL, simplify = FALSE)
       ))
     }
 
@@ -177,7 +206,8 @@ foundry_embed_batch <- function(text,
         embedding = replicate(length(indices), NULL, simplify = FALSE),
         n_dims = rep(NA_integer_, length(indices)),
         .error = rep(TRUE, length(indices)),
-        .error_msg = rep("Failed to parse response", length(indices))
+        .error_msg = rep("Failed to parse response", length(indices)),
+        raw_response = replicate(length(indices), NULL, simplify = FALSE)
       ))
     }
 
@@ -200,7 +230,8 @@ foundry_embed_batch <- function(text,
           embedding = list(NULL),
           n_dims = NA_integer_,
           .error = TRUE,
-          .error_msg = "Embedding not found in response"
+          .error_msg = "Embedding not found in response",
+          raw_response = list(result)
         ))
       }
 
@@ -212,10 +243,24 @@ foundry_embed_batch <- function(text,
         embedding = list(emb_vec),
         n_dims = length(emb_vec),
         .error = FALSE,
-        .error_msg = NA_character_
+        .error_msg = NA_character_,
+        raw_response = list(result)
       )
     })
   })
+
+  if (length(na_idx) > 0L) {
+    na_rows <- tibble::tibble(
+      .input_idx = na_idx,
+      text = text[na_idx],
+      embedding = replicate(length(na_idx), NULL, simplify = FALSE),
+      n_dims = rep(NA_integer_, length(na_idx)),
+      .error = rep(TRUE, length(na_idx)),
+      .error_msg = rep("Input text is NA.", length(na_idx)),
+      raw_response = replicate(length(na_idx), NULL, simplify = FALSE)
+    )
+    results <- dplyr::bind_rows(results, na_rows)
+  }
 
   # Sort by original index and return
   results %>%
@@ -266,6 +311,24 @@ batch_vector <- function(x, batch_size) {
     list(
       indices = indices,
       values = x[indices]
+    )
+  })
+}
+
+
+batch_indexed_vector <- function(x, indices, batch_size) {
+  if (length(indices) == 0L) {
+    return(list())
+  }
+
+  n_batches <- ceiling(length(indices) / batch_size)
+  purrr::map(seq_len(n_batches), function(i) {
+    start_idx <- (i - 1L) * batch_size + 1L
+    end_idx <- min(i * batch_size, length(indices))
+    batch_indices <- indices[seq.int(start_idx, end_idx)]
+    list(
+      indices = batch_indices,
+      values = x[batch_indices]
     )
   })
 }

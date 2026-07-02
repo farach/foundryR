@@ -17,6 +17,7 @@ foundry_chat(
   presence_penalty = NULL,
   stop = NULL,
   reasoning_effort = NULL,
+  api = c("v1", "deployment"),
   api_key = NULL,
   api_version = NULL,
   ...
@@ -52,6 +53,10 @@ parameter for newer models (gpt-4o, etc.). Takes precedence over \code{max_token
 
 \item{reasoning_effort}{Character. Optional reasoning effort (\code{"low"},
 \code{"medium"}, or \code{"high"}) for reasoning models that accept this control.}
+
+\item{api}{Character. Endpoint style. \code{"v1"} (default) sends requests to
+\verb{/openai/v1/chat/completions} with \code{model} in the JSON body. \code{"deployment"}
+keeps the legacy deployment-path endpoint.}
 
 \item{api_key}{Character. Optional API key override.}
 

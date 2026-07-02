@@ -92,8 +92,12 @@ reference:
       - foundry_check_setup
       - foundry_set_key
       - foundry_set_token
+      - foundry_set_token_provider
+      - foundry_token_azure_cli
       - foundry_set_endpoint
       - foundry_get_endpoint
+      - foundry_set_project_endpoint
+      - foundry_get_project_endpoint
       - foundry_set_speech_endpoint
       - foundry_set_speech_key
 
@@ -104,6 +108,15 @@ reference:
       injection.
     contents:
       - foundry_moderate
+      - foundry_moderate_image
+      - foundry_protected_material
+      - foundry_blocklists
+      - foundry_blocklist_create
+      - foundry_blocklist_get
+      - foundry_blocklist_delete
+      - foundry_blocklist_items
+      - foundry_blocklist_add_items
+      - foundry_blocklist_remove_items
       - foundry_groundedness
       - foundry_shield
       - foundry_set_content_safety_key
@@ -120,8 +133,43 @@ reference:
       - foundry_tool
       - foundry_response_retrieve
       - foundry_response_delete
+      - foundry_response_cancel
+      - foundry_response_input_items
       - foundry_extract
       - foundry_web_search
+      - foundry_schema
+      - schema_string
+      - schema_enum
+      - schema_number
+      - schema_integer
+      - schema_boolean
+      - schema_array
+      - schema_object
+      - as_foundry_schema
+
+  - title: Conversations and vector stores
+    desc: >
+      Manage server-side Responses API conversations and Azure-hosted vector
+      stores for shared retrieval workflows.
+    contents:
+      - foundry_conversation_create
+      - foundry_conversations
+      - foundry_conversation_get
+      - foundry_conversation_update
+      - foundry_conversation_delete
+      - foundry_conversation_items
+      - foundry_conversation_items_add
+      - foundry_vector_store_create
+      - foundry_vector_stores
+      - foundry_vector_store_get
+      - foundry_vector_store_modify
+      - foundry_vector_store_delete
+      - foundry_vector_store_files
+      - foundry_vector_store_file_add
+      - foundry_vector_store_file_remove
+      - foundry_vector_store_file_batch
+      - foundry_vector_search
+      - foundry_tool_file_search
 
   - title: Text embeddings
     desc: >
@@ -147,6 +195,19 @@ reference:
       - foundry_batches
       - foundry_batch_get
       - foundry_batch_cancel
+      - foundry_batch_wait
+      - foundry_batch_results
+      - foundry_extract_batch
+      - foundry_usage
+
+  - title: Validation and provenance
+    desc: >
+      Validate LLM annotation against human labels, measure repeated-extraction
+      consistency, and record reproducibility metadata.
+    contents:
+      - foundry_agreement
+      - foundry_consistency
+      - foundry_provenance
 
   - title: tidymodels integration
     desc: >

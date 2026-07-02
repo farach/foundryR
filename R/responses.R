@@ -12,6 +12,8 @@
 #' @param instructions Character. Optional system/developer instructions.
 #' @param previous_response_id Character. Optional response ID to continue a
 #'   stored conversation.
+#' @param conversation Character. Optional conversation ID for server-side
+#'   conversation state.
 #' @param tools List. Optional Responses API tools, for example
 #'   `list(list(type = "web_search"))` or a list of [foundry_tool()] objects.
 #' @param text_format List. Optional Responses API text format object. Use
@@ -26,10 +28,19 @@
 #' @param reasoning_effort Character. Optional reasoning effort (`"low"`,
 #'   `"medium"`, `"high"`, or a newer value supported by your model). Sent as
 #'   `reasoning = list(effort = ...)`.
+#' @param reasoning_summary Character. Optional reasoning summary mode for
+#'   models that support it.
 #' @param store Logical or NULL. Whether the service should store the response.
 #'   The API stores responses by default when this is omitted. Set `FALSE` for
 #'   stateless calls; use `TRUE` or omit it when chaining with
 #'   `previous_response_id`.
+#' @param background Logical. Whether to run the response in the background.
+#' @param prompt_cache_key,prompt_cache_retention Optional prompt-cache controls.
+#' @param parallel_tool_calls Logical. Whether the service may call tools in
+#'   parallel.
+#' @param max_tool_calls Integer. Optional maximum number of tool calls.
+#' @param safety_identifier Character. Optional stable end-user identifier for
+#'   safety monitoring.
 #' @param metadata List. Optional metadata to attach to the response.
 #' @param include Character vector. Optional additional response fields to
 #'   include.
@@ -83,7 +94,15 @@ foundry_response <- function(input,
                              temperature = NULL,
                              top_p = NULL,
                              reasoning_effort = NULL,
+                             reasoning_summary = NULL,
                              store = NULL,
+                             background = NULL,
+                             conversation = NULL,
+                             prompt_cache_key = NULL,
+                             prompt_cache_retention = NULL,
+                             parallel_tool_calls = NULL,
+                             max_tool_calls = NULL,
+                             safety_identifier = NULL,
                              metadata = NULL,
                              include = NULL,
                              parse_json = !is.null(text_format),
@@ -107,6 +126,11 @@ foundry_response <- function(input,
   if (!is.null(previous_response_id)) {
     foundry_check_character_scalar(previous_response_id, "previous_response_id")
     body$previous_response_id <- previous_response_id
+  }
+
+  if (!is.null(conversation)) {
+    foundry_check_character_scalar(conversation, "conversation")
+    body$conversation <- conversation
   }
 
   if (!is.null(tools)) {
@@ -138,12 +162,41 @@ foundry_response <- function(input,
     foundry_check_character_scalar(reasoning_effort, "reasoning_effort")
     body$reasoning <- list(effort = reasoning_effort)
   }
+  if (!is.null(reasoning_summary)) {
+    foundry_check_character_scalar(reasoning_summary, "reasoning_summary")
+    body$reasoning <- body$reasoning %||% list()
+    body$reasoning$summary <- reasoning_summary
+  }
 
   if (!is.null(store)) {
     if (!is.logical(store) || length(store) != 1L || is.na(store)) {
       cli::cli_abort("{.arg store} must be TRUE, FALSE, or NULL.")
     }
     body$store <- store
+  }
+
+  if (!is.null(background)) {
+    foundry_check_logical_scalar(background, "background")
+    body$background <- background
+  }
+  if (!is.null(prompt_cache_key)) {
+    foundry_check_character_scalar(prompt_cache_key, "prompt_cache_key")
+    body$prompt_cache_key <- prompt_cache_key
+  }
+  if (!is.null(prompt_cache_retention)) {
+    foundry_check_character_scalar(prompt_cache_retention, "prompt_cache_retention")
+    body$prompt_cache_retention <- prompt_cache_retention
+  }
+  if (!is.null(parallel_tool_calls)) {
+    foundry_check_logical_scalar(parallel_tool_calls, "parallel_tool_calls")
+    body$parallel_tool_calls <- parallel_tool_calls
+  }
+  if (!is.null(max_tool_calls)) {
+    body$max_tool_calls <- foundry_check_positive_integer(max_tool_calls, "max_tool_calls")
+  }
+  if (!is.null(safety_identifier)) {
+    foundry_check_character_scalar(safety_identifier, "safety_identifier")
+    body$safety_identifier <- safety_identifier
   }
 
   if (!is.null(metadata)) {
@@ -218,13 +271,17 @@ foundry_tool <- function(fun,
     cli::cli_abort("{.arg fun} must be an R function.")
   }
 
+  fun_expr <- substitute(fun)
   if (is.null(name)) {
-    name <- deparse(substitute(fun), nlines = 1L)
-    if (identical(name, "function")) {
+    if (is.call(fun_expr) && identical(fun_expr[[1]], quote(`function`))) {
       cli::cli_abort("{.arg name} is required for anonymous functions.")
     }
+    name <- deparse(fun_expr, nlines = 1L)
   }
   foundry_check_character_scalar(name, "name")
+  if (!grepl("^[A-Za-z0-9_-]{1,64}$", name)) {
+    cli::cli_abort("{.arg name} must contain only letters, numbers, underscores, or hyphens, and be 64 characters or fewer.")
+  }
   foundry_check_character_scalar(description, "description")
   if (missing(parameters) || is.null(parameters) || !is.list(parameters)) {
     cli::cli_abort("{.arg parameters} must be a JSON Schema represented as an R list.")
@@ -435,6 +492,84 @@ foundry_response_delete <- function(response_id,
 }
 
 
+#' Cancel a background Responses API response
+#'
+#' @param response_id Character. The response ID to cancel.
+#' @param api_key Character. Optional API key override.
+#' @param endpoint Character. Optional endpoint override.
+#'
+#' @return A one-row tibble parsed like `foundry_response()`.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' foundry_response_cancel("resp_abc123")
+#' }
+foundry_response_cancel <- function(response_id,
+                                    api_key = NULL,
+                                    endpoint = NULL) {
+  foundry_check_character_scalar(response_id, "response_id")
+
+  req <- foundry_build_v1_request(
+    path = paste0("responses/", response_id, "/cancel"),
+    method = "POST",
+    api_key = api_key,
+    endpoint = endpoint
+  )
+
+  foundry_parse_response(foundry_perform(req), parse_json = FALSE)
+}
+
+
+#' List input items for a Responses API response
+#'
+#' @param response_id Character. The response ID.
+#' @param api_key Character. Optional API key override.
+#' @param endpoint Character. Optional endpoint override.
+#'
+#' @return A tibble with one row per input item and the raw item in a list-column.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' foundry_response_input_items("resp_abc123")
+#' }
+foundry_response_input_items <- function(response_id,
+                                         api_key = NULL,
+                                         endpoint = NULL) {
+  foundry_check_character_scalar(response_id, "response_id")
+
+  req <- foundry_build_v1_request(
+    path = paste0("responses/", response_id, "/input_items"),
+    method = "GET",
+    api_key = api_key,
+    endpoint = endpoint
+  )
+
+  result <- foundry_perform(req)
+  items <- result$data %||% list()
+  if (length(items) == 0L) {
+    return(tibble::tibble(
+      item_id = character(),
+      type = character(),
+      role = character(),
+      content = list(),
+      raw_item = list()
+    ))
+  }
+
+  purrr::map_dfr(items, function(item) {
+    tibble::tibble(
+      item_id = item$id %||% NA_character_,
+      type = item$type %||% NA_character_,
+      role = item$role %||% NA_character_,
+      content = list(item$content %||% NULL),
+      raw_item = list(item)
+    )
+  })
+}
+
+
 #' Extract structured data from text using JSON Schema
 #'
 #' Apply a JSON Schema to one or more text inputs and return model-extracted
@@ -442,8 +577,11 @@ foundry_response_delete <- function(response_id,
 #' sentiment annotation, entity extraction, study abstraction, and converting
 #' free-text records into analyzable variables.
 #'
-#' @param text Character vector. Texts to extract from.
+#' @param text Character vector or data frame. Texts to extract from, or a data
+#'   frame containing a text column.
 #' @param schema List. JSON Schema object describing the fields to extract.
+#' @param text_col Character. Column name containing text when `text` is a data
+#'   frame.
 #' @param instructions Character. Optional extraction instructions. If omitted,
 #'   a concise default extraction instruction is used.
 #' @param schema_name Character. Name for the JSON Schema format.
@@ -455,6 +593,9 @@ foundry_response_delete <- function(response_id,
 #'   parsed data is returned in a `.data` list-column.
 #' @param store Logical. Whether to store Responses API objects. Defaults to
 #'   `FALSE` because bulk extraction often processes sensitive research data.
+#' @param max_active Integer. Maximum number of concurrent requests.
+#' @param progress Logical. Whether to show a progress bar for parallel
+#'   extraction.
 #' @param api_key Character. Optional API key override.
 #' @param endpoint Character. Optional endpoint override.
 #' @param ... Additional parameters passed to `foundry_response()`.
@@ -487,29 +628,69 @@ foundry_response_delete <- function(response_id,
 #' )
 #' }
 foundry_extract <- function(text,
-                            schema,
+                            schema = NULL,
+                            text_col = NULL,
                             instructions = NULL,
                             schema_name = "ExtractedData",
                             strict = TRUE,
                             model = NULL,
                             flatten = TRUE,
                             store = FALSE,
+                            max_active = 5L,
+                            progress = TRUE,
                             api_key = NULL,
                             endpoint = NULL,
                             ...) {
 
-  if (missing(text) || is.null(text) || !is.character(text)) {
-    cli::cli_abort("{.arg text} must be a character vector.")
+  if (is.data.frame(text) && is.character(schema) && length(schema) == 1L &&
+      is.list(instructions)) {
+    text_col <- schema
+    schema <- instructions
+    instructions <- NULL
   }
-  if (missing(schema) || is.null(schema) || !is.list(schema)) {
+  if (is.data.frame(text) && is.character(schema) && length(schema) == 1L &&
+      is.list(text_col)) {
+    schema_input <- text_col
+    text_col <- schema
+    schema <- schema_input
+  }
+
+  data_input <- is.data.frame(text)
+  input_data <- NULL
+  if (data_input) {
+    input_data <- tibble::as_tibble(text)
+    if (is.null(text_col)) {
+      cli::cli_abort("{.arg text_col} is required when {.arg text} is a data frame.")
+    }
+    foundry_check_character_scalar(text_col, "text_col")
+    if (!text_col %in% names(input_data)) {
+      cli::cli_abort("Column {.field {text_col}} was not found in {.arg text}.")
+    }
+    text_values <- as.character(input_data[[text_col]])
+  } else {
+    if (missing(text) || is.null(text) || !is.character(text)) {
+      cli::cli_abort("{.arg text} must be a character vector or data frame.")
+    }
+    text_values <- text
+  }
+
+  if (is.null(schema) || !is.list(schema)) {
     cli::cli_abort("{.arg schema} must be a JSON Schema represented as an R list.")
   }
+  schema <- as_foundry_schema(schema)
   foundry_check_character_scalar(schema_name, "schema_name")
   if (!is.logical(strict) || length(strict) != 1L || is.na(strict)) {
     cli::cli_abort("{.arg strict} must be TRUE or FALSE.")
   }
   if (!is.logical(flatten) || length(flatten) != 1L || is.na(flatten)) {
     cli::cli_abort("{.arg flatten} must be TRUE or FALSE.")
+  }
+  if (!is.logical(store) || length(store) != 1L || is.na(store)) {
+    cli::cli_abort("{.arg store} must be TRUE or FALSE.")
+  }
+  max_active <- foundry_check_positive_integer(max_active, "max_active")
+  if (!is.logical(progress) || length(progress) != 1L || is.na(progress)) {
+    cli::cli_abort("{.arg progress} must be TRUE or FALSE.")
   }
 
   if (is.null(instructions)) {
@@ -521,7 +702,7 @@ foundry_extract <- function(text,
     foundry_check_character_scalar(instructions, "instructions")
   }
 
-  if (length(text) == 0L) {
+  if (length(text_values) == 0L) {
     out <- tibble::tibble(
       .input_idx = integer(),
       .input_text = character(),
@@ -529,9 +710,13 @@ foundry_extract <- function(text,
       .status = character(),
       .output_text = character(),
       .error = logical(),
-      .error_msg = character()
+      .error_msg = character(),
+      raw_response = list()
     )
     if (!flatten) out$.data <- list()
+    if (data_input) {
+      return(dplyr::bind_cols(input_data[0, , drop = FALSE], out))
+    }
     return(out)
   }
 
@@ -541,62 +726,162 @@ foundry_extract <- function(text,
     strict = strict
   )
 
-  rows <- purrr::map(seq_along(text), function(i) {
-    single_text <- text[i]
+  model <- foundry_resolve_model(model)
+  valid_idx <- which(!is.na(text_values))
+  rows <- vector("list", length(text_values))
+  na_idx <- which(is.na(text_values))
+  for (i in na_idx) {
+    rows[[i]] <- foundry_extract_error_row(
+      i,
+      text_values[i],
+      "skipped",
+      "Input text is NA.",
+      flatten = flatten
+    )
+  }
 
-    if (is.na(single_text)) {
-      base <- tibble::tibble(
-        .input_idx = i,
-        .input_text = NA_character_,
-        .response_id = NA_character_,
-        .status = "skipped",
-        .output_text = NA_character_,
-        .error = TRUE,
-        .error_msg = "Input text is NA."
-      )
-      if (!flatten) base$.data <- list(NULL)
-      return(base)
-    }
-
-    response <- foundry_response(
-      input = single_text,
+  dots <- list(...)
+  requests <- purrr::map(valid_idx, function(i) {
+    body <- list(
       model = model,
+      input = text_values[i],
       instructions = instructions,
-      text_format = text_format,
-      store = store,
-      parse_json = TRUE,
+      text = list(format = text_format),
+      store = store
+    )
+    for (nm in names(dots)) {
+      body[[nm]] <- dots[[nm]]
+    }
+    foundry_build_v1_request(
+      path = "responses",
+      body = body,
       api_key = api_key,
-      endpoint = endpoint,
-      ...
+      endpoint = endpoint
     )
-
-    if (!is.na(response$structured_error)) {
-      cli::cli_abort(c(
-        "Failed to parse structured output for input {i}.",
-        "x" = response$structured_error
-      ))
-    }
-
-    base <- tibble::tibble(
-      .input_idx = i,
-      .input_text = single_text,
-      .response_id = response$response_id,
-      .status = response$status,
-      .output_text = response$output_text,
-      .error = FALSE,
-      .error_msg = NA_character_
-    )
-
-    data <- response$structured[[1]]
-    if (!flatten) {
-      base$.data <- list(data)
-      return(base)
-    }
-
-    dplyr::bind_cols(base, foundry_list_to_row(data))
   })
 
-  dplyr::bind_rows(rows)
+  responses <- if (length(requests) == 0L) {
+    list()
+  } else {
+    httr2::req_perform_parallel(
+      requests,
+      on_error = "continue",
+      progress = progress,
+      max_active = max_active
+    )
+  }
+
+  for (j in seq_along(responses)) {
+    i <- valid_idx[j]
+    rows[[i]] <- foundry_extract_parse_parallel_response(
+      responses[[j]],
+      i = i,
+      input_text = text_values[i],
+      flatten = flatten
+    )
+  }
+
+  out <- dplyr::bind_rows(rows)
+  if (data_input) {
+    out <- dplyr::bind_cols(input_data, out)
+  }
+  out
+}
+
+
+foundry_extract_parse_parallel_response <- function(resp,
+                                                    i,
+                                                    input_text,
+                                                    flatten) {
+  is_error_obj <- inherits(resp, "error") || inherits(resp, "httr2_failure")
+  is_http_error <- !is_error_obj && httr2::resp_is_error(resp)
+
+  if (is_error_obj || is_http_error) {
+    error_msg <- if (is_error_obj) {
+      conditionMessage(resp)
+    } else {
+      tryCatch(
+        foundry_error_body(resp),
+        error = function(e) "Unknown API error"
+      )
+    }
+    return(foundry_extract_error_row(
+      i,
+      input_text,
+      "failed",
+      error_msg,
+      flatten = flatten
+    ))
+  }
+
+  result <- tryCatch(
+    httr2::resp_body_json(resp),
+    error = function(e) {
+      return(structure(list(message = conditionMessage(e)), class = "foundry_parse_error"))
+    }
+  )
+  if (inherits(result, "foundry_parse_error")) {
+    return(foundry_extract_error_row(
+      i,
+      input_text,
+      "failed",
+      result$message,
+      flatten = flatten
+    ))
+  }
+
+  response <- foundry_parse_response(result, parse_json = TRUE)
+  structured_error <- response$structured_error[[1]]
+  if (!is.na(structured_error)) {
+    return(foundry_extract_error_row(
+      i,
+      input_text,
+      response$status,
+      structured_error,
+      flatten = flatten,
+      raw_response = response$raw_response[[1]]
+    ))
+  }
+
+  base <- tibble::tibble(
+    .input_idx = i,
+    .input_text = input_text,
+    .response_id = response$response_id,
+    .status = response$status,
+    .output_text = response$output_text,
+    .error = FALSE,
+    .error_msg = NA_character_,
+    raw_response = response$raw_response
+  )
+
+  data <- response$structured[[1]]
+  if (!flatten) {
+    base$.data <- list(data)
+    return(base)
+  }
+
+  dplyr::bind_cols(base, foundry_list_to_row(data))
+}
+
+
+foundry_extract_error_row <- function(i,
+                                      input_text,
+                                      status,
+                                      error_msg,
+                                      flatten,
+                                      raw_response = NULL) {
+  out <- tibble::tibble(
+    .input_idx = i,
+    .input_text = input_text,
+    .response_id = NA_character_,
+    .status = status,
+    .output_text = NA_character_,
+    .error = TRUE,
+    .error_msg = error_msg,
+    raw_response = list(raw_response)
+  )
+  if (!flatten) out$.data <- list(NULL)
+  out
 }
 
 
@@ -762,6 +1047,14 @@ foundry_resolve_model <- function(model) {
 foundry_check_character_scalar <- function(x, arg) {
   if (!is.character(x) || length(x) != 1L || is.na(x) || x == "") {
     cli::cli_abort("{.arg {arg}} must be a single non-empty character string.")
+  }
+  invisible(x)
+}
+
+
+foundry_check_logical_scalar <- function(x, arg) {
+  if (!is.logical(x) || length(x) != 1L || is.na(x)) {
+    cli::cli_abort("{.arg {arg}} must be TRUE or FALSE.")
   }
   invisible(x)
 }

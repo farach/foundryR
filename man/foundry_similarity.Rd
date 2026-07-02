@@ -4,12 +4,17 @@
 \alias{foundry_similarity}
 \title{Compute Cosine Similarity Between Embeddings}
 \usage{
-foundry_similarity(data, text_col = "text")
+foundry_similarity(data, text_col = "text", top_k = NULL, as_matrix = FALSE)
 }
 \arguments{
 \item{data}{A tibble from \code{foundry_embed()} containing an \code{embedding} list-column.}
 
 \item{text_col}{Character. Name of the column containing text labels. Default: "text".}
+
+\item{top_k}{Integer. Optional maximum number of most-similar pairs to return.}
+
+\item{as_matrix}{Logical. If \code{TRUE}, return the full cosine-similarity matrix
+instead of a long pairwise tibble.}
 }
 \value{
 A tibble with columns:

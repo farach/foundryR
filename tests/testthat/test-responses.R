@@ -94,6 +94,42 @@ test_that("foundry_response builds v1 request body", {
   expect_true(is.na(result$structured_error))
 })
 
+test_that("foundry_response sends newer v1 controls", {
+  setup_mock_env()
+  mock_response <- mock_response_api_response()
+  mock_resp <- mock_httr2_response(mock_response)
+  captured <- NULL
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  foundry_response(
+    "Hello",
+    conversation = "conv_123",
+    background = TRUE,
+    prompt_cache_key = "cache-key",
+    prompt_cache_retention = "24h",
+    parallel_tool_calls = FALSE,
+    max_tool_calls = 2,
+    safety_identifier = "user-1",
+    reasoning_effort = "high",
+    reasoning_summary = "auto"
+  )
+
+  expect_equal(captured$body$data$conversation, "conv_123")
+  expect_equal(captured$body$data$background, TRUE)
+  expect_equal(captured$body$data$prompt_cache_key, "cache-key")
+  expect_equal(captured$body$data$parallel_tool_calls, FALSE)
+  expect_equal(captured$body$data$max_tool_calls, 2L)
+  expect_equal(captured$body$data$safety_identifier, "user-1")
+  expect_equal(captured$body$data$reasoning$summary, "auto")
+})
+
 test_that("foundry_extract flattens structured output", {
   setup_mock_env()
   mock_response <- mock_response_api_response(
@@ -103,9 +139,9 @@ test_that("foundry_extract flattens structured output", {
   captured <- NULL
 
   testthat::local_mocked_bindings(
-    req_perform = function(req, ...) {
-      captured <<- req
-      mock_resp
+    req_perform_parallel = function(reqs, ...) {
+      captured <<- reqs[[1]]
+      list(mock_resp)
     },
     .package = "httr2"
   )
@@ -132,6 +168,27 @@ test_that("foundry_extract flattens structured output", {
   expect_equal(result$sentiment, "positive")
   expect_equal(result$entities[[1]], c("R", "Azure"))
   expect_true(captured$body$data$text$format$strict)
+  expect_equal(result$.error, FALSE)
+})
+
+test_that("foundry_extract preserves dataframe input and row errors", {
+  setup_mock_env()
+  mock_response <- mock_response_api_response(output_text = "{\"label\":\"yes\"}")
+  mock_resp <- mock_httr2_response(mock_response)
+
+  testthat::local_mocked_bindings(
+    req_perform_parallel = function(reqs, ...) list(mock_resp),
+    .package = "httr2"
+  )
+
+  schema <- foundry_schema(label = schema_string())
+  data <- tibble::tibble(id = 1:2, text = c("classify", NA_character_))
+  result <- foundry_extract(data, "text", schema, model = "gpt-4.1")
+
+  expect_equal(result$id, 1:2)
+  expect_equal(result$label[[1]], "yes")
+  expect_equal(result$.error, c(FALSE, TRUE))
+  expect_match(result$.error_msg[[2]], "NA")
 })
 
 test_that("foundry_extract handles NA inputs without an API call", {
@@ -221,6 +278,19 @@ test_that("foundry_tool emits a Responses API function schema", {
   expect_equal(schema$name, "get_weather")
   expect_equal(schema$description, "Get weather for a location")
   expect_null(schema$.fn)
+})
+
+test_that("foundry_tool requires valid API tool names", {
+  params <- list(type = "object", properties = list())
+
+  expect_error(
+    foundry_tool(function() NULL, description = "No-op", parameters = params),
+    "name"
+  )
+  expect_error(
+    foundry_tool(function() NULL, name = "not valid", description = "No-op", parameters = params),
+    "letters, numbers"
+  )
 })
 
 test_that("foundry_response strips R functions from tool schemas", {

@@ -130,6 +130,27 @@ test_that("foundry_batch_requests writes executable JSONL", {
   expect_equal(first$body$input, "one")
 })
 
+test_that("foundry_batch_requests writes structured output fields", {
+  data <- data.frame(text = "one")
+  path <- tempfile(fileext = ".jsonl")
+  schema <- foundry_schema(label = schema_string())
+
+  foundry_batch_requests(
+    data,
+    input = "text",
+    path = path,
+    model = "gpt-4.1",
+    schema = schema,
+    instructions = "Extract labels."
+  )
+
+  line <- jsonlite::fromJSON(readLines(path)[[1]], simplifyVector = FALSE)
+
+  expect_equal(line$body$instructions, "Extract labels.")
+  expect_equal(line$body$text$format$type, "json_schema")
+  expect_equal(line$body$text$format$schema$type, "object")
+})
+
 test_that("foundry_batch_create, get, and cancel parse batch metadata", {
   setup_mock_env()
   captured <- character()
@@ -161,4 +182,62 @@ test_that("foundry_batch_create, get, and cancel parse batch metadata", {
   expect_match(captured[[1]], "POST .*/batches$")
   expect_match(captured[[2]], "GET .*/batches/batch_123$")
   expect_match(captured[[3]], "POST .*/batches/batch_123/cancel$")
+})
+
+test_that("foundry_batch_results parses responses output JSONL", {
+  setup_mock_env()
+  batch <- list(
+    id = "batch_123",
+    status = "completed",
+    endpoint = "/v1/responses",
+    input_file_id = "file_in",
+    output_file_id = "file_out",
+    request_counts = list(total = 1, completed = 1, failed = 0)
+  )
+  response <- mock_response_api_response(output_text = "{\"label\":\"yes\"}")
+  output <- paste0(jsonlite::toJSON(
+    list(
+      custom_id = "row-1",
+      response = list(status_code = 200, body = response)
+    ),
+    auto_unbox = TRUE
+  ), "\n")
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      if (grepl("/content$", req$url)) {
+        httr2::response(
+          status_code = 200L,
+          url = req$url,
+          headers = list(`content-type` = "application/octet-stream"),
+          body = charToRaw(output)
+        )
+      } else {
+        mock_httr2_response(batch)
+      }
+    },
+    .package = "httr2"
+  )
+
+  result <- foundry_batch_results("batch_123")
+
+  expect_equal(result$custom_id, "row-1")
+  expect_equal(result$.error, FALSE)
+  expect_equal(result$output_text, "{\"label\":\"yes\"}")
+  expect_equal(result$structured[[1]]$label, "yes")
+})
+
+test_that("foundry_usage sums token columns and rates", {
+  x <- tibble::tibble(
+    input_tokens = c(10, 20),
+    cached_input_tokens = c(2, 3),
+    output_tokens = c(4, 5)
+  )
+
+  result <- foundry_usage(x, rates = c(input = 0.01, cached_input = 0.001, output = 0.02))
+
+  expect_equal(result$input_tokens, 30)
+  expect_equal(result$cached_input_tokens, 5)
+  expect_equal(result$output_tokens, 9)
+  expect_equal(result$cost, 30 * 0.01 + 5 * 0.001 + 9 * 0.02)
 })

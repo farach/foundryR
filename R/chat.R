@@ -21,6 +21,9 @@
 #' @param stop Character vector. Up to 4 sequences where the API will stop generating.
 #' @param reasoning_effort Character. Optional reasoning effort (`"low"`,
 #'   `"medium"`, or `"high"`) for reasoning models that accept this control.
+#' @param api Character. Endpoint style. `"v1"` (default) sends requests to
+#'   `/openai/v1/chat/completions` with `model` in the JSON body. `"deployment"`
+#'   keeps the legacy deployment-path endpoint.
 #' @param api_key Character. Optional API key override.
 #' @param api_version Character. Optional API version override.
 #' @param ... Additional parameters passed to the API.
@@ -79,6 +82,7 @@ foundry_chat <- function(message,
                           presence_penalty = NULL,
                           stop = NULL,
                           reasoning_effort = NULL,
+                          api = c("v1", "deployment"),
                           api_key = NULL,
                           api_version = NULL,
                           ...) {
@@ -118,8 +122,13 @@ foundry_chat <- function(message,
   # Add current user message
   messages <- c(messages, list(list(role = "user", content = message)))
 
+  api <- match.arg(api)
+
   # Build request body
   body <- list(messages = messages)
+  if (identical(api, "v1")) {
+    body$model <- model
+  }
 
   # Add optional parameters
   if (!is.null(temperature)) body$temperature <- temperature
@@ -146,14 +155,22 @@ foundry_chat <- function(message,
     body <- c(body, dots)
   }
 
-  # Build and perform request
-  req <- foundry_build_request(
-    deployment = model,
-    endpoint_path = "chat/completions",
-    body = body,
-    api_key = api_key,
-    api_version = api_version
-  )
+  if (identical(api, "v1")) {
+    req <- foundry_build_v1_request(
+      path = "chat/completions",
+      body = body,
+      api_key = api_key,
+      api_version = api_version
+    )
+  } else {
+    req <- foundry_build_request(
+      deployment = model,
+      endpoint_path = "chat/completions",
+      body = body,
+      api_key = api_key,
+      api_version = api_version
+    )
+  }
 
   result <- foundry_perform(req)
 

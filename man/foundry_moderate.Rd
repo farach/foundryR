@@ -8,6 +8,8 @@ foundry_moderate(
   text,
   categories = c("Hate", "Sexual", "SelfHarm", "Violence"),
   output_type = c("FourSeverityLevels", "EightSeverityLevels"),
+  blocklists = NULL,
+  halt_on_blocklist = FALSE,
   endpoint = NULL,
   api_key = NULL,
   api_version = "2024-09-01"
@@ -23,6 +25,11 @@ foundry_moderate(
 \item{output_type}{Character. Severity level granularity. One of
 \code{"FourSeverityLevels"} (returns 0, 2, 4, 6) or \code{"EightSeverityLevels"}
 (returns 0-7). Default: \code{"FourSeverityLevels"}.}
+
+\item{blocklists}{Character vector of Content Safety blocklist names to apply.}
+
+\item{halt_on_blocklist}{Logical. Whether the service should halt category
+analysis when blocklist content is found.}
 
 \item{endpoint}{Character. Optional endpoint URL override. If NULL, uses the
 \code{AZURE_CONTENT_SAFETY_ENDPOINT} environment variable.}

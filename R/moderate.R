@@ -275,6 +275,9 @@ content_safety_error_body <- function(resp) {
 #' @param output_type Character. Severity level granularity. One of
 #'   `"FourSeverityLevels"` (returns 0, 2, 4, 6) or `"EightSeverityLevels"`
 #'   (returns 0-7). Default: `"FourSeverityLevels"`.
+#' @param blocklists Character vector of Content Safety blocklist names to apply.
+#' @param halt_on_blocklist Logical. Whether the service should halt category
+#'   analysis when blocklist content is found.
 #' @param endpoint Character. Optional endpoint URL override. If NULL, uses the
 #'   `AZURE_CONTENT_SAFETY_ENDPOINT` environment variable.
 #' @param api_key Character. Optional API key override. If NULL, uses the
@@ -346,6 +349,8 @@ content_safety_error_body <- function(resp) {
 foundry_moderate <- function(text,
                               categories = c("Hate", "Sexual", "SelfHarm", "Violence"),
                               output_type = c("FourSeverityLevels", "EightSeverityLevels"),
+                              blocklists = NULL,
+                              halt_on_blocklist = FALSE,
                               endpoint = NULL,
                               api_key = NULL,
                               api_version = "2024-09-01") {
@@ -362,6 +367,10 @@ foundry_moderate <- function(text,
       "i" = "Valid categories are: {.val {valid_categories}}"
     ))
   }
+  if (!is.null(blocklists) && (!is.character(blocklists) || any(is.na(blocklists)))) {
+    cli::cli_abort("{.arg blocklists} must be a character vector.")
+  }
+  foundry_check_logical_scalar(halt_on_blocklist, "halt_on_blocklist")
 
   # Get endpoint and key
   endpoint <- get_content_safety_endpoint(endpoint, required = TRUE)
@@ -373,7 +382,9 @@ foundry_moderate <- function(text,
       text = character(),
       category = character(),
       severity = integer(),
-      label = character()
+      label = character(),
+      blocklist_matches = list(),
+      raw_response = list()
     ))
   }
 
@@ -387,7 +398,9 @@ foundry_moderate <- function(text,
         text = NA_character_,
         category = categories,
         severity = NA_integer_,
-        label = NA_character_
+        label = NA_character_,
+        blocklist_matches = replicate(length(categories), NULL, simplify = FALSE),
+        raw_response = replicate(length(categories), NULL, simplify = FALSE)
       ))
     }
 
@@ -412,6 +425,8 @@ foundry_moderate <- function(text,
       categories = as.list(categories),
       outputType = output_type
     )
+    if (!is.null(blocklists)) body$blocklistNames <- as.list(blocklists)
+    body$haltOnBlocklistHit <- halt_on_blocklist
 
     # Build URL
     url <- paste0(endpoint, "/contentsafety/text:analyze")
@@ -442,7 +457,9 @@ foundry_moderate <- function(text,
         text = display_text,
         category = categories,
         severity = NA_integer_,
-        label = NA_character_
+        label = NA_character_,
+        blocklist_matches = replicate(length(categories), NULL, simplify = FALSE),
+        raw_response = replicate(length(categories), NULL, simplify = FALSE)
       ))
     }
 
@@ -455,11 +472,14 @@ foundry_moderate <- function(text,
         text = display_text,
         category = categories,
         severity = NA_integer_,
-        label = NA_character_
+        label = NA_character_,
+        blocklist_matches = replicate(length(categories), NULL, simplify = FALSE),
+        raw_response = replicate(length(categories), result, simplify = FALSE)
       ))
     }
 
     # Extract results for each category
+    blocklist_matches <- result$blocklistsMatch %||% result$blocklistMatches %||% list()
     purrr::map_dfr(categories_analysis, function(cat_result) {
       category <- cat_result$category %||% NA_character_
       severity <- cat_result$severity %||% NA_integer_
@@ -468,7 +488,9 @@ foundry_moderate <- function(text,
         text = display_text,
         category = category,
         severity = as.integer(severity),
-        label = severity_to_label(severity, output_type)
+        label = severity_to_label(severity, output_type),
+        blocklist_matches = list(blocklist_matches),
+        raw_response = list(result)
       )
     })
   })

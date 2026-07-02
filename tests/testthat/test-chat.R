@@ -158,6 +158,27 @@ test_that("foundry_chat sends reasoning_effort when supplied", {
   expect_equal(captured$body$data$reasoning_effort, "medium")
 })
 
+test_that("foundry_chat uses v1 endpoint by default and keeps deployment escape hatch", {
+  setup_mock_env()
+  fixture <- load_fixture("chat", "response.json")
+  mock_resp <- mock_httr2_response(fixture)
+  captured <- character()
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- c(captured, req$url)
+      mock_resp
+    },
+    .package = "httr2"
+  )
+
+  foundry_chat("Test", model = "gpt-4.1")
+  foundry_chat("Test", model = "gpt-4.1", api = "deployment")
+
+  expect_equal(captured[[1]], "https://test-resource.openai.azure.com/openai/v1/chat/completions")
+  expect_match(captured[[2]], "/openai/deployments/gpt-4.1/chat/completions")
+})
+
 # ============================================================================
 # Integration Test (requires real credentials)
 # ============================================================================

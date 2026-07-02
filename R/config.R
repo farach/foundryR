@@ -87,6 +87,85 @@ foundry_get_endpoint <- function(endpoint = NULL, required = FALSE) {
 }
 
 
+#' Set Azure AI Foundry project endpoint
+#'
+#' Set the project endpoint used by project-scoped Foundry APIs such as Azure
+#' evaluators and Agent Service operations. Prefer copying the full endpoint
+#' from the Foundry portal because Azure's project endpoint shape can vary by
+#' service generation.
+#'
+#' @param endpoint Character string containing the project endpoint URL.
+#' @param store Logical. If `TRUE`, stores the endpoint in `.Renviron`.
+#'
+#' @return Invisibly returns `TRUE` if the endpoint was set successfully.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' foundry_set_project_endpoint(Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT"))
+#' }
+foundry_set_project_endpoint <- function(endpoint, store = FALSE) {
+  if (missing(endpoint) || is.null(endpoint) || endpoint == "") {
+    cli::cli_abort("Project endpoint URL is required.")
+  }
+
+  endpoint <- sub("/$", "", endpoint)
+  Sys.setenv(AZURE_FOUNDRY_PROJECT_ENDPOINT = endpoint)
+  cli::cli_alert_success("Project endpoint set to {.url {endpoint}}")
+
+  if (store) {
+    renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
+    if (file.exists(renviron_path)) {
+      renviron_lines <- readLines(renviron_path, warn = FALSE)
+      renviron_lines <- renviron_lines[!grepl("^AZURE_FOUNDRY_PROJECT_ENDPOINT=", renviron_lines)]
+    } else {
+      renviron_lines <- character()
+    }
+    renviron_lines <- c(renviron_lines, paste0("AZURE_FOUNDRY_PROJECT_ENDPOINT=", endpoint))
+    writeLines(renviron_lines, renviron_path)
+    cli::cli_alert_success("Project endpoint stored in {.file {renviron_path}}")
+  }
+
+  invisible(TRUE)
+}
+
+
+#' Get Azure AI Foundry project endpoint
+#'
+#' Retrieve the project endpoint URL from the environment or a provided value.
+#'
+#' @param endpoint Character. Optional endpoint to use instead of
+#'   `AZURE_FOUNDRY_PROJECT_ENDPOINT`.
+#' @param required Logical. If `TRUE`, throws an error when no endpoint is found.
+#'
+#' @return The project endpoint URL string, or `NULL`.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' foundry_get_project_endpoint()
+#' }
+foundry_get_project_endpoint <- function(endpoint = NULL, required = FALSE) {
+  if (is.null(endpoint)) {
+    endpoint <- Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT")
+    if (endpoint == "") endpoint <- NULL
+  }
+
+  if (!is.null(endpoint)) {
+    endpoint <- sub("/$", "", endpoint)
+  }
+
+  if (required && is.null(endpoint)) {
+    cli::cli_abort(c(
+      "Azure AI Foundry project endpoint is required.",
+      "i" = "Set one with {.code foundry_set_project_endpoint()} or set the {.envvar AZURE_FOUNDRY_PROJECT_ENDPOINT} environment variable."
+    ))
+  }
+
+  endpoint
+}
+
+
 #' Get API Version
 #'
 #' Retrieve the API version to use for requests.

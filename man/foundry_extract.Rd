@@ -6,22 +6,29 @@
 \usage{
 foundry_extract(
   text,
-  schema,
+  schema = NULL,
+  text_col = NULL,
   instructions = NULL,
   schema_name = "ExtractedData",
   strict = TRUE,
   model = NULL,
   flatten = TRUE,
   store = FALSE,
+  max_active = 5L,
+  progress = TRUE,
   api_key = NULL,
   endpoint = NULL,
   ...
 )
 }
 \arguments{
-\item{text}{Character vector. Texts to extract from.}
+\item{text}{Character vector or data frame. Texts to extract from, or a data
+frame containing a text column.}
 
 \item{schema}{List. JSON Schema object describing the fields to extract.}
+
+\item{text_col}{Character. Column name containing text when \code{text} is a data
+frame.}
 
 \item{instructions}{Character. Optional extraction instructions. If omitted,
 a concise default extraction instruction is used.}
@@ -39,6 +46,11 @@ parsed data is returned in a \code{.data} list-column.}
 
 \item{store}{Logical. Whether to store Responses API objects. Defaults to
 \code{FALSE} because bulk extraction often processes sensitive research data.}
+
+\item{max_active}{Integer. Maximum number of concurrent requests.}
+
+\item{progress}{Logical. Whether to show a progress bar for parallel
+extraction.}
 
 \item{api_key}{Character. Optional API key override.}
 

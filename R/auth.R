@@ -167,3 +167,166 @@ foundry_get_token <- function(token = NULL, required = FALSE) {
 
   token
 }
+
+
+foundry_auth_state <- new.env(parent = emptyenv())
+foundry_auth_state$token_provider <- NULL
+
+
+#' Set a Microsoft Entra ID token provider
+#'
+#' Register a function that returns a Microsoft Entra ID bearer token when
+#' foundryR needs to authenticate without an API key. This is useful for long
+#' polling jobs and keyless production environments where tokens should be
+#' refreshed automatically.
+#'
+#' @param provider Function or `NULL`. A zero-argument function that returns a
+#'   bearer token string. Use `NULL` to clear the provider.
+#'
+#' @return Invisibly returns the previous provider.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' foundry_set_token_provider(foundry_token_azure_cli())
+#' }
+foundry_set_token_provider <- function(provider) {
+  if (!is.null(provider) && !is.function(provider)) {
+    cli::cli_abort("{.arg provider} must be a function or NULL.")
+  }
+
+  old <- foundry_auth_state$token_provider
+  foundry_auth_state$token_provider <- provider
+  invisible(old)
+}
+
+
+foundry_get_token_provider <- function() {
+  foundry_auth_state$token_provider
+}
+
+
+foundry_token_from_provider <- function(required = FALSE) {
+  provider <- foundry_get_token_provider()
+  if (is.null(provider)) {
+    if (required) {
+      cli::cli_abort("No Azure AI Foundry token provider is configured.")
+    }
+    return(NULL)
+  }
+
+  token <- provider()
+  if (is.null(token) || !is.character(token) || length(token) != 1L ||
+      is.na(token) || token == "") {
+    cli::cli_abort("The configured token provider did not return a token string.")
+  }
+
+  sub("^Bearer\\s+", "", token, ignore.case = TRUE)
+}
+
+
+#' Create an Azure CLI token provider
+#'
+#' Create a provider function for `foundry_set_token_provider()` that shells out
+#' to `az account get-access-token`. Tokens are cached until five minutes before
+#' expiry.
+#'
+#' @param resource Character. Azure resource used for the access token. Azure AI
+#'   Foundry docs currently reference both `"https://ai.azure.com"` and
+#'   `"https://cognitiveservices.azure.com"` for different surfaces, so this is
+#'   configurable.
+#' @param az Character. Azure CLI executable name or path.
+#'
+#' @return A zero-argument token provider function.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' foundry_set_token_provider(
+#'   foundry_token_azure_cli("https://ai.azure.com")
+#' )
+#' }
+foundry_token_azure_cli <- function(resource = "https://ai.azure.com",
+                                    az = "az") {
+  foundry_check_character_scalar(resource, "resource")
+  foundry_check_character_scalar(az, "az")
+
+  cache <- new.env(parent = emptyenv())
+  cache$token <- NULL
+  cache$expires_at <- as.POSIXct(NA_real_, origin = "1970-01-01", tz = "UTC")
+
+  function() {
+    now <- Sys.time()
+    if (!is.null(cache$token) && !is.na(cache$expires_at) &&
+        now < cache$expires_at - 300) {
+      return(cache$token)
+    }
+
+    output <- tryCatch(
+      system2(
+        az,
+        c("account", "get-access-token", "--resource", resource, "--output", "json"),
+        stdout = TRUE,
+        stderr = TRUE
+      ),
+      error = function(e) {
+        cli::cli_abort(c(
+          "Failed to run Azure CLI.",
+          "x" = conditionMessage(e),
+          "i" = "Install the Azure CLI and run {.code az login}, or use another token provider."
+        ))
+      }
+    )
+
+    status <- attr(output, "status", exact = TRUE)
+    if (!is.null(status) && !identical(status, 0L)) {
+      cli::cli_abort(c(
+        "Azure CLI failed to get an access token.",
+        "x" = paste(output, collapse = "\n")
+      ))
+    }
+
+    parsed <- tryCatch(
+      jsonlite::fromJSON(paste(output, collapse = "\n"), simplifyVector = FALSE),
+      error = function(e) {
+        cli::cli_abort(c(
+          "Azure CLI returned invalid JSON.",
+          "x" = conditionMessage(e)
+        ))
+      }
+    )
+
+    token <- parsed$accessToken %||% parsed$access_token
+    expires_on <- parsed$expires_on %||% parsed$expiresOn
+    if (is.null(token) || token == "") {
+      cli::cli_abort("Azure CLI response did not include an access token.")
+    }
+
+    cache$token <- token
+    cache$expires_at <- foundry_parse_token_expiry(expires_on)
+    cache$token
+  }
+}
+
+
+foundry_parse_token_expiry <- function(expires_on) {
+  if (is.null(expires_on) || length(expires_on) != 1L || is.na(expires_on)) {
+    return(Sys.time() + 55 * 60)
+  }
+
+  if (is.numeric(expires_on)) {
+    return(as.POSIXct(expires_on, origin = "1970-01-01", tz = "UTC"))
+  }
+
+  numeric_expiry <- suppressWarnings(as.numeric(expires_on))
+  if (!is.na(numeric_expiry)) {
+    return(as.POSIXct(numeric_expiry, origin = "1970-01-01", tz = "UTC"))
+  }
+
+  parsed <- suppressWarnings(as.POSIXct(expires_on, tz = "UTC"))
+  if (is.na(parsed)) {
+    Sys.time() + 55 * 60
+  } else {
+    parsed
+  }
+}

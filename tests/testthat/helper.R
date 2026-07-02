@@ -280,6 +280,16 @@ mock_request <- function(fixture_response, env = parent.frame()) {
   )
 }
 
+
+mock_parallel_request <- function(fixture_responses, env = parent.frame()) {
+  responses <- lapply(fixture_responses, mock_httr2_response)
+  testthat::local_mocked_bindings(
+    req_perform_parallel = function(reqs, ...) responses[seq_along(reqs)],
+    .package = "httr2",
+    .env = env
+  )
+}
+
 #' Create a mock moderation response
 #'
 #' @param hate Integer. Severity for Hate category (0-6).

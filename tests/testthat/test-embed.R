@@ -7,7 +7,10 @@ test_that("foundry_embed handles empty input", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
-  expect_named(result, c("text", "embedding", "n_dims"))
+  expect_named(result, c(
+    ".input_idx", "text", "embedding", "n_dims",
+    ".error", ".error_msg", "raw_response"
+  ))
 })
 
 test_that("foundry_embed requires model", {
@@ -118,7 +121,7 @@ test_that("foundry_similarity returns all unique pairs sorted by similarity", {
 test_that("foundry_embed returns tibble with mocked response", {
   setup_mock_env()
   fixture <- load_fixture("embed", "response.json")
-  mock_request(fixture)
+  mock_parallel_request(list(fixture))
 
   result <- foundry_embed("Hello world", model = "text-embedding-ada-002")
 
@@ -127,29 +130,68 @@ test_that("foundry_embed returns tibble with mocked response", {
   expect_equal(result$text, "Hello world")
   expect_true(is.list(result$embedding))
   expect_true(length(result$embedding[[1]]) > 0)
+  expect_equal(result$.input_idx, 1L)
+  expect_equal(result$.error, FALSE)
 })
 
 test_that("foundry_embed returns correct column types", {
   setup_mock_env()
   fixture <- load_fixture("embed", "response.json")
-  mock_request(fixture)
+  mock_parallel_request(list(fixture))
 
   result <- foundry_embed("Test", model = "text-embedding-ada-002")
 
   expect_type(result$text, "character")
   expect_type(result$embedding, "list")
   expect_type(result$n_dims, "integer")
+  expect_type(result$.error, "logical")
+  expect_type(result$.error_msg, "character")
   expect_type(result$embedding[[1]], "double")
 })
 
 test_that("foundry_embed n_dims matches embedding length", {
   setup_mock_env()
   fixture <- load_fixture("embed", "response.json")
-  mock_request(fixture)
+  mock_parallel_request(list(fixture))
 
   result <- foundry_embed("Test", model = "text-embedding-ada-002")
 
   expect_equal(result$n_dims, length(result$embedding[[1]]))
+})
+
+test_that("foundry_embed sends v1 array requests", {
+  setup_mock_env()
+  fixture <- load_fixture("embed", "response.json")
+  mock_resp <- mock_httr2_response(fixture)
+  captured <- NULL
+
+  testthat::local_mocked_bindings(
+    req_perform_parallel = function(reqs, ...) {
+      captured <<- reqs[[1]]
+      list(mock_resp)
+    },
+    .package = "httr2"
+  )
+
+  foundry_embed(c("one", "two"), model = "embed-v-4-0")
+
+  expect_equal(captured$url, "https://test-resource.openai.azure.com/openai/v1/embeddings")
+  expect_equal(captured$body$data$model, "embed-v-4-0")
+  expect_equal(captured$body$data$input, c("one", "two"))
+})
+
+test_that("foundry_similarity can limit rows or return a matrix", {
+  df <- tibble::tibble(
+    text = c("a", "b", "c"),
+    embedding = list(c(1, 0), c(1, 0), c(0, 1))
+  )
+
+  limited <- foundry_similarity(df, top_k = 1)
+  mat <- foundry_similarity(df, as_matrix = TRUE)
+
+  expect_equal(nrow(limited), 1L)
+  expect_equal(dim(mat), c(3L, 3L))
+  expect_equal(mat["a", "b"], 1, tolerance = 1e-10)
 })
 
 # ============================================================================

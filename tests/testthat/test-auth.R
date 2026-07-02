@@ -68,3 +68,39 @@ test_that("explicit API key takes precedence over environment token", {
   expect_contains(names(req$headers), "api-key")
   expect_setequal(setdiff(names(req$headers), "api-key"), character())
 })
+
+test_that("token provider is used before environment token and key", {
+  withr::defer(foundry_set_token_provider(NULL))
+  withr::local_envvar(
+    AZURE_FOUNDRY_TOKEN = "env-token",
+    AZURE_OPENAI_TOKEN = "",
+    AZURE_FOUNDRY_KEY = "env-key"
+  )
+  foundry_set_token_provider(function() "provider-token")
+
+  req <- httr2::request("https://example.com") |>
+    foundry_authenticate_request()
+
+  expect_contains(names(req$headers), "Authorization")
+  expect_false("api-key" %in% names(req$headers))
+})
+
+test_that("azure cli token provider caches tokens", {
+  calls <- 0L
+  testthat::local_mocked_bindings(
+    system2 = function(...) {
+      calls <<- calls + 1L
+      jsonlite::toJSON(
+        list(accessToken = paste0("token-", calls), expires_on = as.numeric(Sys.time() + 3600)),
+        auto_unbox = TRUE
+      )
+    },
+    .package = "base"
+  )
+
+  provider <- foundry_token_azure_cli()
+
+  expect_equal(provider(), "token-1")
+  expect_equal(provider(), "token-1")
+  expect_equal(calls, 1L)
+})

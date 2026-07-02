@@ -12,6 +12,11 @@ foundry_batch_requests(
   endpoint = "/v1/responses",
   custom_id = NULL,
   body = list(),
+  schema = NULL,
+  schema_name = "ExtractedData",
+  strict = TRUE,
+  instructions = NULL,
+  body_columns = NULL,
   overwrite = FALSE
 )
 }
@@ -30,6 +35,18 @@ foundry_batch_requests(
 IDs are generated as \code{row-1}, \code{row-2}, and so on.}
 
 \item{body}{List. Additional request body fields added to each request.}
+
+\item{schema}{List. Optional JSON Schema for structured Responses API output.}
+
+\item{schema_name}{Character. Name for \code{schema} when supplied.}
+
+\item{strict}{Logical. Whether structured output should be strict.}
+
+\item{instructions}{Character. Optional instructions for Responses API
+requests.}
+
+\item{body_columns}{Character vector. Optional column names whose per-row
+values should be added to each request body.}
 
 \item{overwrite}{Logical. Whether to overwrite an existing file.}
 }
