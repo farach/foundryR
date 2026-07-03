@@ -13,6 +13,7 @@ foundry_translate_audio(
   target_language = "en",
   model = NULL,
   service = c("speech", "openai"),
+  api = c("v1", "deployment"),
   locales = NULL,
   language = NULL,
   prompt = NULL,
@@ -47,6 +48,13 @@ foundry_translate_audio(
 
   Character. `"speech"` for LLM Speech/MAI-Transcribe or `"openai"` for
   `/openai/v1/audio/transcriptions`.
+
+- api:
+
+  Character. Used when `service = "openai"`. `"v1"` calls the
+  `/openai/v1/...` data-plane path; `"deployment"` calls
+  `/openai/deployments/{model}/...`. Classic `whisper` deployments
+  require `"deployment"`; `gpt-4o-transcribe`-family models use `"v1"`.
 
 - locales:
 

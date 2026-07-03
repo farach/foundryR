@@ -2,8 +2,10 @@
 
 **\[experimental\]**
 
-Use the Microsoft Foundry v1 preview speech endpoint to synthesize audio
-and save it to a local file.
+Use a Microsoft Foundry speech deployment to synthesize audio and save
+it to a local file. The v1 data-plane path is used by default; set
+`api = "deployment"` for a deployment exposed only on the classic
+`/openai/deployments/{model}/audio/speech` path.
 
 ## Usage
 
@@ -17,10 +19,11 @@ foundry_speak(
   instructions = NULL,
   speed = NULL,
   overwrite = FALSE,
+  api = c("v1", "deployment"),
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = "preview"
+  api_version = NULL
 )
 ```
 
@@ -59,6 +62,13 @@ foundry_speak(
 
   Logical. Whether to overwrite an existing file.
 
+- api:
+
+  Character. `"v1"` uses `/openai/v1/audio/speech`; `"deployment"` uses
+  `/openai/deployments/{model}/audio/speech`. Use `"deployment"` when
+  your text-to-speech deployment is not exposed on the v1 data-plane
+  path.
+
 - api_key:
 
   Character. Optional API key override.
@@ -84,6 +94,6 @@ A tibble with the output path, byte count, model, voice, and format.
 
 ``` r
 if (FALSE) { # \dontrun{
-foundry_speak("Hello from R.", model = "tts-1", voice = "alloy")
+foundry_speak("Hello from R.", model = "gpt-4o-mini-tts", voice = "alloy")
 } # }
 ```

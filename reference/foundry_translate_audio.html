@@ -79,6 +79,7 @@ the OpenAI-compatible translations endpoint translates to English.</p>
 <span>  target_language <span class="op">=</span> <span class="st">"en"</span>,</span>
 <span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  service <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"speech"</span>, <span class="st">"openai"</span><span class="op">)</span>,</span>
+<span>  api <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"v1"</span>, <span class="st">"deployment"</span><span class="op">)</span>,</span>
 <span>  locales <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  language <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  prompt <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -114,6 +115,13 @@ translate. For <code>service = "openai"</code>, defaults to <code>AZURE_FOUNDRY_
 <dt id="arg-service">service<a class="anchor" aria-label="anchor" href="#arg-service"></a></dt>
 <dd><p>Character. <code>"speech"</code> for LLM Speech/MAI-Transcribe or
 <code>"openai"</code> for <code>/openai/v1/audio/transcriptions</code>.</p></dd>
+
+
+<dt id="arg-api">api<a class="anchor" aria-label="anchor" href="#arg-api"></a></dt>
+<dd><p>Character. Used when <code>service = "openai"</code>. <code>"v1"</code> calls the
+<code>/openai/v1/...</code> data-plane path; <code>"deployment"</code> calls
+<code>/openai/deployments/{model}/...</code>. Classic <code>whisper</code> deployments require
+<code>"deployment"</code>; <code>gpt-4o-transcribe</code>-family models use <code>"v1"</code>.</p></dd>
 
 
 <dt id="arg-locales">locales<a class="anchor" aria-label="anchor" href="#arg-locales"></a></dt>

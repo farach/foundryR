@@ -249,6 +249,15 @@ Azure AI Foundry.
   embeddings across bakes, and builds embedding columns from a single
   matrix instead of a per-cell fill loop (roadmap 2026 H2).
 
+- [`foundry_transcribe()`](https://farach.github.io/foundryR/reference/foundry_transcribe.md),
+  [`foundry_translate_audio()`](https://farach.github.io/foundryR/reference/foundry_translate_audio.md),
+  and
+  [`foundry_speak()`](https://farach.github.io/foundryR/reference/foundry_speak.md)
+  now accept `api = "deployment"` to reach OpenAI audio models through
+  the `/openai/deployments/{model}/...` path, so a `whisper`
+  transcription or translation deployment works alongside the default v1
+  data-plane path.
+
 ### Documentation and package metadata
 
 - Documentation now positions foundryR around Azure AI Content Safety,
