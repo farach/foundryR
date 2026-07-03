@@ -42,6 +42,7 @@ Initial development release of foundryR, a tidy interface to Microsoft Azure AI 
 - `foundry_response()` accepts `foundry_tool()` objects in `tools`, strips local R function references from request bodies, and returns `cached_input_tokens` when the Responses API reports cached input tokens.
 - `foundry_similarity()` now computes all pairwise cosine similarities with a single vectorized matrix product, supports `top_k`, and can return a similarity matrix with `as_matrix = TRUE` (roadmap 2026 H2).
 - `step_foundry_embed()` now supports `cache = "disk"` with an optional `cache_dir` to persist embeddings across bakes, and builds embedding columns from a single matrix instead of a per-cell fill loop (roadmap 2026 H2).
+- `foundry_transcribe()`, `foundry_translate_audio()`, and `foundry_speak()` now accept `api = "deployment"` to reach OpenAI audio models through the `/openai/deployments/{model}/...` path, so a `whisper` transcription or translation deployment works alongside the default v1 data-plane path.
 
 ## Documentation and package metadata
 

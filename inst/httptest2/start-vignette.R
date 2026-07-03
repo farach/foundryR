@@ -24,7 +24,7 @@ local({
     AZURE_FOUNDRY_EMBED_MODEL      = "text-embedding-3-small",
     AZURE_FOUNDRY_IMAGE_ENDPOINT   = "https://example.openai.azure.com",
     AZURE_FOUNDRY_IMAGE_KEY        = "not-a-real-key",
-    AZURE_FOUNDRY_IMAGE_MODEL      = "gpt-image-1",
+    AZURE_FOUNDRY_IMAGE_MODEL      = "gpt-image-2",
     AZURE_FOUNDRY_SPEECH_ENDPOINT  = "https://example.cognitiveservices.azure.com",
     AZURE_FOUNDRY_SPEECH_KEY       = "not-a-real-key",
     AZURE_CONTENT_SAFETY_ENDPOINT  = "https://example.cognitiveservices.azure.com",
@@ -86,14 +86,37 @@ httptest2::set_redactor(function(response) {
     response,
     c("api-key", "Authorization", "Ocp-Apim-Subscription-Key", "X-API-Key")
   )
+
+  # Always rewrite the real host in the request URL echoed on the response
+  # object, for every content type.
   for (real_host in names(.foundry_doc_host_map)) {
-    response <- httptest2::gsub_response(
-      response, real_host, .foundry_doc_host_map[[real_host]],
+    response$url <- gsub(
+      real_host, .foundry_doc_host_map[[real_host]], response$url,
       fixed = TRUE
     )
   }
-  for (secret in .foundry_doc_secrets) {
-    response <- httptest2::gsub_response(response, secret, "REDACTED", fixed = TRUE)
+
+  # Only run string substitution on textual bodies. Binary bodies (audio/mpeg
+  # from foundry_speak(), and similar) never contain the host or key, and
+  # coercing them through a string replacement corrupts the bytes -- which would
+  # make replayed audio unusable and break downstream multipart matching.
+  content_type <- tryCatch(
+    httr2::resp_content_type(response),
+    error = function(e) NA_character_
+  )
+  is_text <- !is.na(content_type) &&
+    grepl("json|text|xml|javascript|html|urlencoded|csv", content_type,
+          ignore.case = TRUE)
+  if (is_text) {
+    for (real_host in names(.foundry_doc_host_map)) {
+      response <- httptest2::gsub_response(
+        response, real_host, .foundry_doc_host_map[[real_host]],
+        fixed = TRUE
+      )
+    }
+    for (secret in .foundry_doc_secrets) {
+      response <- httptest2::gsub_response(response, secret, "REDACTED", fixed = TRUE)
+    }
   }
   response
 })

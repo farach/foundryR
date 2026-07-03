@@ -9,7 +9,7 @@ vignette: >
 
 ```{r setup, include = FALSE}
 # This vignette runs against recorded, credential-free API fixtures. The
-# fixtures are recorded once by a maintainer with real Azure Speech credentials
+# fixtures are recorded once by a maintainer with real Azure OpenAI credentials
 # (data-raw/record-doc-outputs.R) and committed under vignettes/audio/. When the
 # fixtures are present every foundry_*() call below executes and shows its real
 # output; when they are absent the API chunks are not evaluated so the vignette
@@ -33,6 +33,19 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = run_api
 )
+
+# Embed a self-contained <audio> player holding the real bytes foundry_speak()
+# produced, so readers can play the output (not just read its size). On replay
+# the file holds the recorded audio, so this works offline with no credentials.
+embed_audio <- function(path) {
+  uri <- paste0("data:audio/mpeg;base64,", base64enc::base64encode(path))
+  knitr::asis_output(
+    sprintf(
+      '<audio controls src="%s">Your browser does not support audio playback.</audio>',
+      uri
+    )
+  )
+}
 ```
 
 ```{r library, eval = TRUE}
@@ -44,18 +57,22 @@ transcribe interviews, lectures, field recordings, meetings, and focus groups,
 then keep the result in a tibble with segment-level timing for downstream coding
 or analysis.
 
-## Configure Speech in Foundry Tools
+## Two ways to reach speech models
 
-MAI-Transcribe models are exposed through the LLM Speech API. Configure the
-Speech resource once per session. This chunk is illustrative and is not run when
-the vignette builds:
+foundryR can use audio models in two places:
+
+- **Azure OpenAI deployments on your main resource** -- `whisper` for
+  transcription and translation, and a text-to-speech model such as
+  `gpt-4o-mini-tts` for synthesis. These reuse your main endpoint and key and
+  are what the examples below use. Classic `whisper` is exposed only on the
+  deployment path, so pass `api = "deployment"`.
+- **A dedicated Speech (LLM Speech) resource** for MAI-Transcribe models. This
+  chunk is illustrative and is not run:
 
 ```{r configure-speech, eval = FALSE}
+# Only needed for MAI-Transcribe on a dedicated Speech resource:
 foundry_set_speech_endpoint(Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT"))
 foundry_set_speech_key("your-speech-key")
-
-# For keyless authentication, set a bearer token instead of a key:
-foundry_set_token("your-entra-id-access-token")
 ```
 
 ## A real, public-domain sample
@@ -73,20 +90,26 @@ basename(sample_audio)
 ## Transcribe an audio file
 
 `foundry_transcribe()` returns one row per file. The `text` column holds the
-transcript and the `phrases` list-column holds segment-level timing.
+transcript and the `phrases` list-column holds segment-level timing. We use the
+`whisper` deployment on the main resource; because classic whisper lives on the
+deployment path we pass `api = "deployment"`, and `response_format =
+"verbose_json"` asks the service for per-segment timing.
 
 ```{r transcribe}
 transcript <- foundry_transcribe(
   sample_audio,
-  model = "mai-transcribe-1.5",
-  locales = "en-US"
+  service = "openai",
+  model = "whisper",
+  api = "deployment",
+  response_format = "verbose_json"
 )
 
 transcript$text
 ```
 
 The segment timing lives in the `phrases` list-column, one row per recognized
-phrase:
+segment. A short clip like this one is a single segment; longer recordings
+return many:
 
 ```{r transcribe-phrases}
 head(transcript$phrases[[1]])
@@ -95,13 +118,13 @@ head(transcript$phrases[[1]])
 ## Synthesize speech
 
 `foundry_speak()` writes binary audio to disk and returns the file path and byte
-count. This is useful for experiment stimuli, accessibility assets, and demos.
-Use your text-to-speech deployment name for `model`.
+count -- handy for experiment stimuli, accessibility assets, and demos. Use your
+text-to-speech deployment name for `model`.
 
 ```{r speak}
 speech <- foundry_speak(
-  "Welcome to the foundryR audio vignette.",
-  model = "tts-1",
+  "Hello, world.",
+  model = "gpt-4o-mini-tts",
   voice = "alloy",
   path = tempfile(fileext = ".mp3")
 )
@@ -109,23 +132,42 @@ speech <- foundry_speak(
 speech[, c("bytes", "model", "voice", "format")]
 ```
 
+Those bytes are the real audio the model returned. Play them here:
+
+```{r speak-play, echo = FALSE}
+embed_audio(speech$path)
+```
+
 ## Translate multilingual recordings
 
 Use `foundry_translate_audio()` when you want an analysis corpus in a common
-language. To keep this example fully reproducible we first synthesize a short
-Spanish clip, then translate it back to English -- both are real API calls.
+language. To keep the example fully reproducible we first synthesize a short
+Spanish clip, then translate it to English with whisper -- both are real API
+calls.
 
-```{r translate}
+```{r translate-synth}
 spanish_clip <- foundry_speak(
-  "La reunion de investigacion fue clara y muy util.",
-  model = "tts-1",
+  "La reunion fue muy util.",
+  model = "gpt-4o-mini-tts",
   voice = "alloy",
   path = tempfile(fileext = ".mp3")
 )
+```
 
+Listen to the synthesized Spanish input:
+
+```{r translate-play, echo = FALSE}
+embed_audio(spanish_clip$path)
+```
+
+Now translate it to English with the whisper deployment:
+
+```{r translate}
 translation <- foundry_translate_audio(
   spanish_clip$path,
-  target_language = "en"
+  service = "openai",
+  model = "whisper",
+  api = "deployment"
 )
 
 translation$text
@@ -136,8 +178,8 @@ translation$text
 - Inspect `head(transcript$phrases[[1]])` before processing long recordings so
   you know the segment structure your coding scheme has to handle.
 - Keep raw audio out of your project repository; store transcripts and IDs.
-- MAI-Transcribe preview limitations include no diarization for MAI-Transcribe
-  models and no prompt tuning for MAI-Transcribe 1.0.
+- Request `response_format = "verbose_json"` to get segment-level timing from
+  whisper; the default format returns the transcript text only.
 
 ```{r cleanup, include = FALSE}
 if (run_api) {

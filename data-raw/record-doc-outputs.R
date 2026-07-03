@@ -76,7 +76,7 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
     list(name = "content-safety",      path = "vignettes/content-safety.Rmd",      dir = "vignettes/content-safety",      services = c("content_safety")),
     list(name = "annotation-workflow", path = "vignettes/annotation-workflow.Rmd", dir = "vignettes/annotation-workflow", services = c("content_safety")),
     list(name = "responses-api",       path = "vignettes/responses-api.Rmd",       dir = "vignettes/responses-api",       services = character()),
-    list(name = "audio",               path = "vignettes/audio.Rmd",               dir = "vignettes/audio",               services = c("speech")),
+    list(name = "audio",               path = "vignettes/audio.Rmd",               dir = "vignettes/audio",               services = character()),
     list(name = "media-generation",    path = "vignettes/media-generation.Rmd",    dir = "vignettes/media-generation",    services = c("image")),
     list(name = "files-batches",       path = "vignettes/files-batches.Rmd",       dir = "vignettes/files-batches",       services = character()),
     list(name = "tidymodels",          path = "vignettes/tidymodels.Rmd",          dir = "vignettes/tidymodels",          services = character()),

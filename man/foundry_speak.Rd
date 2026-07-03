@@ -13,10 +13,11 @@ foundry_speak(
   instructions = NULL,
   speed = NULL,
   overwrite = FALSE,
+  api = c("v1", "deployment"),
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = "preview"
+  api_version = NULL
 )
 }
 \arguments{
@@ -37,6 +38,10 @@ foundry_speak(
 
 \item{overwrite}{Logical. Whether to overwrite an existing file.}
 
+\item{api}{Character. \code{"v1"} uses \verb{/openai/v1/audio/speech}; \code{"deployment"}
+uses \verb{/openai/deployments/\{model\}/audio/speech}. Use \code{"deployment"} when
+your text-to-speech deployment is not exposed on the v1 data-plane path.}
+
 \item{api_key}{Character. Optional API key override.}
 
 \item{token}{Character. Optional bearer token override.}
@@ -52,11 +57,13 @@ A tibble with the output path, byte count, model, voice, and format.
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 
-Use the Microsoft Foundry v1 preview speech endpoint to synthesize audio and
-save it to a local file.
+Use a Microsoft Foundry speech deployment to synthesize audio and save it to
+a local file. The v1 data-plane path is used by default; set
+\code{api = "deployment"} for a deployment exposed only on the classic
+\verb{/openai/deployments/\{model\}/audio/speech} path.
 }
 \examples{
 \dontrun{
-foundry_speak("Hello from R.", model = "tts-1", voice = "alloy")
+foundry_speak("Hello from R.", model = "gpt-4o-mini-tts", voice = "alloy")
 }
 }

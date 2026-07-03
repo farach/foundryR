@@ -8,6 +8,7 @@ foundry_transcribe(
   file,
   model = NULL,
   service = c("speech", "openai"),
+  api = c("v1", "deployment"),
   locales = NULL,
   language = NULL,
   prompt = NULL,
@@ -32,6 +33,11 @@ foundry_transcribe(
 
 \item{service}{Character. \code{"speech"} for LLM Speech/MAI-Transcribe or
 \code{"openai"} for \verb{/openai/v1/audio/transcriptions}.}
+
+\item{api}{Character. Used when \code{service = "openai"}. \code{"v1"} calls the
+\verb{/openai/v1/...} data-plane path; \code{"deployment"} calls
+\verb{/openai/deployments/\{model\}/...}. Classic \code{whisper} deployments require
+\code{"deployment"}; \verb{gpt-4o-transcribe}-family models use \code{"v1"}.}
 
 \item{locales}{Character vector. Optional Speech locale hints such as
 \code{"en-US"} or \code{"es-ES"}.}
@@ -76,5 +82,6 @@ MAI-Transcribe models, or through the Azure OpenAI v1 preview audio endpoint.
 \dontrun{
 foundry_transcribe("interview.mp3", model = "mai-transcribe-1.5")
 foundry_transcribe("interview.mp3", service = "openai", model = "gpt-4o-transcribe")
+foundry_transcribe("speech.wav", service = "openai", model = "whisper", api = "deployment")
 }
 }

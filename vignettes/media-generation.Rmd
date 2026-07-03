@@ -35,6 +35,17 @@ knitr::opts_chunk$set(
   comment = "#>",
   eval = run_api
 )
+
+# Embed the generated image inline as a base64 data URI, reading the file that
+# foundry_save_image() just wrote. This demonstrates that helper and renders the
+# real picture reliably offline, with no external-file handling (mirrors the
+# <audio> players in the audio vignette).
+embed_image <- function(path, width = "60%", alt = "Generated image") {
+  uri <- paste0("data:image/jpeg;base64,", base64enc::base64encode(path))
+  knitr::asis_output(
+    sprintf('<img src="%s" width="%s" alt="%s">', uri, width, alt)
+  )
+}
 ```
 
 ```{r library, eval = TRUE}
@@ -68,7 +79,7 @@ recorded fixture stays light.
 ```{r generate}
 image <- foundry_image(
   "A friendly red panda reading a book, flat vector illustration",
-  model = "gpt-image-1",
+  model = "gpt-image-2",
   size = "1024x1024",
   quality = "low",
   output_format = "jpeg",
@@ -81,10 +92,13 @@ image[, c("prompt", "revised_prompt", "output_format", "created")]
 Decode the returned bytes to a file with `foundry_save_image()` and display the
 result:
 
-```{r show-image, out.width = "60%"}
+```{r show-image}
 img_path <- tempfile(fileext = ".jpeg")
 foundry_save_image(image, img_path)
-knitr::include_graphics(img_path)
+embed_image(
+  img_path,
+  alt = "AI-generated flat vector illustration of a friendly red panda reading a book"
+)
 ```
 
 Image URLs are temporary. Save images that belong in reports, stimuli, or
@@ -99,7 +113,7 @@ illustrative (it needs an image file on disk) and is not run here:
 edited <- foundry_image_edit(
   image = img_path,
   prompt = "Use a blue, Microsoft-inspired color palette.",
-  model = "gpt-image-1",
+  model = "gpt-image-2",
   output_format = "jpeg"
 )
 

@@ -52,6 +52,10 @@ foundry_set_speech_key <- function(key) {
 #'   `AZURE_FOUNDRY_MODEL` for `service = "openai"`.
 #' @param service Character. `"speech"` for LLM Speech/MAI-Transcribe or
 #'   `"openai"` for `/openai/v1/audio/transcriptions`.
+#' @param api Character. Used when `service = "openai"`. `"v1"` calls the
+#'   `/openai/v1/...` data-plane path; `"deployment"` calls
+#'   `/openai/deployments/{model}/...`. Classic `whisper` deployments require
+#'   `"deployment"`; `gpt-4o-transcribe`-family models use `"v1"`.
 #' @param locales Character vector. Optional Speech locale hints such as
 #'   `"en-US"` or `"es-ES"`.
 #' @param language Character. Optional OpenAI transcription language hint such as
@@ -79,10 +83,12 @@ foundry_set_speech_key <- function(key) {
 #' \dontrun{
 #' foundry_transcribe("interview.mp3", model = "mai-transcribe-1.5")
 #' foundry_transcribe("interview.mp3", service = "openai", model = "gpt-4o-transcribe")
+#' foundry_transcribe("speech.wav", service = "openai", model = "whisper", api = "deployment")
 #' }
 foundry_transcribe <- function(file,
                                model = NULL,
                                service = c("speech", "openai"),
+                               api = c("v1", "deployment"),
                                locales = NULL,
                                language = NULL,
                                prompt = NULL,
@@ -97,6 +103,7 @@ foundry_transcribe <- function(file,
                                endpoint = NULL,
                                api_version = NULL) {
   service <- match.arg(service)
+  api <- match.arg(api)
   foundry_check_file(file)
 
   if (identical(service, "speech")) {
@@ -127,10 +134,11 @@ foundry_transcribe <- function(file,
     timestamp_granularities = timestamp_granularities,
     include = include,
     temperature = temperature,
+    api = api,
     api_key = api_key,
     token = token,
     endpoint = endpoint,
-    api_version = api_version %||% "preview",
+    api_version = api_version,
     task = "transcribe"
   )
 }
@@ -163,6 +171,7 @@ foundry_translate_audio <- function(file,
                                     target_language = "en",
                                     model = NULL,
                                     service = c("speech", "openai"),
+                                    api = c("v1", "deployment"),
                                     locales = NULL,
                                     language = NULL,
                                     prompt = NULL,
@@ -173,6 +182,7 @@ foundry_translate_audio <- function(file,
                                     endpoint = NULL,
                                     api_version = NULL) {
   service <- match.arg(service)
+  api <- match.arg(api)
   foundry_check_file(file)
 
   if (identical(service, "speech")) {
@@ -200,10 +210,11 @@ foundry_translate_audio <- function(file,
     prompt = prompt,
     response_format = response_format,
     temperature = temperature,
+    api = api,
     api_key = api_key,
     token = token,
     endpoint = endpoint,
-    api_version = api_version %||% "preview",
+    api_version = api_version,
     task = "translate"
   )
 }
@@ -214,8 +225,10 @@ foundry_translate_audio <- function(file,
 #' @description
 #' `r lifecycle::badge("experimental")`
 #'
-#' Use the Microsoft Foundry v1 preview speech endpoint to synthesize audio and
-#' save it to a local file.
+#' Use a Microsoft Foundry speech deployment to synthesize audio and save it to
+#' a local file. The v1 data-plane path is used by default; set
+#' `api = "deployment"` for a deployment exposed only on the classic
+#' `/openai/deployments/{model}/audio/speech` path.
 #'
 #' @param text Character. Text to synthesize.
 #' @param model Character. Speech model deployment name.
@@ -226,6 +239,9 @@ foundry_translate_audio <- function(file,
 #' @param instructions Character. Optional style or pronunciation instructions.
 #' @param speed Numeric. Optional speech speed.
 #' @param overwrite Logical. Whether to overwrite an existing file.
+#' @param api Character. `"v1"` uses `/openai/v1/audio/speech`; `"deployment"`
+#'   uses `/openai/deployments/{model}/audio/speech`. Use `"deployment"` when
+#'   your text-to-speech deployment is not exposed on the v1 data-plane path.
 #' @inheritParams foundry_transcribe
 #'
 #' @return A tibble with the output path, byte count, model, voice, and format.
@@ -233,7 +249,7 @@ foundry_translate_audio <- function(file,
 #'
 #' @examples
 #' \dontrun{
-#' foundry_speak("Hello from R.", model = "tts-1", voice = "alloy")
+#' foundry_speak("Hello from R.", model = "gpt-4o-mini-tts", voice = "alloy")
 #' }
 foundry_speak <- function(text,
                           model = NULL,
@@ -243,21 +259,22 @@ foundry_speak <- function(text,
                           instructions = NULL,
                           speed = NULL,
                           overwrite = FALSE,
+                          api = c("v1", "deployment"),
                           api_key = NULL,
                           token = NULL,
                           endpoint = NULL,
-                          api_version = "preview") {
+                          api_version = NULL) {
   foundry_check_character_scalar(text, "text")
   model <- foundry_resolve_model(model)
   foundry_check_character_scalar(voice, "voice")
   foundry_check_character_scalar(response_format, "response_format")
+  api <- match.arg(api)
   if (is.null(path)) {
     path <- tempfile(fileext = paste0(".", response_format))
   }
   foundry_check_character_scalar(path, "path")
 
   body <- list(
-    model = model,
     input = text,
     voice = voice,
     response_format = response_format
@@ -265,15 +282,28 @@ foundry_speak <- function(text,
   if (!is.null(instructions)) body$instructions <- instructions
   if (!is.null(speed)) body$speed <- speed
 
-  req <- foundry_build_v1_request(
-    path = "audio/speech",
-    body = body,
-    method = "POST",
-    api_key = api_key,
-    token = token,
-    endpoint = endpoint,
-    api_version = api_version
-  )
+  if (identical(api, "deployment")) {
+    base_url <- foundry_get_endpoint(endpoint = endpoint, required = TRUE)
+    url <- paste0(base_url, "/openai/deployments/", model, "/audio/speech")
+    req <- httr2::request(url) |>
+      httr2::req_method("POST") |>
+      foundry_authenticate_request(api_key = api_key, token = token) |>
+      httr2::req_url_query(`api-version` = api_version %||% foundry_get_api_version()) |>
+      httr2::req_body_json(body) |>
+      httr2::req_retry(max_tries = 3, backoff = ~ 2) |>
+      httr2::req_error(body = foundry_error_body)
+  } else {
+    body$model <- model
+    req <- foundry_build_v1_request(
+      path = "audio/speech",
+      body = body,
+      method = "POST",
+      api_key = api_key,
+      token = token,
+      endpoint = endpoint,
+      api_version = api_version %||% "preview"
+    )
+  }
 
   result <- foundry_write_raw_response(req, path, overwrite = overwrite)
   result$model <- model
@@ -336,24 +366,38 @@ foundry_openai_audio <- function(file,
                                  timestamp_granularities = NULL,
                                  include = NULL,
                                  temperature = NULL,
+                                 api = c("v1", "deployment"),
                                  api_key = NULL,
                                  token = NULL,
                                  endpoint = NULL,
-                                 api_version = "preview",
+                                 api_version = NULL,
                                  task = "transcribe") {
-  req <- foundry_build_v1_request(
-    path = path,
-    method = "POST",
-    api_key = api_key,
-    token = token,
-    endpoint = endpoint,
-    api_version = api_version
-  )
+  api <- match.arg(api)
 
-  multipart <- list(
-    file = curl::form_file(file),
-    model = model
-  )
+  if (identical(api, "deployment")) {
+    base_url <- foundry_get_endpoint(endpoint = endpoint, required = TRUE)
+    url <- paste0(base_url, "/openai/deployments/", model, "/", path)
+    req <- httr2::request(url) |>
+      httr2::req_method("POST") |>
+      foundry_authenticate_request(api_key = api_key, token = token) |>
+      httr2::req_url_query(`api-version` = api_version %||% foundry_get_api_version()) |>
+      httr2::req_retry(max_tries = 3, backoff = ~ 2) |>
+      httr2::req_error(body = foundry_error_body)
+  } else {
+    req <- foundry_build_v1_request(
+      path = path,
+      method = "POST",
+      api_key = api_key,
+      token = token,
+      endpoint = endpoint,
+      api_version = api_version %||% "preview"
+    )
+  }
+
+  # The v1 endpoint takes the model in the request body; the deployment endpoint
+  # encodes it in the URL and does not accept a body model field.
+  multipart <- list(file = curl::form_file(file))
+  if (identical(api, "v1")) multipart$model <- model
   if (!is.null(language)) multipart$language <- language
   if (!is.null(prompt)) multipart$prompt <- paste(prompt, collapse = "\n")
   if (!is.null(response_format)) multipart$response_format <- response_format
@@ -491,11 +535,28 @@ foundry_audio_phrases <- function(result) {
   }
 
   purrr::map_dfr(phrases, function(phrase) {
+    # LLM Speech / MAI-Transcribe reports millisecond offsets directly; OpenAI
+    # whisper verbose_json reports start/end in seconds. Normalize both to ms.
+    if (!is.null(phrase$offsetMilliseconds)) {
+      offset_ms <- as.integer(phrase$offsetMilliseconds)
+      duration_ms <- as.integer(phrase$durationMilliseconds %||% NA_integer_)
+    } else if (!is.null(phrase$start)) {
+      offset_ms <- as.integer(round(phrase$start * 1000))
+      duration_ms <- if (!is.null(phrase$end)) {
+        as.integer(round((phrase$end - phrase$start) * 1000))
+      } else {
+        NA_integer_
+      }
+    } else {
+      offset_ms <- NA_integer_
+      duration_ms <- NA_integer_
+    }
+
     tibble::tibble(
       text = phrase$text %||% NA_character_,
       locale = phrase$locale %||% NA_character_,
-      offset_ms = as.integer(phrase$offsetMilliseconds %||% phrase$start %||% NA_integer_),
-      duration_ms = as.integer(phrase$durationMilliseconds %||% NA_integer_),
+      offset_ms = offset_ms,
+      duration_ms = duration_ms,
       confidence = as.numeric(phrase$confidence %||% NA_real_),
       speaker = phrase$speaker %||% NA_character_,
       words = list(phrase$words %||% list())

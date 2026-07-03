@@ -16,6 +16,8 @@
 ^sessions$
 ^tools$
 ^vignettes/articles$
+^vignettes/audio$
+^vignettes/media-generation$
 ^vignettes/tools$
 ^vignettes/annotation-workflow$
 ^vignettes/content-safety$
