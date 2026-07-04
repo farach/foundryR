@@ -27,6 +27,7 @@ test_that("foundry_codebook builds the specified object contract", {
 
 test_that("codebook hashes are stable and content addressed", {
   schema <- foundry_schema(label = type_enum("Task label", c("yes", "no")))
+  single_enum_schema <- foundry_schema(label = type_enum("Only label", "yes"))
   first <- foundry_codebook(
     name = "task-label",
     version = "1.0.0",
@@ -48,12 +49,30 @@ test_that("codebook hashes are stable and content addressed", {
     schema = schema,
     examples = list(list(text = "Write code", label = "yes"))
   )
+  single_enum <- foundry_codebook(
+    name = "single-label",
+    version = "1.0.0",
+    instructions = "Label each task.",
+    schema = single_enum_schema,
+    examples = NULL
+  )
 
   canonical <- jsonlite::toJSON(
     list(
       instructions = "Label each task.",
-      schema = schema,
+      schema = foundry_preserve_schema_arrays(schema),
       examples = list(list(text = "Write code", label = "yes")),
+      version = "1.0.0"
+    ),
+    auto_unbox = TRUE,
+    digits = NA,
+    null = "null"
+  )
+  single_enum_canonical <- jsonlite::toJSON(
+    list(
+      instructions = "Label each task.",
+      schema = foundry_preserve_schema_arrays(single_enum_schema),
+      examples = NULL,
       version = "1.0.0"
     ),
     auto_unbox = TRUE,
@@ -64,7 +83,15 @@ test_that("codebook hashes are stable and content addressed", {
   expect_equal(first$hash, second$hash)
   expect_equal(
     first$hash,
-    digest::digest(as.character(canonical), algo = "sha256", serialize = FALSE)
+    digest::digest(enc2utf8(as.character(canonical)), algo = "sha256", serialize = FALSE)
+  )
+  expect_equal(
+    single_enum$hash,
+    digest::digest(
+      enc2utf8(as.character(single_enum_canonical)),
+      algo = "sha256",
+      serialize = FALSE
+    )
   )
   expect_match(changed$hash, "^[0-9a-f]{64}$")
   expect_failure(expect_equal(first$hash, changed$hash))

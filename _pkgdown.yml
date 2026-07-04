@@ -84,17 +84,6 @@ navbar:
       aria-label: GitHub repository
 
 reference:
-  - title: Measurement
-    desc: >
-      Create versioned measurement codebooks for defensible LLM annotation.
-    contents:
-      - foundry_codebook
-      - codebook_diff
-      - type_boolean
-      - type_enum
-      - type_number
-      - type_string
-
   - title: Setup and configuration
     desc: >
       Configure your Azure AI Foundry credentials and verify your setup.
@@ -162,6 +151,10 @@ reference:
       - schema_number
       - schema_integer
       - schema_boolean
+      - type_boolean
+      - type_enum
+      - type_number
+      - type_string
       - schema_array
       - schema_object
       - as_foundry_schema
@@ -264,6 +257,8 @@ reference:
     contents:
       - foundry_agreement
       - foundry_consistency
+      - foundry_codebook
+      - codebook_diff
       - foundry_provenance
 
   - title: tidymodels integration

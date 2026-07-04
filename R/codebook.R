@@ -3,8 +3,12 @@
 #' A codebook records the instructions, JSON Schema, examples, semantic
 #' version, creation time, and deterministic SHA-256 hash for an LLM annotation
 #' instrument. The hash is computed from a canonical JSON serialization of
-#' `instructions`, `schema`, `examples`, and `version`, in that order, with
-#' `jsonlite::toJSON(auto_unbox = TRUE, digits = NA, null = "null")`.
+#' `instructions`, `schema`, `examples`, and `version`, in that order. Before
+#' serialization, schema arrays are preserved with the same internal helper used
+#' by structured outputs so single-value `enum` and `required` arrays do not
+#' collapse to scalars. The payload is serialized with
+#' `jsonlite::toJSON(auto_unbox = TRUE, digits = NA, null = "null")`,
+#' normalized with `enc2utf8()`, and hashed with SHA-256.
 #'
 #' @param name Character. Lowercase slug for the codebook; hyphens are allowed.
 #' @param version Character. Semantic version string.
@@ -189,7 +193,7 @@ foundry_codebook_hash <- function(instructions, schema, examples, version) {
     digits = NA,
     null = "null"
   )
-  digest::digest(as.character(json), algo = "sha256", serialize = FALSE)
+  digest::digest(enc2utf8(as.character(json)), algo = "sha256", serialize = FALSE)
 }
 
 

@@ -25,8 +25,12 @@ A \code{foundry_codebook} object.
 A codebook records the instructions, JSON Schema, examples, semantic
 version, creation time, and deterministic SHA-256 hash for an LLM annotation
 instrument. The hash is computed from a canonical JSON serialization of
-\code{instructions}, \code{schema}, \code{examples}, and \code{version}, in that order, with
-\code{jsonlite::toJSON(auto_unbox = TRUE, digits = NA, null = "null")}.
+\code{instructions}, \code{schema}, \code{examples}, and \code{version}, in that order. Before
+serialization, schema arrays are preserved with the same internal helper used
+by structured outputs so single-value \code{enum} and \code{required} arrays do not
+collapse to scalars. The payload is serialized with
+\code{jsonlite::toJSON(auto_unbox = TRUE, digits = NA, null = "null")},
+normalized with \code{enc2utf8()}, and hashed with SHA-256.
 }
 \examples{
 \dontrun{
