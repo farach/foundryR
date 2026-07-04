@@ -68,3 +68,50 @@ schema_object(
 ## Value
 
 A JSON Schema fragment represented as an R list.
+
+## Examples
+
+``` r
+schema_string("Free-text label")
+#> $type
+#> [1] "string"
+#> 
+#> $description
+#> [1] "Free-text label"
+#> 
+schema_enum(c("positive", "negative", "neutral"))
+#> $type
+#> [1] "string"
+#> 
+#> $enum
+#> [1] "positive" "negative" "neutral" 
+#> 
+schema_object(
+  sentiment = schema_enum(c("positive", "negative", "neutral")),
+  confidence = schema_number()
+)
+#> $type
+#> [1] "object"
+#> 
+#> $properties
+#> $properties$sentiment
+#> $properties$sentiment$type
+#> [1] "string"
+#> 
+#> $properties$sentiment$enum
+#> [1] "positive" "negative" "neutral" 
+#> 
+#> 
+#> $properties$confidence
+#> $properties$confidence$type
+#> [1] "number"
+#> 
+#> 
+#> 
+#> $required
+#> [1] "sentiment"  "confidence"
+#> 
+#> $additionalProperties
+#> [1] FALSE
+#> 
+```

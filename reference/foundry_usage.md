@@ -24,3 +24,26 @@ foundry_usage(x, rates = NULL)
 ## Value
 
 A one-row tibble with token totals and optional `cost`.
+
+## Examples
+
+``` r
+responses <- data.frame(
+  input_tokens = c(10, 20),
+  cached_input_tokens = c(0, 5),
+  output_tokens = c(3, 7)
+)
+foundry_usage(responses)
+#> # A tibble: 1 × 4
+#>   input_tokens cached_input_tokens output_tokens total_tokens
+#>          <dbl>               <dbl>         <dbl>        <dbl>
+#> 1           30                   5            10           40
+foundry_usage(
+  responses,
+  rates = c(input = 0.000001, cached_input = 0.0000001, output = 0.000004)
+)
+#> # A tibble: 1 × 5
+#>   input_tokens cached_input_tokens output_tokens total_tokens      cost
+#>          <dbl>               <dbl>         <dbl>        <dbl>     <dbl>
+#> 1           30                   5            10           40 0.0000705
+```

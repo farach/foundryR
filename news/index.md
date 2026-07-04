@@ -1,9 +1,9 @@
 # Changelog
 
-## foundryR 0.0.0.9000
+## foundryR 0.1.0
 
-Initial development release of foundryR, a tidy interface to Microsoft
-Azure AI Foundry.
+Initial CRAN release of foundryR, a tidy interface to Microsoft Azure AI
+Foundry.
 
 ### New features
 

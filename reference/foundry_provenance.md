@@ -26,3 +26,18 @@ foundry_provenance(model, schema, metadata = NULL)
 ## Value
 
 A one-row tibble.
+
+## Examples
+
+``` r
+schema <- foundry_schema(label = schema_string())
+foundry_provenance(
+  model = "gpt-5-nano",
+  schema = schema,
+  metadata = list(run = "pilot")
+)
+#> # A tibble: 1 × 5
+#>   model      schema_hash        package_version captured_at         metadata    
+#>   <chr>      <chr>              <chr>           <dttm>              <list>      
+#> 1 gpt-5-nano a375cf8342f34bb7d… 0.1.0           2026-07-04 23:43:48 <named list>
+```

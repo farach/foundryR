@@ -10,12 +10,12 @@ Source:
 [`DESCRIPTION`](https://github.com/farach/foundryR/blob/main/DESCRIPTION)
 
 Farach A (2026). *foundryR: Tibble Workflows for 'Azure AI Foundry'*. R
-package version 0.0.0.9000, <https://github.com/farach/foundryR>.
+package version 0.1.0, <https://github.com/farach/foundryR>.
 
     @Manual{,
       title = {foundryR: Tibble Workflows for 'Azure AI Foundry'},
       author = {Alex Farach},
       year = {2026},
-      note = {R package version 0.0.0.9000},
+      note = {R package version 0.1.0},
       url = {https://github.com/farach/foundryR},
     }

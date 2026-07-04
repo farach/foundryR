@@ -21,3 +21,10 @@ lhs %>% rhs
 ## Value
 
 The result of calling `rhs(lhs)`.
+
+## Examples
+
+``` r
+1:3 %>% sum()
+#> [1] 6
+```

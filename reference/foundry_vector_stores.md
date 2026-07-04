@@ -135,3 +135,26 @@ foundry_vector_search(
 ## Value
 
 A tibble with vector store, file, or search-result metadata.
+
+## Examples
+
+``` r
+if (interactive() &&
+    nzchar(Sys.getenv("AZURE_FOUNDRY_ENDPOINT")) &&
+    nzchar(Sys.getenv("AZURE_FOUNDRY_KEY"))) {
+  store <- foundry_vector_store_create("example-store")
+  id <- store$vector_store_id[[1]]
+  foundry_vector_stores(limit = 10)
+  foundry_vector_store_get(id)
+  foundry_vector_store_modify(id, name = "renamed-example-store")
+  foundry_vector_store_files(id)
+  file_id <- Sys.getenv("AZURE_FOUNDRY_FILE_ID")
+  if (nzchar(file_id)) {
+    foundry_vector_store_file_add(id, file_id)
+    foundry_vector_store_file_remove(id, file_id)
+    foundry_vector_store_file_batch(id, file_id)
+    foundry_vector_search(id, "example query")
+  }
+  foundry_vector_store_delete(id)
+}
+```

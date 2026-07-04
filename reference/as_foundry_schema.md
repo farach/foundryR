@@ -27,3 +27,26 @@ as_foundry_schema(x)
 ## Value
 
 A JSON Schema represented as an R list.
+
+## Examples
+
+``` r
+schema <- foundry_schema(label = schema_string())
+as_foundry_schema(schema)
+#> $type
+#> [1] "object"
+#> 
+#> $properties
+#> $properties$label
+#> $properties$label$type
+#> [1] "string"
+#> 
+#> 
+#> 
+#> $required
+#> [1] "label"
+#> 
+#> $additionalProperties
+#> [1] FALSE
+#> 
+```
