@@ -1,60 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 181.65 209.76" width="181.65" height="209.76" role="img" aria-labelledby="title desc">
   <title id="title">foundryR icon</title>
-  <desc id="desc">A compact foundryR icon with an abstract forge mark and connected model nodes.</desc>
-  <defs>
-    <clipPath id="hex-clip">
-      <polygon points="90.82,1.5 180.15,53.19 180.15,156.57 90.82,208.26 1.5,156.57 1.5,53.19" />
-    </clipPath>
-    <linearGradient id="hex-bg" x1="20" y1="12" x2="160" y2="195" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#33B8FF" />
-      <stop offset="0.45" stop-color="#0078D4" />
-      <stop offset="1" stop-color="#003E73" />
-    </linearGradient>
-    <linearGradient id="facet" x1="26" y1="22" x2="156" y2="188" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.46" />
-      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0.08" />
-      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0" />
-    </linearGradient>
-    <linearGradient id="forge-core" x1="50" y1="56" x2="132" y2="148" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#FFFFFF" />
-      <stop offset="0.58" stop-color="#D9F6FF" />
-      <stop offset="1" stop-color="#75DFFF" />
-    </linearGradient>
-    <linearGradient id="spark" x1="56" y1="132" x2="126" y2="166" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#FFD36E" />
-      <stop offset="1" stop-color="#FF8C42" />
-    </linearGradient>
-    <filter id="soft-shadow" x="-25%" y="-25%" width="150%" height="150%">
-      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#002A4D" flood-opacity="0.3" />
-    </filter>
-  </defs>
+  <desc id="desc">A compact Swiss-minimal foundryR icon with a geometric forge mark.</desc>
 
-  <polygon points="90.82,1.5 180.15,53.19 180.15,156.57 90.82,208.26 1.5,156.57 1.5,53.19" fill="url(#hex-bg)" stroke="#003E73" stroke-width="3" />
-  <g clip-path="url(#hex-clip)">
-    <path d="M-2 56L91 1.5L184 56V90C149 76 119 76 92 94C62 114 33 111 -2 94Z" fill="url(#facet)" />
-    <circle cx="151" cy="73" r="32" fill="#FFFFFF" opacity="0.07" />
-    <circle cx="38" cy="126" r="28" fill="#FFFFFF" opacity="0.05" />
-  </g>
+  <polygon points="90.82,2.5 179.15,53.69 179.15,156.07 90.82,207.26 2.5,156.07 2.5,53.69" fill="#F7FBFD" stroke="#0078D4" stroke-width="5" />
 
-  <g transform="translate(90.82 101)" filter="url(#soft-shadow)">
-    <path d="M-58 28C-47 12 -29 2 0 2S47 12 58 28L43 41C33 30 18 24 0 24S-33 30 -43 41Z" fill="#FFFFFF" opacity="0.92" />
-    <path d="M-43 41H43L30 64H-30Z" fill="url(#spark)" />
-    <path d="M-27 -8L0 -47L27 -8L0 24Z" fill="url(#forge-core)" />
-    <path d="M0 -47L27 -8L0 5L-27 -8Z" fill="#FFFFFF" opacity="0.38" />
-    <path d="M-27 -8L0 5V24Z" fill="#62D8FF" opacity="0.82" />
-    <path d="M27 -8L0 5V24Z" fill="#0078D4" opacity="0.62" />
-    <g fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-width="3" opacity="0.78">
-      <path d="M-58 -12L-27 -8" />
-      <path d="M58 -12L27 -8" />
-      <path d="M-35 -46L-10 -30" />
-      <path d="M35 -46L10 -30" />
-    </g>
-    <g fill="#FFFFFF">
-      <circle cx="-58" cy="-12" r="7" />
-      <circle cx="58" cy="-12" r="7" />
-      <circle cx="-35" cy="-46" r="6.4" />
-      <circle cx="35" cy="-46" r="6.4" />
-    </g>
+  <g transform="translate(90.82 91)">
+    <path d="M-43 33C-32 16 -18 7 0 7S32 16 43 33L28 45C20 36 11 32 0 32S-20 36 -28 45Z" fill="#005A9E" />
+    <path d="M-32 46H32L20 67H-20Z" fill="#FFD36E" />
+    <path d="M0 -45L36 -7L0 33L-36 -7Z" fill="#23A7E0" />
+    <path d="M0 -45L36 -7L0 7L-36 -7Z" fill="#A7DDF4" />
+    <path d="M-36 -7L0 7V33Z" fill="#5BC7F2" />
+    <path d="M36 -7L0 7V33Z" fill="#0078D4" />
   </g>
 </svg>
