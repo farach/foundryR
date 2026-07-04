@@ -1,13 +1,15 @@
 Package: foundryR
 Title: Tibble Workflows for 'Azure AI Foundry'
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R:
     person("Alex", "Farach", , "alexfarach@microsoft.com", role = c("aut", "cre", "cph"))
-Description: Work with 'Microsoft Azure AI Foundry' from dataframe-oriented
-    'R' workflows. Returns tibbles for Content Safety, Responses API calls,
-    strict structured extraction, embeddings, files, batch jobs, audio, media,
-    and chat completions. Supports research annotation, safety gates,
-    semantic search, and 'tidymodels' recipes for teams committed to Azure.
+Description: Work with 'Microsoft Azure AI Foundry' from data-frame-oriented
+    'R' workflows. Provides tibble-returning helpers for 'Azure AI Content
+    Safety', 'Azure OpenAI' Responses API calls, strict structured extraction,
+    embeddings, files, batch jobs, audio, media, and chat completions. Supports
+    research annotation, safety gates, semantic search, and 'tidymodels'
+    recipes. Helps teams keep model workflows inside their 'Azure' environment
+    while preserving analyzable outputs.
 License: MIT + file LICENSE
 Depends:
     R (>= 4.1.0)

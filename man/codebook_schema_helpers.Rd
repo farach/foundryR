@@ -28,3 +28,9 @@ A JSON Schema fragment represented as an R list.
 These light wrappers reuse foundryR's existing strict JSON Schema
 constructors while following the measurement-layer codebook vocabulary.
 }
+\examples{
+type_boolean("Whether AI could materially assist the task")
+type_enum("Priority label", values = c("low", "medium", "high"))
+type_number("Confidence score")
+type_string("Short rationale")
+}

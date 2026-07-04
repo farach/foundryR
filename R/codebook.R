@@ -21,7 +21,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' codebook <- foundry_codebook(
 #'   name = "ai-applicability",
 #'   version = "1.0.0",
@@ -34,7 +33,6 @@
 #'     list(text = "Lift a heavy box", ai_applicable = FALSE)
 #'   )
 #' )
-#' }
 foundry_codebook <- function(name,
                              version,
                              instructions,
@@ -76,6 +74,12 @@ foundry_codebook <- function(name,
 #'
 #' @return A JSON Schema fragment represented as an R list.
 #' @name codebook_schema_helpers
+#'
+#' @examples
+#' type_boolean("Whether AI could materially assist the task")
+#' type_enum("Priority label", values = c("low", "medium", "high"))
+#' type_number("Confidence score")
+#' type_string("Short rationale")
 NULL
 
 
@@ -119,9 +123,22 @@ type_string <- function(desc = NULL) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' codebook_diff(old_codebook, new_codebook)
-#' }
+#' old <- foundry_codebook(
+#'   name = "support-sentiment",
+#'   version = "1.0.0",
+#'   instructions = "Label the sentiment of support tickets.",
+#'   schema = foundry_schema(sentiment = type_enum(values = c("pos", "neg")))
+#' )
+#' new <- foundry_codebook(
+#'   name = "support-sentiment",
+#'   version = "1.1.0",
+#'   instructions = "Label the sentiment and urgency of support tickets.",
+#'   schema = foundry_schema(
+#'     sentiment = type_enum(values = c("pos", "neg")),
+#'     urgent = type_boolean()
+#'   )
+#' )
+#' codebook_diff(old, new)
 codebook_diff <- function(old, new) {
   foundry_check_codebook(old, "old")
   foundry_check_codebook(new, "new")

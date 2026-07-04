@@ -21,6 +21,15 @@ skip_if_no_model <- function(env_var = "AZURE_FOUNDRY_MODEL") {
   )
 }
 
+#' Skip tests that make live API calls unless explicitly enabled
+skip_if_no_live_api <- function() {
+  enabled <- tolower(Sys.getenv("FOUNDRYR_RUN_LIVE_TESTS"))
+  skip_if(
+    !enabled %in% c("true", "1", "yes"),
+    "FOUNDRYR_RUN_LIVE_TESTS not enabled"
+  )
+}
+
 #' Set up test environment with mock credentials
 #'
 #' Use within withr::local_ or test_that blocks

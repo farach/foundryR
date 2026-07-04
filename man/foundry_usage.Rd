@@ -20,3 +20,15 @@ Sum token columns returned by foundryR chat, Responses, extraction, and batch
 helpers. Pass your own \code{rates} to compute spend; foundryR does not hardcode
 Azure prices because they change over time.
 }
+\examples{
+responses <- data.frame(
+  input_tokens = c(10, 20),
+  cached_input_tokens = c(0, 5),
+  output_tokens = c(3, 7)
+)
+foundry_usage(responses)
+foundry_usage(
+  responses,
+  rates = c(input = 0.000001, cached_input = 0.0000001, output = 0.000004)
+)
+}

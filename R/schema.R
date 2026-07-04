@@ -50,6 +50,14 @@ foundry_schema <- function(...,
 #'
 #' @return A JSON Schema fragment represented as an R list.
 #' @name schema_constructors
+#'
+#' @examples
+#' schema_string("Free-text label")
+#' schema_enum(c("positive", "negative", "neutral"))
+#' schema_object(
+#'   sentiment = schema_enum(c("positive", "negative", "neutral")),
+#'   confidence = schema_number()
+#' )
 NULL
 
 
@@ -168,6 +176,10 @@ schema_object <- function(...,
 #'
 #' @return A JSON Schema represented as an R list.
 #' @export
+#'
+#' @examples
+#' schema <- foundry_schema(label = schema_string())
+#' as_foundry_schema(schema)
 as_foundry_schema <- function(x) {
   if (inherits(x, "ellmer::Type")) {
     return(foundry_preserve_schema_arrays(ellmer_type_to_schema(x)))

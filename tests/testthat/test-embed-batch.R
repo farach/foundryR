@@ -358,6 +358,7 @@ test_that("foundry_embed_batch returns n_dims for successful embeddings", {
 
 test_that("foundry_embed_batch works with real API", {
   skip_on_cran()
+  skip_if_no_live_api()
   skip_if_no_auth()
   skip_if_no_model("AZURE_FOUNDRY_EMBED_MODEL")
 
@@ -389,6 +390,7 @@ test_that("foundry_embed_batch works with real API", {
 
 test_that("foundry_embed_batch processes many texts efficiently", {
   skip_on_cran()
+  skip_if_no_live_api()
   skip_if_no_auth()
   skip_if_no_model("AZURE_FOUNDRY_EMBED_MODEL")
 

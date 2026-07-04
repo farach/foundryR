@@ -376,6 +376,18 @@ foundry_extract_batch <- function(data,
 #'
 #' @return A one-row tibble with token totals and optional `cost`.
 #' @export
+#'
+#' @examples
+#' responses <- data.frame(
+#'   input_tokens = c(10, 20),
+#'   cached_input_tokens = c(0, 5),
+#'   output_tokens = c(3, 7)
+#' )
+#' foundry_usage(responses)
+#' foundry_usage(
+#'   responses,
+#'   rates = c(input = 0.000001, cached_input = 0.0000001, output = 0.000004)
+#' )
 foundry_usage <- function(x, rates = NULL) {
   if (!is.data.frame(x)) {
     cli::cli_abort("{.arg x} must be a data frame.")

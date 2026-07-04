@@ -615,6 +615,7 @@ test_that("foundry_cache_clear removes cached embedding files", {
 
 test_that("step_foundry_embed works with real API", {
   skip_on_cran()
+  skip_if_no_live_api()
   skip_if_no_auth()
   skip_if_no_model("AZURE_FOUNDRY_EMBED_MODEL")
 
@@ -651,6 +652,7 @@ test_that("step_foundry_embed works with real API", {
 
 test_that("step_foundry_embed works with new_data in bake", {
   skip_on_cran()
+  skip_if_no_live_api()
   skip_if_no_auth()
   skip_if_no_model("AZURE_FOUNDRY_EMBED_MODEL")
 

@@ -26,3 +26,10 @@ A tibble with one row per input text.
 \description{
 Call the Azure AI Content Safety protected-material detector.
 }
+\examples{
+if (interactive() &&
+    nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT")) &&
+    nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_KEY"))) {
+  foundry_protected_material("A short text sample.")
+}
+}

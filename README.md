@@ -3,7 +3,7 @@
 <!-- Executable chunks replay recorded, credential-free API fixtures.        -->
 <!-- Regenerate with: source("data-raw/record-doc-outputs.R")               -->
 
-# foundryR <a href="https://farach.github.io/foundryR/"><img src="man/figures/logo.svg" align="right" height="138" alt="foundryR website" /></a>
+# foundryR <a href="https://farach.github.io/foundryR/"><img src="https://raw.githubusercontent.com/farach/foundryR/main/man/figures/logo.svg" align="right" height="138" alt="foundryR website" /></a>
 
 <!-- badges: start -->
 
@@ -33,6 +33,12 @@ work:
 Its strongest path is dataframe in, dataframe out.
 
 ## Installation
+
+Install the released version from CRAN:
+
+``` r
+install.packages("foundryR")
+```
 
 Install the development version from GitHub:
 

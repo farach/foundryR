@@ -56,3 +56,11 @@ A JSON Schema fragment represented as an R list.
 Build JSON Schema field definitions for use with \code{foundry_schema()} or raw
 schema lists passed to \code{foundry_extract()} and \code{foundry_response()}.
 }
+\examples{
+schema_string("Free-text label")
+schema_enum(c("positive", "negative", "neutral"))
+schema_object(
+  sentiment = schema_enum(c("positive", "negative", "neutral")),
+  confidence = schema_number()
+)
+}

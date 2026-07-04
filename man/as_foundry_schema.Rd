@@ -21,3 +21,7 @@ package is installed, \code{ellmer::type_object()} specifications are converted 
 the equivalent strict JSON Schema, so ellmer users can pass their existing
 type definitions to \code{\link[=foundry_extract]{foundry_extract()}} and \code{\link[=foundry_response]{foundry_response()}}.
 }
+\examples{
+schema <- foundry_schema(label = schema_string())
+as_foundry_schema(schema)
+}

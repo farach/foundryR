@@ -200,6 +200,7 @@ test_that("foundry_similarity can limit rows or return a matrix", {
 
 test_that("foundry_embed returns tibble with real API", {
   skip_on_cran()
+  skip_if_no_live_api()
   skip_if_no_auth()
   skip_if_no_model("AZURE_FOUNDRY_EMBED_MODEL")
 

@@ -20,3 +20,11 @@ A one-row tibble.
 Create a one-row tibble that records the model, schema hash, package version,
 and timestamp for a reproducible annotation run.
 }
+\examples{
+schema <- foundry_schema(label = schema_string())
+foundry_provenance(
+  model = "gpt-5-nano",
+  schema = schema,
+  metadata = list(run = "pilot")
+)
+}
