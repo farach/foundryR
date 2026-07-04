@@ -71,6 +71,11 @@ credentials – so its output is shown here directly.
 ``` r
 
 library(ellmer)
+#> 
+#> Attaching package: 'ellmer'
+#> The following objects are masked from 'package:foundryR':
+#> 
+#>     type_boolean, type_enum, type_number, type_string
 
 # Describe the structure you want with ellmer's type system.
 sentiment_spec <- type_object(

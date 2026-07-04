@@ -65,6 +65,13 @@ Azure AI Foundry.
   and
   [`foundry_tool_file_search()`](https://farach.github.io/foundryR/reference/foundry_tool_file_search.md)
   (roadmap 2026 H2).
+- Added
+  [`foundry_codebook()`](https://farach.github.io/foundryR/reference/foundry_codebook.md)
+  and
+  [`codebook_diff()`](https://farach.github.io/foundryR/reference/codebook_diff.md)
+  for versioned measurement-layer codebooks with deterministic SHA-256
+  hashes, schema helper wrappers, print output, and codebook diffs
+  (measurement layer M1).
 - Added schema constructors with
   [`foundry_schema()`](https://farach.github.io/foundryR/reference/foundry_schema.md),
   [`schema_string()`](https://farach.github.io/foundryR/reference/schema_constructors.md),

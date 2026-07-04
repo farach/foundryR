@@ -1,6 +1,7 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://farach.github.io/foundryR/404.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/LICENSE-text.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/SPEC-measurement-layer.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/annotation-workflow.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/audio.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/content-safety.html</loc></url>
@@ -19,6 +20,8 @@
 <url><loc>https://farach.github.io/foundryR/reference/as_foundry_schema.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/bake.step_foundry_embed.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/batch_vector.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/codebook_diff.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/codebook_schema_helpers.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/content_safety_error_body.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundryR-package.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_agent.html</loc></url>
@@ -46,6 +49,7 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_cache_dir.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_chat.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_check_setup.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_codebook.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_consistency.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_conversations.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_embed.html</loc></url>

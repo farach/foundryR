@@ -411,6 +411,11 @@ answers.
   [`schema_array()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
   [`schema_object()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
   : Schema constructors for structured outputs
+- [`type_boolean()`](https://farach.github.io/foundryR/reference/codebook_schema_helpers.md)
+  [`type_enum()`](https://farach.github.io/foundryR/reference/codebook_schema_helpers.md)
+  [`type_number()`](https://farach.github.io/foundryR/reference/codebook_schema_helpers.md)
+  [`type_string()`](https://farach.github.io/foundryR/reference/codebook_schema_helpers.md)
+  : Codebook schema helpers
 - [`as_foundry_schema()`](https://farach.github.io/foundryR/reference/as_foundry_schema.md)
   : Convert an object to a foundryR JSON Schema
 
@@ -557,6 +562,10 @@ repeated-extraction consistency, and record reproducibility metadata.
   : Compute agreement metrics for LLM annotation
 - [`foundry_consistency()`](https://farach.github.io/foundryR/reference/foundry_consistency.md)
   : Measure repeated-extraction consistency
+- [`foundry_codebook()`](https://farach.github.io/foundryR/reference/foundry_codebook.md)
+  : Create a measurement codebook
+- [`codebook_diff()`](https://farach.github.io/foundryR/reference/codebook_diff.md)
+  : Compare two codebooks
 - [`foundry_provenance()`](https://farach.github.io/foundryR/reference/foundry_provenance.md)
   : Capture model and schema provenance
 

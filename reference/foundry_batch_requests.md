@@ -92,7 +92,7 @@ jobs <- data.frame(text = c("Summarize this.", "Extract entities."))
 path <- tempfile(fileext = ".jsonl")
 foundry_batch_requests(jobs, input = "text", path = path, model = "gpt-5-nano")
 #> # A tibble: 1 × 3
-#>   path                                  requests endpoint     
-#>   <chr>                                    <int> <chr>        
-#> 1 /tmp/Rtmp4aryWG/file19bedbfea87.jsonl        2 /v1/responses
+#>   path                                   requests endpoint     
+#>   <chr>                                     <int> <chr>        
+#> 1 /tmp/RtmpKqfvx6/file194b13fb1ccd.jsonl        2 /v1/responses
 ```

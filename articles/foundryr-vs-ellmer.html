@@ -216,14 +216,19 @@ operation – no network, no credentials – so its output is shown here
 directly.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ellmer.tidyverse.org" class="external-link">ellmer</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Attaching package: 'ellmer'</span></span>
+<span><span class="co">#&gt; The following objects are masked from 'package:foundryR':</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;     type_boolean, type_enum, type_number, type_string</span></span>
 <span></span>
 <span><span class="co"># Describe the structure you want with ellmer's type system.</span></span>
 <span><span class="va">sentiment_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">type_object</a></span><span class="op">(</span></span>
-<span>  sentiment <span class="op">=</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">type_enum</a></span><span class="op">(</span></span>
+<span>  sentiment <span class="op">=</span> <span class="fu"><a href="../reference/codebook_schema_helpers.html">type_enum</a></span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"positive"</span>, <span class="st">"negative"</span>, <span class="st">"neutral"</span><span class="op">)</span>,</span>
 <span>    description <span class="op">=</span> <span class="st">"Overall sentiment of the response."</span></span>
 <span>  <span class="op">)</span>,</span>
-<span>  theme <span class="op">=</span> <span class="fu"><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">type_string</a></span><span class="op">(</span><span class="st">"A short theme label for the response."</span><span class="op">)</span></span>
+<span>  theme <span class="op">=</span> <span class="fu"><a href="../reference/codebook_schema_helpers.html">type_string</a></span><span class="op">(</span><span class="st">"A short theme label for the response."</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Convert it into a foundryR schema for strict extraction.</span></span>
