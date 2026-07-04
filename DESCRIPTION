@@ -20,6 +20,7 @@ RoxygenNote: 7.3.3
 Imports:
     cli,
     curl,
+    digest,
     dplyr,
     httr2 (>= 1.0.0),
     jsonlite,

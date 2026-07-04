@@ -7,12 +7,14 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^\.lintr$
 ^codecov\.yml$
 ^\.Renviron$
 ^\.Renviron\.local$
 ^data-raw$
 ^dev$
 ^PINBOARD\.md$
+^SPEC-measurement-layer\.md$
 ^sessions$
 ^tools$
 ^vignettes/articles$

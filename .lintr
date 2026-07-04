@@ -1,0 +1,37 @@
+linters: linters_with_defaults(
+    line_length_linter = line_length_linter(120L),
+    object_usage_linter = NULL,
+    commented_code_linter = NULL
+  )
+exclusions: list(
+    "data-raw/record-doc-outputs.R",
+    "R/agents.R",
+    "R/audio.R",
+    "R/auth.R",
+    "R/batches.R",
+    "R/chat.R",
+    "R/check.R",
+    "R/config.R",
+    "R/content-safety-extra.R",
+    "R/conversations.R",
+    "R/embed-batch.R",
+    "R/embed.R",
+    "R/evals.R",
+    "R/groundedness.R",
+    "R/image.R",
+    "R/moderate.R",
+    "R/responses.R",
+    "R/schema.R",
+    "R/tidymodels.R",
+    "R/token-azure-identity.R",
+    "R/utils.R",
+    "R/vector-stores.R",
+    "tests/manual/test_all_examples.R",
+    "tests/manual/test_contracts_2026_h2.R",
+    "tests/testthat/helper.R",
+    "tests/testthat/test-agents.R",
+    "tests/testthat/test-groundedness.R",
+    "tests/testthat/test-image.R",
+    "vignettes/embeddings.Rmd"
+  )
+encoding: "UTF-8"

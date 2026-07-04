@@ -24,7 +24,8 @@ Thumbs.db
 docs/
 
 # Test artifacts
-tests/testthat/_snaps/
+tests/testthat/_snaps/*
+!tests/testthat/_snaps/codebook.md
 
 # Environment
 .Renviron
