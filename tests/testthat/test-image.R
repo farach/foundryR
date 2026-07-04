@@ -668,7 +668,8 @@ test_that("foundry_get_image_key errors when required and not set", {
 # ============================================================================
 
 test_that("foundry_image generates image with real API", {
- skip_on_cran()
+  skip_on_cran()
+  skip_if_no_live_api()
   skip_if(
     Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT") == "" &&
     Sys.getenv("AZURE_FOUNDRY_ENDPOINT") == "",
@@ -681,8 +682,7 @@ test_that("foundry_image generates image with real API", {
 
   result <- foundry_image(
     "A simple red square on a white background, minimalist",
-    model = Sys.getenv("AZURE_FOUNDRY_IMAGE_MODEL"),
-    quality = "standard"
+    model = Sys.getenv("AZURE_FOUNDRY_IMAGE_MODEL")
   )
 
   expect_s3_class(result, "tbl_df")

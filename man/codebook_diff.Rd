@@ -18,7 +18,20 @@ hashes, a unified diff of instructions, and field-level changes for schema
 properties and examples.
 }
 \examples{
-\dontrun{
-codebook_diff(old_codebook, new_codebook)
-}
+old <- foundry_codebook(
+  name = "support-sentiment",
+  version = "1.0.0",
+  instructions = "Label the sentiment of support tickets.",
+  schema = foundry_schema(sentiment = type_enum(values = c("pos", "neg")))
+)
+new <- foundry_codebook(
+  name = "support-sentiment",
+  version = "1.1.0",
+  instructions = "Label the sentiment and urgency of support tickets.",
+  schema = foundry_schema(
+    sentiment = type_enum(values = c("pos", "neg")),
+    urgent = type_boolean()
+  )
+)
+codebook_diff(old, new)
 }

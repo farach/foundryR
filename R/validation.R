@@ -121,6 +121,14 @@ foundry_consistency <- function(text, schema, n = 3L, ...) {
 #'
 #' @return A one-row tibble.
 #' @export
+#'
+#' @examples
+#' schema <- foundry_schema(label = schema_string())
+#' foundry_provenance(
+#'   model = "gpt-5-nano",
+#'   schema = schema,
+#'   metadata = list(run = "pilot")
+#' )
 foundry_provenance <- function(model, schema, metadata = NULL) {
   foundry_check_character_scalar(model, "model")
   schema <- as_foundry_schema(schema)

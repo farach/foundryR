@@ -81,3 +81,18 @@ A tibble with blocklist or blocklist-item metadata.
 \description{
 Create, list, retrieve, delete, and edit Azure AI Content Safety blocklists.
 }
+\examples{
+if (interactive() &&
+    nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT")) &&
+    nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_KEY"))) {
+  foundry_blocklists()
+  foundry_blocklist_create("example-blocklist", description = "Example")
+  foundry_blocklist_get("example-blocklist")
+  items <- foundry_blocklist_add_items("example-blocklist", "blocked phrase")
+  foundry_blocklist_items("example-blocklist")
+  if (nrow(items) > 0 && !is.na(items$item_id[[1]])) {
+    foundry_blocklist_remove_items("example-blocklist", items$item_id)
+  }
+  foundry_blocklist_delete("example-blocklist")
+}
+}

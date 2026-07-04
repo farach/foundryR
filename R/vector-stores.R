@@ -20,6 +20,26 @@
 #'
 #' @return A tibble with vector store, file, or search-result metadata.
 #' @name foundry_vector_stores
+#'
+#' @examples
+#' if (interactive() &&
+#'     nzchar(Sys.getenv("AZURE_FOUNDRY_ENDPOINT")) &&
+#'     nzchar(Sys.getenv("AZURE_FOUNDRY_KEY"))) {
+#'   store <- foundry_vector_store_create("example-store")
+#'   id <- store$vector_store_id[[1]]
+#'   foundry_vector_stores(limit = 10)
+#'   foundry_vector_store_get(id)
+#'   foundry_vector_store_modify(id, name = "renamed-example-store")
+#'   foundry_vector_store_files(id)
+#'   file_id <- Sys.getenv("AZURE_FOUNDRY_FILE_ID")
+#'   if (nzchar(file_id)) {
+#'     foundry_vector_store_file_add(id, file_id)
+#'     foundry_vector_store_file_remove(id, file_id)
+#'     foundry_vector_store_file_batch(id, file_id)
+#'     foundry_vector_search(id, "example query")
+#'   }
+#'   foundry_vector_store_delete(id)
+#' }
 NULL
 
 
@@ -260,6 +280,9 @@ foundry_vector_search <- function(vector_store_id,
 #'
 #' @return A Responses API tool definition list.
 #' @export
+#'
+#' @examples
+#' foundry_tool_file_search("vs_abc123", max_num_results = 3)
 foundry_tool_file_search <- function(vector_store_ids, max_num_results = NULL) {
   if (!is.character(vector_store_ids) || length(vector_store_ids) == 0L ||
       any(is.na(vector_store_ids))) {

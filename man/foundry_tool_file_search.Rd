@@ -17,3 +17,6 @@ A Responses API tool definition list.
 \description{
 Create a file-search tool definition
 }
+\examples{
+foundry_tool_file_search("vs_abc123", max_num_results = 3)
+}

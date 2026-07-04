@@ -6,7 +6,7 @@
 \alias{foundryR-package}
 \title{foundryR: Tibble Workflows for 'Azure AI Foundry'}
 \description{
-Work with 'Microsoft Azure AI Foundry' from dataframe-oriented 'R' workflows. Returns tibbles for Content Safety, Responses API calls, strict structured extraction, embeddings, files, batch jobs, audio, media, and chat completions. Supports research annotation, safety gates, semantic search, and 'tidymodels' recipes for teams committed to Azure.
+Work with 'Microsoft Azure AI Foundry' from data-frame-oriented 'R' workflows. Provides tibble-returning helpers for 'Azure AI Content Safety', 'Azure OpenAI' Responses API calls, strict structured extraction, embeddings, files, batch jobs, audio, media, and chat completions. Supports research annotation, safety gates, semantic search, and 'tidymodels' recipes. Helps teams keep model workflows inside their 'Azure' environment while preserving analyzable outputs.
 }
 \seealso{
 Useful links:

@@ -33,7 +33,6 @@ collapse to scalars. The payload is serialized with
 normalized with \code{enc2utf8()}, and hashed with SHA-256.
 }
 \examples{
-\dontrun{
 codebook <- foundry_codebook(
   name = "ai-applicability",
   version = "1.0.0",
@@ -46,5 +45,4 @@ codebook <- foundry_codebook(
     list(text = "Lift a heavy box", ai_applicable = FALSE)
   )
 )
-}
 }

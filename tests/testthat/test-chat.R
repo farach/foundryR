@@ -185,6 +185,7 @@ test_that("foundry_chat uses v1 endpoint by default and keeps deployment escape 
 
 test_that("foundry_chat returns tibble with real API", {
   skip_on_cran()
+  skip_if_no_live_api()
   skip_if_no_auth()
   skip_if_no_model()
 

@@ -13,6 +13,21 @@
 #'
 #' @return A tibble with conversation metadata or conversation items.
 #' @name foundry_conversations
+#'
+#' @examples
+#' if (interactive() &&
+#'     nzchar(Sys.getenv("AZURE_FOUNDRY_ENDPOINT")) &&
+#'     nzchar(Sys.getenv("AZURE_FOUNDRY_KEY"))) {
+#'   conversation <- foundry_conversation_create(
+#'     metadata = list(example = "cran")
+#'   )
+#'   id <- conversation$conversation_id[[1]]
+#'   foundry_conversations(limit = 10)
+#'   foundry_conversation_get(id)
+#'   foundry_conversation_update(id, metadata = list(example = "updated"))
+#'   foundry_conversation_items(id)
+#'   foundry_conversation_delete(id)
+#' }
 NULL
 
 

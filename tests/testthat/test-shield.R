@@ -234,6 +234,7 @@ test_that("mock_shield_response handles document attacks", {
 
 test_that("foundry_shield returns tibble with real API", {
   skip_on_cran()
+  skip_if_no_live_api()
   skip_if(
     Sys.getenv("AZURE_CONTENT_SAFETY_KEY") == "",
     "AZURE_CONTENT_SAFETY_KEY not set"
