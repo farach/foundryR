@@ -52,12 +52,12 @@ to add embedding generation to your recipe:
 
 library(tidymodels)
 #> ── Attaching packages ────────────────────────────────────── tidymodels 1.5.0 ──
-#> ✔ broom        1.0.13     ✔ recipes      1.3.3 
+#> ✔ broom        1.0.13     ✔ recipes      1.4.0 
 #> ✔ dials        1.4.4      ✔ rsample      1.3.2 
 #> ✔ dplyr        1.2.1      ✔ tailor       0.1.0 
 #> ✔ ggplot2      4.0.3      ✔ tidyr        1.3.2 
 #> ✔ infer        1.1.0      ✔ tune         2.1.0 
-#> ✔ modeldata    1.5.1      ✔ workflows    1.3.0 
+#> ✔ modeldata    1.6.0      ✔ workflows    1.3.0 
 #> ✔ parsnip      1.6.0      ✔ workflowsets 1.1.1 
 #> ✔ purrr        1.2.2      ✔ yardstick    1.4.0
 #> ── Conflicts ───────────────────────────────────────── tidymodels_conflicts() ──
