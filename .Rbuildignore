@@ -29,3 +29,4 @@
 ^vignettes/getting-started$
 ^vignettes/responses-api$
 ^vignettes/tidymodels$
+^\.mailmap$
