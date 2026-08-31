@@ -26,6 +26,7 @@ docs/
 # Test artifacts
 tests/testthat/_snaps/*
 !tests/testthat/_snaps/codebook.md
+!tests/testthat/_snaps/responses.md
 
 # Environment
 .Renviron

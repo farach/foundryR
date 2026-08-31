@@ -4,13 +4,19 @@
 \alias{foundry_get_token}
 \title{Get Azure AI Foundry Bearer Token}
 \usage{
-foundry_get_token(token = NULL, required = FALSE)
+foundry_get_token(
+  token = NULL,
+  required = FALSE,
+  scope = c("resource", "project")
+)
 }
 \arguments{
 \item{token}{Character. Optional token to use instead of environment
 variables.}
 
 \item{required}{Logical. If \code{TRUE}, throws an error when no token is found.}
+
+\item{scope}{Character. Endpoint family for the token.}
 }
 \value{
 The bearer token string, or \code{NULL} if not found and not required.

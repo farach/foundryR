@@ -110,32 +110,8 @@ foundry_shield <- function(user_prompt,
     }
   }
 
-  # Get endpoint
-  if (is.null(endpoint)) {
-    endpoint <- Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT")
-    if (endpoint == "") {
-      cli::cli_abort(c(
-        "Azure Content Safety endpoint is required.",
-        "i" = "Set the {.envvar AZURE_CONTENT_SAFETY_ENDPOINT} environment variable.",
-        "i" = "Or provide the {.arg endpoint} parameter directly."
-      ))
-    }
-  }
-
-  # Remove trailing slash if present
-  endpoint <- sub("/$", "", endpoint)
-
-  # Get API key
-  if (is.null(api_key)) {
-    api_key <- Sys.getenv("AZURE_CONTENT_SAFETY_KEY")
-    if (api_key == "") {
-      cli::cli_abort(c(
-        "Azure Content Safety API key is required.",
-        "i" = "Set the {.envvar AZURE_CONTENT_SAFETY_KEY} environment variable.",
-        "i" = "Or provide the {.arg api_key} parameter directly."
-      ))
-    }
-  }
+  endpoint <- get_content_safety_endpoint(endpoint, required = TRUE)
+  api_key <- get_content_safety_key(api_key, required = TRUE)
 
   # Build request body
   body <- list(userPrompt = user_prompt)

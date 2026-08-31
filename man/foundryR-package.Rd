@@ -4,9 +4,11 @@
 \name{foundryR-package}
 \alias{foundryR}
 \alias{foundryR-package}
-\title{foundryR: Tibble Workflows for 'Azure AI Foundry'}
+\title{foundryR: Tibble Workflows for 'Microsoft Foundry'}
 \description{
-Work with 'Microsoft Azure AI Foundry' from data-frame-oriented 'R' workflows. Provides tibble-returning helpers for 'Azure AI Content Safety', 'Azure OpenAI' Responses API calls, strict structured extraction, embeddings, files, batch jobs, audio, media, and chat completions. Supports research annotation, safety gates, semantic search, and 'tidymodels' recipes. Helps teams keep model workflows inside their 'Azure' environment while preserving analyzable outputs.
+\if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
+
+Work with 'Microsoft Azure AI Foundry' from data-frame-oriented 'R' workflows. Provides tibble-returning helpers for 'Azure AI Content Safety', 'Azure OpenAI' Responses API calls, strict structured extraction, embeddings, files, batch jobs, audio, media, and chat completions. Supports research annotation, safety gates, semantic search, and 'tidymodels' recipes. Helps teams keep model workflows inside their 'Azure' environment while preserving analyzable outputs. See the Microsoft Foundry REST API documentation \url{https://learn.microsoft.com/rest/api/microsoft-foundry/} and Azure AI Content Safety documentation \url{https://learn.microsoft.com/azure/ai-services/content-safety/}.
 }
 \seealso{
 Useful links:
@@ -19,6 +21,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Alex Farach \email{alexfarach@microsoft.com} [copyright holder]
+
+Authors:
+\itemize{
+  \item Alex Farach \email{alexfarach@microsoft.com} [copyright holder]
+}
 
 }
 \keyword{internal}

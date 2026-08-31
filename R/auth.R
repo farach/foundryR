@@ -5,8 +5,8 @@
 #'
 #' @param key Character string containing your API key, or NULL to set interactively.
 #'   If NULL in an interactive session, will prompt for input.
-#' @param store Logical. If TRUE, stores the key in `.Renviron` for future sessions.
-#'   Default: FALSE (key only available for current session).
+#' @param store Logical. If `TRUE`, stores the key in foundryR's
+#'   package-specific user configuration file. Default: `FALSE`.
 #'
 #' @return Invisibly returns TRUE if key was set successfully.
 #' @export
@@ -38,25 +38,9 @@ foundry_set_key <- function(key = NULL, store = FALSE) {
   Sys.setenv(AZURE_FOUNDRY_KEY = key)
   cli::cli_alert_success("API key set for current session.")
 
-  # Optionally persist to .Renviron
   if (store) {
-    renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
-
-    # Read existing .Renviron if it exists
-    if (file.exists(renviron_path)) {
-      renviron_lines <- readLines(renviron_path, warn = FALSE)
-      # Remove any existing AZURE_FOUNDRY_KEY line
-      renviron_lines <- renviron_lines[!grepl("^AZURE_FOUNDRY_KEY=", renviron_lines)]
-    } else {
-      renviron_lines <- character()
-    }
-
-    # Add new key
-    renviron_lines <- c(renviron_lines, paste0("AZURE_FOUNDRY_KEY=", key))
-
-    # Write back
-    writeLines(renviron_lines, renviron_path)
-    cli::cli_alert_success("API key stored in {.file {renviron_path}}")
+    path <- foundry_store_setting("AZURE_FOUNDRY_KEY", key)
+    cli::cli_alert_success("API key stored in {.file {path}}")
   }
 
   invisible(TRUE)
@@ -78,7 +62,9 @@ foundry_set_key <- function(key = NULL, store = FALSE) {
 foundry_get_key <- function(key = NULL, required = FALSE) {
   if (is.null(key)) {
     key <- Sys.getenv("AZURE_FOUNDRY_KEY")
-    if (key == "") key <- NULL
+    if (key == "") {
+      key <- foundry_get_stored_setting("AZURE_FOUNDRY_KEY")
+    }
   }
 
   if (required && is.null(key)) {
@@ -100,8 +86,12 @@ foundry_get_key <- function(key = NULL, required = FALSE) {
 #'
 #' @param token Character string containing a bearer token. Do not include the
 #'   `"Bearer "` prefix.
-#' @param store Logical. If `TRUE`, stores the token in `.Renviron` for future
-#'   sessions. Tokens expire, so this is usually only useful for local testing.
+#' @param store Logical. If `TRUE`, stores the token in foundryR's
+#'   package-specific user configuration file. Tokens expire, so persistent
+#'   tokens are usually only useful for local testing.
+#' @param scope Character. Endpoint family for the token: `"resource"` for
+#'   resource-level `/openai/v1` and supported Content Safety operations, or
+#'   `"project"` for `/api/projects/...` operations.
 #'
 #' @return Invisibly returns `TRUE` if the token was set successfully.
 #' @export
@@ -110,27 +100,23 @@ foundry_get_key <- function(key = NULL, required = FALSE) {
 #' \dontrun{
 #' foundry_set_token("eyJ0eXAiOiJKV1QiLCJhbGciOi...")
 #' }
-foundry_set_token <- function(token, store = FALSE) {
+foundry_set_token <- function(token,
+                              store = FALSE,
+                              scope = c("resource", "project")) {
+  scope <- match.arg(scope)
   if (missing(token) || is.null(token) || !is.character(token) ||
       length(token) != 1L || is.na(token) || token == "") {
     cli::cli_abort("Bearer token cannot be empty.")
   }
 
   token <- sub("^Bearer\\s+", "", token, ignore.case = TRUE)
-  Sys.setenv(AZURE_FOUNDRY_TOKEN = token)
-  cli::cli_alert_success("Bearer token set for current session.")
+  variable <- foundry_token_envvar(scope)
+  do.call(Sys.setenv, stats::setNames(list(token), variable))
+  cli::cli_alert_success("{scope} bearer token set for current session.")
 
   if (store) {
-    renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
-    if (file.exists(renviron_path)) {
-      renviron_lines <- readLines(renviron_path, warn = FALSE)
-      renviron_lines <- renviron_lines[!grepl("^AZURE_FOUNDRY_TOKEN=", renviron_lines)]
-    } else {
-      renviron_lines <- character()
-    }
-    renviron_lines <- c(renviron_lines, paste0("AZURE_FOUNDRY_TOKEN=", token))
-    writeLines(renviron_lines, renviron_path)
-    cli::cli_alert_success("Bearer token stored in {.file {renviron_path}}")
+    path <- foundry_store_setting(variable, token)
+    cli::cli_alert_success("{scope} bearer token stored in {.file {path}}")
   }
 
   invisible(TRUE)
@@ -144,14 +130,23 @@ foundry_set_token <- function(token, store = FALSE) {
 #' @param token Character. Optional token to use instead of environment
 #'   variables.
 #' @param required Logical. If `TRUE`, throws an error when no token is found.
+#' @param scope Character. Endpoint family for the token.
 #'
 #' @return The bearer token string, or `NULL` if not found and not required.
 #' @keywords internal
-foundry_get_token <- function(token = NULL, required = FALSE) {
+foundry_get_token <- function(token = NULL,
+                              required = FALSE,
+                              scope = c("resource", "project")) {
+  scope <- match.arg(scope)
   if (is.null(token)) {
-    token <- Sys.getenv("AZURE_FOUNDRY_TOKEN")
-    if (token == "") token <- Sys.getenv("AZURE_OPENAI_TOKEN")
-    if (token == "") token <- NULL
+    variable <- foundry_token_envvar(scope)
+    token <- Sys.getenv(variable)
+    if (token == "" && identical(scope, "resource")) {
+      token <- Sys.getenv("AZURE_OPENAI_TOKEN")
+    }
+    if (token == "") {
+      token <- foundry_get_stored_setting(variable)
+    }
   }
 
   if (!is.null(token)) {
@@ -161,7 +156,7 @@ foundry_get_token <- function(token = NULL, required = FALSE) {
   if (required && is.null(token)) {
     cli::cli_abort(c(
       "Azure AI Foundry bearer token is required.",
-      "i" = "Set one with {.code foundry_set_token()} or set the {.envvar AZURE_FOUNDRY_TOKEN} environment variable."
+      "i" = "Set one with {.code foundry_set_token(scope = \"{scope}\")} or set the matching token environment variable."
     ))
   }
 
@@ -170,7 +165,7 @@ foundry_get_token <- function(token = NULL, required = FALSE) {
 
 
 foundry_auth_state <- new.env(parent = emptyenv())
-foundry_auth_state$token_provider <- NULL
+foundry_auth_state$token_providers <- list(resource = NULL, project = NULL)
 
 
 #' Set a Microsoft Entra ID token provider
@@ -182,6 +177,8 @@ foundry_auth_state$token_provider <- NULL
 #'
 #' @param provider Function or `NULL`. A zero-argument function that returns a
 #'   bearer token string. Use `NULL` to clear the provider.
+#' @param scope Character. Endpoint family that the provider authenticates:
+#'   `"resource"` or `"project"`.
 #'
 #' @return Invisibly returns the previous provider.
 #' @export
@@ -190,27 +187,32 @@ foundry_auth_state$token_provider <- NULL
 #' \dontrun{
 #' foundry_set_token_provider(foundry_token_azure_cli())
 #' }
-foundry_set_token_provider <- function(provider) {
+foundry_set_token_provider <- function(provider,
+                                       scope = c("resource", "project")) {
+  scope <- match.arg(scope)
   if (!is.null(provider) && !is.function(provider)) {
     cli::cli_abort("{.arg provider} must be a function or NULL.")
   }
 
-  old <- foundry_auth_state$token_provider
-  foundry_auth_state$token_provider <- provider
+  old <- foundry_auth_state$token_providers[[scope]]
+  foundry_auth_state$token_providers[[scope]] <- provider
   invisible(old)
 }
 
 
-foundry_get_token_provider <- function() {
-  foundry_auth_state$token_provider
+foundry_get_token_provider <- function(scope = c("resource", "project")) {
+  scope <- match.arg(scope)
+  foundry_auth_state$token_providers[[scope]]
 }
 
 
-foundry_token_from_provider <- function(required = FALSE) {
-  provider <- foundry_get_token_provider()
+foundry_token_from_provider <- function(required = FALSE,
+                                        scope = c("resource", "project")) {
+  scope <- match.arg(scope)
+  provider <- foundry_get_token_provider(scope)
   if (is.null(provider)) {
     if (required) {
-      cli::cli_abort("No Azure AI Foundry token provider is configured.")
+      cli::cli_abort("No {scope} Azure AI Foundry token provider is configured.")
     }
     return(NULL)
   }
@@ -231,10 +233,10 @@ foundry_token_from_provider <- function(required = FALSE) {
 #' to `az account get-access-token`. Tokens are cached until five minutes before
 #' expiry.
 #'
-#' @param resource Character. Azure resource used for the access token. Azure AI
-#'   Foundry docs currently reference both `"https://ai.azure.com"` and
-#'   `"https://cognitiveservices.azure.com"` for different surfaces, so this is
-#'   configurable.
+#' @param resource Character. Azure resource used for the access token. Defaults
+#'   to `"https://cognitiveservices.azure.com"` for resource-level v1 and
+#'   Content Safety APIs. Use `"https://ai.azure.com"` for project APIs and
+#'   register that provider with `scope = "project"`.
 #' @param az Character. Azure CLI executable name or path.
 #'
 #' @return A zero-argument token provider function.
@@ -243,10 +245,11 @@ foundry_token_from_provider <- function(required = FALSE) {
 #' @examples
 #' \dontrun{
 #' foundry_set_token_provider(
-#'   foundry_token_azure_cli("https://ai.azure.com")
+#'   foundry_token_azure_cli("https://ai.azure.com"),
+#'   scope = "project"
 #' )
 #' }
-foundry_token_azure_cli <- function(resource = "https://ai.azure.com",
+foundry_token_azure_cli <- function(resource = "https://cognitiveservices.azure.com",
                                     az = "az") {
   foundry_check_character_scalar(resource, "resource")
   foundry_check_character_scalar(az, "az")
@@ -305,6 +308,16 @@ foundry_token_azure_cli <- function(resource = "https://ai.azure.com",
     cache$token <- token
     cache$expires_at <- foundry_parse_token_expiry(expires_on)
     cache$token
+  }
+}
+
+
+foundry_token_envvar <- function(scope = c("resource", "project")) {
+  scope <- match.arg(scope)
+  if (identical(scope, "project")) {
+    "AZURE_FOUNDRY_PROJECT_TOKEN"
+  } else {
+    "AZURE_FOUNDRY_TOKEN"
   }
 }
 

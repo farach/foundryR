@@ -18,17 +18,15 @@
 #'   - `"QnA"` (default): Question-and-answer task. Requires `query` parameter.
 #'   - `"Summarization"`: Text summarization task. `query` is optional.
 #' @param reasoning Logical. If `TRUE`, includes reasoning for ungrounded
-#'   segments in the response. Requires a linked or supplied `llm_resource`.
-#'   Default: `FALSE`.
+#'   segments in the response. Default: `FALSE`.
 #' @param correction Logical. If `TRUE`, requests corrected text that is
 #'   consistent with the grounding sources (the Content Safety "mitigating"
 #'   feature). Requires `llm_resource` and `api_version >= "2024-09-15-preview"`.
 #'   The corrected text is returned in the `correction_text` column. Default:
 #'   `FALSE`.
 #' @param llm_resource List or `NULL`. Connection details for a bring-your-own
-#'   Azure OpenAI deployment, used when `reasoning = TRUE` or
-#'   `correction = TRUE`. Build it with [foundry_llm_resource()]. Default:
-#'   `NULL`.
+#'   Azure OpenAI deployment, used when `correction = TRUE`. Build it with
+#'   [foundry_llm_resource()]. Default: `NULL`.
 #' @param endpoint Character. Optional. The Azure Content Safety endpoint URL.
 #'
 #'   Defaults to the `AZURE_CONTENT_SAFETY_ENDPOINT` environment variable.
@@ -183,30 +181,8 @@ foundry_groundedness <- function(text,
     }
   }
 
-  # Get endpoint
-  if (is.null(endpoint)) {
-    endpoint <- Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT")
-    if (endpoint == "") {
-      cli::cli_abort(c(
-        "Azure Content Safety endpoint is required.",
-        "i" = "Set the {.envvar AZURE_CONTENT_SAFETY_ENDPOINT} environment variable or pass {.arg endpoint} directly."
-      ))
-    }
-  }
-
-  # Remove trailing slash from endpoint
-  endpoint <- sub("/$", "", endpoint)
-
-  # Get API key
-  if (is.null(api_key)) {
-    api_key <- Sys.getenv("AZURE_CONTENT_SAFETY_KEY")
-    if (api_key == "") {
-      cli::cli_abort(c(
-        "Azure Content Safety API key is required.",
-        "i" = "Set the {.envvar AZURE_CONTENT_SAFETY_KEY} environment variable or pass {.arg api_key} directly."
-      ))
-    }
-  }
+  endpoint <- get_content_safety_endpoint(endpoint, required = TRUE)
+  api_key <- get_content_safety_key(api_key, required = TRUE)
 
   # Validate reasoning parameter
   if (!is.logical(reasoning) || length(reasoning) != 1 || is.na(reasoning)) {

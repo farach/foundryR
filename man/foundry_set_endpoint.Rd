@@ -10,8 +10,8 @@ foundry_set_endpoint(endpoint, store = FALSE)
 \item{endpoint}{Character string containing the endpoint URL.
 Example: the endpoint URL from your Foundry resource.}
 
-\item{store}{Logical. If TRUE, stores the endpoint in \code{.Renviron} for future sessions.
-Default: FALSE (endpoint only available for current session).}
+\item{store}{Logical. If \code{TRUE}, stores the endpoint in foundryR's
+package-specific user configuration file. Default: \code{FALSE}.}
 }
 \value{
 Invisibly returns TRUE if endpoint was set successfully.

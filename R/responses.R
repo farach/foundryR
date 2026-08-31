@@ -47,8 +47,10 @@
 #' @param parse_json Logical. Whether to parse `output_text` as JSON into the
 #'   `structured` list-column. Defaults to `TRUE` when `text_format` is supplied.
 #' @param api_key Character. Optional API key override.
-#' @param endpoint Character. Optional endpoint override. When `agent` is
-#'   supplied this is treated as the project endpoint override.
+#' @param endpoint Character. Optional resource endpoint override.
+#' @param project_endpoint Character. Optional project endpoint override. When
+#'   supplied, the request uses the project-scoped Responses API. Agent-backed
+#'   responses always use this endpoint family.
 #' @param agent Character or list. Optional agent to run instead of a bare
 #'   model: an agent name, a [foundry_agent_reference()] object, or a one-row
 #'   tibble from [foundry_agent_create()]. When supplied, `model` is ignored,
@@ -72,6 +74,12 @@
 #' objects by default. Set `store = FALSE` for stateless calls when you do not
 #' need server-side conversation state. To use `previous_response_id` chaining,
 #' the previous response must have been stored.
+#'
+#' Agent-backed responses are created on the project endpoint because
+#' `agent_reference` is project-scoped. Pass the same `project_endpoint` to
+#' [foundry_response_retrieve()], [foundry_response_cancel()],
+#' [foundry_response_delete()], and [foundry_response_input_items()] for their
+#' lifecycle calls.
 #'
 #' @references
 #' - Azure OpenAI Responses API:
@@ -115,6 +123,7 @@ foundry_response <- function(input,
                              parse_json = !is.null(text_format),
                              api_key = NULL,
                              endpoint = NULL,
+                             project_endpoint = NULL,
                              agent = NULL,
                              agent_version = NULL,
                              ...) {
@@ -236,7 +245,7 @@ foundry_response <- function(input,
     }
   }
 
-  if (is.null(agent)) {
+  if (is.null(agent) && is.null(project_endpoint)) {
     req <- foundry_build_v1_request(
       path = "responses",
       body = body,
@@ -250,7 +259,7 @@ foundry_response <- function(input,
       body = body,
       method = "POST",
       api_key = api_key,
-      endpoint = endpoint,
+      endpoint = project_endpoint,
       api_version = NULL
     )
   }
@@ -456,7 +465,9 @@ foundry_agent <- function(input,
 #'
 #' @param response_id Character. The response ID to retrieve.
 #' @param api_key Character. Optional API key override.
-#' @param endpoint Character. Optional endpoint override.
+#' @param endpoint Character. Optional resource endpoint override.
+#' @param project_endpoint Character. Optional project endpoint override. Supply
+#'   this for a response created through the project-scoped API.
 #'
 #' @return A one-row tibble parsed like `foundry_response()`.
 #' @export
@@ -465,17 +476,25 @@ foundry_agent <- function(input,
 #' \dontrun{
 #' response <- foundry_response("Hello")
 #' foundry_response_retrieve(response$response_id)
+#'
+#' agent_response <- foundry_response("Hello", agent = "my-agent")
+#' foundry_response_retrieve(
+#'   agent_response$response_id,
+#'   project_endpoint = foundry_get_project_endpoint()
+#' )
 #' }
 foundry_response_retrieve <- function(response_id,
                                       api_key = NULL,
-                                      endpoint = NULL) {
+                                      endpoint = NULL,
+                                      project_endpoint = NULL) {
   foundry_check_character_scalar(response_id, "response_id")
 
-  req <- foundry_build_v1_request(
+  req <- foundry_build_response_lifecycle_request(
     path = paste0("responses/", response_id),
     method = "GET",
     api_key = api_key,
-    endpoint = endpoint
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
 
   result <- foundry_perform(req)
@@ -485,9 +504,7 @@ foundry_response_retrieve <- function(response_id,
 
 #' Delete a stored Responses API response
 #'
-#' @param response_id Character. The response ID to delete.
-#' @param api_key Character. Optional API key override.
-#' @param endpoint Character. Optional endpoint override.
+#' @inheritParams foundry_response_retrieve
 #'
 #' @return A tibble with deletion status.
 #' @export
@@ -499,14 +516,16 @@ foundry_response_retrieve <- function(response_id,
 #' }
 foundry_response_delete <- function(response_id,
                                     api_key = NULL,
-                                    endpoint = NULL) {
+                                    endpoint = NULL,
+                                    project_endpoint = NULL) {
   foundry_check_character_scalar(response_id, "response_id")
 
-  req <- foundry_build_v1_request(
+  req <- foundry_build_response_lifecycle_request(
     path = paste0("responses/", response_id),
     method = "DELETE",
     api_key = api_key,
-    endpoint = endpoint
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
 
   result <- foundry_perform(req)
@@ -520,9 +539,7 @@ foundry_response_delete <- function(response_id,
 
 #' Cancel a background Responses API response
 #'
-#' @param response_id Character. The response ID to cancel.
-#' @param api_key Character. Optional API key override.
-#' @param endpoint Character. Optional endpoint override.
+#' @inheritParams foundry_response_retrieve
 #'
 #' @return A one-row tibble parsed like `foundry_response()`.
 #' @export
@@ -533,14 +550,16 @@ foundry_response_delete <- function(response_id,
 #' }
 foundry_response_cancel <- function(response_id,
                                     api_key = NULL,
-                                    endpoint = NULL) {
+                                    endpoint = NULL,
+                                    project_endpoint = NULL) {
   foundry_check_character_scalar(response_id, "response_id")
 
-  req <- foundry_build_v1_request(
+  req <- foundry_build_response_lifecycle_request(
     path = paste0("responses/", response_id, "/cancel"),
     method = "POST",
     api_key = api_key,
-    endpoint = endpoint
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
 
   foundry_parse_response(foundry_perform(req), parse_json = FALSE)
@@ -549,9 +568,7 @@ foundry_response_cancel <- function(response_id,
 
 #' List input items for a Responses API response
 #'
-#' @param response_id Character. The response ID.
-#' @param api_key Character. Optional API key override.
-#' @param endpoint Character. Optional endpoint override.
+#' @inheritParams foundry_response_retrieve
 #'
 #' @return A tibble with one row per input item and the raw item in a list-column.
 #' @export
@@ -562,14 +579,16 @@ foundry_response_cancel <- function(response_id,
 #' }
 foundry_response_input_items <- function(response_id,
                                          api_key = NULL,
-                                         endpoint = NULL) {
+                                         endpoint = NULL,
+                                         project_endpoint = NULL) {
   foundry_check_character_scalar(response_id, "response_id")
 
-  req <- foundry_build_v1_request(
+  req <- foundry_build_response_lifecycle_request(
     path = paste0("responses/", response_id, "/input_items"),
     method = "GET",
     api_key = api_key,
-    endpoint = endpoint
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
 
   result <- foundry_perform(req)
@@ -593,6 +612,30 @@ foundry_response_input_items <- function(response_id,
       raw_item = list(item)
     )
   })
+}
+
+
+foundry_build_response_lifecycle_request <- function(path,
+                                                     method,
+                                                     api_key = NULL,
+                                                     endpoint = NULL,
+                                                     project_endpoint = NULL) {
+  if (!is.null(project_endpoint)) {
+    return(foundry_build_project_request(
+      path = paste0("openai/v1/", path),
+      method = method,
+      api_key = api_key,
+      endpoint = project_endpoint,
+      api_version = NULL
+    ))
+  }
+
+  foundry_build_v1_request(
+    path = path,
+    method = method,
+    api_key = api_key,
+    endpoint = endpoint
+  )
 }
 
 
@@ -661,7 +704,7 @@ foundry_extract <- function(text,
                             model = NULL,
                             flatten = TRUE,
                             store = FALSE,
-                            max_active = 5L,
+                            max_active = 2L,
                             progress = TRUE,
                             api_key = NULL,
                             endpoint = NULL,
@@ -1479,7 +1522,8 @@ foundry_simplify_json_value <- function(value) {
 
 
 foundry_warn_web_search <- function() {
-  if (isTRUE(getOption("foundryR.web_search_warning", FALSE))) {
+  if (isTRUE(getOption("foundryR.web_search_warning", FALSE)) ||
+      isTRUE(foundry_state$web_search_warned)) {
     return(invisible(NULL))
   }
 
@@ -1488,6 +1532,6 @@ foundry_warn_web_search <- function() {
     "i" = "Microsoft documents that this can leave compliance/geographic boundaries and incur additional costs.",
     "i" = "Set {.code options(foundryR.web_search_warning = TRUE)} to suppress this warning."
   ))
-  options(foundryR.web_search_warning = TRUE)
+  foundry_state$web_search_warned <- TRUE
   invisible(NULL)
 }

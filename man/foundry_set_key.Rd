@@ -10,8 +10,8 @@ foundry_set_key(key = NULL, store = FALSE)
 \item{key}{Character string containing your API key, or NULL to set interactively.
 If NULL in an interactive session, will prompt for input.}
 
-\item{store}{Logical. If TRUE, stores the key in \code{.Renviron} for future sessions.
-Default: FALSE (key only available for current session).}
+\item{store}{Logical. If \code{TRUE}, stores the key in foundryR's
+package-specific user configuration file. Default: \code{FALSE}.}
 }
 \value{
 Invisibly returns TRUE if key was set successfully.

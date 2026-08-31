@@ -1,0 +1,100 @@
+---
+title: "API support matrix"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{API support matrix}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+foundryR separates Microsoft Foundry endpoint families because their paths,
+token audiences, and compatibility guarantees differ. The package is
+community-maintained and does not imply Microsoft support for undocumented
+behavior.
+
+## Endpoint and authentication families
+
+| Family | Base path | Entra audience | foundryR configuration |
+|---|---|---|---|
+| Resource v1 | `<resource>/openai/v1/...` | `https://cognitiveservices.azure.com` | `foundry_set_endpoint()` plus a resource token or provider |
+| Foundry project | `<account>/api/projects/<project>/...` | `https://ai.azure.com` | `foundry_set_project_endpoint()` plus a project token or provider |
+| Content Safety | `<resource>/contentsafety/...` | `https://cognitiveservices.azure.com` where the formal operation reference documents OAuth2 | Content Safety endpoint plus key or supported resource token |
+| Legacy deployment | `<resource>/openai/deployments/<deployment>/...` | `https://cognitiveservices.azure.com` | Resource endpoint and dated `api-version` |
+
+Register endpoint-family providers separately:
+
+```r
+foundry_set_token_provider(
+  foundry_token_azure_cli("https://cognitiveservices.azure.com"),
+  scope = "resource"
+)
+
+foundry_set_token_provider(
+  foundry_token_azure_cli("https://ai.azure.com"),
+  scope = "project"
+)
+```
+
+## Implemented Microsoft Foundry surfaces
+
+| Surface | Route/version | Lifecycle in current Microsoft documentation | foundryR status |
+|---|---|---|---|
+| Chat Completions | `/openai/v1/chat/completions` | v1 | Implemented |
+| Responses | `/openai/v1/responses` | v1; optional `api-version=v1` | Implemented |
+| Embeddings | `/openai/v1/embeddings` | v1 | Implemented |
+| Files | `/openai/v1/files` | v1 | Implemented |
+| Batches | `/openai/v1/batches` | v1 | Implemented |
+| Models | `/openai/v1/models` | v1 | Implemented |
+| Evals | `/openai/v1/evals` | v1 reference track | Implemented |
+| Vector stores | `/openai/v1/vector_stores` | v1 reference track | Implemented |
+| Conversations | `/openai/v1/conversations` | v1 reference track | Implemented |
+| Agent definitions and versions | Project `/agents?api-version=v1` | Agents v2; some agent subfeatures are gated separately | Implemented |
+| Agent-backed Responses | Project `/openai/v1/responses` | Project-only `agent_reference` request field | Implemented; lifecycle calls require `project_endpoint` |
+| Image generation and edits | `/openai/v1/images/...?...api-version=preview` | Preview | Experimental |
+| Audio speech, transcription, translation | `/openai/v1/audio/...?...api-version=preview` | Preview | Experimental |
+| Video generation | `/openai/v1/video/...?...api-version=preview` | Preview | Experimental |
+
+Resource-level Evals, vector stores, and conversations use the v1 reference
+track without a preview query value. Microsoft does not place an explicit GA
+badge on every individual reference page, so foundryR does not infer a stronger
+status than the published route and version establish.
+
+## Implemented Content Safety surfaces
+
+| Surface | API version | Lifecycle | Authentication in foundryR |
+|---|---|---|---|
+| Text moderation | `2024-09-01` | Stable reference track | API key or resource token |
+| Image moderation | `2024-09-01` | Stable reference track | API key or resource token |
+| Protected material in text | `2024-09-01` | Stable reference track | API key or resource token |
+| Prompt Shields | `2024-09-01` | Stable reference track | API key |
+| Blocklists | `2024-09-01` | Stable reference track | API key |
+| Groundedness | `2024-09-15-preview` | Preview and region-limited | API key |
+| Protected code | `2024-09-15-preview` | Preview | API key |
+| Image-with-text moderation | `2024-09-15-preview` | Preview | API key |
+| Task adherence | `2025-09-15-preview` | Preview | API key |
+
+Prompt Shields and blocklist documentation reviewed for this release did not
+include a formal OAuth2 security block. foundryR therefore does not claim Entra
+support for those operations.
+
+## Current omissions
+
+The current Microsoft Foundry project reference also exposes connections,
+datasets, deployments, evaluation taxonomies and rules, evaluators, indexes,
+insights, red-team schedules and runs, and schedules. Those resource families
+are not implemented in foundryR 0.1.0.
+
+Memory stores and agent containers are also not implemented. Microsoft gates
+those preview features with `Foundry-Features` headers such as
+`MemoryStores=V1Preview` and `ContainerAgents=V1Preview`; `api-version=v1` alone
+does not establish that a project operation is GA.
+
+## Compatibility policy
+
+1. Resource v1 is the default for OpenAI-compatible operations.
+2. Project APIs are selected explicitly through a project endpoint.
+3. Preview operations remain exported but carry experimental documentation and
+   may change in a minor release when Microsoft changes their contract.
+4. Legacy deployment routes are compatibility fallbacks, not the default.
+5. Recorded fixtures test known contracts without network access. Maintainers
+   should run credentialed contract tests separately before each release.

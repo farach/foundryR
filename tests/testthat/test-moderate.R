@@ -3,6 +3,7 @@
 # ============================================================================
 
 test_that("foundry_moderate requires endpoint", {
+  withr::local_options(foundryR.config_file = tempfile())
   withr::local_envvar(
     AZURE_CONTENT_SAFETY_ENDPOINT = "",
     AZURE_CONTENT_SAFETY_KEY = "test-key"
@@ -11,13 +12,18 @@ test_that("foundry_moderate requires endpoint", {
   expect_error(foundry_moderate("Hello"), "endpoint is required")
 })
 
-test_that("foundry_moderate requires API key", {
+test_that("foundry_moderate requires an API key or resource token", {
+  withr::defer(foundry_set_token_provider(NULL, scope = "resource"))
+  foundry_set_token_provider(NULL, scope = "resource")
+  withr::local_options(foundryR.config_file = tempfile())
   withr::local_envvar(
     AZURE_CONTENT_SAFETY_ENDPOINT = "https://test.cognitiveservices.azure.com",
-    AZURE_CONTENT_SAFETY_KEY = ""
+    AZURE_CONTENT_SAFETY_KEY = "",
+    AZURE_FOUNDRY_TOKEN = "",
+    AZURE_OPENAI_TOKEN = ""
   )
 
-  expect_error(foundry_moderate("Hello"), "API key is required")
+  expect_error(foundry_moderate("Hello"), "authentication is required")
 })
 
 test_that("foundry_moderate validates categories", {

@@ -3,15 +3,39 @@ foundry_content_safety_request <- function(path,
                                            method = "POST",
                                            endpoint = NULL,
                                            api_key = NULL,
-                                           api_version = "2024-09-01") {
+                                           api_version = "2024-09-01",
+                                           allow_token = FALSE) {
   endpoint <- get_content_safety_endpoint(endpoint, required = TRUE)
-  api_key <- get_content_safety_key(api_key, required = TRUE)
   path <- sub("^/+", "", path)
 
   req <- httr2::request(paste0(endpoint, "/contentsafety/", path)) |>
     httr2::req_method(method) |>
-    httr2::req_url_query(`api-version` = api_version) |>
-    httr2::req_headers(`Ocp-Apim-Subscription-Key` = api_key) |>
+    httr2::req_url_query(`api-version` = api_version)
+
+  if (isTRUE(allow_token)) {
+    key <- get_content_safety_key(api_key, required = FALSE)
+    token <- foundry_get_token(required = FALSE, scope = "resource")
+    provider <- foundry_get_token_provider("resource")
+    if (is.null(key) && is.null(token) && is.null(provider)) {
+      cli::cli_abort(c(
+        "Azure Content Safety authentication is required.",
+        "i" = "Set a Content Safety API key or configure a resource-scoped bearer token provider."
+      ))
+    }
+    req <- req |>
+      foundry_authenticate_request(
+        api_key = key,
+        key_header = "Ocp-Apim-Subscription-Key",
+        key_getter = get_content_safety_key,
+        token_scope = "resource"
+      )
+  } else {
+    key <- get_content_safety_key(api_key, required = TRUE)
+    req <- req |>
+      httr2::req_headers(`Ocp-Apim-Subscription-Key` = key)
+  }
+
+  req <- req |>
     httr2::req_retry(max_tries = 3, backoff = ~ 2) |>
     httr2::req_error(body = content_safety_error_body)
 
@@ -62,7 +86,8 @@ foundry_moderate_image <- function(image,
     body = body,
     endpoint = endpoint,
     api_key = api_key,
-    api_version = api_version
+    api_version = api_version,
+    allow_token = TRUE
   )
   result <- foundry_perform(req)
   foundry_parse_safety_categories(result, image, output_type)
@@ -105,7 +130,8 @@ foundry_protected_material <- function(text,
       body = list(text = text[[i]]),
       endpoint = endpoint,
       api_key = api_key,
-      api_version = api_version
+      api_version = api_version,
+      allow_token = TRUE
     )
     result <- foundry_perform(req)
     detected <- result$protectedMaterialAnalysis$detected %||%

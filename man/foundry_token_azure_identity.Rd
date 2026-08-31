@@ -5,7 +5,7 @@
 \title{Create a Microsoft Entra ID token provider using AzureAuth}
 \usage{
 foundry_token_azure_identity(
-  resource = "https://ai.azure.com",
+  resource = "https://cognitiveservices.azure.com",
   tenant = Sys.getenv("AZURE_TENANT_ID"),
   app = Sys.getenv("AZURE_CLIENT_ID"),
   password = NULL,
@@ -19,9 +19,9 @@ foundry_token_azure_identity(
 }
 \arguments{
 \item{resource}{Character. The token audience. Defaults to
-\code{"https://ai.azure.com"}, the canonical Azure AI Foundry data-plane
-audience. Pass \code{"https://cognitiveservices.azure.com"} for legacy Cognitive
-Services resources.}
+\code{"https://cognitiveservices.azure.com"} for resource-level v1 and Content
+Safety APIs. Use \code{"https://ai.azure.com"} for project APIs and register the
+provider with \code{scope = "project"}.}
 
 \item{tenant}{Character. Microsoft Entra ID tenant. Defaults to the
 \code{AZURE_TENANT_ID} environment variable. Ignored when
@@ -44,14 +44,14 @@ for certificate-based service-principal authentication.}
 type. \code{NULL} lets \pkg{AzureAuth} choose based on the other arguments.}
 
 \item{managed_identity}{Logical. If \code{TRUE}, acquire a token from an Azure
-managed identity via \code{\link[AzureAuth:get_azure_token]{AzureAuth::get_managed_token()}} and ignore \code{tenant}
+managed identity via \code{\link[AzureAuth:get_managed_token]{AzureAuth::get_managed_token()}} and ignore \code{tenant}
 and \code{app}. Default \code{FALSE}.}
 
 \item{version}{Integer. Microsoft Entra ID endpoint version, \code{1} or \code{2}.
 Default \code{1}, matching the resource-style \code{resource} above.}
 
 \item{...}{Additional arguments passed to \code{\link[AzureAuth:get_azure_token]{AzureAuth::get_azure_token()}} or
-\code{\link[AzureAuth:get_azure_token]{AzureAuth::get_managed_token()}}.}
+\code{\link[AzureAuth:get_managed_token]{AzureAuth::get_managed_token()}}.}
 }
 \value{
 A zero-argument token provider function suitable for
@@ -85,6 +85,15 @@ foundry_set_token_provider(
 # Managed identity inside Azure
 foundry_set_token_provider(
   foundry_token_azure_identity(managed_identity = TRUE)
+)
+
+# Project-scoped APIs use a different audience and provider slot
+foundry_set_token_provider(
+  foundry_token_azure_identity(
+    resource = "https://ai.azure.com",
+    managed_identity = TRUE
+  ),
+  scope = "project"
 )
 }
 }

@@ -33,7 +33,11 @@ foundry_build_request <- function(deployment,
 
   httr2::request(url) %>%
     httr2::req_url_query(`api-version` = api_version) %>%
-    foundry_authenticate_request(api_key = api_key, token = token) %>%
+    foundry_authenticate_request(
+      api_key = api_key,
+      token = token,
+      token_scope = "resource"
+    ) %>%
     httr2::req_body_json(body) %>%
     httr2::req_retry(max_tries = 3, backoff = ~ 2) %>%
     httr2::req_error(body = foundry_error_body)
@@ -77,7 +81,8 @@ foundry_build_v1_request <- function(path,
     foundry_authenticate_request(
       api_key = api_key,
       token = token,
-      key_getter = key_getter
+      key_getter = key_getter,
+      token_scope = "resource"
     ) %>%
     httr2::req_retry(max_tries = 3, backoff = ~ 2) %>%
     httr2::req_error(body = foundry_error_body)
@@ -110,7 +115,11 @@ foundry_build_project_request <- function(path,
 
   req <- httr2::request(url) |>
     httr2::req_method(method) |>
-    foundry_authenticate_request(api_key = api_key, token = token) |>
+    foundry_authenticate_request(
+      api_key = api_key,
+      token = token,
+      token_scope = "project"
+    ) |>
     httr2::req_retry(max_tries = 3, backoff = ~ 2) |>
     httr2::req_error(body = foundry_error_body)
 
@@ -134,10 +143,16 @@ foundry_authenticate_request <- function(req,
                                          required = TRUE,
                                          key_header = "api-key",
                                          key_getter = foundry_get_key,
-                                         token_getter = foundry_get_token) {
+                                         token_getter = foundry_get_token,
+                                         token_scope = NULL) {
   explicit_token <- NULL
   if (!is.null(token)) {
-    explicit_token <- token_getter(token = token, required = FALSE)
+    explicit_token <- foundry_resolve_token(
+      token_getter,
+      token = token,
+      required = FALSE,
+      scope = token_scope
+    )
   }
   if (!is.null(explicit_token)) {
     return(req %>%
@@ -154,13 +169,21 @@ foundry_authenticate_request <- function(req,
     return(do.call(httr2::req_headers, c(list(req), headers)))
   }
 
-  provider_token <- foundry_token_from_provider(required = FALSE)
+  provider_token <- foundry_token_from_provider(
+    required = FALSE,
+    scope = token_scope %||% "resource"
+  )
   if (!is.null(provider_token)) {
     return(req %>%
       httr2::req_headers(Authorization = paste("Bearer", provider_token)))
   }
 
-  env_token <- token_getter(token = NULL, required = FALSE)
+  env_token <- foundry_resolve_token(
+    token_getter,
+    token = NULL,
+    required = FALSE,
+    scope = token_scope
+  )
   if (!is.null(env_token)) {
     return(req %>%
       httr2::req_headers(Authorization = paste("Bearer", env_token)))
@@ -174,13 +197,26 @@ foundry_authenticate_request <- function(req,
   }
 
   if (required) {
+    scope <- token_scope %||% "resource"
     cli::cli_abort(c(
       "Azure AI Foundry authentication is required.",
-      "i" = "Set an API key with {.code foundry_set_key()}, set a bearer token with {.code foundry_set_token()}, or configure a provider with {.code foundry_set_token_provider()}."
+      "i" = "Set an API key with {.code foundry_set_key()}, set a {scope} bearer token with {.code foundry_set_token(scope = \"{scope}\")}, or configure a {scope} provider with {.code foundry_set_token_provider(..., scope = \"{scope}\")}."
     ))
   }
 
   req
+}
+
+
+foundry_resolve_token <- function(token_getter,
+                                  token,
+                                  required,
+                                  scope = NULL) {
+  args <- list(token = token, required = required)
+  if (!is.null(scope)) {
+    args$scope <- scope
+  }
+  do.call(token_getter, args)
 }
 
 
@@ -293,7 +329,7 @@ foundry_perform_raw <- function(req) {
 #'
 #' @return A list of responses or error conditions, in the order of `reqs`.
 #' @keywords internal
-foundry_req_perform_many <- function(reqs, progress = FALSE, max_active = 10) {
+foundry_req_perform_many <- function(reqs, progress = FALSE, max_active = 2L) {
   if (length(reqs) == 0L) {
     return(list())
   }

@@ -66,6 +66,31 @@ test_that("foundry_set_content_safety_key returns TRUE invisibly", {
   expect_true(result)
 })
 
+test_that("Content Safety settings persist in the package config file", {
+  config_file <- tempfile()
+  withr::local_options(foundryR.config_file = config_file)
+  withr::local_envvar(
+    AZURE_CONTENT_SAFETY_ENDPOINT = "",
+    AZURE_CONTENT_SAFETY_KEY = ""
+  )
+
+  suppressMessages(foundry_set_content_safety_endpoint(
+    "https://stored.cognitiveservices.azure.com",
+    store = TRUE
+  ))
+  suppressMessages(foundry_set_content_safety_key("stored-key", store = TRUE))
+  Sys.setenv(
+    AZURE_CONTENT_SAFETY_ENDPOINT = "",
+    AZURE_CONTENT_SAFETY_KEY = ""
+  )
+
+  expect_equal(
+    get_content_safety_endpoint(),
+    "https://stored.cognitiveservices.azure.com"
+  )
+  expect_equal(get_content_safety_key(), "stored-key")
+})
+
 # ============================================================================
 # get_content_safety_endpoint() (internal)
 # ============================================================================
@@ -81,12 +106,14 @@ test_that("get_content_safety_endpoint retrieves from environment", {
 
 test_that("get_content_safety_endpoint returns NULL when not set", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_ENDPOINT = "")
+  withr::local_options(foundryR.config_file = tempfile())
 
   expect_null(get_content_safety_endpoint())
 })
 
 test_that("get_content_safety_endpoint errors when required and not set", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_ENDPOINT = "")
+  withr::local_options(foundryR.config_file = tempfile())
 
   expect_error(get_content_safety_endpoint(required = TRUE), "endpoint is required")
 })
@@ -124,12 +151,14 @@ test_that("get_content_safety_key retrieves from environment", {
 
 test_that("get_content_safety_key returns NULL when not set", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_KEY = "")
+  withr::local_options(foundryR.config_file = tempfile())
 
   expect_null(get_content_safety_key())
 })
 
 test_that("get_content_safety_key errors when required and not set", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_KEY = "")
+  withr::local_options(foundryR.config_file = tempfile())
 
   expect_error(get_content_safety_key(required = TRUE), "API key is required")
 })
