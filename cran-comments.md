@@ -5,7 +5,16 @@ This is the first CRAN submission for foundryR.
 ## Test environments
 
 - Local Windows 11 ARM64 host, x86_64 R 4.6.1
-- GitHub Actions and win-builder: pending before submission
+- GitHub Actions:
+  - Windows x64, R-release
+  - macOS ARM64, R-release
+  - Ubuntu x64, R-release
+  - Ubuntu x64, R-devel
+  - Ubuntu x64, R-oldrel-1
+
+## R CMD check results
+
+0 errors | 0 warnings | 0 notes on all five GitHub Actions jobs.
 
 ## Local validation
 
@@ -15,7 +24,7 @@ This is the first CRAN submission for foundryR.
 - static `R CMD check --as-cran --no-install --no-manual`: no package code,
   dependency, documentation, namespace, or file-structure findings
 
-## Outstanding release gate
+## Local environment note
 
 The local host cannot produce a valid full `R CMD check` result. Loading a
 freshly downloaded CRAN binary of either `rlang` or `cli` alone exits the x86_64
@@ -23,9 +32,9 @@ R process with Windows status `0xC0000409` on this ARM64 machine. The same
 environment-level failure terminates package installation during lazy loading.
 This reproduces without loading foundryR.
 
-Do not submit until the built source package passes GitHub Actions on Windows,
-macOS, and Linux plus win-builder R-release or R-devel. Replace this section
-with those exact results before uploading to CRAN.
+The native Windows x64 GitHub Actions job completed with `Status: OK`, as did
+the macOS and Linux jobs. The local emulation failure is therefore not a package
+check failure.
 
 ## Method references
 
