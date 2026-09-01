@@ -126,11 +126,14 @@ step_foundry_embed <- function(recipe,
                                 cache_dir = NULL,
                                 columns = NULL,
                                 skip = FALSE,
-                                id = recipes::rand_id("foundry_embed")) {
+                                id = NULL) {
 
   if (!requireNamespace("recipes", quietly = TRUE)) {
     stop("Package 'recipes' required. Install with: install.packages('recipes')",
          call. = FALSE)
+  }
+  if (is.null(id)) {
+    id <- recipes::rand_id("foundry_embed")
   }
 
   cache <- rlang::arg_match(cache)
@@ -407,6 +410,7 @@ print.step_foundry_embed <- function(x, width = max(20, options()$width - 30), .
 #'
 #' @return A tibble with columns: `terms`, `model`, `dimensions`, `id`
 #' @rdname step_foundry_embed
+#' @importFrom generics tidy
 #' @exportS3Method generics::tidy
 tidy.step_foundry_embed <- function(x, ...) {
   if (recipes::is_trained(x)) {

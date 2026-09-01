@@ -310,6 +310,43 @@ test_that("foundry_response routes to the project endpoint when agent is set", {
   expect_s3_class(out, "tbl_df")
 })
 
+test_that("agent-backed response lifecycle stays on the project endpoint", {
+  setup_agent_env()
+  captured_urls <- character()
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured_urls <<- c(captured_urls, req$url)
+      if (identical(req$method, "DELETE")) {
+        return(mock_httr2_response(list(id = "resp_123", deleted = TRUE)))
+      }
+      if (grepl("/input_items$", req$url)) {
+        return(mock_httr2_response(list(data = list())))
+      }
+      mock_httr2_response(mock_response_api_response(response_id = "resp_123"))
+    },
+    .package = "httr2"
+  )
+  project_endpoint <- Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT")
+
+  foundry_response_retrieve("resp_123", project_endpoint = project_endpoint)
+  foundry_response_cancel("resp_123", project_endpoint = project_endpoint)
+  foundry_response_input_items("resp_123", project_endpoint = project_endpoint)
+  foundry_response_delete("resp_123", project_endpoint = project_endpoint)
+
+  expect_equal(
+    captured_urls,
+    paste0(
+      project_endpoint,
+      c(
+        "/openai/v1/responses/resp_123",
+        "/openai/v1/responses/resp_123/cancel",
+        "/openai/v1/responses/resp_123/input_items",
+        "/openai/v1/responses/resp_123"
+      )
+    )
+  )
+})
+
 test_that("foundry_response pins an agent version and ignores model when agent is set", {
   setup_agent_env()
   captured <- NULL
@@ -351,6 +388,29 @@ test_that("foundry_response without an agent still targets the resource endpoint
 
   # Non-agent path is unchanged: resource endpoint, model in the body.
   expect_match(captured$url, "test-resource.openai.azure.com/openai/v1/responses")
+  expect_equal(captured$body$data$model, "gpt-4.1")
+  expect_null(captured$body$data$agent_reference)
+})
+
+test_that("project_endpoint routes a model response without an agent reference", {
+  setup_agent_env()
+  captured <- NULL
+  resp <- mock_httr2_response(mock_response_api_response())
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      resp
+    },
+    .package = "httr2"
+  )
+
+  foundry_response(
+    "Hello",
+    model = "gpt-4.1",
+    project_endpoint = Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT")
+  )
+
+  expect_match(captured$url, "/api/projects/test-project/openai/v1/responses")
   expect_equal(captured$body$data$model, "gpt-4.1")
   expect_null(captured$body$data$agent_reference)
 })

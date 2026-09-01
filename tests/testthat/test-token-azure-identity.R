@@ -94,7 +94,7 @@ test_that("azure identity provider supports managed identity without tenant or a
   provider <- foundry_token_azure_identity(managed_identity = TRUE)
 
   expect_equal(provider(), "managed-token")
-  expect_equal(captured$resource, "https://ai.azure.com")
+  expect_equal(captured$resource, "https://cognitiveservices.azure.com")
   expect_false("tenant" %in% names(captured))
   expect_false("app" %in% names(captured))
 })

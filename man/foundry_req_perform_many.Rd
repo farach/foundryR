@@ -4,7 +4,7 @@
 \alias{foundry_req_perform_many}
 \title{Perform Many Requests}
 \usage{
-foundry_req_perform_many(reqs, progress = FALSE, max_active = 10)
+foundry_req_perform_many(reqs, progress = FALSE, max_active = 2L)
 }
 \arguments{
 \item{reqs}{A list of httr2 request objects.}

@@ -13,9 +13,9 @@
 #' flows.
 #'
 #' @param resource Character. The token audience. Defaults to
-#'   `"https://ai.azure.com"`, the canonical Azure AI Foundry data-plane
-#'   audience. Pass `"https://cognitiveservices.azure.com"` for legacy Cognitive
-#'   Services resources.
+#'   `"https://cognitiveservices.azure.com"` for resource-level v1 and Content
+#'   Safety APIs. Use `"https://ai.azure.com"` for project APIs and register the
+#'   provider with `scope = "project"`.
 #' @param tenant Character. Microsoft Entra ID tenant. Defaults to the
 #'   `AZURE_TENANT_ID` environment variable. Ignored when
 #'   `managed_identity = TRUE`.
@@ -60,8 +60,17 @@
 #' foundry_set_token_provider(
 #'   foundry_token_azure_identity(managed_identity = TRUE)
 #' )
+#'
+#' # Project-scoped APIs use a different audience and provider slot
+#' foundry_set_token_provider(
+#'   foundry_token_azure_identity(
+#'     resource = "https://ai.azure.com",
+#'     managed_identity = TRUE
+#'   ),
+#'   scope = "project"
+#' )
 #' }
-foundry_token_azure_identity <- function(resource = "https://ai.azure.com",
+foundry_token_azure_identity <- function(resource = "https://cognitiveservices.azure.com",
                                          tenant = Sys.getenv("AZURE_TENANT_ID"),
                                          app = Sys.getenv("AZURE_CLIENT_ID"),
                                          password = NULL,

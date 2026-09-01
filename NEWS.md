@@ -28,6 +28,13 @@ Initial CRAN release of foundryR, a tidy interface to Microsoft Azure AI Foundry
 
 ## Improvements
 
+- Configuration setters with `store = TRUE` now persist under `tools::R_user_dir("foundryR", "config")` instead of modifying `.Renviron`; the API support matrix and CRAN submission runbook now document lifecycle and release boundaries (CRAN readiness).
+- `foundry_moderate()`, `foundry_moderate_image()`, and `foundry_protected_material()` now accept resource-scoped Microsoft Entra token providers in addition to Content Safety API keys (CRAN readiness).
+- `foundry_response()` and its retrieve, cancel, delete, and input-item helpers now accept an explicit `project_endpoint`, keeping agent-backed response lifecycles on one project endpoint (CRAN readiness).
+- `foundry_token_azure_cli()`, `foundry_token_azure_identity()`, `foundry_set_token()`, and `foundry_set_token_provider()` now separate resource and project authentication, default resource tokens to the documented Cognitive Services audience, and use the AI audience only for project operations (CRAN readiness).
+- Parallel HTTP helpers now default to at most two active requests, and the web-search compliance warning uses package-local state rather than changing global R options (CRAN readiness).
+- `step_foundry_embed()` now checks for \pkg{recipes} before generating its default step identifier, and \pkg{generics} is declared for its exported `tidy()` method (CRAN readiness).
+
 - `foundry_groundedness()` now supports the Content Safety correction feature via `correction = TRUE` with a bring-your-own Azure OpenAI deployment described by the new `foundry_llm_resource()`, returning a `correction_text` column, and surfaces per-segment `ungrounded_reasons` when `reasoning = TRUE` (roadmap 2026 H2).
 
 - `as_foundry_schema()` now converts `ellmer::type_object()` specifications to strict JSON Schema, so ellmer users can reuse existing type definitions in `foundry_extract()` and `foundry_response()` (roadmap 2026 H2).

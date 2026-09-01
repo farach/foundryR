@@ -4,8 +4,8 @@
 #'
 #' @param endpoint Character string containing the endpoint URL.
 #'   Example: the endpoint URL from your Foundry resource.
-#' @param store Logical. If TRUE, stores the endpoint in `.Renviron` for future sessions.
-#'   Default: FALSE (endpoint only available for current session).
+#' @param store Logical. If `TRUE`, stores the endpoint in foundryR's
+#'   package-specific user configuration file. Default: `FALSE`.
 #'
 #' @return Invisibly returns TRUE if endpoint was set successfully.
 #' @export
@@ -30,20 +30,9 @@ foundry_set_endpoint <- function(endpoint, store = FALSE) {
   Sys.setenv(AZURE_FOUNDRY_ENDPOINT = endpoint)
   cli::cli_alert_success("Endpoint set to {.url {endpoint}}")
 
-  # Optionally persist to .Renviron
   if (store) {
-    renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
-
-    if (file.exists(renviron_path)) {
-      renviron_lines <- readLines(renviron_path, warn = FALSE)
-      renviron_lines <- renviron_lines[!grepl("^AZURE_FOUNDRY_ENDPOINT=", renviron_lines)]
-    } else {
-      renviron_lines <- character()
-    }
-
-    renviron_lines <- c(renviron_lines, paste0("AZURE_FOUNDRY_ENDPOINT=", endpoint))
-    writeLines(renviron_lines, renviron_path)
-    cli::cli_alert_success("Endpoint stored in {.file {renviron_path}}")
+    path <- foundry_store_setting("AZURE_FOUNDRY_ENDPOINT", endpoint)
+    cli::cli_alert_success("Endpoint stored in {.file {path}}")
   }
 
   invisible(TRUE)
@@ -68,7 +57,9 @@ foundry_set_endpoint <- function(endpoint, store = FALSE) {
 foundry_get_endpoint <- function(endpoint = NULL, required = FALSE) {
   if (is.null(endpoint)) {
     endpoint <- Sys.getenv("AZURE_FOUNDRY_ENDPOINT")
-    if (endpoint == "") endpoint <- NULL
+    if (endpoint == "") {
+      endpoint <- foundry_get_stored_setting("AZURE_FOUNDRY_ENDPOINT")
+    }
   }
 
   # Remove trailing slash if present
@@ -95,7 +86,8 @@ foundry_get_endpoint <- function(endpoint = NULL, required = FALSE) {
 #' service generation.
 #'
 #' @param endpoint Character string containing the project endpoint URL.
-#' @param store Logical. If `TRUE`, stores the endpoint in `.Renviron`.
+#' @param store Logical. If `TRUE`, stores the endpoint in foundryR's
+#'   package-specific user configuration file.
 #'
 #' @return Invisibly returns `TRUE` if the endpoint was set successfully.
 #' @export
@@ -114,16 +106,8 @@ foundry_set_project_endpoint <- function(endpoint, store = FALSE) {
   cli::cli_alert_success("Project endpoint set to {.url {endpoint}}")
 
   if (store) {
-    renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
-    if (file.exists(renviron_path)) {
-      renviron_lines <- readLines(renviron_path, warn = FALSE)
-      renviron_lines <- renviron_lines[!grepl("^AZURE_FOUNDRY_PROJECT_ENDPOINT=", renviron_lines)]
-    } else {
-      renviron_lines <- character()
-    }
-    renviron_lines <- c(renviron_lines, paste0("AZURE_FOUNDRY_PROJECT_ENDPOINT=", endpoint))
-    writeLines(renviron_lines, renviron_path)
-    cli::cli_alert_success("Project endpoint stored in {.file {renviron_path}}")
+    path <- foundry_store_setting("AZURE_FOUNDRY_PROJECT_ENDPOINT", endpoint)
+    cli::cli_alert_success("Project endpoint stored in {.file {path}}")
   }
 
   invisible(TRUE)
@@ -148,7 +132,9 @@ foundry_set_project_endpoint <- function(endpoint, store = FALSE) {
 foundry_get_project_endpoint <- function(endpoint = NULL, required = FALSE) {
   if (is.null(endpoint)) {
     endpoint <- Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT")
-    if (endpoint == "") endpoint <- NULL
+    if (endpoint == "") {
+      endpoint <- foundry_get_stored_setting("AZURE_FOUNDRY_PROJECT_ENDPOINT")
+    }
   }
 
   if (!is.null(endpoint)) {

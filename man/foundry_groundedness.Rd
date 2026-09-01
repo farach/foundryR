@@ -40,8 +40,7 @@ the response should be grounded in.}
 }}
 
 \item{reasoning}{Logical. If \code{TRUE}, includes reasoning for ungrounded
-segments in the response. Requires a linked or supplied \code{llm_resource}.
-Default: \code{FALSE}.}
+segments in the response. Default: \code{FALSE}.}
 
 \item{correction}{Logical. If \code{TRUE}, requests corrected text that is
 consistent with the grounding sources (the Content Safety "mitigating"
@@ -50,9 +49,8 @@ The corrected text is returned in the \code{correction_text} column. Default:
 \code{FALSE}.}
 
 \item{llm_resource}{List or \code{NULL}. Connection details for a bring-your-own
-Azure OpenAI deployment, used when \code{reasoning = TRUE} or
-\code{correction = TRUE}. Build it with \code{\link[=foundry_llm_resource]{foundry_llm_resource()}}. Default:
-\code{NULL}.}
+Azure OpenAI deployment, used when \code{correction = TRUE}. Build it with
+\code{\link[=foundry_llm_resource]{foundry_llm_resource()}}. Default: \code{NULL}.}
 
 \item{endpoint}{Character. Optional. The Azure Content Safety endpoint URL.
 

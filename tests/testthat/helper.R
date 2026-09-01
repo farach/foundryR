@@ -37,6 +37,7 @@ setup_mock_env <- function(env = parent.frame()) {
   withr::local_envvar(
     AZURE_FOUNDRY_KEY = "test-key-12345",
     AZURE_FOUNDRY_TOKEN = "",
+    AZURE_FOUNDRY_PROJECT_TOKEN = "",
     AZURE_OPENAI_TOKEN = "",
     AZURE_FOUNDRY_ENDPOINT = "https://test-resource.openai.azure.com",
     AZURE_FOUNDRY_MODEL = "gpt-4-test",
@@ -216,6 +217,8 @@ setup_content_safety_env <- function(env = parent.frame()) {
   withr::local_envvar(
     AZURE_CONTENT_SAFETY_KEY = "test-content-safety-key-12345",
     AZURE_CONTENT_SAFETY_ENDPOINT = "https://test-content-safety.cognitiveservices.azure.com",
+    AZURE_FOUNDRY_TOKEN = "",
+    AZURE_OPENAI_TOKEN = "",
     .local_envir = env
   )
 }

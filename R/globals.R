@@ -10,3 +10,6 @@ globalVariables(c(
   ".error_msg",
   "similarity"
 ))
+
+foundry_state <- new.env(parent = emptyenv())
+foundry_state$web_search_warned <- FALSE

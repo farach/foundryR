@@ -5,8 +5,8 @@
 #'
 #' @param key Character string containing your API key, or NULL to set interactively.
 #'   If NULL in an interactive session, will prompt for input.
-#' @param store Logical. If TRUE, stores the key in `.Renviron` for future sessions.
-#'   Default: FALSE (key only available for current session).
+#' @param store Logical. If `TRUE`, stores the key in foundryR's
+#'   package-specific user configuration file. Default: `FALSE`.
 #'
 #' @return Invisibly returns TRUE if key was set successfully.
 #' @export
@@ -38,25 +38,9 @@ foundry_set_content_safety_key <- function(key = NULL, store = FALSE) {
   Sys.setenv(AZURE_CONTENT_SAFETY_KEY = key)
   cli::cli_alert_success("Content Safety API key set for current session.")
 
-  # Optionally persist to .Renviron
   if (store) {
-    renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
-
-    # Read existing .Renviron if it exists
-    if (file.exists(renviron_path)) {
-      renviron_lines <- readLines(renviron_path, warn = FALSE)
-      # Remove any existing AZURE_CONTENT_SAFETY_KEY line
-      renviron_lines <- renviron_lines[!grepl("^AZURE_CONTENT_SAFETY_KEY=", renviron_lines)]
-    } else {
-      renviron_lines <- character()
-    }
-
-    # Add new key
-    renviron_lines <- c(renviron_lines, paste0("AZURE_CONTENT_SAFETY_KEY=", key))
-
-    # Write back
-    writeLines(renviron_lines, renviron_path)
-    cli::cli_alert_success("Content Safety API key stored in {.file {renviron_path}}")
+    path <- foundry_store_setting("AZURE_CONTENT_SAFETY_KEY", key)
+    cli::cli_alert_success("Content Safety API key stored in {.file {path}}")
   }
 
   invisible(TRUE)
@@ -69,8 +53,8 @@ foundry_set_content_safety_key <- function(key = NULL, store = FALSE) {
 #'
 #' @param endpoint Character string containing the endpoint URL.
 #'   Example: the endpoint URL from your Content Safety resource.
-#' @param store Logical. If TRUE, stores the endpoint in `.Renviron` for future sessions.
-#'   Default: FALSE (endpoint only available for current session).
+#' @param store Logical. If `TRUE`, stores the endpoint in foundryR's
+#'   package-specific user configuration file. Default: `FALSE`.
 #'
 #' @return Invisibly returns TRUE if endpoint was set successfully.
 #' @export
@@ -98,20 +82,9 @@ foundry_set_content_safety_endpoint <- function(endpoint, store = FALSE) {
   Sys.setenv(AZURE_CONTENT_SAFETY_ENDPOINT = endpoint)
   cli::cli_alert_success("Content Safety endpoint set to {.url {endpoint}}")
 
-  # Optionally persist to .Renviron
   if (store) {
-    renviron_path <- file.path(Sys.getenv("HOME"), ".Renviron")
-
-    if (file.exists(renviron_path)) {
-      renviron_lines <- readLines(renviron_path, warn = FALSE)
-      renviron_lines <- renviron_lines[!grepl("^AZURE_CONTENT_SAFETY_ENDPOINT=", renviron_lines)]
-    } else {
-      renviron_lines <- character()
-    }
-
-    renviron_lines <- c(renviron_lines, paste0("AZURE_CONTENT_SAFETY_ENDPOINT=", endpoint))
-    writeLines(renviron_lines, renviron_path)
-    cli::cli_alert_success("Content Safety endpoint stored in {.file {renviron_path}}")
+    path <- foundry_store_setting("AZURE_CONTENT_SAFETY_ENDPOINT", endpoint)
+    cli::cli_alert_success("Content Safety endpoint stored in {.file {path}}")
   }
 
   invisible(TRUE)
@@ -131,7 +104,9 @@ foundry_set_content_safety_endpoint <- function(endpoint, store = FALSE) {
 get_content_safety_key <- function(key = NULL, required = FALSE) {
   if (is.null(key)) {
     key <- Sys.getenv("AZURE_CONTENT_SAFETY_KEY")
-    if (key == "") key <- NULL
+    if (key == "") {
+      key <- foundry_get_stored_setting("AZURE_CONTENT_SAFETY_KEY")
+    }
   }
 
   if (required && is.null(key)) {
@@ -157,7 +132,9 @@ get_content_safety_key <- function(key = NULL, required = FALSE) {
 get_content_safety_endpoint <- function(endpoint = NULL, required = FALSE) {
   if (is.null(endpoint)) {
     endpoint <- Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT")
-    if (endpoint == "") endpoint <- NULL
+    if (endpoint == "") {
+      endpoint <- foundry_get_stored_setting("AZURE_CONTENT_SAFETY_ENDPOINT")
+    }
   }
 
   # Remove trailing slash if present
@@ -313,11 +290,13 @@ content_safety_error_body <- function(resp) {
 #' }
 #'
 #' @section Authentication:
-#' You need an Azure Content Safety resource to use this function. Set up
-#' credentials using either:
+#' You need an Azure Content Safety resource to use this function. Set up the
+#' endpoint and either an API key or a resource-scoped bearer-token provider:
 #' \itemize{
 #'   \item Environment variables: `AZURE_CONTENT_SAFETY_ENDPOINT` and `AZURE_CONTENT_SAFETY_KEY`
 #'   \item Helper functions: `foundry_set_content_safety_endpoint()` and `foundry_set_content_safety_key()`
+#'   \item Microsoft Entra ID: `foundry_set_token_provider()` with
+#'     `scope = "resource"`
 #' }
 #'
 #' @export
@@ -372,10 +351,6 @@ foundry_moderate <- function(text,
   }
   foundry_check_logical_scalar(halt_on_blocklist, "halt_on_blocklist")
 
-  # Get endpoint and key
-  endpoint <- get_content_safety_endpoint(endpoint, required = TRUE)
-  api_key <- get_content_safety_key(api_key, required = TRUE)
-
   # Handle empty input
   if (length(text) == 0) {
     return(tibble::tibble(
@@ -428,16 +403,14 @@ foundry_moderate <- function(text,
     if (!is.null(blocklists)) body$blocklistNames <- as.list(blocklists)
     body$haltOnBlocklistHit <- halt_on_blocklist
 
-    # Build URL
-    url <- paste0(endpoint, "/contentsafety/text:analyze")
-
-    # Build request
-    req <- httr2::request(url) %>%
-      httr2::req_url_query(`api-version` = api_version) %>%
-      httr2::req_headers(`Ocp-Apim-Subscription-Key` = api_key) %>%
-      httr2::req_body_json(body) %>%
-      httr2::req_retry(max_tries = 3, backoff = ~ 2) %>%
-      httr2::req_error(body = content_safety_error_body)
+    req <- foundry_content_safety_request(
+      "text:analyze",
+      body = body,
+      endpoint = endpoint,
+      api_key = api_key,
+      api_version = api_version,
+      allow_token = TRUE
+    )
 
     # Perform request
     result <- tryCatch(

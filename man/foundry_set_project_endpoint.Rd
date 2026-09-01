@@ -9,7 +9,8 @@ foundry_set_project_endpoint(endpoint, store = FALSE)
 \arguments{
 \item{endpoint}{Character string containing the project endpoint URL.}
 
-\item{store}{Logical. If \code{TRUE}, stores the endpoint in \code{.Renviron}.}
+\item{store}{Logical. If \code{TRUE}, stores the endpoint in foundryR's
+package-specific user configuration file.}
 }
 \value{
 Invisibly returns \code{TRUE} if the endpoint was set successfully.

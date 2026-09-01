@@ -4,11 +4,14 @@
 \alias{foundry_set_token_provider}
 \title{Set a Microsoft Entra ID token provider}
 \usage{
-foundry_set_token_provider(provider)
+foundry_set_token_provider(provider, scope = c("resource", "project"))
 }
 \arguments{
 \item{provider}{Function or \code{NULL}. A zero-argument function that returns a
 bearer token string. Use \code{NULL} to clear the provider.}
+
+\item{scope}{Character. Endpoint family that the provider authenticates:
+\code{"resource"} or \code{"project"}.}
 }
 \value{
 Invisibly returns the previous provider.

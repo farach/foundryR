@@ -41,6 +41,71 @@ test_that("foundry_protected_material parses detection response", {
   expect_equal(result$text, "quoted text")
 })
 
+test_that("documented Content Safety operations support resource tokens", {
+  setup_content_safety_env()
+  withr::local_envvar(AZURE_CONTENT_SAFETY_KEY = "")
+  withr::defer(foundry_set_token_provider(NULL, scope = "resource"))
+  provider_calls <- 0L
+  foundry_set_token_provider(function() {
+    provider_calls <<- provider_calls + 1L
+    "content-safety-token"
+  }, scope = "resource")
+  captured <- NULL
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_httr2_response(list(
+        categoriesAnalysis = list(list(category = "Hate", severity = 0L))
+      ))
+    },
+    .package = "httr2"
+  )
+
+  foundry_moderate_image(
+    "https://account.blob.core.windows.net/images/image.png",
+    categories = "Hate"
+  )
+
+  expect_equal(provider_calls, 1L)
+  expect_equal("Authorization" %in% names(captured$headers), TRUE)
+  expect_equal(
+    "Ocp-Apim-Subscription-Key" %in% names(captured$headers),
+    FALSE
+  )
+})
+
+test_that("Content Safety keys take precedence over resource tokens", {
+  setup_content_safety_env()
+  withr::defer(foundry_set_token_provider(NULL, scope = "resource"))
+  provider_calls <- 0L
+  foundry_set_token_provider(function() {
+    provider_calls <<- provider_calls + 1L
+    "resource-token"
+  }, scope = "resource")
+  captured <- NULL
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_httr2_response(list(
+        categoriesAnalysis = list(list(category = "Hate", severity = 0L))
+      ))
+    },
+    .package = "httr2"
+  )
+
+  foundry_moderate_image(
+    "https://account.blob.core.windows.net/images/image.png",
+    categories = "Hate"
+  )
+
+  expect_equal(provider_calls, 0L)
+  expect_equal(
+    "Ocp-Apim-Subscription-Key" %in% names(captured$headers),
+    TRUE
+  )
+  expect_equal("Authorization" %in% names(captured$headers), FALSE)
+})
+
 test_that("blocklist helpers parse list and item responses", {
   setup_content_safety_env()
   captured <- character()

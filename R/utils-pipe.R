@@ -13,4 +13,4 @@
 #' @return The result of calling `rhs(lhs)`.
 #' @examples
 #' 1:3 %>% sum()
-NULL
+`%>%` <- magrittr::`%>%`

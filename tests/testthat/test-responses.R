@@ -580,3 +580,14 @@ test_that("foundry_response_retrieve and delete use v1 response paths", {
     )
   )
 })
+
+test_that("web search warning state stays inside the package", {
+  withr::local_options(foundryR.web_search_warning = FALSE)
+  old <- foundry_state$web_search_warned
+  withr::defer(foundry_state$web_search_warned <- old)
+  foundry_state$web_search_warned <- FALSE
+
+  expect_snapshot(foundry_warn_web_search())
+  expect_no_condition(foundry_warn_web_search())
+  expect_equal(getOption("foundryR.web_search_warning"), FALSE)
+})

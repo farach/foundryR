@@ -45,8 +45,8 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
   }
 
   # Check endpoint
-  endpoint <- Sys.getenv("AZURE_FOUNDRY_ENDPOINT")
-  if (endpoint == "") {
+  endpoint <- foundry_get_endpoint()
+  if (is.null(endpoint)) {
     if (verbose) {
       cli::cli_alert_danger("Endpoint not configured")
       cli::cli_bullets(c(
@@ -73,9 +73,9 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
     }
   }
 
-  project_endpoint <- Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT")
-  if (project_endpoint != "") {
-    results$project_endpoint <- sub("/$", "", project_endpoint)
+  project_endpoint <- foundry_get_project_endpoint()
+  if (!is.null(project_endpoint)) {
+    results$project_endpoint <- project_endpoint
     if (verbose) {
       cli::cli_alert_success("Project endpoint: {.url {results$project_endpoint}}")
     }
@@ -84,11 +84,11 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
   }
 
   # Check authentication
-  key <- Sys.getenv("AZURE_FOUNDRY_KEY")
-  token <- Sys.getenv("AZURE_FOUNDRY_TOKEN")
-  provider <- foundry_get_token_provider()
+  key <- foundry_get_key()
+  token <- foundry_get_token()
+  provider <- foundry_get_token_provider("resource")
   results$token_provider_set <- !is.null(provider)
-  if (key == "" && token == "" && is.null(provider)) {
+  if (is.null(key) && is.null(token) && is.null(provider)) {
     if (verbose) {
       cli::cli_alert_danger("Authentication not configured")
       cli::cli_bullets(c(
@@ -100,14 +100,14 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
       ))
     }
   } else {
-    if (key != "") {
+    if (!is.null(key)) {
       results$key_set <- TRUE
       masked <- paste0(substr(key, 1, 4), "...", substr(key, nchar(key) - 3, nchar(key)))
       if (verbose) {
       cli::cli_alert_success("API key: {masked}")
       }
     }
-    if (token != "") {
+    if (!is.null(token)) {
       results$token_set <- TRUE
       if (verbose) cli::cli_alert_success("Bearer token: configured")
     }

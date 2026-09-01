@@ -4,13 +4,16 @@
 \alias{foundry_token_azure_cli}
 \title{Create an Azure CLI token provider}
 \usage{
-foundry_token_azure_cli(resource = "https://ai.azure.com", az = "az")
+foundry_token_azure_cli(
+  resource = "https://cognitiveservices.azure.com",
+  az = "az"
+)
 }
 \arguments{
-\item{resource}{Character. Azure resource used for the access token. Azure AI
-Foundry docs currently reference both \code{"https://ai.azure.com"} and
-\code{"https://cognitiveservices.azure.com"} for different surfaces, so this is
-configurable.}
+\item{resource}{Character. Azure resource used for the access token. Defaults
+to \code{"https://cognitiveservices.azure.com"} for resource-level v1 and
+Content Safety APIs. Use \code{"https://ai.azure.com"} for project APIs and
+register that provider with \code{scope = "project"}.}
 
 \item{az}{Character. Azure CLI executable name or path.}
 }
@@ -25,7 +28,8 @@ expiry.
 \examples{
 \dontrun{
 foundry_set_token_provider(
-  foundry_token_azure_cli("https://ai.azure.com")
+  foundry_token_azure_cli("https://ai.azure.com"),
+  scope = "project"
 )
 }
 }

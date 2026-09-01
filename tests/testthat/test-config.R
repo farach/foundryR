@@ -36,12 +36,32 @@ test_that("foundry_get_endpoint retrieves from environment", {
 
 test_that("foundry_get_endpoint returns NULL when not set", {
   withr::local_envvar(AZURE_FOUNDRY_ENDPOINT = "")
+  withr::local_options(foundryR.config_file = tempfile())
 
   expect_null(foundry_get_endpoint())
 })
 
+test_that("stored endpoints are read without modifying Renviron", {
+  config_file <- tempfile()
+  home <- withr::local_tempdir()
+  withr::local_options(foundryR.config_file = config_file)
+  withr::local_envvar(
+    HOME = home,
+    AZURE_FOUNDRY_ENDPOINT = ""
+  )
+
+  suppressMessages(
+    foundry_set_endpoint("https://stored.openai.azure.com", store = TRUE)
+  )
+  Sys.setenv(AZURE_FOUNDRY_ENDPOINT = "")
+
+  expect_equal(foundry_get_endpoint(), "https://stored.openai.azure.com")
+  expect_equal(file.exists(file.path(home, ".Renviron")), FALSE)
+})
+
 test_that("foundry_get_endpoint errors when required and not set", {
   withr::local_envvar(AZURE_FOUNDRY_ENDPOINT = "")
+  withr::local_options(foundryR.config_file = tempfile())
 
   expect_error(foundry_get_endpoint(required = TRUE), "endpoint is required")
 })

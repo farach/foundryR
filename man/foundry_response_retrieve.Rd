@@ -4,14 +4,22 @@
 \alias{foundry_response_retrieve}
 \title{Retrieve a stored Responses API response}
 \usage{
-foundry_response_retrieve(response_id, api_key = NULL, endpoint = NULL)
+foundry_response_retrieve(
+  response_id,
+  api_key = NULL,
+  endpoint = NULL,
+  project_endpoint = NULL
+)
 }
 \arguments{
 \item{response_id}{Character. The response ID to retrieve.}
 
 \item{api_key}{Character. Optional API key override.}
 
-\item{endpoint}{Character. Optional endpoint override.}
+\item{endpoint}{Character. Optional resource endpoint override.}
+
+\item{project_endpoint}{Character. Optional project endpoint override. Supply
+this for a response created through the project-scoped API.}
 }
 \value{
 A one-row tibble parsed like \code{foundry_response()}.
@@ -23,5 +31,11 @@ Retrieve a stored Responses API response
 \dontrun{
 response <- foundry_response("Hello")
 foundry_response_retrieve(response$response_id)
+
+agent_response <- foundry_response("Hello", agent = "my-agent")
+foundry_response_retrieve(
+  agent_response$response_id,
+  project_endpoint = foundry_get_project_endpoint()
+)
 }
 }

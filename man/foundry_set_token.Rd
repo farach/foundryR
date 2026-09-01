@@ -4,14 +4,19 @@
 \alias{foundry_set_token}
 \title{Set Azure AI Foundry Bearer Token}
 \usage{
-foundry_set_token(token, store = FALSE)
+foundry_set_token(token, store = FALSE, scope = c("resource", "project"))
 }
 \arguments{
 \item{token}{Character string containing a bearer token. Do not include the
 \code{"Bearer "} prefix.}
 
-\item{store}{Logical. If \code{TRUE}, stores the token in \code{.Renviron} for future
-sessions. Tokens expire, so this is usually only useful for local testing.}
+\item{store}{Logical. If \code{TRUE}, stores the token in foundryR's
+package-specific user configuration file. Tokens expire, so persistent
+tokens are usually only useful for local testing.}
+
+\item{scope}{Character. Endpoint family for the token: \code{"resource"} for
+resource-level \verb{/openai/v1} and supported Content Safety operations, or
+\code{"project"} for \verb{/api/projects/...} operations.}
 }
 \value{
 Invisibly returns \code{TRUE} if the token was set successfully.

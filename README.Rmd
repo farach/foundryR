@@ -45,23 +45,17 @@ if (run_api) {
 [![R-CMD-check](https://github.com/farach/foundryR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/farach/foundryR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-foundryR is a tibble-native R interface to Microsoft Azure AI Foundry for teams that need the platform surface, not only chat. It covers Azure AI Content Safety, Responses API workflows, schema-checked extraction, embeddings, batch jobs, files, audio, image and preview video helpers, and chat completions from one R package.
+foundryR is an experimental, community-maintained R interface to Microsoft Foundry. It covers Azure AI Content Safety, OpenAI-compatible v1 workflows, project-scoped agents, schema-checked extraction, embeddings, batch jobs, files, audio, image, video, and chat completions.
 
 The package is organized around three jobs that recur in analytical work:
 
 - **Annotate** — turn text into structured, joinable data: strict extraction, embeddings, batch jobs, and chat.
-- **Validate** — check model output with Azure AI Content Safety: moderation, groundedness, and prompt-shield detection, all returned as tibbles.
-- **Govern** — keep work inside your Azure compliance boundary with key or Microsoft Entra ID authentication and explicit web-search boundaries.
+- **Validate** — check model output with Azure AI Content Safety: moderation, preview groundedness, and prompt-shield detection, all returned as tibbles.
+- **Govern** — use endpoint-specific API-key or Microsoft Entra ID authentication and explicit web-search boundaries.
 
 Its strongest path is dataframe in, dataframe out.
 
 ## Installation
-
-Install the released version from CRAN:
-
-```r
-install.packages("foundryR")
-```
 
 Install the development version from GitHub:
 
@@ -81,7 +75,22 @@ foundry_set_key("your-api-key")
 foundry_check_setup()
 ```
 
-For persistent configuration, add deployment names and credentials to `.Renviron`:
+Use `store = TRUE` to persist package settings under
+`tools::R_user_dir("foundryR", "config")` without modifying `.Renviron`:
+
+```r
+foundry_set_endpoint(
+  "https://<resource-name>.openai.azure.com",
+  store = TRUE
+)
+foundry_set_key("your-api-key", store = TRUE)
+```
+
+The package configuration file is plain text. It inherits the permissions of
+your user configuration directory; prefer refreshable token providers or
+session-only credentials for production use.
+
+Deployment names can still be set in `.Renviron` manually:
 
 ```text
 AZURE_FOUNDRY_ENDPOINT=https://<resource-name>.openai.azure.com
@@ -98,7 +107,8 @@ The outputs below are real responses, recorded once against live Azure resources
 
 Azure AI Content Safety is the part of the Foundry platform that most R users cannot reach from other packages. foundryR returns these checks as ordinary tibbles, so safety gates can live inside an analysis pipeline.
 
-`foundry_groundedness()` checks whether an answer is supported by its sources:
+`foundry_groundedness()` checks whether an answer is supported by its sources.
+This endpoint is preview and region-limited:
 
 ```{r groundedness, eval = run_api}
 library(foundryR)
@@ -211,16 +221,32 @@ Streaming is an intentional scope choice: the package focuses on reproducible, t
 
 ## Govern: authentication and compliance boundaries
 
-API keys and Microsoft Entra ID bearer tokens are both supported:
+API keys and Microsoft Entra ID bearer tokens are both supported. Token
+audiences are tied to endpoint families:
 
 ```r
 foundry_set_key("your-api-key")
 foundry_set_token("your-entra-token")
+
+foundry_set_token_provider(
+  foundry_token_azure_cli("https://ai.azure.com"),
+  scope = "project"
+)
 ```
 
-Use Entra tokens for keyless setups that already rely on service principals, managed identity, or Azure role-based access control. The bearer token is sent to Azure AI Foundry in the `Authorization` header.
+Resource-level `/openai/v1` and documented Content Safety operations use
+`https://cognitiveservices.azure.com`. Project-scoped `/api/projects/...`
+operations use `https://ai.azure.com`. Register a separate provider for each
+family when both are needed. Prompt Shields and blocklist helpers remain
+API-key-only until their Entra contract is formally documented.
 
 Most core calls stay within your Azure OpenAI or Content Safety resources. Web search is different: Microsoft documents that Grounding with Bing can send data outside the compliance and geographic boundary and can incur separate costs. Keep secrets and regulated data out of web-search prompts, and put `foundry_groundedness()` or `foundry_shield()` checks after model output when auditability matters.
+
+## API support and lifecycle
+
+foundryR keeps GA, preview, feature-gated, legacy, and unimplemented surfaces
+explicit. Run `vignette("api-support")` for endpoint families, authentication
+audiences, API versions, and known gaps.
 
 ## foundryR vs ellmer: when to use which
 
@@ -242,6 +268,7 @@ Use foundryR when your organization is committed to Azure and you need the Found
 ## Learn more
 
 - [Getting started](https://farach.github.io/foundryR/articles/getting-started.html)
+- `vignette("api-support")`
 - `vignette("foundryr-vs-ellmer")`
 - `vignette("annotation-workflow")`
 - [Responses API](https://farach.github.io/foundryR/articles/responses-api.html)

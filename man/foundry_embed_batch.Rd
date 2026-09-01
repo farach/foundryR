@@ -9,7 +9,7 @@ foundry_embed_batch(
   model = NULL,
   dimensions = NULL,
   batch_size = 100L,
-  max_active = 10L,
+  max_active = 2L,
   progress = TRUE,
   api = c("v1", "deployment"),
   api_key = NULL,
@@ -28,7 +28,7 @@ embeddings. Only supported by some models (e.g., text-embedding-3).}
 \item{batch_size}{Integer. Number of texts to include in each batch request.
 Default: 100.}
 
-\item{max_active}{Integer. Maximum number of concurrent requests. Default: 10.}
+\item{max_active}{Integer. Maximum number of concurrent requests. Default: 2.}
 
 \item{progress}{Logical. Whether to show a progress bar. Default: TRUE.}
 
@@ -72,7 +72,7 @@ embeddings <- foundry_embed_batch(
   large_texts,
   model = "text-embedding-ada-002",
   batch_size = 50,
-  max_active = 5
+  max_active = 2
 )
 
 # Filter successful embeddings

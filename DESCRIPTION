@@ -1,5 +1,5 @@
 Package: foundryR
-Title: Tibble Workflows for 'Azure AI Foundry'
+Title: Tibble Workflows for 'Microsoft Foundry'
 Version: 0.1.0
 Authors@R:
     person("Alex", "Farach", , "alexfarach@microsoft.com", role = c("aut", "cre", "cph"))
@@ -9,7 +9,10 @@ Description: Work with 'Microsoft Azure AI Foundry' from data-frame-oriented
     embeddings, files, batch jobs, audio, media, and chat completions. Supports
     research annotation, safety gates, semantic search, and 'tidymodels'
     recipes. Helps teams keep model workflows inside their 'Azure' environment
-    while preserving analyzable outputs.
+    while preserving analyzable outputs. See the Microsoft Foundry REST API
+    documentation <https://learn.microsoft.com/rest/api/microsoft-foundry/> and
+    Azure AI Content Safety documentation
+    <https://learn.microsoft.com/azure/ai-services/content-safety/>.
 License: MIT + file LICENSE
 Depends:
     R (>= 4.1.0)
@@ -18,12 +21,12 @@ URL: https://github.com/farach/foundryR,
 BugReports: https://github.com/farach/foundryR/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports:
     cli,
     curl,
     digest,
     dplyr,
+    generics,
     httr2 (>= 1.0.0),
     jsonlite,
     lifecycle,
@@ -52,3 +55,4 @@ Suggests:
     yardstick
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.1.0

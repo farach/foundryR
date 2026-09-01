@@ -4,14 +4,22 @@
 \alias{foundry_response_input_items}
 \title{List input items for a Responses API response}
 \usage{
-foundry_response_input_items(response_id, api_key = NULL, endpoint = NULL)
+foundry_response_input_items(
+  response_id,
+  api_key = NULL,
+  endpoint = NULL,
+  project_endpoint = NULL
+)
 }
 \arguments{
-\item{response_id}{Character. The response ID.}
+\item{response_id}{Character. The response ID to retrieve.}
 
 \item{api_key}{Character. Optional API key override.}
 
-\item{endpoint}{Character. Optional endpoint override.}
+\item{endpoint}{Character. Optional resource endpoint override.}
+
+\item{project_endpoint}{Character. Optional project endpoint override. Supply
+this for a response created through the project-scoped API.}
 }
 \value{
 A tibble with one row per input item and the raw item in a list-column.

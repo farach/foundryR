@@ -18,7 +18,7 @@ step_foundry_embed(
   cache_dir = NULL,
   columns = NULL,
   skip = FALSE,
-  id = recipes::rand_id("foundry_embed")
+  id = NULL
 )
 
 \method{tidy}{step_foundry_embed}(x, ...)

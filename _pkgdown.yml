@@ -1,9 +1,6 @@
 url: https://farach.github.io/foundryR/
 
 template:
-  package: foundryR
-
-
   bootstrap: 5
   bootswatch: cosmo
   light-switch: true
@@ -54,6 +51,8 @@ navbar:
           href: articles/foundryr-vs-ellmer.html
         - text: Responses API
           href: articles/responses-api.html
+        - text: API support matrix
+          href: articles/api-support.html
         - text: Text Embeddings
           href: articles/embeddings.html
         - text: "---"
@@ -86,8 +85,8 @@ navbar:
 reference:
   - title: Setup and configuration
     desc: >
-      Configure your Azure AI Foundry credentials and verify your setup.
-      These functions manage authentication for all API calls.
+      Configure resource-level and project-level credentials and verify your
+      setup. Microsoft Entra token audiences are endpoint-family-specific.
     contents:
       - foundry_check_setup
       - foundry_set_key
@@ -317,6 +316,7 @@ articles:
       - getting-started
       - foundryr-vs-ellmer
       - responses-api
+      - api-support
       - embeddings
 
   - title: Responsible AI

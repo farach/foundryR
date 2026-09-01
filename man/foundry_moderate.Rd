@@ -75,11 +75,13 @@ or groups based on protected attributes.
 }
 \section{Authentication}{
 
-You need an Azure Content Safety resource to use this function. Set up
-credentials using either:
+You need an Azure Content Safety resource to use this function. Set up the
+endpoint and either an API key or a resource-scoped bearer-token provider:
 \itemize{
 \item Environment variables: \code{AZURE_CONTENT_SAFETY_ENDPOINT} and \code{AZURE_CONTENT_SAFETY_KEY}
 \item Helper functions: \code{foundry_set_content_safety_endpoint()} and \code{foundry_set_content_safety_key()}
+\item Microsoft Entra ID: \code{foundry_set_token_provider()} with
+\code{scope = "resource"}
 }
 }
 
