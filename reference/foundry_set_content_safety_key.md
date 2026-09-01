@@ -20,8 +20,8 @@ foundry_set_content_safety_key(key = NULL, store = FALSE)
 
 - store:
 
-  Logical. If TRUE, stores the key in `.Renviron` for future sessions.
-  Default: FALSE (key only available for current session).
+  Logical. If `TRUE`, stores the key in foundryR's package-specific user
+  configuration file. Default: `FALSE`.
 
 ## Value
 

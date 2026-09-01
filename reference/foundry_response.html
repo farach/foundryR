@@ -27,6 +27,7 @@ tools such as web search, and request schema-constrained structured output."><me
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
+    <li><a class="dropdown-item" href="../articles/api-support.html">API support matrix</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
@@ -99,6 +100,7 @@ tools such as web search, and request schema-constrained structured output.</p>
 <span>  parse_json <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">text_format</span><span class="op">)</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  agent <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  agent_version <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -219,8 +221,13 @@ include.</p></dd>
 
 
 <dt id="arg-endpoint">endpoint<a class="anchor" aria-label="anchor" href="#arg-endpoint"></a></dt>
-<dd><p>Character. Optional endpoint override. When <code>agent</code> is
-supplied this is treated as the project endpoint override.</p></dd>
+<dd><p>Character. Optional resource endpoint override.</p></dd>
+
+
+<dt id="arg-project-endpoint">project_endpoint<a class="anchor" aria-label="anchor" href="#arg-project-endpoint"></a></dt>
+<dd><p>Character. Optional project endpoint override. When
+supplied, the request uses the project-scoped Responses API. Agent-backed
+responses always use this endpoint family.</p></dd>
 
 
 <dt id="arg-agent">agent<a class="anchor" aria-label="anchor" href="#arg-agent"></a></dt>
@@ -256,6 +263,11 @@ chat-completions API, the model deployment is supplied in the JSON body as
 objects by default. Set <code>store = FALSE</code> for stateless calls when you do not
 need server-side conversation state. To use <code>previous_response_id</code> chaining,
 the previous response must have been stored.</p>
+<p>Agent-backed responses are created on the project endpoint because
+<code>agent_reference</code> is project-scoped. Pass the same <code>project_endpoint</code> to
+<code><a href="foundry_response_retrieve.html">foundry_response_retrieve()</a></code>, <code><a href="foundry_response_cancel.html">foundry_response_cancel()</a></code>,
+<code><a href="foundry_response_delete.html">foundry_response_delete()</a></code>, and <code><a href="foundry_response_input_items.html">foundry_response_input_items()</a></code> for their
+lifecycle calls.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

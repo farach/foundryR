@@ -5,14 +5,19 @@ List input items for a Responses API response
 ## Usage
 
 ``` r
-foundry_response_input_items(response_id, api_key = NULL, endpoint = NULL)
+foundry_response_input_items(
+  response_id,
+  api_key = NULL,
+  endpoint = NULL,
+  project_endpoint = NULL
+)
 ```
 
 ## Arguments
 
 - response_id:
 
-  Character. The response ID.
+  Character. The response ID to retrieve.
 
 - api_key:
 
@@ -20,7 +25,12 @@ foundry_response_input_items(response_id, api_key = NULL, endpoint = NULL)
 
 - endpoint:
 
-  Character. Optional endpoint override.
+  Character. Optional resource endpoint override.
+
+- project_endpoint:
+
+  Character. Optional project endpoint override. Supply this for a
+  response created through the project-scoped API.
 
 ## Value
 

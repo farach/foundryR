@@ -112,7 +112,8 @@ content:
 ## Authentication
 
 You need an Azure Content Safety resource to use this function. Set up
-credentials using either:
+the endpoint and either an API key or a resource-scoped bearer-token
+provider:
 
 - Environment variables: `AZURE_CONTENT_SAFETY_ENDPOINT` and
   `AZURE_CONTENT_SAFETY_KEY`
@@ -121,6 +122,10 @@ credentials using either:
   [`foundry_set_content_safety_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_endpoint.md)
   and
   [`foundry_set_content_safety_key()`](https://farach.github.io/foundryR/reference/foundry_set_content_safety_key.md)
+
+- Microsoft Entra ID:
+  [`foundry_set_token_provider()`](https://farach.github.io/foundryR/reference/foundry_set_token_provider.md)
+  with `scope = "resource"`
 
 ## Examples
 

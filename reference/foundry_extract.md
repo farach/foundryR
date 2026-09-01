@@ -18,7 +18,7 @@ foundry_extract(
   model = NULL,
   flatten = TRUE,
   store = FALSE,
-  max_active = 5L,
+  max_active = 2L,
   progress = TRUE,
   api_key = NULL,
   endpoint = NULL,

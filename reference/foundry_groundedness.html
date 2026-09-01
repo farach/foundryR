@@ -27,6 +27,7 @@ This helps identify hallucinations or unsupported claims in AI-generated text.">
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
+    <li><a class="dropdown-item" href="../articles/api-support.html">API support matrix</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
@@ -121,8 +122,7 @@ the response should be grounded in.</p></dd>
 
 <dt id="arg-reasoning">reasoning<a class="anchor" aria-label="anchor" href="#arg-reasoning"></a></dt>
 <dd><p>Logical. If <code>TRUE</code>, includes reasoning for ungrounded
-segments in the response. Requires a linked or supplied <code>llm_resource</code>.
-Default: <code>FALSE</code>.</p></dd>
+segments in the response. Default: <code>FALSE</code>.</p></dd>
 
 
 <dt id="arg-correction">correction<a class="anchor" aria-label="anchor" href="#arg-correction"></a></dt>
@@ -135,9 +135,8 @@ The corrected text is returned in the <code>correction_text</code> column. Defau
 
 <dt id="arg-llm-resource">llm_resource<a class="anchor" aria-label="anchor" href="#arg-llm-resource"></a></dt>
 <dd><p>List or <code>NULL</code>. Connection details for a bring-your-own
-Azure OpenAI deployment, used when <code>reasoning = TRUE</code> or
-<code>correction = TRUE</code>. Build it with <code><a href="foundry_llm_resource.html">foundry_llm_resource()</a></code>. Default:
-<code>NULL</code>.</p></dd>
+Azure OpenAI deployment, used when <code>correction = TRUE</code>. Build it with
+<code><a href="foundry_llm_resource.html">foundry_llm_resource()</a></code>. Default: <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-endpoint">endpoint<a class="anchor" aria-label="anchor" href="#arg-endpoint"></a></dt>

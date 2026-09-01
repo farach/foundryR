@@ -19,7 +19,8 @@ foundry_set_project_endpoint(endpoint, store = FALSE)
 
 - store:
 
-  Logical. If `TRUE`, stores the endpoint in `.Renviron`.
+  Logical. If `TRUE`, stores the endpoint in foundryR's package-specific
+  user configuration file.
 
 ## Value
 

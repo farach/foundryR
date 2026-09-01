@@ -33,6 +33,7 @@ foundry_response(
   parse_json = !is.null(text_format),
   api_key = NULL,
   endpoint = NULL,
+  project_endpoint = NULL,
   agent = NULL,
   agent_version = NULL,
   ...
@@ -149,8 +150,13 @@ foundry_response(
 
 - endpoint:
 
-  Character. Optional endpoint override. When `agent` is supplied this
-  is treated as the project endpoint override.
+  Character. Optional resource endpoint override.
+
+- project_endpoint:
+
+  Character. Optional project endpoint override. When supplied, the
+  request uses the project-scoped Responses API. Agent-backed responses
+  always use this endpoint family.
 
 - agent:
 
@@ -188,6 +194,15 @@ body as `model`.
 objects by default. Set `store = FALSE` for stateless calls when you do
 not need server-side conversation state. To use `previous_response_id`
 chaining, the previous response must have been stored.
+
+Agent-backed responses are created on the project endpoint because
+`agent_reference` is project-scoped. Pass the same `project_endpoint` to
+[`foundry_response_retrieve()`](https://farach.github.io/foundryR/reference/foundry_response_retrieve.md),
+[`foundry_response_cancel()`](https://farach.github.io/foundryR/reference/foundry_response_cancel.md),
+[`foundry_response_delete()`](https://farach.github.io/foundryR/reference/foundry_response_delete.md),
+and
+[`foundry_response_input_items()`](https://farach.github.io/foundryR/reference/foundry_response_input_items.md)
+for their lifecycle calls.
 
 ## References
 

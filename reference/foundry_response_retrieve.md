@@ -5,7 +5,12 @@ Retrieve a stored Responses API response
 ## Usage
 
 ``` r
-foundry_response_retrieve(response_id, api_key = NULL, endpoint = NULL)
+foundry_response_retrieve(
+  response_id,
+  api_key = NULL,
+  endpoint = NULL,
+  project_endpoint = NULL
+)
 ```
 
 ## Arguments
@@ -20,7 +25,12 @@ foundry_response_retrieve(response_id, api_key = NULL, endpoint = NULL)
 
 - endpoint:
 
-  Character. Optional endpoint override.
+  Character. Optional resource endpoint override.
+
+- project_endpoint:
+
+  Character. Optional project endpoint override. Supply this for a
+  response created through the project-scoped API.
 
 ## Value
 
@@ -33,5 +43,11 @@ A one-row tibble parsed like
 if (FALSE) { # \dontrun{
 response <- foundry_response("Hello")
 foundry_response_retrieve(response$response_id)
+
+agent_response <- foundry_response("Hello", agent = "my-agent")
+foundry_response_retrieve(
+  agent_response$response_id,
+  project_endpoint = foundry_get_project_endpoint()
+)
 } # }
 ```

@@ -2,8 +2,8 @@
 
 ## Setup and configuration
 
-Configure your Azure AI Foundry credentials and verify your setup. These
-functions manage authentication for all API calls.
+Configure resource-level and project-level credentials and verify your
+setup. Microsoft Entra token audiences are endpoint-family-specific.
 
 - [`foundry_check_setup()`](https://farach.github.io/foundryR/reference/foundry_check_setup.md)
   : Check foundryR Setup

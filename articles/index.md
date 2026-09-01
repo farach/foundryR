@@ -8,6 +8,8 @@
   ellmer](https://farach.github.io/foundryR/articles/foundryr-vs-ellmer.md):
 - [Responses API, Structured Extraction, and Web
   Search](https://farach.github.io/foundryR/articles/responses-api.md):
+- [API support
+  matrix](https://farach.github.io/foundryR/articles/api-support.md):
 - [Working with
   Embeddings](https://farach.github.io/foundryR/articles/embeddings.md):
 

@@ -58,7 +58,7 @@ and display the result:
 
 img_path <- tempfile(fileext = ".jpeg")
 foundry_save_image(image, img_path)
-#> ✔ Image saved to /tmp/RtmpVom7eH/file24761e49bf15.jpeg (from base64)
+#> ✔ Image saved to /tmp/RtmpWa9sFp/file26e4284ac515.jpeg (from base64)
 embed_image(
   img_path,
   alt = "AI-generated flat vector illustration of a friendly red panda reading a book"

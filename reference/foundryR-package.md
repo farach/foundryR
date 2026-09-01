@@ -1,4 +1,4 @@
-# foundryR: Tibble Workflows for 'Azure AI Foundry'
+# foundryR: Tibble Workflows for 'Microsoft Foundry'
 
 Work with 'Microsoft Azure AI Foundry' from data-frame-oriented 'R'
 workflows. Provides tibble-returning helpers for 'Azure AI Content
@@ -7,6 +7,10 @@ extraction, embeddings, files, batch jobs, audio, media, and chat
 completions. Supports research annotation, safety gates, semantic
 search, and 'tidymodels' recipes. Helps teams keep model workflows
 inside their 'Azure' environment while preserving analyzable outputs.
+See the Microsoft Foundry REST API documentation
+<https://learn.microsoft.com/rest/api/microsoft-foundry/> and Azure AI
+Content Safety documentation
+<https://learn.microsoft.com/azure/ai-services/content-safety/>.
 
 ## See also
 
@@ -22,3 +26,7 @@ Useful links:
 
 **Maintainer**: Alex Farach <alexfarach@microsoft.com> \[copyright
 holder\]
+
+Authors:
+
+- Alex Farach <alexfarach@microsoft.com> \[copyright holder\]

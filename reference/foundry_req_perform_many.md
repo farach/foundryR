@@ -11,7 +11,7 @@ instead.
 ## Usage
 
 ``` r
-foundry_req_perform_many(reqs, progress = FALSE, max_active = 10)
+foundry_req_perform_many(reqs, progress = FALSE, max_active = 2L)
 ```
 
 ## Arguments

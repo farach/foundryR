@@ -17,9 +17,8 @@ foundry_set_endpoint(endpoint, store = FALSE)
 
 - store:
 
-  Logical. If TRUE, stores the endpoint in `.Renviron` for future
-  sessions. Default: FALSE (endpoint only available for current
-  session).
+  Logical. If `TRUE`, stores the endpoint in foundryR's package-specific
+  user configuration file. Default: `FALSE`.
 
 ## Value
 

@@ -8,17 +8,20 @@ until five minutes before expiry.
 ## Usage
 
 ``` r
-foundry_token_azure_cli(resource = "https://ai.azure.com", az = "az")
+foundry_token_azure_cli(
+  resource = "https://cognitiveservices.azure.com",
+  az = "az"
+)
 ```
 
 ## Arguments
 
 - resource:
 
-  Character. Azure resource used for the access token. Azure AI Foundry
-  docs currently reference both `"https://ai.azure.com"` and
-  `"https://cognitiveservices.azure.com"` for different surfaces, so
-  this is configurable.
+  Character. Azure resource used for the access token. Defaults to
+  `"https://cognitiveservices.azure.com"` for resource-level v1 and
+  Content Safety APIs. Use `"https://ai.azure.com"` for project APIs and
+  register that provider with `scope = "project"`.
 
 - az:
 
@@ -33,7 +36,8 @@ A zero-argument token provider function.
 ``` r
 if (FALSE) { # \dontrun{
 foundry_set_token_provider(
-  foundry_token_azure_cli("https://ai.azure.com")
+  foundry_token_azure_cli("https://ai.azure.com"),
+  scope = "project"
 )
 } # }
 ```

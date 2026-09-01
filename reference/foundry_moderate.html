@@ -27,6 +27,7 @@ hate speech, sexual content, self-harm, and violence."><meta property="og:image"
     <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
     <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
+    <li><a class="dropdown-item" href="../articles/api-support.html">API support matrix</a></li>
     <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
@@ -163,9 +164,11 @@ or groups based on protected attributes.</p></li>
     <h2 id="authentication">Authentication<a class="anchor" aria-label="anchor" href="#authentication"></a></h2>
 
 
-<p>You need an Azure Content Safety resource to use this function. Set up
-credentials using either:</p><ul><li><p>Environment variables: <code>AZURE_CONTENT_SAFETY_ENDPOINT</code> and <code>AZURE_CONTENT_SAFETY_KEY</code></p></li>
+<p>You need an Azure Content Safety resource to use this function. Set up the
+endpoint and either an API key or a resource-scoped bearer-token provider:</p><ul><li><p>Environment variables: <code>AZURE_CONTENT_SAFETY_ENDPOINT</code> and <code>AZURE_CONTENT_SAFETY_KEY</code></p></li>
 <li><p>Helper functions: <code><a href="foundry_set_content_safety_endpoint.html">foundry_set_content_safety_endpoint()</a></code> and <code><a href="foundry_set_content_safety_key.html">foundry_set_content_safety_key()</a></code></p></li>
+<li><p>Microsoft Entra ID: <code><a href="foundry_set_token_provider.html">foundry_set_token_provider()</a></code> with
+<code>scope = "resource"</code></p></li>
 </ul></div>
 
     <div class="section level2">

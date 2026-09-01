@@ -21,7 +21,7 @@ step_foundry_embed(
   cache_dir = NULL,
   columns = NULL,
   skip = FALSE,
-  id = recipes::rand_id("foundry_embed")
+  id = NULL
 )
 
 # S3 method for class 'step_foundry_embed'

@@ -8,7 +8,7 @@ should be refreshed automatically.
 ## Usage
 
 ``` r
-foundry_set_token_provider(provider)
+foundry_set_token_provider(provider, scope = c("resource", "project"))
 ```
 
 ## Arguments
@@ -17,6 +17,11 @@ foundry_set_token_provider(provider)
 
   Function or `NULL`. A zero-argument function that returns a bearer
   token string. Use `NULL` to clear the provider.
+
+- scope:
+
+  Character. Endpoint family that the provider authenticates:
+  `"resource"` or `"project"`.
 
 ## Value
 

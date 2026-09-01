@@ -176,6 +176,42 @@ Foundry.
 
 ### Improvements
 
+- Configuration setters with `store = TRUE` now persist under
+  `tools::R_user_dir("foundryR", "config")` instead of modifying
+  `.Renviron`; the API support matrix and CRAN submission runbook now
+  document lifecycle and release boundaries (CRAN readiness).
+
+- [`foundry_moderate()`](https://farach.github.io/foundryR/reference/foundry_moderate.md),
+  [`foundry_moderate_image()`](https://farach.github.io/foundryR/reference/foundry_moderate_image.md),
+  and
+  [`foundry_protected_material()`](https://farach.github.io/foundryR/reference/foundry_protected_material.md)
+  now accept resource-scoped Microsoft Entra token providers in addition
+  to Content Safety API keys (CRAN readiness).
+
+- [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+  and its retrieve, cancel, delete, and input-item helpers now accept an
+  explicit `project_endpoint`, keeping agent-backed response lifecycles
+  on one project endpoint (CRAN readiness).
+
+- [`foundry_token_azure_cli()`](https://farach.github.io/foundryR/reference/foundry_token_azure_cli.md),
+  [`foundry_token_azure_identity()`](https://farach.github.io/foundryR/reference/foundry_token_azure_identity.md),
+  [`foundry_set_token()`](https://farach.github.io/foundryR/reference/foundry_set_token.md),
+  and
+  [`foundry_set_token_provider()`](https://farach.github.io/foundryR/reference/foundry_set_token_provider.md)
+  now separate resource and project authentication, default resource
+  tokens to the documented Cognitive Services audience, and use the AI
+  audience only for project operations (CRAN readiness).
+
+- Parallel HTTP helpers now default to at most two active requests, and
+  the web-search compliance warning uses package-local state rather than
+  changing global R options (CRAN readiness).
+
+- [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
+  now checks for before generating its default step identifier, and is
+  declared for its exported
+  [`tidy()`](https://generics.r-lib.org/reference/tidy.html) method
+  (CRAN readiness).
+
 - [`foundry_groundedness()`](https://farach.github.io/foundryR/reference/foundry_groundedness.md)
   now supports the Content Safety correction feature via
   `correction = TRUE` with a bring-your-own Azure OpenAI deployment

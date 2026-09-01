@@ -59,8 +59,7 @@ foundry_groundedness(
 - reasoning:
 
   Logical. If `TRUE`, includes reasoning for ungrounded segments in the
-  response. Requires a linked or supplied `llm_resource`. Default:
-  `FALSE`.
+  response. Default: `FALSE`.
 
 - correction:
 
@@ -73,8 +72,7 @@ foundry_groundedness(
 - llm_resource:
 
   List or `NULL`. Connection details for a bring-your-own Azure OpenAI
-  deployment, used when `reasoning = TRUE` or `correction = TRUE`. Build
-  it with
+  deployment, used when `correction = TRUE`. Build it with
   [`foundry_llm_resource()`](https://farach.github.io/foundryR/reference/foundry_llm_resource.md).
   Default: `NULL`.
 
