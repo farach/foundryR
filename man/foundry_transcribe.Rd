@@ -80,8 +80,12 @@ MAI-Transcribe models, or through the Azure OpenAI v1 preview audio endpoint.
 }
 \examples{
 \dontrun{
+# Requires configured Azure Speech/OpenAI endpoints and credentials,
+# the corresponding models, and your own local audio input files.
 foundry_transcribe("interview.mp3", model = "mai-transcribe-1.5")
 foundry_transcribe("interview.mp3", service = "openai", model = "gpt-4o-transcribe")
-foundry_transcribe("speech.wav", service = "openai", model = "whisper", api = "deployment")
+foundry_transcribe(
+  "speech.wav", service = "openai", model = "whisper", api = "deployment"
+)
 }
 }

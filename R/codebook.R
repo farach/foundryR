@@ -33,11 +33,13 @@
 #'     list(text = "Lift a heavy box", ai_applicable = FALSE)
 #'   )
 #' )
-foundry_codebook <- function(name,
-                             version,
-                             instructions,
-                             schema,
-                             examples = NULL) {
+foundry_codebook <- function(
+  name,
+  version,
+  instructions,
+  schema,
+  examples = NULL
+) {
   foundry_check_codebook_name(name)
   foundry_check_semver(version)
   foundry_check_character_scalar(instructions, "instructions")
@@ -113,13 +115,18 @@ type_string <- function(desc = NULL) {
 
 #' Compare two codebooks
 #'
-#' Print a compact diff of two `foundry_codebook` objects, including both
+#' Create a compact diff of two `foundry_codebook` objects, including both
 #' hashes, a unified diff of instructions, and field-level changes for schema
-#' properties and examples.
+#' properties and examples. Assign the result to inspect it without console
+#' output, or print it to display the diff.
 #'
 #' @param old,new `foundry_codebook` objects to compare.
+#' @param x A `foundry_codebook_diff` object.
+#' @param ... Unused.
 #'
-#' @return Invisibly returns the printed diff lines.
+#' @return `codebook_diff()` returns a character vector of diff lines with class
+#'   `foundry_codebook_diff`. `format()` returns the plain character vector.
+#'   `print()` displays the lines and invisibly returns `x`.
 #' @export
 #'
 #' @examples
@@ -138,7 +145,8 @@ type_string <- function(desc = NULL) {
 #'     urgent = type_boolean()
 #'   )
 #' )
-#' codebook_diff(old, new)
+#' diff <- codebook_diff(old, new)
+#' print(diff)
 codebook_diff <- function(old, new) {
   foundry_check_codebook(old, "old")
   foundry_check_codebook(new, "new")
@@ -161,8 +169,22 @@ codebook_diff <- function(old, new) {
     )
   )
 
-  cat(lines, sep = "\n")
-  invisible(lines)
+  structure(lines, class = c("foundry_codebook_diff", "character"))
+}
+
+
+#' @rdname codebook_diff
+#' @export
+format.foundry_codebook_diff <- function(x, ...) {
+  unclass(x)
+}
+
+
+#' @rdname codebook_diff
+#' @export
+print.foundry_codebook_diff <- function(x, ...) {
+  cat(format(x), sep = "\n")
+  invisible(x)
 }
 
 
@@ -174,9 +196,18 @@ format.foundry_codebook <- function(x, ...) {
   variables <- if (length(properties) == 0L) {
     "  (none)"
   } else {
-    vapply(names(properties), function(field) {
-      paste0("  - ", field, ": ", foundry_schema_field_summary(properties[[field]]))
-    }, character(1))
+    vapply(
+      names(properties),
+      function(field) {
+        paste0(
+          "  - ",
+          field,
+          ": ",
+          foundry_schema_field_summary(properties[[field]])
+        )
+      },
+      character(1)
+    )
   }
 
   c(
@@ -210,7 +241,11 @@ foundry_codebook_hash <- function(instructions, schema, examples, version) {
     digits = NA,
     null = "null"
   )
-  digest::digest(enc2utf8(as.character(json)), algo = "sha256", serialize = FALSE)
+  digest::digest(
+    enc2utf8(as.character(json)),
+    algo = "sha256",
+    serialize = FALSE
+  )
 }
 
 
@@ -327,27 +362,36 @@ foundry_named_list_diff <- function(old, new) {
     return("  (none)")
   }
 
-  lines <- vapply(all_names, function(field) {
-    old_has <- field %in% names(old)
-    new_has <- field %in% names(new)
-    if (!old_has) {
-      return(paste0("+ ", field, ": ", foundry_json_summary(new[[field]])))
-    }
-    if (!new_has) {
-      return(paste0("- ", field, ": ", foundry_json_summary(old[[field]])))
-    }
-    if (identical(foundry_canonical_json(old[[field]]), foundry_canonical_json(new[[field]]))) {
-      return(paste0("  ", field, ": no change"))
-    }
-    paste0(
-      "~ ",
-      field,
-      ": ",
-      foundry_json_summary(old[[field]]),
-      " -> ",
-      foundry_json_summary(new[[field]])
-    )
-  }, character(1))
+  lines <- vapply(
+    all_names,
+    function(field) {
+      old_has <- field %in% names(old)
+      new_has <- field %in% names(new)
+      if (!old_has) {
+        return(paste0("+ ", field, ": ", foundry_json_summary(new[[field]])))
+      }
+      if (!new_has) {
+        return(paste0("- ", field, ": ", foundry_json_summary(old[[field]])))
+      }
+      if (
+        identical(
+          foundry_canonical_json(old[[field]]),
+          foundry_canonical_json(new[[field]])
+        )
+      ) {
+        return(paste0("  ", field, ": no change"))
+      }
+      paste0(
+        "~ ",
+        field,
+        ": ",
+        foundry_json_summary(old[[field]]),
+        " -> ",
+        foundry_json_summary(new[[field]])
+      )
+    },
+    character(1)
+  )
 
   if (all(grepl(": no change$", lines))) {
     return("  (no changes)")

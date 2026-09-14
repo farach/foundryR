@@ -1,28 +1,46 @@
-## Submission
+## Resubmission
 
-This is the first CRAN submission for foundryR.
+This is a resubmission of foundryR 0.1.0, its first CRAN release. Thank you for
+the manual review. The following changes address the requested corrections:
 
-## Test environments
+- Removed the examples and generated help page for the unexported
+  `batch_vector()` helper. It remains internal. Recipe examples now call
+  `recipes::prep()` and `recipes::bake()` explicitly.
+- Made short, offline examples runnable, including configuration setters,
+  cosine similarity on toy vectors, cache cleanup, and saving a small base64
+  image. Suggested packages are guarded and examples restore session settings.
+- The offline recipe-construction example uses `\donttest{}` because loading
+  its optional modeling dependencies can exceed five seconds. It is also
+  exercised with `--run-donttest`.
+- Retained `\dontrun{}` only for examples that need Azure endpoints,
+  credentials, deployed models, existing service resources, user-supplied
+  media, or an installed and authenticated Azure CLI. These prerequisites
+  are stated in the examples. Running these examples on CRAN would require
+  private credentials and could create billable service resources.
+- `codebook_diff()` now returns a classed character vector without console
+  output when assigned. Dedicated `print()` and `format()` methods provide
+  display and programmatic access. Other informational output uses suppressible
+  messages or the existing `verbose` argument.
+- File-writing examples, vignettes, and tests use temporary paths and clean up
+  their output. The default embedding cache now lives under `tempdir()`;
+  persistent caches require an explicitly supplied directory.
+- Configuration persistence remains opt-in (`store = FALSE` by default).
+  Explicit `store = TRUE` uses a small package-specific configuration file
+  under `tools::R_user_dir("foundryR", "config")`, as permitted for R >= 4.0.
+  Examples redirect that configuration file to a temporary path.
+- Vignette replay hooks restore their environment variables, options, and
+  redactor settings. Credentialed manual test scripts are excluded from the
+  source package.
 
-- Local Windows 11 ARM64 host, x86_64 R 4.6.1
-- GitHub Actions:
-  - Windows x64, R-release
-  - macOS ARM64, R-release
-  - Ubuntu x64, R-release
-  - Ubuntu x64, R-devel
-  - Ubuntu x64, R-oldrel-1
+## Validation
 
-## R CMD check results
+The release checks cover Windows R-release, macOS R-release, and Ubuntu
+R-release, R-devel, and R-oldrel-1. They include the offline unit tests and
+snapshots, `R CMD check --as-cran --run-donttest`, example timing and
+side-effect checks, and pkgdown rendering with local link and asset checks.
 
-0 errors | 0 warnings | 0 notes on all five GitHub Actions jobs.
-
-## Local validation
-
-- testthat: 0 failures, 0 warnings, 10 credential-gated skips, 965 passes
-- pkgdown configuration: no problems
-- URL checks: all URLs valid
-- static `R CMD check --as-cran --no-install --no-manual`: no package code,
-  dependency, documentation, namespace, or file-structure findings
+Final native check results are recorded after the release jobs complete.
+The September 1 pretest results are not being reused as resubmission results.
 
 ## Local environment note
 

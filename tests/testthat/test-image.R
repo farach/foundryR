@@ -57,9 +57,18 @@ test_that("foundry_image validates n parameter", {
     AZURE_FOUNDRY_IMAGE_MODEL = "dall-e-3"
   )
 
-  expect_error(foundry_image("test", model = "dall-e-3", n = 0), "between 1 and 10")
-  expect_error(foundry_image("test", model = "dall-e-3", n = 11), "between 1 and 10")
-  expect_error(foundry_image("test", model = "dall-e-3", n = -1), "between 1 and 10")
+  expect_error(
+    foundry_image("test", model = "dall-e-3", n = 0),
+    "between 1 and 10"
+  )
+  expect_error(
+    foundry_image("test", model = "dall-e-3", n = 11),
+    "between 1 and 10"
+  )
+  expect_error(
+    foundry_image("test", model = "dall-e-3", n = -1),
+    "between 1 and 10"
+  )
 })
 
 test_that("foundry_image validates size parameter", {
@@ -149,7 +158,7 @@ test_that("foundry_image_edit builds multipart request", {
     AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.openai.azure.com",
     AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-1"
   )
-  image <- tempfile(fileext = ".png")
+  image <- withr::local_tempfile(fileext = ".png")
   writeBin(charToRaw("fake image"), image)
   captured <- NULL
   mock_resp <- mock_httr2_response(mock_image_response_b64())
@@ -175,7 +184,10 @@ test_that("foundry_image_edit builds multipart request with multiple images", {
     AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.openai.azure.com",
     AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-1"
   )
-  images <- c(tempfile(fileext = ".png"), tempfile(fileext = ".png"))
+  images <- c(
+    withr::local_tempfile(fileext = ".png"),
+    withr::local_tempfile(fileext = ".png")
+  )
   writeBin(charToRaw("fake image one"), images[[1]])
   writeBin(charToRaw("fake image two"), images[[2]])
   captured <- NULL
@@ -218,7 +230,10 @@ test_that("foundry_image supports keyless auth from environment token", {
   foundry_image("A logo")
 
   expect_contains(names(captured$headers), "Authorization")
-  expect_setequal(setdiff(names(captured$headers), "Authorization"), character())
+  expect_setequal(
+    setdiff(names(captured$headers), "Authorization"),
+    character()
+  )
 })
 
 test_that("foundry_image prefers environment token over environment image key", {
@@ -244,7 +259,10 @@ test_that("foundry_image prefers environment token over environment image key", 
   foundry_image("A logo")
 
   expect_contains(names(captured$headers), "Authorization")
-  expect_setequal(setdiff(names(captured$headers), "Authorization"), character())
+  expect_setequal(
+    setdiff(names(captured$headers), "Authorization"),
+    character()
+  )
 })
 
 test_that("foundry_image_edit supports keyless auth from environment token", {
@@ -256,7 +274,7 @@ test_that("foundry_image_edit supports keyless auth from environment token", {
     AZURE_FOUNDRY_TOKEN = "env-token",
     AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-1"
   )
-  image <- tempfile(fileext = ".png")
+  image <- withr::local_tempfile(fileext = ".png")
   writeBin(charToRaw("fake image"), image)
   captured <- NULL
   mock_resp <- mock_httr2_response(mock_image_response_b64())
@@ -272,7 +290,10 @@ test_that("foundry_image_edit supports keyless auth from environment token", {
   foundry_image_edit(image, "Add a blue background")
 
   expect_contains(names(captured$headers), "Authorization")
-  expect_setequal(setdiff(names(captured$headers), "Authorization"), character())
+  expect_setequal(
+    setdiff(names(captured$headers), "Authorization"),
+    character()
+  )
 })
 
 test_that("foundry_image deployment mode omits auto quality by default", {
@@ -327,7 +348,10 @@ test_that("foundry_save_image validates index parameter", {
 
   expect_error(foundry_save_image(df, "test.png", index = 0), "must be between")
   expect_error(foundry_save_image(df, "test.png", index = 2), "must be between")
-  expect_error(foundry_save_image(df, "test.png", index = -1), "must be between")
+  expect_error(
+    foundry_save_image(df, "test.png", index = -1),
+    "must be between"
+  )
 })
 
 test_that("foundry_save_image validates path parameter", {
@@ -336,8 +360,14 @@ test_that("foundry_save_image validates path parameter", {
     b64_json = NA_character_
   )
 
-  expect_error(foundry_save_image(df, path = NULL), "must be a single file path")
-  expect_error(foundry_save_image(df, path = c("a.png", "b.png")), "must be a single file path")
+  expect_error(
+    foundry_save_image(df, path = NULL),
+    "must be a single file path"
+  )
+  expect_error(
+    foundry_save_image(df, path = c("a.png", "b.png")),
+    "must be a single file path"
+  )
 })
 
 test_that("foundry_save_image errors when no image data available", {
@@ -376,10 +406,18 @@ test_that("foundry_image returns tibble with correct structure (mocked)", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 1)
-  expect_named(result, c(
-    "prompt", "revised_prompt", "url", "b64_json", "output_format",
-    "created", "raw_image"
-  ))
+  expect_named(
+    result,
+    c(
+      "prompt",
+      "revised_prompt",
+      "url",
+      "b64_json",
+      "output_format",
+      "created",
+      "raw_image"
+    )
+  )
 })
 
 test_that("foundry_image returns correct column types (mocked)", {
@@ -487,7 +525,11 @@ test_that("foundry_image handles b64_json response format (mocked)", {
 
   mock_request(mock_response)
 
-  result <- foundry_image("A logo", model = "dall-e-3", response_format = "b64_json")
+  result <- foundry_image(
+    "A logo",
+    model = "dall-e-3",
+    response_format = "b64_json"
+  )
 
   expect_true(!is.na(result$b64_json))
   expect_true(is.na(result$url))
@@ -511,7 +553,7 @@ test_that("foundry_save_image saves base64 image to file", {
     created = Sys.time()
   )
 
-  temp_file <- tempfile(fileext = ".png")
+  temp_file <- withr::local_tempfile(fileext = ".png")
   on.exit(unlink(temp_file), add = TRUE)
 
   suppressMessages(foundry_save_image(df, temp_file))
@@ -533,7 +575,7 @@ test_that("foundry_save_image selects correct image by index", {
     created = Sys.time()
   )
 
-  temp_file <- tempfile(fileext = ".png")
+  temp_file <- withr::local_tempfile(fileext = ".png")
   on.exit(unlink(temp_file), add = TRUE)
 
   suppressMessages(foundry_save_image(df, temp_file, index = 2))
@@ -548,15 +590,25 @@ test_that("foundry_save_image selects correct image by index", {
 test_that("foundry_set_image_endpoint sets environment variable", {
   withr::local_envvar(AZURE_FOUNDRY_IMAGE_ENDPOINT = "")
 
-  suppressMessages(foundry_set_image_endpoint("https://test-dalle.cognitiveservices.azure.com"))
-  expect_equal(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"), "https://test-dalle.cognitiveservices.azure.com")
+  suppressMessages(foundry_set_image_endpoint(
+    "https://test-dalle.cognitiveservices.azure.com"
+  ))
+  expect_equal(
+    Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"),
+    "https://test-dalle.cognitiveservices.azure.com"
+  )
 })
 
 test_that("foundry_set_image_endpoint removes trailing slash", {
   withr::local_envvar(AZURE_FOUNDRY_IMAGE_ENDPOINT = "")
 
-  suppressMessages(foundry_set_image_endpoint("https://test-dalle.cognitiveservices.azure.com/"))
-  expect_equal(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"), "https://test-dalle.cognitiveservices.azure.com")
+  suppressMessages(foundry_set_image_endpoint(
+    "https://test-dalle.cognitiveservices.azure.com/"
+  ))
+  expect_equal(
+    Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"),
+    "https://test-dalle.cognitiveservices.azure.com"
+  )
 })
 
 test_that("foundry_set_image_endpoint rejects empty endpoint", {
@@ -612,7 +664,10 @@ test_that("foundry_get_image_endpoint errors when required and not set", {
     AZURE_FOUNDRY_ENDPOINT = ""
   )
 
-  expect_error(foundry_get_image_endpoint(required = TRUE), "Image endpoint is required")
+  expect_error(
+    foundry_get_image_endpoint(required = TRUE),
+    "Image endpoint is required"
+  )
 })
 
 test_that("foundry_get_image_key falls back to main key", {
@@ -660,7 +715,10 @@ test_that("foundry_get_image_key errors when required and not set", {
     AZURE_FOUNDRY_KEY = ""
   )
 
-  expect_error(foundry_get_image_key(required = TRUE), "Image API key is required")
+  expect_error(
+    foundry_get_image_key(required = TRUE),
+    "Image API key is required"
+  )
 })
 
 # ============================================================================
@@ -672,7 +730,7 @@ test_that("foundry_image generates image with real API", {
   skip_if_no_live_api()
   skip_if(
     Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT") == "" &&
-    Sys.getenv("AZURE_FOUNDRY_ENDPOINT") == "",
+      Sys.getenv("AZURE_FOUNDRY_ENDPOINT") == "",
     "Image endpoint not configured"
   )
   skip_if(

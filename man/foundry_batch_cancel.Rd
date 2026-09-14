@@ -31,6 +31,8 @@ Cancel a Microsoft Foundry batch
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus the ID of a batch that can be cancelled.
 foundry_batch_cancel("batch_abc123")
 }
 }

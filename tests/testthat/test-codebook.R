@@ -15,7 +15,15 @@ test_that("foundry_codebook builds the specified object contract", {
   expect_s3_class(codebook, "foundry_codebook")
   expect_named(
     codebook,
-    c("name", "version", "instructions", "schema", "examples", "created", "hash")
+    c(
+      "name",
+      "version",
+      "instructions",
+      "schema",
+      "examples",
+      "created",
+      "hash"
+    )
   )
   expect_equal(codebook$name, "ai-applicability")
   expect_equal(codebook$version, "1.0.0")
@@ -83,7 +91,11 @@ test_that("codebook hashes are stable and content addressed", {
   expect_equal(first$hash, second$hash)
   expect_equal(
     first$hash,
-    digest::digest(enc2utf8(as.character(canonical)), algo = "sha256", serialize = FALSE)
+    digest::digest(
+      enc2utf8(as.character(canonical)),
+      algo = "sha256",
+      serialize = FALSE
+    )
   )
   expect_equal(
     single_enum$hash,
@@ -171,4 +183,13 @@ test_that("codebook print and diff output are stable", {
 
   expect_snapshot(print(old))
   expect_snapshot(codebook_diff(old, new))
+
+  expect_output(diff <- codebook_diff(old, new), NA)
+  expect_s3_class(diff, "foundry_codebook_diff")
+  expect_type(diff, "character")
+  expect_identical(format(diff), unclass(diff))
+  printed <- capture.output(result <- withVisible(print(diff)))
+  expect_identical(printed, unname(format(diff)))
+  expect_identical(result$value, diff)
+  expect_identical(result$visible, FALSE)
 })

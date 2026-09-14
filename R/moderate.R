@@ -11,14 +11,10 @@
 #' @return Invisibly returns TRUE if key was set successfully.
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#' # Set key for current session only
-#' foundry_set_content_safety_key("your-api-key-here")
-#'
-#' # Set key interactively and store permanently
-#' foundry_set_content_safety_key(store = TRUE)
-#' }
+#' @examplesIf requireNamespace("withr", quietly = TRUE)
+#' withr::with_envvar(c(AZURE_CONTENT_SAFETY_KEY = NA_character_), {
+#'   foundry_set_content_safety_key("example-key-not-a-secret")
+#' })
 foundry_set_content_safety_key <- function(key = NULL, store = FALSE) {
 
   # Interactive input if key is NULL
@@ -59,16 +55,12 @@ foundry_set_content_safety_key <- function(key = NULL, store = FALSE) {
 #' @return Invisibly returns TRUE if endpoint was set successfully.
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#' foundry_set_content_safety_endpoint(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"))
-#'
-#' # Store permanently
-#' foundry_set_content_safety_endpoint(
-#'   Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"),
-#'   store = TRUE
-#' )
-#' }
+#' @examplesIf requireNamespace("withr", quietly = TRUE)
+#' withr::with_envvar(c(AZURE_CONTENT_SAFETY_ENDPOINT = NA_character_), {
+#'   foundry_set_content_safety_endpoint(
+#'     "https://example.cognitiveservices.azure.com"
+#'   )
+#' })
 foundry_set_content_safety_endpoint <- function(endpoint, store = FALSE) {
 
   if (missing(endpoint) || is.null(endpoint) || endpoint == "") {
@@ -303,6 +295,7 @@ content_safety_error_body <- function(resp) {
 #'
 #' @examples
 #' \dontrun{
+#' # Requires an Azure Content Safety endpoint and credentials.
 #' # Analyze a single text
 #' foundry_moderate("This is a friendly message.")
 #'

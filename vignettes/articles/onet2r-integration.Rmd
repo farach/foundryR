@@ -22,7 +22,8 @@ fixture_dir <- "onet2r-integration"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
 have_onet2r <- requireNamespace("onet2r", quietly = TRUE)
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 can_run <- run_api && have_onet2r
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
@@ -68,7 +69,7 @@ pak::pak("farach/onet2r")
 ```
 
 Each package reads its own credentials from the environment, so nothing secret
-appears in your code:
+appears in your code. Credential setup is shown but not run during rendering:
 
 ```{r credentials, eval = FALSE}
 # Azure AI Foundry (foundryR)
@@ -199,7 +200,7 @@ profile, or flag near-duplicate roles. onet2r supplies the authoritative text an
 foundryR turns it into comparable numbers and readable summaries -- all in
 tibbles.
 
-```{r cleanup, include = FALSE}
+```{r cleanup, include = FALSE, eval = TRUE}
 if (run_api) {
   httptest2::end_vignette()
 }

@@ -37,6 +37,8 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus an embedding deployment.
 #' # Embed many texts in parallel
 #' texts <- c("Hello, world!", "Data science is fun", "R is great")
 #' embeddings <- foundry_embed_batch(texts, model = "text-embedding-ada-002")
@@ -279,16 +281,7 @@ foundry_embed_batch <- function(text,
 #'   }
 #'
 #' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#' x <- letters[1:7]
-#' batches <- batch_vector(x, batch_size = 3)
-#' # Returns:
-#' # [[1]] list(indices = 1:3, values = c("a", "b", "c"))
-#' # [[2]] list(indices = 4:6, values = c("d", "e", "f"))
-#' # [[3]] list(indices = 7, values = "g")
-#' }
+#' @noRd
 batch_vector <- function(x, batch_size) {
   n <- length(x)
   if (n == 0) {

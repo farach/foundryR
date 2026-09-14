@@ -70,6 +70,8 @@ free-text records into analyzable variables.
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+# naming a deployment that supports structured outputs.
 schema <- list(
   type = "object",
   properties = list(

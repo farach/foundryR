@@ -38,6 +38,7 @@ List evaluations
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials with evals API access.
 foundry_evals(limit = 10)
 }
 }

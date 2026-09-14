@@ -19,7 +19,7 @@ The project endpoint URL string, or \code{NULL}.
 Retrieve the project endpoint URL from the environment or a provided value.
 }
 \examples{
-\dontrun{
-foundry_get_project_endpoint()
-}
+foundry_get_project_endpoint(
+  "https://example.services.ai.azure.com/api/projects/demo"
+)
 }

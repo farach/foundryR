@@ -45,6 +45,8 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+#' # naming a chat deployment that supports the requested parameters.
 #' # Simple chat
 #' foundry_chat("What is the capital of France?")
 #'

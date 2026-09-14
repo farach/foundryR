@@ -11,7 +11,8 @@ vignette: >
 fixture_dir <- "annotation-workflow"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
 # inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
@@ -38,7 +39,7 @@ in the source responses.
 
 ## Example data
 
-```{r data}
+```{r data, eval = TRUE}
 library(foundryR)
 library(dplyr)
 
@@ -60,7 +61,7 @@ responses <- tibble::tibble(
 Start with a JSON Schema. Keep the schema small enough that a human reviewer can
 understand it.
 
-```{r schema}
+```{r schema, eval = TRUE}
 annotation_schema <- list(
   type = "object",
   properties = list(
@@ -102,7 +103,9 @@ coded
 ## Move the same job to Azure Batch
 
 Interactive extraction is useful while designing the schema. For larger jobs,
-write a JSONL request file and submit it to Azure's Batch API.
+write a JSONL request file and submit it to Azure's Batch API. The submission
+below requires Azure credentials and is not run during rendering. Its temporary
+request file is removed after upload.
 
 ```{r batch, eval = FALSE}
 jsonl <- tempfile(fileext = ".jsonl")
@@ -130,6 +133,7 @@ foundry_batch_requests(
 )
 
 file <- foundry_file_upload(jsonl, purpose = "batch")
+unlink(jsonl)
 batch <- foundry_batch_create(file$file_id, endpoint = "/v1/responses")
 foundry_batch_get(batch$batch_id)
 ```
@@ -201,9 +205,10 @@ review <- coded |>
 review
 ```
 
-The rendered table and chart below summarize the live extraction results.
+The rendered table and chart below summarize the same extraction results when
+the suggested `gt` and `ggplot2` packages are installed.
 
-```{r review-table-rendered, echo = FALSE}
+```{r review-table-rendered, echo = FALSE, eval = run_api && requireNamespace("gt", quietly = TRUE)}
 review |>
   dplyr::mutate(
     needs_followup = ifelse(needs_followup, "Review", "No review"),
@@ -222,7 +227,7 @@ review |>
   gt::tab_options(table.font.names = "Inter")
 ```
 
-```{r sentiment-theme-chart, echo = FALSE, fig.alt = "Bar chart of survey response themes by sentiment."}
+```{r sentiment-theme-chart, echo = FALSE, eval = run_api && requireNamespace("ggplot2", quietly = TRUE), fig.alt = "Bar chart of survey response themes by sentiment."}
 theme_counts <- review |>
   dplyr::count(primary_theme, sentiment, name = "responses")
 

@@ -33,6 +33,8 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure Content Safety endpoint and credentials
+#' # with access to the protected-code preview API.
 #' foundry_protected_code("import pygame\npygame.init()")
 #' }
 foundry_protected_code <- function(code,
@@ -129,6 +131,8 @@ foundry_code_citations_tibble <- function(citations) {
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure Content Safety endpoint and credentials
+#' # with multimodal preview access, base64enc, and your meme.png input file.
 #' foundry_moderate_multimodal(
 #'   image = "meme.png",
 #'   text = "caption under the image",
@@ -214,6 +218,8 @@ foundry_moderate_multimodal <- function(image,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure Content Safety endpoint and credentials
+#' # with access to the task-adherence preview API.
 #' foundry_task_adherence(
 #'   tools = list(
 #'     foundry_agent_tool("get_credit_card_limit", "Get the user's credit limit")

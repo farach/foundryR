@@ -2,6 +2,13 @@
 
 Initial CRAN release of foundryR, a tidy interface to Microsoft Azure AI Foundry.
 
+## CRAN resubmission
+
+- Short offline examples now run during package checks; authenticated Azure and external-software examples explain their prerequisites. File-writing examples use temporary locations and clean up their output.
+- `codebook_diff()` now returns a printable character-vector object without writing to the console when assigned; `format()` provides the plain diff lines.
+- `step_foundry_embed(cache = "disk")` and `foundry_cache_clear()` now default to a cache inside the R session's temporary directory. Set `cache_dir` explicitly for a persistent cache. Existing user-directory caches are not deleted or migrated.
+- Vignette replay hooks now restore environment variables, options, and redactor settings when replay ends.
+
 ## New features
 
 - Added Agent Service support for named, versioned prompt agents with `foundry_agent_create()`, `foundry_agents()`, `foundry_agent_get()`, `foundry_agent_delete()`, and `foundry_agent_versions()`, plus a new `agent` argument on `foundry_response()` (backed by `foundry_agent_reference()`) that runs a stored agent by name through the project-scoped Responses endpoint (roadmap 2026 H2).

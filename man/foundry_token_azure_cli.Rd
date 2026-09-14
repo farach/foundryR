@@ -26,10 +26,11 @@ to \verb{az account get-access-token}. Tokens are cached until five minutes befo
 expiry.
 }
 \examples{
+provider <- foundry_token_azure_cli()
+is.function(provider)
+
 \dontrun{
-foundry_set_token_provider(
-  foundry_token_azure_cli("https://ai.azure.com"),
-  scope = "project"
-)
+# Requires Azure CLI installed and signed in to the intended Azure tenant.
+token <- provider()
 }
 }

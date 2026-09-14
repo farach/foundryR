@@ -1,14 +1,43 @@
+test_that("configuration setters are suppressible and do not persist by default", {
+  config_file <- withr::local_tempfile()
+  withr::local_options(foundryR.config_file = config_file)
+  withr::local_envvar(
+    AZURE_FOUNDRY_ENDPOINT = NA_character_,
+    AZURE_FOUNDRY_PROJECT_ENDPOINT = NA_character_,
+    AZURE_FOUNDRY_KEY = NA_character_,
+    AZURE_CONTENT_SAFETY_ENDPOINT = NA_character_,
+    AZURE_CONTENT_SAFETY_KEY = NA_character_
+  )
+  expect_silent(suppressMessages({
+    foundry_set_endpoint("https://example.openai.azure.com")
+    foundry_set_project_endpoint(
+      "https://example.services.ai.azure.com/api/projects/demo"
+    )
+    foundry_set_key("example-key")
+    foundry_set_content_safety_endpoint(
+      "https://example.cognitiveservices.azure.com"
+    )
+    foundry_set_content_safety_key("example-key")
+  }))
+  expect_identical(file.exists(config_file), FALSE)
+})
+
 test_that("foundry_set_endpoint sets environment variable", {
   withr::local_envvar(AZURE_FOUNDRY_ENDPOINT = "")
 
   suppressMessages(foundry_set_endpoint("https://test.openai.azure.com"))
-  expect_equal(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), "https://test.openai.azure.com")
+  expect_equal(
+    Sys.getenv("AZURE_FOUNDRY_ENDPOINT"),
+    "https://test.openai.azure.com"
+  )
 })
 
 test_that("project endpoint setters normalize trailing slashes", {
   withr::local_envvar(AZURE_FOUNDRY_PROJECT_ENDPOINT = "")
 
-  suppressMessages(foundry_set_project_endpoint("https://example.services.ai.azure.com/api/projects/p1/"))
+  suppressMessages(foundry_set_project_endpoint(
+    "https://example.services.ai.azure.com/api/projects/p1/"
+  ))
 
   expect_equal(
     foundry_get_project_endpoint(),
@@ -20,7 +49,10 @@ test_that("foundry_set_endpoint removes trailing slash", {
   withr::local_envvar(AZURE_FOUNDRY_ENDPOINT = "")
 
   suppressMessages(foundry_set_endpoint("https://test.openai.azure.com/"))
-  expect_equal(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), "https://test.openai.azure.com")
+  expect_equal(
+    Sys.getenv("AZURE_FOUNDRY_ENDPOINT"),
+    "https://test.openai.azure.com"
+  )
 })
 
 test_that("foundry_set_endpoint rejects empty endpoint", {
@@ -29,20 +61,22 @@ test_that("foundry_set_endpoint rejects empty endpoint", {
 })
 
 test_that("foundry_get_endpoint retrieves from environment", {
-  withr::local_envvar(AZURE_FOUNDRY_ENDPOINT = "https://my-resource.openai.azure.com")
+  withr::local_envvar(
+    AZURE_FOUNDRY_ENDPOINT = "https://my-resource.openai.azure.com"
+  )
 
   expect_equal(foundry_get_endpoint(), "https://my-resource.openai.azure.com")
 })
 
 test_that("foundry_get_endpoint returns NULL when not set", {
   withr::local_envvar(AZURE_FOUNDRY_ENDPOINT = "")
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
 
   expect_null(foundry_get_endpoint())
 })
 
 test_that("stored endpoints are read without modifying Renviron", {
-  config_file <- tempfile()
+  config_file <- withr::local_tempfile()
   home <- withr::local_tempdir()
   withr::local_options(foundryR.config_file = config_file)
   withr::local_envvar(
@@ -61,7 +95,7 @@ test_that("stored endpoints are read without modifying Renviron", {
 
 test_that("foundry_get_endpoint errors when required and not set", {
   withr::local_envvar(AZURE_FOUNDRY_ENDPOINT = "")
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
 
   expect_error(foundry_get_endpoint(required = TRUE), "endpoint is required")
 })

@@ -29,6 +29,8 @@ List input items for a Responses API response
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an existing stored response ID.
 foundry_response_input_items("resp_abc123")
 }
 }

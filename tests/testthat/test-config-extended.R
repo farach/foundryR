@@ -18,15 +18,25 @@
 test_that("foundry_set_content_safety_endpoint sets environment variable", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_ENDPOINT = "")
 
-  suppressMessages(foundry_set_content_safety_endpoint("https://test-cs.cognitiveservices.azure.com"))
-  expect_equal(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"), "https://test-cs.cognitiveservices.azure.com")
+  suppressMessages(foundry_set_content_safety_endpoint(
+    "https://test-cs.cognitiveservices.azure.com"
+  ))
+  expect_equal(
+    Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"),
+    "https://test-cs.cognitiveservices.azure.com"
+  )
 })
 
 test_that("foundry_set_content_safety_endpoint removes trailing slash", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_ENDPOINT = "")
 
-  suppressMessages(foundry_set_content_safety_endpoint("https://test-cs.cognitiveservices.azure.com/"))
-  expect_equal(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"), "https://test-cs.cognitiveservices.azure.com")
+  suppressMessages(foundry_set_content_safety_endpoint(
+    "https://test-cs.cognitiveservices.azure.com/"
+  ))
+  expect_equal(
+    Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"),
+    "https://test-cs.cognitiveservices.azure.com"
+  )
 })
 
 test_that("foundry_set_content_safety_endpoint rejects empty endpoint", {
@@ -38,7 +48,9 @@ test_that("foundry_set_content_safety_endpoint returns TRUE invisibly", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_ENDPOINT = "")
 
   result <- suppressMessages(
-    foundry_set_content_safety_endpoint("https://test.cognitiveservices.azure.com")
+    foundry_set_content_safety_endpoint(
+      "https://test.cognitiveservices.azure.com"
+    )
   )
   expect_true(result)
 })
@@ -50,8 +62,13 @@ test_that("foundry_set_content_safety_endpoint returns TRUE invisibly", {
 test_that("foundry_set_content_safety_key sets environment variable", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_KEY = "")
 
-  suppressMessages(foundry_set_content_safety_key("test-content-safety-key-12345"))
-  expect_equal(Sys.getenv("AZURE_CONTENT_SAFETY_KEY"), "test-content-safety-key-12345")
+  suppressMessages(foundry_set_content_safety_key(
+    "test-content-safety-key-12345"
+  ))
+  expect_equal(
+    Sys.getenv("AZURE_CONTENT_SAFETY_KEY"),
+    "test-content-safety-key-12345"
+  )
 })
 
 test_that("foundry_set_content_safety_key rejects empty key", {
@@ -67,7 +84,7 @@ test_that("foundry_set_content_safety_key returns TRUE invisibly", {
 })
 
 test_that("Content Safety settings persist in the package config file", {
-  config_file <- tempfile()
+  config_file <- withr::local_tempfile()
   withr::local_options(foundryR.config_file = config_file)
   withr::local_envvar(
     AZURE_CONTENT_SAFETY_ENDPOINT = "",
@@ -106,16 +123,19 @@ test_that("get_content_safety_endpoint retrieves from environment", {
 
 test_that("get_content_safety_endpoint returns NULL when not set", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_ENDPOINT = "")
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
 
   expect_null(get_content_safety_endpoint())
 })
 
 test_that("get_content_safety_endpoint errors when required and not set", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_ENDPOINT = "")
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
 
-  expect_error(get_content_safety_endpoint(required = TRUE), "endpoint is required")
+  expect_error(
+    get_content_safety_endpoint(required = TRUE),
+    "endpoint is required"
+  )
 })
 
 test_that("get_content_safety_endpoint uses provided endpoint over environment", {
@@ -151,14 +171,14 @@ test_that("get_content_safety_key retrieves from environment", {
 
 test_that("get_content_safety_key returns NULL when not set", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_KEY = "")
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
 
   expect_null(get_content_safety_key())
 })
 
 test_that("get_content_safety_key errors when required and not set", {
   withr::local_envvar(AZURE_CONTENT_SAFETY_KEY = "")
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
 
   expect_error(get_content_safety_key(required = TRUE), "API key is required")
 })
@@ -177,15 +197,25 @@ test_that("get_content_safety_key uses provided key over environment", {
 test_that("foundry_set_image_endpoint sets environment variable", {
   withr::local_envvar(AZURE_FOUNDRY_IMAGE_ENDPOINT = "")
 
-  suppressMessages(foundry_set_image_endpoint("https://test-dalle.cognitiveservices.azure.com"))
-  expect_equal(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"), "https://test-dalle.cognitiveservices.azure.com")
+  suppressMessages(foundry_set_image_endpoint(
+    "https://test-dalle.cognitiveservices.azure.com"
+  ))
+  expect_equal(
+    Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"),
+    "https://test-dalle.cognitiveservices.azure.com"
+  )
 })
 
 test_that("foundry_set_image_endpoint removes trailing slash", {
   withr::local_envvar(AZURE_FOUNDRY_IMAGE_ENDPOINT = "")
 
-  suppressMessages(foundry_set_image_endpoint("https://test-dalle.cognitiveservices.azure.com/"))
-  expect_equal(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"), "https://test-dalle.cognitiveservices.azure.com")
+  suppressMessages(foundry_set_image_endpoint(
+    "https://test-dalle.cognitiveservices.azure.com/"
+  ))
+  expect_equal(
+    Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"),
+    "https://test-dalle.cognitiveservices.azure.com"
+  )
 })
 
 test_that("foundry_set_image_endpoint rejects empty endpoint", {
@@ -351,9 +381,15 @@ test_that("image and content safety configs are independent", {
   })
 
   # Verify they are independent
-  expect_equal(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"), "https://image.azure.com")
+  expect_equal(
+    Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"),
+    "https://image.azure.com"
+  )
   expect_equal(Sys.getenv("AZURE_FOUNDRY_IMAGE_KEY"), "image-key")
-  expect_equal(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"), "https://cs.azure.com")
+  expect_equal(
+    Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"),
+    "https://cs.azure.com"
+  )
   expect_equal(Sys.getenv("AZURE_CONTENT_SAFETY_KEY"), "cs-key")
 })
 

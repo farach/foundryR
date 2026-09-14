@@ -31,6 +31,7 @@ Retrieve a Microsoft Foundry file
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint, credentials, and an uploaded file ID.
 foundry_file_get("file_abc123")
 }
 }

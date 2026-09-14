@@ -18,8 +18,5 @@ The endpoint URL string, or NULL if not found and not required.
 Retrieve the endpoint URL from the environment or a provided value.
 }
 \examples{
-\dontrun{
-# Get current endpoint
-foundry_get_endpoint()
-}
+foundry_get_endpoint("https://example.openai.azure.com/")
 }

@@ -42,6 +42,8 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus embedding deployments.
 #' # Single text
 #' foundry_embed("Hello, world!", model = "text-embedding-ada-002")
 #'
@@ -94,11 +96,14 @@ foundry_embed <- function(text,
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' texts <- c("I love R", "R is my favorite language", "Python is also good")
-#' embeddings <- foundry_embed(texts, model = "text-embedding-ada-002")
+#' # Toy vectors demonstrate local computation without calling Azure.
+#' embeddings <- tibble::tibble(
+#'   text = c("Vector A", "Vector B", "Vector C"),
+#'   embedding = list(c(1, 0), c(1, 1), c(0, 1))
+#' )
 #' foundry_similarity(embeddings)
-#' }
+#' foundry_similarity(embeddings, top_k = 1)
+#' foundry_similarity(embeddings, as_matrix = TRUE)
 foundry_similarity <- function(data,
                                text_col = "text",
                                top_k = NULL,

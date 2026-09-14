@@ -16,13 +16,17 @@ Do not submit until every command below succeeds from the built source tarball.
 
 5. Render `README.md` from `README.Rmd` and build all vignettes without
    credentials or live network calls.
+6. Check every example against the CRAN manual-review rules:
+   short offline examples run normally, longer examples use `\donttest{}`,
+   and `\dontrun{}` explains genuine credential/software prerequisites.
+   Never enable live Azure calls merely to remove an example wrapper.
 
 ## 2. Run package tests
 
 Run the package tests in a clean R session:
 
 ```r
-devtools::test()
+devtools::test(stop_on_failure = TRUE)
 ```
 
 No test may depend on Azure credentials, a writable home directory, or network
@@ -49,6 +53,11 @@ Check the tarball:
 R CMD check foundryR_0.1.0.tar.gz --as-cran
 ```
 
+Also run with `--run-donttest --timings`. The `Build CRAN source` workflow
+builds one archive, audits its contents, records its SHA-256 checksum, and
+checks that exact archive on all five supported CI configurations. The
+Ubuntu R-release job also checks the PDF manual.
+
 Resolve every package-owned error and warning. Explain unavoidable notes in
 `cran-comments.md`; do not claim results that were not produced from the release
 tarball.
@@ -61,6 +70,11 @@ Run at least:
 4. win-builder R-release and R-devel:
    <https://win-builder.r-project.org/>.
 5. R-hub checks where available: <https://r-hub.github.io/rhub/>.
+
+The example-isolation check is `.github/scripts/check-examples.R`. It records
+per-topic runtimes, blocks HTTP requests, checks package-related session state,
+and rejects writes to the working directory or redirected user directories.
+Standard examples must finish in less than five seconds per help topic.
 
 ## 5. Update `cran-comments.md`
 
@@ -84,6 +98,12 @@ archive or the repository directory.
 3. Re-run the complete check matrix.
 4. Update `cran-comments.md` with the resubmission response.
 5. Submit a newly built tarball with a new version when CRAN requests one.
+
+For the September 2026 resubmission, retain version 0.1.0: this version has not
+been published, and the reviewer did not request a version bump. Include a
+point-by-point response in the submission comments, then reply on the existing
+review thread with `cran-submissions@r-project.org` copied. Upload only the
+checked `.tar.gz`, not a GitHub ZIP or the supporting log bundle.
 
 ## 8. After acceptance
 

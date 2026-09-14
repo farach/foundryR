@@ -31,6 +31,8 @@ Retrieve a Microsoft Foundry batch
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an existing batch ID.
 foundry_batch_get("batch_abc123")
 }
 }

@@ -16,7 +16,8 @@ vignette: >
 fixture_dir <- "embeddings"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
 # inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
@@ -124,8 +125,10 @@ similarities
 
 Results are sorted by similarity. The two Austen lines pair together and the two
 finance lines pair together, while cross-domain pairs score lower.
+The plots in this vignette are shown when the suggested `ggplot2` package is
+installed.
 
-```{r similarity-heatmap, echo = FALSE, fig.alt = "Heatmap of cosine similarity across four sentences from two domains."}
+```{r similarity-heatmap, echo = FALSE, eval = run_api && requireNamespace("ggplot2", quietly = TRUE), fig.alt = "Heatmap of cosine similarity across four sentences from two domains."}
 label_for <- function(x) {
   dplyr::case_when(
     startsWith(x, "It is a truth") ~ "Austen 1",
@@ -216,7 +219,7 @@ cluster_embeddings |>
   select(text, cluster)
 ```
 
-```{r projection, echo = FALSE, fig.alt = "Two-dimensional PCA projection of sentence embeddings, colored by k-means cluster."}
+```{r projection, echo = FALSE, eval = run_api && requireNamespace("ggplot2", quietly = TRUE), fig.alt = "Two-dimensional PCA projection of sentence embeddings, colored by k-means cluster."}
 pca <- prcomp(embedding_matrix, rank. = 2)
 projection <- tibble::tibble(
   pc1 = pca$x[, 1],
@@ -264,8 +267,8 @@ for large-scale applications where speed matters more than precision.
 3. **Approximate nearest neighbors**: use libraries like `RcppAnnoy` for fast
    similarity search on large datasets.
 
-```{r batch-example, eval = FALSE}
-# Example: process a large collection in batches. Not run here.
+```{r batch-example, eval = TRUE}
+# Defining this helper is local; calling it requires Azure credentials.
 batch_embed <- function(texts, model, batch_size = 100) {
   n_batches <- ceiling(length(texts) / batch_size)
   results <- vector("list", n_batches)

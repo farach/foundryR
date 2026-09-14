@@ -53,6 +53,8 @@ quickstart and has no published OpenAPI specification. It requires the
 
 \examples{
 \dontrun{
+# Requires a configured Azure Content Safety endpoint and credentials
+# with access to the task-adherence preview API.
 foundry_task_adherence(
   tools = list(
     foundry_agent_tool("get_credit_card_limit", "Get the user's credit limit")

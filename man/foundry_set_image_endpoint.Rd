@@ -21,7 +21,15 @@ If not set, \code{foundry_image()} will fall back to \code{AZURE_FOUNDRY_ENDPOIN
 Use this function when DALL-E is deployed on a separate Azure resource.
 }
 \examples{
-\dontrun{
-foundry_set_image_endpoint(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"))
-}
+local({
+  old <- Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT", unset = NA_character_)
+  on.exit({
+    if (is.na(old)) {
+      Sys.unsetenv("AZURE_FOUNDRY_IMAGE_ENDPOINT")
+    } else {
+      Sys.setenv(AZURE_FOUNDRY_IMAGE_ENDPOINT = old)
+    }
+  })
+  foundry_set_image_endpoint("https://example.openai.azure.com")
+})
 }

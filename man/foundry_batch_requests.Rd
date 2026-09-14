@@ -59,7 +59,12 @@ with \code{foundry_file_upload(..., purpose = "batch")} and submitted with
 \code{foundry_batch_create()}.
 }
 \examples{
-jobs <- data.frame(text = c("Summarize this.", "Extract entities."))
-path <- tempfile(fileext = ".jsonl")
-foundry_batch_requests(jobs, input = "text", path = path, model = "gpt-5-nano")
+local({
+  jobs <- data.frame(text = c("Summarize this.", "Extract entities."))
+  path <- tempfile(fileext = ".jsonl")
+  on.exit(unlink(path))
+  foundry_batch_requests(
+    jobs, input = "text", path = path, model = "gpt-5-nano"
+  )
+})
 }

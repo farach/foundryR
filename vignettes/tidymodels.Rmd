@@ -11,7 +11,9 @@ vignette: >
 fixture_dir <- "tidymodels"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
+have_tidymodels <- requireNamespace("tidymodels", quietly = TRUE)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
 # inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
@@ -25,7 +27,7 @@ if (run_api) {
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = run_api
+  eval = run_api && have_tidymodels
 )
 ```
 
@@ -64,9 +66,11 @@ Ensure foundryR is configured with your Azure credentials and you have an embedd
 
 ### Creating a Recipe with Embeddings
 
-Use `step_foundry_embed()` to add embedding generation to your recipe:
+Use `step_foundry_embed()` to add embedding generation to your recipe. Creating
+the recipe is local and runs when the suggested `tidymodels` package is
+installed; `prep()` and `bake()` need the recorded API fixtures when rendering:
 
-```{r basic-recipe}
+```{r basic-recipe, eval = have_tidymodels}
 library(tidymodels)
 library(foundryR)
 
@@ -172,7 +176,7 @@ predictions %>%
 
 Some models support dimension reduction for faster processing:
 
-```{r dimensions, eval = FALSE}
+```{r dimensions, eval = have_tidymodels}
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
@@ -191,7 +195,7 @@ Lower dimensions mean:
 
 Process multiple text columns independently:
 
-```{r multi-column, eval = FALSE}
+```{r multi-column, eval = have_tidymodels}
 # Data with multiple text fields
 data <- tibble(
   title = c("Great Product", "Terrible Experience"),
@@ -211,7 +215,7 @@ recipe_spec <- recipe(outcome ~ ., data = data) %>%
 
 Sometimes you want both the text and embeddings:
 
-```{r keep-original, eval = FALSE}
+```{r keep-original, eval = have_tidymodels}
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
@@ -226,7 +230,7 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
 
 Control the naming of embedding columns:
 
-```{r prefix, eval = FALSE}
+```{r prefix, eval = have_tidymodels}
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
@@ -240,13 +244,20 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
 `step_foundry_embed()` calls the embedding API when a recipe is prepared and
 when new data is baked. In a resampling workflow, each fold prepares its own
 recipe. That means the assessment and analysis sets can be embedded repeatedly
-across folds unless you precompute embeddings outside the recipe.
+across folds unless you cache or precompute embeddings.
 
-There is no built-in cache in `step_foundry_embed()`. This keeps the recipe
-behavior explicit, but it also means cross-validation has a direct API cost. For
-large or repeated experiments, embed the text once with `foundry_embed()` or
-`foundry_embed_batch()`, save the resulting numeric columns, and resample the
-saved embeddings.
+The default, `cache = "none"`, does not read or write a disk cache. To reuse
+embeddings for the same text, model, and dimensions, opt into `cache = "disk"`.
+Without an explicit `cache_dir`, the cache stays inside `tempdir()` for the
+current R session. For a separate temporary workflow, use
+`cache_dir <- tempfile("foundryR-cache-")`; after the workflow finishes, remove
+it with `unlink(cache_dir, recursive = TRUE)`. For persistent reuse, choose a
+directory you intend to keep. `foundry_cache_clear(cache_dir)` removes cached
+embedding files from that directory.
+
+For large or repeated experiments, another option is to embed the text once
+with `foundry_embed()` or `foundry_embed_batch()`, keep the resulting numeric
+columns, and resample those embeddings:
 
 ```{r precompute}
 embedded_reviews <- foundry_embed(
@@ -358,7 +369,7 @@ Each embedding call incurs API costs. Strategies to manage costs:
 
 With 1,536 dimensions per text and thousands of observations, memory can grow quickly:
 
-```{r memory, eval = FALSE}
+```{r memory, eval = TRUE}
 # Estimate memory for 10,000 texts
 n_texts <- 10000
 n_dims <- 1536
@@ -376,7 +387,7 @@ Consider dimension reduction for large datasets.
 
 If you run `prep()` multiple times, column names may conflict:
 
-```{r troubleshoot, eval = FALSE}
+```{r troubleshoot, eval = have_tidymodels}
 # Use a unique prefix if reusing recipes
 recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(text, model = "my-model",
@@ -395,7 +406,8 @@ prepped <- prep(recipe_spec, training = small_sample)
 
 ### Missing credentials
 
-Ensure credentials are set before creating recipes:
+Ensure credentials are set before preparing or baking recipes. These
+configuration and network checks are not run during rendering:
 
 ```{r credentials, eval = FALSE}
 # Check setup
@@ -412,7 +424,7 @@ foundry_set_key("your-api-key")
 - Explore [Content Safety](content-safety.html) for responsible AI
 - Read the [tidymodels documentation](https://www.tidymodels.org/) for more preprocessing options
 
-```{r cleanup, include = FALSE}
+```{r cleanup, include = FALSE, eval = TRUE}
 if (run_api) {
   httptest2::end_vignette()
 }

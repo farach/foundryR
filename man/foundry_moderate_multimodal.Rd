@@ -56,6 +56,8 @@ in a subset of Azure regions.
 
 \examples{
 \dontrun{
+# Requires a configured Azure Content Safety endpoint and credentials
+# with multimodal preview access, base64enc, and your meme.png input file.
 foundry_moderate_multimodal(
   image = "meme.png",
   text = "caption under the image",

@@ -18,14 +18,14 @@ test_that("foundry_get_key retrieves from environment", {
 
 test_that("foundry_get_key returns NULL when not set", {
   withr::local_envvar(AZURE_FOUNDRY_KEY = "")
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
 
   expect_null(foundry_get_key())
 })
 
 test_that("foundry_get_key errors when required and not set", {
   withr::local_envvar(AZURE_FOUNDRY_KEY = "")
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
 
   expect_error(foundry_get_key(required = TRUE), "API key is required")
 })
@@ -54,13 +54,13 @@ test_that("foundry_get_token returns NULL when not set", {
     AZURE_FOUNDRY_TOKEN = "",
     AZURE_OPENAI_TOKEN = ""
   )
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
 
   expect_null(foundry_get_token())
 })
 
 test_that("persistent settings use the package config file", {
-  config_file <- tempfile()
+  config_file <- withr::local_tempfile()
   home <- withr::local_tempdir()
   withr::local_options(foundryR.config_file = config_file)
   withr::local_envvar(
@@ -139,18 +139,23 @@ test_that("request builders select providers by endpoint family", {
     AZURE_FOUNDRY_TOKEN = "",
     AZURE_FOUNDRY_PROJECT_TOKEN = "",
     AZURE_FOUNDRY_ENDPOINT = "https://resource.openai.azure.com",
-    AZURE_FOUNDRY_PROJECT_ENDPOINT =
-      "https://resource.services.ai.azure.com/api/projects/project"
+    AZURE_FOUNDRY_PROJECT_ENDPOINT = "https://resource.services.ai.azure.com/api/projects/project"
   )
   calls <- character()
-  foundry_set_token_provider(function() {
-    calls <<- c(calls, "resource")
-    "resource-token"
-  }, scope = "resource")
-  foundry_set_token_provider(function() {
-    calls <<- c(calls, "project")
-    "project-token"
-  }, scope = "project")
+  foundry_set_token_provider(
+    function() {
+      calls <<- c(calls, "resource")
+      "resource-token"
+    },
+    scope = "resource"
+  )
+  foundry_set_token_provider(
+    function() {
+      calls <<- c(calls, "project")
+      "project-token"
+    },
+    scope = "project"
+  )
 
   foundry_build_v1_request("models", method = "GET")
   foundry_build_project_request("agents", method = "GET")
@@ -166,7 +171,10 @@ test_that("azure cli token provider caches tokens", {
       calls <<- calls + 1L
       arguments <<- args
       jsonlite::toJSON(
-        list(accessToken = paste0("token-", calls), expires_on = as.numeric(Sys.time() + 3600)),
+        list(
+          accessToken = paste0("token-", calls),
+          expires_on = as.numeric(Sys.time() + 3600)
+        ),
         auto_unbox = TRUE
       )
     },

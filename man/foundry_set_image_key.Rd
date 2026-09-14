@@ -20,7 +20,15 @@ uses a different API key than your chat/embedding models.
 If not set, \code{foundry_image()} will fall back to \code{AZURE_FOUNDRY_KEY}.
 }
 \examples{
-\dontrun{
-foundry_set_image_key("your-dalle-api-key")
-}
+local({
+  old <- Sys.getenv("AZURE_FOUNDRY_IMAGE_KEY", unset = NA_character_)
+  on.exit({
+    if (is.na(old)) {
+      Sys.unsetenv("AZURE_FOUNDRY_IMAGE_KEY")
+    } else {
+      Sys.setenv(AZURE_FOUNDRY_IMAGE_KEY = old)
+    }
+  })
+  foundry_set_image_key("example-image-key-not-a-secret")
+})
 }

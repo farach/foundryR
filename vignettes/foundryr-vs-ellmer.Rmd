@@ -16,7 +16,8 @@ vignette: >
 fixture_dir <- "foundryr-vs-ellmer"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 have_ellmer <- requireNamespace("ellmer", quietly = TRUE)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's

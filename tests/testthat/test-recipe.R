@@ -131,7 +131,6 @@ test_that("print.step_foundry_embed works for untrained step", {
   rec <- recipe(outcome ~ text, data = df) %>%
     step_foundry_embed(text, model = "test")
 
-
   # Should not error when printing
   expect_no_error(capture.output(print(rec)))
 })
@@ -185,7 +184,7 @@ test_that("tidy.step_foundry_embed handles NULL model and dimensions", {
   )
 
   rec <- recipe(outcome ~ text, data = df) %>%
-    step_foundry_embed(text)  # No model or dimensions specified
+    step_foundry_embed(text) # No model or dimensions specified
 
   tidied <- tidy(rec$steps[[1]])
 
@@ -413,7 +412,9 @@ test_that("bake.step_foundry_embed uses custom prefix", {
   prepped <- prep(rec, training = df)
   baked <- bake(prepped, new_data = NULL)
 
-  expect_true(all(c("vec_text_1", "vec_text_2", "vec_text_3") %in% names(baked)))
+  expect_true(all(
+    c("vec_text_1", "vec_text_2", "vec_text_3") %in% names(baked)
+  ))
 })
 
 test_that("bake.step_foundry_embed preserves outcome column", {
@@ -478,12 +479,20 @@ test_that("bake.step_foundry_embed handles multiple text columns", {
       call_count <<- call_count + 1
       if (call_count <= 2) {
         # First two calls are for title
-        if (identical(text, df$title)) return(mock_embeddings_title)
-        if (identical(text, as.character(df$title))) return(mock_embeddings_title)
+        if (identical(text, df$title)) {
+          return(mock_embeddings_title)
+        }
+        if (identical(text, as.character(df$title))) {
+          return(mock_embeddings_title)
+        }
       }
       # Later calls are for body
-      if (identical(text, df$body)) return(mock_embeddings_body)
-      if (identical(text, as.character(df$body))) return(mock_embeddings_body)
+      if (identical(text, df$body)) {
+        return(mock_embeddings_body)
+      }
+      if (identical(text, as.character(df$body))) {
+        return(mock_embeddings_body)
+      }
       # Default
       mock_embeddings_title
     },
@@ -537,17 +546,84 @@ test_that("bake.step_foundry_embed handles NA in embeddings", {
 # ============================================================================
 
 test_that("step_foundry_embed stores cache configuration", {
-  df <- data.frame(text = c("a", "b"), outcome = c(1, 0), stringsAsFactors = FALSE)
+  df <- data.frame(
+    text = c("a", "b"),
+    outcome = c(1, 0),
+    stringsAsFactors = FALSE
+  )
+  cache_dir <- withr::local_tempdir()
 
   rec <- recipe(outcome ~ text, data = df) %>%
-    step_foundry_embed(text, model = "test", cache = "disk", cache_dir = "cache/here")
+    step_foundry_embed(
+      text,
+      model = "test",
+      cache = "disk",
+      cache_dir = cache_dir
+    )
 
   expect_equal(rec$steps[[1]]$cache, "disk")
-  expect_equal(rec$steps[[1]]$cache_dir, "cache/here")
+  expect_equal(rec$steps[[1]]$cache_dir, cache_dir)
+})
+
+test_that("the default disk cache stays in the session temporary directory", {
+  expect_identical(
+    foundry_cache_dir(),
+    file.path(tempdir(), "foundryR", "cache")
+  )
+  explicit_dir <- withr::local_tempdir()
+  expect_identical(foundry_cache_dir(explicit_dir), explicit_dir)
+})
+
+test_that("default disk caching does not write to a user cache directory", {
+  user_cache <- withr::local_tempdir()
+  withr::local_envvar(R_USER_CACHE_DIR = user_cache)
+  text <- withr::local_tempfile(pattern = "cache-isolation-")
+  model <- "test"
+  cache_file <- file.path(
+    foundry_cache_dir(),
+    paste0(rlang::hash(list(text, model, NULL)), ".rds")
+  )
+  withr::defer(unlink(cache_file))
+  local_mocked_bindings(
+    foundry_embed = function(text, ...) {
+      tibble::tibble(text = text, embedding = list(c(1, 0)))
+    },
+    .package = "foundryR"
+  )
+
+  result <- foundry_embed_cached(text, model, NULL, cache = "disk")
+
+  expect_equal(result, list(c(1, 0)))
+  expect_equal(readRDS(cache_file), c(1, 0))
+  expect_length(list.files(user_cache, all.files = TRUE, no.. = TRUE), 0L)
+})
+
+test_that("cache directories must be nonempty paths", {
+  expect_snapshot(error = TRUE, foundry_cache_dir(""))
+})
+
+test_that("disk cache directory failures are explicit", {
+  directory <- withr::local_tempdir()
+  withr::local_dir(directory)
+  writeLines("not a directory", "occupied")
+  expect_snapshot(
+    error = TRUE,
+    foundry_embed_cached(
+      "text",
+      "test",
+      NULL,
+      cache = "disk",
+      cache_dir = "occupied"
+    )
+  )
 })
 
 test_that("step_foundry_embed rejects unknown cache modes", {
-  df <- data.frame(text = c("a", "b"), outcome = c(1, 0), stringsAsFactors = FALSE)
+  df <- data.frame(
+    text = c("a", "b"),
+    outcome = c(1, 0),
+    stringsAsFactors = FALSE
+  )
 
   expect_error(
     recipe(outcome ~ text, data = df) %>%
@@ -568,7 +644,12 @@ test_that("bake.step_foundry_embed with disk cache reuses stored embeddings", {
   )
 
   rec <- recipe(outcome ~ text, data = df) %>%
-    step_foundry_embed(text, model = "test", cache = "disk", cache_dir = cache_dir)
+    step_foundry_embed(
+      text,
+      model = "test",
+      cache = "disk",
+      cache_dir = cache_dir
+    )
 
   n_dims <- 4
   requested <- character(0)
@@ -577,7 +658,9 @@ test_that("bake.step_foundry_embed with disk cache reuses stored embeddings", {
       requested <<- c(requested, text)
       tibble::tibble(
         text = text,
-        embedding = lapply(seq_along(text), function(i) as.numeric(seq_len(n_dims))),
+        embedding = lapply(seq_along(text), function(i) {
+          as.numeric(seq_len(n_dims))
+        }),
         n_dims = rep(n_dims, length(text))
       )
     },

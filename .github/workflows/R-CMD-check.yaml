@@ -29,6 +29,8 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       R_KEEP_PKG_SOURCE: yes
+      FOUNDRYR_RUN_LIVE_TESTS: "false"
+      FOUNDRY_RECORD_DOCS: ""
 
     steps:
       - uses: actions/checkout@v4
@@ -46,7 +48,39 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      - name: Test all offline behavior, including snapshots
+        run: |
+          results <- testthat::test_local(reporter = "summary", stop_on_failure = TRUE)
+          results <- as.data.frame(results)
+          jsonlite::write_json(
+            list(
+              tests = nrow(results), passed = sum(results$passed),
+              failed = sum(results$failed), errors = sum(results$error),
+              warnings = sum(results$warning), skipped = sum(results$skipped),
+              R = R.version.string
+            ),
+            file.path(Sys.getenv("RUNNER_TEMP"), "unit-summary.json"),
+            auto_unbox = TRUE, pretty = TRUE
+          )
+        shell: Rscript {0}
+        env:
+          NOT_CRAN: "true"
+
+      - name: Check example timing and side effects
+        run: Rscript .github/scripts/check-examples.R . "${{ runner.temp }}/example-timings.csv"
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
           build_args: 'c("--no-manual","--compact-vignettes=gs+qpdf")'
+          args: 'c("--as-cran", "--run-donttest", "--timings", "--no-manual")'
+
+      - name: Upload regression and example reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-${{ runner.os }}-${{ matrix.config.r }}
+          path: |
+            ${{ runner.temp }}/unit-summary.json
+            ${{ runner.temp }}/example-timings.csv
+          if-no-files-found: warn

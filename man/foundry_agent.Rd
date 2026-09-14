@@ -60,6 +60,8 @@ returns a final answer or \code{max_iterations} is reached.
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+# naming a deployment that supports Responses API function calling.
 get_weather <- function(location) {
   list(location = location, temperature = "70 F")
 }

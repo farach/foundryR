@@ -35,6 +35,8 @@ can be a local file path or an HTTPS Azure Blob Storage URL.
 }
 \examples{
 \dontrun{
+# Requires a configured Azure Content Safety endpoint and credentials,
+# base64enc, and your own local image.png input file.
 foundry_moderate_image("image.png")
 }
 }

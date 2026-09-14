@@ -20,13 +20,11 @@ Invisibly returns TRUE if endpoint was set successfully.
 Set the base endpoint URL for your Azure Content Safety resource.
 }
 \examples{
-\dontrun{
-foundry_set_content_safety_endpoint(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"))
-
-# Store permanently
-foundry_set_content_safety_endpoint(
-  Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"),
-  store = TRUE
-)
-}
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+withr::with_envvar(c(AZURE_CONTENT_SAFETY_ENDPOINT = NA_character_), {
+  foundry_set_content_safety_endpoint(
+    "https://example.cognitiveservices.azure.com"
+  )
+})
+\dontshow{\}) # examplesIf}
 }

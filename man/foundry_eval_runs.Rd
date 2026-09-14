@@ -45,6 +45,7 @@ List evaluation runs
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint, credentials, and an evaluation ID.
 foundry_eval_runs("eval_abc123", status = "completed")
 }
 }

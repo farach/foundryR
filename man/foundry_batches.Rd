@@ -34,6 +34,7 @@ List Microsoft Foundry batches
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials.
 foundry_batches(limit = 10)
 }
 }

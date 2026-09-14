@@ -34,6 +34,7 @@ List Foundry agents
 }
 \examples{
 \dontrun{
+# Requires a configured Azure project endpoint and credentials.
 foundry_agents(limit = 20)
 }
 }

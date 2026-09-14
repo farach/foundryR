@@ -18,7 +18,15 @@ Set the endpoint for Speech in Foundry Tools. This endpoint is used by
 \code{service = "speech"}.
 }
 \examples{
-\dontrun{
-foundry_set_speech_endpoint(Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT"))
-}
+local({
+  old <- Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT", unset = NA_character_)
+  on.exit({
+    if (is.na(old)) {
+      Sys.unsetenv("AZURE_FOUNDRY_SPEECH_ENDPOINT")
+    } else {
+      Sys.setenv(AZURE_FOUNDRY_SPEECH_ENDPOINT = old)
+    }
+  })
+  foundry_set_speech_endpoint("https://example.cognitiveservices.azure.com")
+})
 }

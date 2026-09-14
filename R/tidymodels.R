@@ -28,9 +28,10 @@
 #'   the API; `"disk"` caches each text's embedding on disk (keyed on the text,
 #'   model, and dimensions) so cross-validation folds and repeated bakes reuse
 #'   embeddings instead of re-calling the API.
-#' @param cache_dir Character. Directory for the disk cache. Defaults to
-#'   `tools::R_user_dir("foundryR", "cache")`. Clear it with
-#'   [foundry_cache_clear()].
+#' @param cache_dir Character. Directory for the disk cache. Defaults to a
+#'   package-specific directory inside [tempdir()], lasting only for the current
+#'   R session. Supply a directory explicitly to persist embeddings across
+#'   sessions. Clear it with [foundry_cache_clear()].
 #' @param columns Character vector. Internal use only. Stores column names after
 #'   training.
 #' @param skip Logical. Should the step be skipped when the recipe is baked?
@@ -70,43 +71,31 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' library(recipes)
-#'
-#' # Sample data
+#' \donttest{
+#' # Loading the optional modeling packages can take more than five seconds.
+#' if (requireNamespace("recipes", quietly = TRUE)) {
 #' df <- data.frame(
 #'   text = c("Hello world", "Machine learning is great", "R is awesome"),
 #'   category = c("greeting", "tech", "tech")
 #' )
 #'
-#' # Create a recipe with Foundry embeddings
-#' rec <- recipe(~ text, data = df) %>%
+#' rec <- recipes::recipe(~ text, data = df) |>
 #'   step_foundry_embed(text, model = "text-embedding-ada-002")
+#' rec
+#' }
+#' }
 #'
-#' # Prepare and bake the recipe
-#' prepped <- prep(rec, training = df)
-#' baked <- bake(prepped, new_data = df)
-#'
-#' # With custom dimensions (model-dependent)
-#' rec_custom <- recipe(~ text, data = df) %>%
+#' \dontrun{
+#' # Requires recipes, an Azure embedding deployment, endpoint, and credentials.
+#' df <- data.frame(text = c("Hello world", "Machine learning is great"))
+#' rec <- recipes::recipe(~ text, data = df) |>
 #'   step_foundry_embed(
-#'     text,
-#'     model = "text-embedding-3-small",
-#'     dimensions = 256,
-#'     prefix = "vec_"
+#'     text, model = "text-embedding-3-small", dimensions = 256,
+#'     cache = "disk", cache_dir = file.path(tempdir(), "example-embeddings")
 #'   )
-#'
-#' # Keep original text column
-#' rec_keep <- recipe(~ text, data = df) %>%
-#'   step_foundry_embed(text, model = "text-embedding-ada-002", keep_original = TRUE)
-#'
-#' # Use in a tidymodels workflow
-#' library(tidymodels)
-#'
-#' wf <- workflow() %>%
-#'   add_recipe(rec) %>%
-#'   add_model(logistic_reg()) %>%
-#'   fit(data = train_data)
+#' prepped <- recipes::prep(rec, training = df)
+#' baked <- recipes::bake(prepped, new_data = df)
+#' foundry_cache_clear(file.path(tempdir(), "example-embeddings"))
 #' }
 #'
 #' @seealso [foundry_embed()] for the underlying embedding function,
@@ -114,23 +103,26 @@
 #'   [recipes::prep()] and [recipes::bake()] for processing recipes.
 #'
 #' @family preprocessing steps
-step_foundry_embed <- function(recipe,
-                                ...,
-                                role = "predictor",
-                                trained = FALSE,
-                                model = NULL,
-                                dimensions = NULL,
-                                prefix = "emb_",
-                                keep_original = FALSE,
-                                cache = c("none", "disk"),
-                                cache_dir = NULL,
-                                columns = NULL,
-                                skip = FALSE,
-                                id = NULL) {
-
+step_foundry_embed <- function(
+  recipe,
+  ...,
+  role = "predictor",
+  trained = FALSE,
+  model = NULL,
+  dimensions = NULL,
+  prefix = "emb_",
+  keep_original = FALSE,
+  cache = c("none", "disk"),
+  cache_dir = NULL,
+  columns = NULL,
+  skip = FALSE,
+  id = NULL
+) {
   if (!requireNamespace("recipes", quietly = TRUE)) {
-    stop("Package 'recipes' required. Install with: install.packages('recipes')",
-         call. = FALSE)
+    stop(
+      "Package 'recipes' required. Install with: install.packages('recipes')",
+      call. = FALSE
+    )
   }
   if (is.null(id)) {
     id <- recipes::rand_id("foundry_embed")
@@ -173,18 +165,20 @@ step_foundry_embed <- function(recipe,
 #'
 #' @return A step_foundry_embed object
 #' @noRd
-step_foundry_embed_new <- function(terms,
-                                    role,
-                                    trained,
-                                    model,
-                                    dimensions,
-                                    prefix,
-                                    keep_original,
-                                    cache,
-                                    cache_dir,
-                                    columns,
-                                    skip,
-                                    id) {
+step_foundry_embed_new <- function(
+  terms,
+  role,
+  trained,
+  model,
+  dimensions,
+  prefix,
+  keep_original,
+  cache,
+  cache_dir,
+  columns,
+  skip,
+  id
+) {
   recipes::step(
     subclass = "foundry_embed",
     terms = terms,
@@ -213,7 +207,6 @@ step_foundry_embed_new <- function(terms,
 #' @return An updated `step_foundry_embed` object with `trained = TRUE`
 #' @exportS3Method recipes::prep
 prep.step_foundry_embed <- function(x, training, info = NULL, ...) {
-
   col_names <- recipes::recipes_eval_select(x$terms, training, info)
 
   # Validate that selected columns are text-like
@@ -249,7 +242,6 @@ prep.step_foundry_embed <- function(x, training, info = NULL, ...) {
 #'   text columns removed)
 #' @exportS3Method recipes::bake
 bake.step_foundry_embed <- function(object, new_data, ...) {
-
   col_names <- object$columns
   cache <- object$cache %||% "none"
   cache_dir <- object$cache_dir
@@ -298,26 +290,33 @@ bake.step_foundry_embed <- function(object, new_data, ...) {
 }
 
 
-#' Resolve the foundryR embedding cache directory
-#'
-#' @param cache_dir Character or NULL. Explicit cache directory.
-#'
-#' @return An absolute path to the cache directory.
-#' @keywords internal
 foundry_cache_dir <- function(cache_dir = NULL) {
-  cache_dir %||% tools::R_user_dir("foundryR", "cache")
+  cache_dir <- cache_dir %||% file.path(tempdir(), "foundryR", "cache")
+  foundry_check_character_scalar(cache_dir, "cache_dir")
+  cache_dir
 }
 
 
-foundry_embed_cached <- function(text, model, dimensions, cache = "none", cache_dir = NULL) {
+foundry_embed_cached <- function(
+  text,
+  model,
+  dimensions,
+  cache = "none",
+  cache_dir = NULL
+) {
   if (!identical(cache, "disk")) {
     result <- foundry_embed(text = text, model = model, dimensions = dimensions)
     return(result$embedding)
   }
 
   cache_dir <- foundry_cache_dir(cache_dir)
-  if (!dir.exists(cache_dir)) {
-    dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
+  if (
+    !dir.exists(cache_dir) &&
+      !dir.create(cache_dir, recursive = TRUE, showWarnings = FALSE)
+  ) {
+    cli::cli_abort(
+      "Could not create embedding cache directory: {.path {cache_dir}}."
+    )
   }
 
   keys <- vapply(
@@ -360,16 +359,21 @@ foundry_embed_cached <- function(text, model, dimensions, cache = "none", cache_
 #' Delete cached embeddings written by [step_foundry_embed()] with
 #' `cache = "disk"`.
 #'
-#' @param cache_dir Character. Cache directory. Defaults to
-#'   `tools::R_user_dir("foundryR", "cache")`.
+#' @param cache_dir Character. Cache directory. Defaults to the session's
+#'   temporary embedding cache. Supply the same explicit directory used by
+#'   [step_foundry_embed()] to clear a persistent cache.
 #'
 #' @return Invisibly, the number of cache files removed.
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' foundry_cache_clear()
-#' }
+#' local({
+#'   cache_dir <- tempfile("foundryR-cache-")
+#'   dir.create(cache_dir)
+#'   on.exit(unlink(cache_dir, recursive = TRUE))
+#'   saveRDS(c(1, 0, 0), file.path(cache_dir, "example.rds"))
+#'   foundry_cache_clear(cache_dir)
+#' })
 foundry_cache_clear <- function(cache_dir = NULL) {
   cache_dir <- foundry_cache_dir(cache_dir)
   if (!dir.exists(cache_dir)) {
@@ -377,7 +381,9 @@ foundry_cache_clear <- function(cache_dir = NULL) {
   }
   files <- list.files(cache_dir, pattern = "\\.rds$", full.names = TRUE)
   removed <- sum(file.remove(files))
-  cli::cli_inform("Removed {removed} cached embedding{?s} from {.path {cache_dir}}.")
+  cli::cli_inform(
+    "Removed {removed} cached embedding{?s} from {.path {cache_dir}}."
+  )
   invisible(removed)
 }
 
@@ -390,7 +396,11 @@ foundry_cache_clear <- function(cache_dir = NULL) {
 #'
 #' @return Invisibly returns `x`
 #' @export
-print.step_foundry_embed <- function(x, width = max(20, options()$width - 30), ...) {
+print.step_foundry_embed <- function(
+  x,
+  width = max(20, options()$width - 30),
+  ...
+) {
   title <- "Foundry embeddings for "
 
   if (recipes::is_trained(x)) {

@@ -17,7 +17,11 @@ knitr::opts_chunk$set(
 # Emit plain-text tibble output. Without this, pillar/cli detect a colour-capable
 # session during recording and bake ANSI escape codes into README.md, which
 # GitHub and CRAN render as literal "[90m...[39m" garbage.
-options(cli.num_colors = 1, crayon.enabled = FALSE)
+old_options <- options(cli.num_colors = 1, crayon.enabled = FALSE)
+old_output_hook <- knitr::knit_hooks$get("output")
+knitr::knit_hooks$set(output = function(x, options) {
+  old_output_hook(gsub("[ \t]+\n", "\n", x), options)
+})
 
 fixture_dir <- "tools/readme-fixtures"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
@@ -26,7 +30,8 @@ recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 # root), so look for the recorded fixtures in the same place it writes them.
 fixture_path <- if (dir.exists("vignettes")) file.path("vignettes", fixture_dir) else fixture_dir
 have_fixtures <- dir.exists(fixture_path) && length(list.files(fixture_path)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
 # inst/httptest2/start-vignette.R (redactor on record, placeholders on replay) from
@@ -76,14 +81,31 @@ foundry_check_setup()
 ```
 
 Use `store = TRUE` to persist package settings under
-`tools::R_user_dir("foundryR", "config")` without modifying `.Renviron`:
+`tools::R_user_dir("foundryR", "config")` without modifying `.Renviron`.
+The demonstration below instead uses a temporary configuration file, removes
+it afterward, and restores the previous session settings:
 
 ```r
-foundry_set_endpoint(
-  "https://<resource-name>.openai.azure.com",
-  store = TRUE
-)
-foundry_set_key("your-api-key", store = TRUE)
+local({
+  config_file <- tempfile("foundryR-config-", fileext = ".json")
+  old_options <- options(foundryR.config_file = config_file)
+  old_env <- Sys.getenv(
+    c("AZURE_FOUNDRY_ENDPOINT", "AZURE_FOUNDRY_KEY"),
+    unset = NA_character_
+  )
+  on.exit({
+    options(old_options)
+    Sys.unsetenv(names(old_env)[is.na(old_env)])
+    keep <- !is.na(old_env)
+    if (any(keep)) {
+      do.call(Sys.setenv, as.list(old_env[keep]))
+    }
+    unlink(config_file)
+  }, add = TRUE)
+
+  foundry_set_endpoint("https://example.openai.azure.com", store = TRUE)
+  foundry_set_key("example-key-not-a-secret", store = TRUE)
+})
 ```
 
 The package configuration file is plain text. It inherits the permissions of
@@ -281,8 +303,10 @@ Use foundryR when your organization is committed to Azure and you need the Found
 
 MIT
 
-```{r readme-cleanup, include = FALSE}
+```{r readme-cleanup, include = FALSE, eval = TRUE}
 if (run_api) {
   httptest2::end_vignette()
 }
+options(old_options)
+knitr::knit_hooks$set(output = old_output_hook)
 ```

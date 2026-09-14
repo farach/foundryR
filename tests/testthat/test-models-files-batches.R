@@ -4,7 +4,12 @@ test_that("foundry_models lists v1 models", {
   mock_resp <- mock_httr2_response(list(
     object = "list",
     data = list(
-      list(id = "gpt-4.1", object = "model", created = 1741369938, owned_by = "azure")
+      list(
+        id = "gpt-4.1",
+        object = "model",
+        created = 1741369938,
+        owned_by = "azure"
+      )
     )
   ))
 
@@ -18,7 +23,10 @@ test_that("foundry_models lists v1 models", {
 
   result <- foundry_models()
 
-  expect_equal(captured$url, "https://test-resource.openai.azure.com/openai/v1/models")
+  expect_equal(
+    captured$url,
+    "https://test-resource.openai.azure.com/openai/v1/models"
+  )
   expect_equal(captured$method, "GET")
   expect_equal(result$id, "gpt-4.1")
   expect_s3_class(result$created, "POSIXct")
@@ -26,7 +34,7 @@ test_that("foundry_models lists v1 models", {
 
 test_that("foundry_file_upload builds multipart request", {
   setup_mock_env()
-  path <- tempfile(fileext = ".jsonl")
+  path <- withr::local_tempfile(fileext = ".jsonl")
   writeLines('{"custom_id":"row-1"}', path)
   captured <- NULL
   mock_resp <- mock_httr2_response(list(
@@ -48,7 +56,10 @@ test_that("foundry_file_upload builds multipart request", {
 
   result <- foundry_file_upload(path, purpose = "batch")
 
-  expect_equal(captured$url, "https://test-resource.openai.azure.com/openai/v1/files")
+  expect_equal(
+    captured$url,
+    "https://test-resource.openai.azure.com/openai/v1/files"
+  )
   expect_equal(captured$method, "POST")
   expect_equal(result$file_id, "file_123")
   expect_equal(result$purpose, "batch")
@@ -111,7 +122,7 @@ test_that("foundry_file_get and delete use file paths", {
 test_that("foundry_batch_requests writes executable JSONL", {
   setup_mock_env()
   data <- data.frame(id = c("a", "b"), text = c("one", "two"))
-  path <- tempfile(fileext = ".jsonl")
+  path <- withr::local_tempfile(fileext = ".jsonl")
 
   result <- foundry_batch_requests(
     data,
@@ -132,7 +143,7 @@ test_that("foundry_batch_requests writes executable JSONL", {
 
 test_that("foundry_batch_requests writes structured output fields", {
   data <- data.frame(text = "one")
-  path <- tempfile(fileext = ".jsonl")
+  path <- withr::local_tempfile(fileext = ".jsonl")
   schema <- foundry_schema(label = schema_string())
 
   foundry_batch_requests(
@@ -195,13 +206,16 @@ test_that("foundry_batch_results parses responses output JSONL", {
     request_counts = list(total = 1, completed = 1, failed = 0)
   )
   response <- mock_response_api_response(output_text = "{\"label\":\"yes\"}")
-  output <- paste0(jsonlite::toJSON(
-    list(
-      custom_id = "row-1",
-      response = list(status_code = 200, body = response)
+  output <- paste0(
+    jsonlite::toJSON(
+      list(
+        custom_id = "row-1",
+        response = list(status_code = 200, body = response)
+      ),
+      auto_unbox = TRUE
     ),
-    auto_unbox = TRUE
-  ), "\n")
+    "\n"
+  )
 
   testthat::local_mocked_bindings(
     req_perform = function(req, ...) {
@@ -234,7 +248,10 @@ test_that("foundry_usage sums token columns and rates", {
     output_tokens = c(4, 5)
   )
 
-  result <- foundry_usage(x, rates = c(input = 0.01, cached_input = 0.001, output = 0.02))
+  result <- foundry_usage(
+    x,
+    rates = c(input = 0.01, cached_input = 0.001, output = 0.02)
+  )
 
   expect_equal(result$input_tokens, 30)
   expect_equal(result$cached_input_tokens, 5)

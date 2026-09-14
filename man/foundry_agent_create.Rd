@@ -65,6 +65,8 @@ later be run by name through \code{\link[=foundry_response]{foundry_response()}}
 }
 \examples{
 \dontrun{
+# Requires a configured Azure project endpoint and credentials,
+# plus a model deployment.
 foundry_agent_create(
   name = "france-facts",
   model = "gpt-5-nano",

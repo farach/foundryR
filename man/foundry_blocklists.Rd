@@ -82,6 +82,8 @@ A tibble with blocklist or blocklist-item metadata.
 Create, list, retrieve, delete, and edit Azure AI Content Safety blocklists.
 }
 \examples{
+# Requires a configured Azure Content Safety endpoint and credentials
+# with permission to create and delete the example blocklist.
 if (interactive() &&
     nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT")) &&
     nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_KEY"))) {

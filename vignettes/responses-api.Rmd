@@ -11,7 +11,8 @@ vignette: >
 fixture_dir <- "responses-api"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
 # inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
@@ -139,6 +140,10 @@ The Responses API function-calling contract uses tool definitions with
 `type = "function_call_output"` plus a matching `call_id`. `foundry_tool()`
 builds the tool schema and keeps the R function reference for local execution.
 `foundry_agent()` runs the bounded call, execute, return-output loop.
+
+The tool, MCP, web-search, and reasoning examples below need configured services
+and are not included in the recorded fixtures, so they are not run during
+rendering.
 
 ```{r function-tools, eval = FALSE}
 get_weather <- function(location) {

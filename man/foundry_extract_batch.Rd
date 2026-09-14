@@ -63,8 +63,16 @@ joined back to the input rows.
 }
 \examples{
 \dontrun{
-jobs <- data.frame(text = c("Great service.", "Slow support."))
-schema <- foundry_schema(sentiment = schema_string())
-foundry_extract_batch(jobs, text_col = "text", schema = schema, model = "gpt-5-nano")
+# Requires a configured Azure endpoint, credentials, and a batch deployment.
+local({
+  jobs <- data.frame(text = c("Great service.", "Slow support."))
+  schema <- foundry_schema(sentiment = schema_string())
+  path <- tempfile(fileext = ".jsonl")
+  on.exit(unlink(path))
+  foundry_extract_batch(
+    jobs, text_col = "text", schema = schema,
+    model = "gpt-5-nano", path = path
+  )
+})
 }
 }

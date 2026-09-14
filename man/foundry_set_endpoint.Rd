@@ -20,10 +20,20 @@ Invisibly returns TRUE if endpoint was set successfully.
 Set the base endpoint URL for your Azure AI Foundry resource.
 }
 \examples{
-\dontrun{
-foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+withr::with_envvar(c(AZURE_FOUNDRY_ENDPOINT = NA_character_), {
+  foundry_set_endpoint("https://example.openai.azure.com")
+  foundry_get_endpoint()
+})
 
-# Store permanently
-foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), store = TRUE)
-}
+local({
+  config_file <- tempfile("foundryR-config-", fileext = ".json")
+  on.exit(unlink(config_file))
+  withr::with_options(list(foundryR.config_file = config_file), {
+    withr::with_envvar(c(AZURE_FOUNDRY_ENDPOINT = NA_character_), {
+      foundry_set_endpoint("https://example.openai.azure.com", store = TRUE)
+    })
+  })
+})
+\dontshow{\}) # examplesIf}
 }

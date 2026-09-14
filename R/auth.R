@@ -11,14 +11,10 @@
 #' @return Invisibly returns TRUE if key was set successfully.
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#' # Set key for current session only
-#' foundry_set_key("your-api-key-here")
-#'
-#' # Set key interactively and store permanently
-#' foundry_set_key(store = TRUE)
-#' }
+#' @examplesIf requireNamespace("withr", quietly = TRUE)
+#' withr::with_envvar(c(AZURE_FOUNDRY_KEY = NA_character_), {
+#'   foundry_set_key("example-key-not-a-secret")
+#' })
 foundry_set_key <- function(key = NULL, store = FALSE) {
 
   # Interactive input if key is NULL
@@ -96,10 +92,10 @@ foundry_get_key <- function(key = NULL, required = FALSE) {
 #' @return Invisibly returns `TRUE` if the token was set successfully.
 #' @export
 #'
-#' @examples
-#' \dontrun{
+#' @examplesIf requireNamespace("withr", quietly = TRUE)
+#' withr::with_envvar(c(AZURE_FOUNDRY_TOKEN = NA_character_), {
 #' foundry_set_token("eyJ0eXAiOiJKV1QiLCJhbGciOi...")
-#' }
+#' })
 foundry_set_token <- function(token,
                               store = FALSE,
                               scope = c("resource", "project")) {
@@ -184,9 +180,10 @@ foundry_auth_state$token_providers <- list(resource = NULL, project = NULL)
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' foundry_set_token_provider(foundry_token_azure_cli())
-#' }
+#' local({
+#'   old <- foundry_set_token_provider(foundry_token_azure_cli())
+#'   on.exit(foundry_set_token_provider(old))
+#' })
 foundry_set_token_provider <- function(provider,
                                        scope = c("resource", "project")) {
   scope <- match.arg(scope)
@@ -243,11 +240,12 @@ foundry_token_from_provider <- function(required = FALSE,
 #' @export
 #'
 #' @examples
+#' provider <- foundry_token_azure_cli()
+#' is.function(provider)
+#'
 #' \dontrun{
-#' foundry_set_token_provider(
-#'   foundry_token_azure_cli("https://ai.azure.com"),
-#'   scope = "project"
-#' )
+#' # Requires Azure CLI installed and signed in to the intended Azure tenant.
+#' token <- provider()
 #' }
 foundry_token_azure_cli <- function(resource = "https://cognitiveservices.azure.com",
                                     az = "az") {

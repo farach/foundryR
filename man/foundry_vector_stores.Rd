@@ -118,6 +118,9 @@ A tibble with vector store, file, or search-result metadata.
 Create, list, retrieve, update, delete, and search hosted vector stores.
 }
 \examples{
+# Requires a configured Azure endpoint and credentials with permission
+# to manage vector stores. File operations also need an uploaded file ID
+# in AZURE_FOUNDRY_FILE_ID.
 if (interactive() &&
     nzchar(Sys.getenv("AZURE_FOUNDRY_ENDPOINT")) &&
     nzchar(Sys.getenv("AZURE_FOUNDRY_KEY"))) {

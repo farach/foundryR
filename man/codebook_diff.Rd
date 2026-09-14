@@ -2,20 +2,33 @@
 % Please edit documentation in R/codebook.R
 \name{codebook_diff}
 \alias{codebook_diff}
+\alias{format.foundry_codebook_diff}
+\alias{print.foundry_codebook_diff}
 \title{Compare two codebooks}
 \usage{
 codebook_diff(old, new)
+
+\method{format}{foundry_codebook_diff}(x, ...)
+
+\method{print}{foundry_codebook_diff}(x, ...)
 }
 \arguments{
 \item{old, new}{\code{foundry_codebook} objects to compare.}
+
+\item{x}{A \code{foundry_codebook_diff} object.}
+
+\item{...}{Unused.}
 }
 \value{
-Invisibly returns the printed diff lines.
+\code{codebook_diff()} returns a character vector of diff lines with class
+\code{foundry_codebook_diff}. \code{format()} returns the plain character vector.
+\code{print()} displays the lines and invisibly returns \code{x}.
 }
 \description{
-Print a compact diff of two \code{foundry_codebook} objects, including both
+Create a compact diff of two \code{foundry_codebook} objects, including both
 hashes, a unified diff of instructions, and field-level changes for schema
-properties and examples.
+properties and examples. Assign the result to inspect it without console
+output, or print it to display the diff.
 }
 \examples{
 old <- foundry_codebook(
@@ -33,5 +46,6 @@ new <- foundry_codebook(
     urgent = type_boolean()
   )
 )
-codebook_diff(old, new)
+diff <- codebook_diff(old, new)
+print(diff)
 }

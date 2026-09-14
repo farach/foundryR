@@ -32,3 +32,5 @@
 ^vignettes/tidymodels$
 ^\.mailmap$
 ^CRAN-SUBMISSION\.md$
+^tests/manual$
+^\.serena$

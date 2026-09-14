@@ -56,6 +56,8 @@ foundry_agent_reference <- function(name, version = NULL) {
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure project endpoint and credentials,
+#' # plus a model deployment.
 #' foundry_agent_create(
 #'   name = "france-facts",
 #'   model = "gpt-5-nano",
@@ -134,6 +136,7 @@ foundry_agent_create <- function(name,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure project endpoint and credentials.
 #' foundry_agents(limit = 20)
 #' }
 foundry_agents <- function(limit = NULL,
@@ -171,6 +174,8 @@ foundry_agents <- function(limit = NULL,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure project endpoint and credentials,
+#' # plus an existing agent.
 #' foundry_agent_get("france-facts")
 #' }
 foundry_agent_get <- function(name,
@@ -203,6 +208,8 @@ foundry_agent_get <- function(name,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure project endpoint and credentials,
+#' # plus an existing agent you can delete.
 #' foundry_agent_delete("france-facts")
 #' }
 foundry_agent_delete <- function(name,
@@ -242,6 +249,8 @@ foundry_agent_delete <- function(name,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure project endpoint and credentials,
+#' # plus an existing agent.
 #' foundry_agent_versions("france-facts")
 #' }
 foundry_agent_versions <- function(name,

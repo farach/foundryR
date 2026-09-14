@@ -36,7 +36,7 @@ test_that("foundry_video_job_create builds preview request", {
 
 test_that("foundry_video_job_create builds multipart request with files", {
   setup_mock_env()
-  image <- tempfile(fileext = ".png")
+  image <- withr::local_tempfile(fileext = ".png")
   writeBin(charToRaw("fake image"), image)
   captured <- NULL
   mock_resp <- mock_httr2_response(list(
@@ -99,7 +99,7 @@ test_that("foundry_video job helpers use expected paths", {
 
 test_that("foundry_video_download writes binary content", {
   setup_mock_env()
-  path <- tempfile(fileext = ".mp4")
+  path <- withr::local_tempfile(fileext = ".mp4")
   mock_resp <- mock_httr2_raw_response(charToRaw("video bytes"))
 
   testthat::local_mocked_bindings(
