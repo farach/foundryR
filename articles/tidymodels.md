@@ -46,7 +46,9 @@ an embedding model deployed.
 
 Use
 [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
-to add embedding generation to your recipe:
+to add embedding generation to your recipe. Creating the recipe is local
+and runs when the suggested `tidymodels` package is installed; `prep()`
+and `bake()` need the recorded API fixtures when rendering:
 
 ``` r
 
@@ -269,17 +271,25 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
 calls the embedding API when a recipe is prepared and when new data is
 baked. In a resampling workflow, each fold prepares its own recipe. That
 means the assessment and analysis sets can be embedded repeatedly across
-folds unless you precompute embeddings outside the recipe.
+folds unless you cache or precompute embeddings.
 
-There is no built-in cache in
-[`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md).
-This keeps the recipe behavior explicit, but it also means
-cross-validation has a direct API cost. For large or repeated
-experiments, embed the text once with
+The default, `cache = "none"`, does not read or write a disk cache. To
+reuse embeddings for the same text, model, and dimensions, opt into
+`cache = "disk"`. Without an explicit `cache_dir`, the cache stays
+inside [`tempdir()`](https://rdrr.io/r/base/tempfile.html) for the
+current R session. For a separate temporary workflow, use
+`cache_dir <- tempfile("foundryR-cache-")`; after the workflow finishes,
+remove it with `unlink(cache_dir, recursive = TRUE)`. For persistent
+reuse, choose a directory you intend to keep.
+`foundry_cache_clear(cache_dir)` removes cached embedding files from
+that directory.
+
+For large or repeated experiments, another option is to embed the text
+once with
 [`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md)
 or
 [`foundry_embed_batch()`](https://farach.github.io/foundryR/reference/foundry_embed_batch.md),
-save the resulting numeric columns, and resample the saved embeddings.
+keep the resulting numeric columns, and resample those embeddings:
 
 ``` r
 
@@ -3386,9 +3396,8 @@ more.
 
 ## Cross-validation
 
-Embeddings are generated during
-[`prep()`](https://recipes.tidymodels.org/reference/prep.html), so
-cross-validation follows the usual tidymodels recipe lifecycle:
+Embeddings are generated during `prep()`, so cross-validation follows
+the usual tidymodels recipe lifecycle:
 
 ``` r
 
@@ -3491,6 +3500,7 @@ bytes_per_double <- 8
 
 memory_mb <- (n_texts * n_dims * bytes_per_double) / 1024^2
 print(paste(round(memory_mb), "MB for embeddings alone"))
+#> [1] "117 MB for embeddings alone"
 ```
 
 Consider dimension reduction for large datasets.
@@ -3499,9 +3509,7 @@ Consider dimension reduction for large datasets.
 
 ### “Column already exists” error
 
-If you run
-[`prep()`](https://recipes.tidymodels.org/reference/prep.html) multiple
-times, column names may conflict:
+If you run `prep()` multiple times, column names may conflict:
 
 ``` r
 
@@ -3524,7 +3532,8 @@ prepped <- prep(recipe_spec, training = small_sample)
 
 ### Missing credentials
 
-Ensure credentials are set before creating recipes:
+Ensure credentials are set before preparing or baking recipes. These
+configuration and network checks are not run during rendering:
 
 ``` r
 

@@ -59,6 +59,7 @@ A tibble with one row per file.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials.
 foundry_files(purpose = "batch", limit = 10)
 } # }
 ```

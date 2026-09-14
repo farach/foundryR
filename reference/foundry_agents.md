@@ -49,6 +49,7 @@ A tibble with one row per agent.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure project endpoint and credentials.
 foundry_agents(limit = 20)
 } # }
 ```

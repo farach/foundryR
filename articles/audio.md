@@ -86,15 +86,18 @@ head(transcript$phrases[[1]])
 [`foundry_speak()`](https://farach.github.io/foundryR/reference/foundry_speak.md)
 writes binary audio to disk and returns the file path and byte count –
 handy for experiment stimuli, accessibility assets, and demos. Use your
-text-to-speech deployment name for `model`.
+text-to-speech deployment name for `model`. The examples use temporary
+files and remove them after use; choose an explicit path in your own
+workflow for audio you want to keep.
 
 ``` r
 
+speech_path <- tempfile(fileext = ".mp3")
 speech <- foundry_speak(
   "Hello, world.",
   model = "gpt-4o-mini-tts",
   voice = "alloy",
-  path = tempfile(fileext = ".mp3")
+  path = speech_path
 )
 
 speech[, c("bytes", "model", "voice", "format")]
@@ -104,7 +107,8 @@ speech[, c("bytes", "model", "voice", "format")]
 #> 1 25728 gpt-4o-mini-tts alloy mp3
 ```
 
-Those bytes are the real audio the model returned. Play them here:
+Those bytes are the real audio the model returned. Play them here when
+the suggested `base64enc` package is installed:
 
 Your browser does not support audio playback.
 
@@ -118,11 +122,12 @@ then translate it to English with whisper – both are real API calls.
 
 ``` r
 
+spanish_path <- tempfile(fileext = ".mp3")
 spanish_clip <- foundry_speak(
   "La reunion fue muy util.",
   model = "gpt-4o-mini-tts",
   voice = "alloy",
-  path = tempfile(fileext = ".mp3")
+  path = spanish_path
 )
 ```
 

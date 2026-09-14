@@ -193,7 +193,9 @@ schema fields as columns.</p>
 </h2>
 <p>Interactive extraction is useful while designing the schema. For
 larger jobs, write a JSONL request file and submit it to Azure’s Batch
-API.</p>
+API. The submission below requires Azure credentials and is not run
+during rendering. Its temporary request file is removed after
+upload.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">jsonl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".jsonl"</span><span class="op">)</span></span>
 <span></span>
@@ -220,6 +222,7 @@ API.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_file_upload.html">foundry_file_upload</a></span><span class="op">(</span><span class="va">jsonl</span>, purpose <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">jsonl</span><span class="op">)</span></span>
 <span><span class="va">batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_batch_create.html">foundry_batch_create</a></span><span class="op">(</span><span class="va">file</span><span class="op">$</span><span class="va">file_id</span>, endpoint <span class="op">=</span> <span class="st">"/v1/responses"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/foundry_batch_get.html">foundry_batch_get</a></span><span class="op">(</span><span class="va">batch</span><span class="op">$</span><span class="va">batch_id</span><span class="op">)</span></span></code></pre></div>
 <p>The Batch API is the right choice when the schema is stable and the
@@ -314,8 +317,9 @@ same R workflow.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span>             4 I struggle… negative  instruction   TRUE           I struggled …</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span>             5 The instru… positive  instruction   FALSE          The instruct…</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span>             6 The course… negative  instruction   TRUE           The course n…</span></span></code></pre></div>
-<p>The rendered table and chart below summarize the live extraction
-results.</p>
+<p>The rendered table and chart below summarize the same extraction
+results when the suggested <code>gt</code> and <code>ggplot2</code>
+packages are installed.</p>
 <div id="mwlefoodfi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#mwlefoodfi table {
   font-family: Inter;

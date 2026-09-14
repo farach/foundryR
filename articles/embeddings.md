@@ -117,7 +117,8 @@ similarities
 
 Results are sorted by similarity. The two Austen lines pair together and
 the two finance lines pair together, while cross-domain pairs score
-lower.
+lower. The plots in this vignette are shown when the suggested `ggplot2`
+package is installed.
 
 ![Heatmap of cosine similarity across four sentences from two
 domains.](embeddings_files/figure-html/similarity-heatmap-1.png)
@@ -249,7 +250,7 @@ more than precision.
 
 ``` r
 
-# Example: process a large collection in batches. Not run here.
+# Defining this helper is local; calling it requires Azure credentials.
 batch_embed <- function(texts, model, batch_size = 100) {
   n_batches <- ceiling(length(texts) / batch_size)
   results <- vector("list", n_batches)

@@ -130,13 +130,28 @@
 <span><span class="fu"><a href="reference/foundry_set_key.html">foundry_set_key</a></span><span class="op">(</span><span class="st">"your-api-key"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/foundry_check_setup.html">foundry_check_setup</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Use <code>store = TRUE</code> to persist package settings under <code>tools::R_user_dir("foundryR", "config")</code> without modifying <code>.Renviron</code>:</p>
+<p>Use <code>store = TRUE</code> to persist package settings under <code>tools::R_user_dir("foundryR", "config")</code> without modifying <code>.Renviron</code>. The demonstration below instead uses a temporary configuration file, removes it afterward, and restores the previous session settings:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span></span>
-<span>  <span class="st">"https://&lt;resource-name&gt;.openai.azure.com"</span>,</span>
-<span>  store <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="reference/foundry_set_key.html">foundry_set_key</a></span><span class="op">(</span><span class="st">"your-api-key"</span>, store <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">local</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">config_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"foundryR-config-"</span>, fileext <span class="op">=</span> <span class="st">".json"</span><span class="op">)</span></span>
+<span>  <span class="va">old_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>foundryR.config_file <span class="op">=</span> <span class="va">config_file</span><span class="op">)</span></span>
+<span>  <span class="va">old_env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span>, <span class="st">"AZURE_FOUNDRY_KEY"</span><span class="op">)</span>,</span>
+<span>    unset <span class="op">=</span> <span class="cn">NA_character_</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/on.exit.html" class="external-link">on.exit</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">old_options</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.unsetenv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">old_env</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">old_env</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">keep</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">old_env</span><span class="op">)</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="va">keep</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">Sys.setenv</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">old_env</span><span class="op">[</span><span class="va">keep</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">config_file</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="st">"https://example.openai.azure.com"</span>, store <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="reference/foundry_set_key.html">foundry_set_key</a></span><span class="op">(</span><span class="st">"example-key-not-a-secret"</span>, store <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
 <p>The package configuration file is plain text. It inherits the permissions of your user configuration directory; prefer refreshable token providers or session-only credentials for production use.</p>
 <p>Deployment names can still be set in <code>.Renviron</code> manually:</p>
 <pre class="text"><code>AZURE_FOUNDRY_ENDPOINT=https://&lt;resource-name&gt;.openai.azure.com

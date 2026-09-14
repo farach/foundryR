@@ -29,7 +29,8 @@ pak::pak("farach/onet2r")
 ```
 
 Each package reads its own credentials from the environment, so nothing
-secret appears in your code:
+secret appears in your code. Credential setup is shown but not run
+during rendering:
 
 ``` r
 

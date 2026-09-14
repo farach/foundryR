@@ -159,7 +159,8 @@ Europe, Sweden Central)</li>
 </h3>
 <p>After creating the resource, get your endpoint and API key from
 <strong>Keys and Endpoint</strong> in the Azure Portal, then configure
-foundryR:</p>
+foundryR. This credential setup is not run when building the
+vignette:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span></span>
@@ -246,8 +247,9 @@ High severity</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> The movie had some ac… Sexual          0 safe  <span style="color: #949494;">&lt;list [0]&gt;</span>        <span style="color: #949494;">&lt;named list&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">11</span> The movie had some ac… SelfHarm        0 safe  <span style="color: #949494;">&lt;list [0]&gt;</span>        <span style="color: #949494;">&lt;named list&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">12</span> The movie had some ac… Violence        0 safe  <span style="color: #949494;">&lt;list [0]&gt;</span>        <span style="color: #949494;">&lt;named list&gt;</span></span></span></code></pre></div>
-<p>The rendered table and chart below summarize the same live moderation
-results.</p>
+<p>The rendered table and chart below summarize the same moderation
+results when the suggested <code>gt</code> and <code>ggplot2</code>
+packages are installed.</p>
 <div id="mwlefoodfi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#mwlefoodfi table {
   font-family: Inter;
@@ -752,7 +754,8 @@ results.</p>
 <div class="section level3">
 <h3 id="setting-thresholds">Setting Thresholds<a class="anchor" aria-label="anchor" href="#setting-thresholds"></a>
 </h3>
-<p>Use moderation results to filter or flag content:</p>
+<p>Use moderation results to filter or flag content. This example also
+requires the suggested <code>tidyr</code> package:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -940,7 +943,9 @@ content:</p>
 <div class="section level3">
 <h3 id="building-a-safe-ai-pipeline">Building a Safe AI Pipeline<a class="anchor" aria-label="anchor" href="#building-a-safe-ai-pipeline"></a>
 </h3>
-<p>Combine all three safety features for comprehensive protection:</p>
+<p>Combine all three safety features in a helper. Defining the function
+is local; calling it requires configured Azure services and is not done
+here:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span></span>

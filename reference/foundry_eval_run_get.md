@@ -50,6 +50,7 @@ A one-row tibble describing the run, including aggregate result counts.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint, credentials, and evaluation/run IDs.
 foundry_eval_run_get("eval_abc123", "evalrun_xyz")
 } # }
 ```

@@ -96,6 +96,8 @@ A tibble with blocklist or blocklist-item metadata.
 ## Examples
 
 ``` r
+# Requires a configured Azure Content Safety endpoint and credentials
+# with permission to create and delete the example blocklist.
 if (interactive() &&
     nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT")) &&
     nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_KEY"))) {

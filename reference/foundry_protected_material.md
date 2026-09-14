@@ -38,6 +38,7 @@ A tibble with one row per input text.
 ## Examples
 
 ``` r
+# Requires a configured Azure Content Safety endpoint and credentials.
 if (interactive() &&
     nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT")) &&
     nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_KEY"))) {

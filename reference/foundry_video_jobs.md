@@ -55,6 +55,8 @@ A tibble with one row per video job.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials
+# with access to the video preview API.
 foundry_video_jobs(limit = 10)
 } # }
 ```

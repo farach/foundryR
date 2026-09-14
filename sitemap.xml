@@ -21,7 +21,6 @@
 <url><loc>https://farach.github.io/foundryR/news/index.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/as_foundry_schema.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/bake.step_foundry_embed.html</loc></url>
-<url><loc>https://farach.github.io/foundryR/reference/batch_vector.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/codebook_diff.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/codebook_schema_helpers.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/content_safety_error_body.html</loc></url>
@@ -48,7 +47,6 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_build_request.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_build_v1_request.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_cache_clear.html</loc></url>
-<url><loc>https://farach.github.io/foundryR/reference/foundry_cache_dir.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_chat.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_check_setup.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_codebook.html</loc></url>

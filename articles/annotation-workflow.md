@@ -97,7 +97,9 @@ coded
 ## Move the same job to Azure Batch
 
 Interactive extraction is useful while designing the schema. For larger
-jobs, write a JSONL request file and submit it to Azure’s Batch API.
+jobs, write a JSONL request file and submit it to Azure’s Batch API. The
+submission below requires Azure credentials and is not run during
+rendering. Its temporary request file is removed after upload.
 
 ``` r
 
@@ -126,6 +128,7 @@ foundry_batch_requests(
 )
 
 file <- foundry_file_upload(jsonl, purpose = "batch")
+unlink(jsonl)
 batch <- foundry_batch_create(file$file_id, endpoint = "/v1/responses")
 foundry_batch_get(batch$batch_id)
 ```
@@ -227,8 +230,8 @@ review
 #> 6             6 The course… negative  instruction   TRUE           The course n…
 ```
 
-The rendered table and chart below summarize the live extraction
-results.
+The rendered table and chart below summarize the same extraction results
+when the suggested `gt` and `ggplot2` packages are installed.
 
 | Structured annotations from open-ended responses |  |  |  |  |  |
 |----|----|----|----|----|----|

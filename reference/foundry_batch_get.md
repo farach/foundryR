@@ -44,6 +44,8 @@ A one-row tibble with batch metadata.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an existing batch ID.
 foundry_batch_get("batch_abc123")
 } # }
 ```

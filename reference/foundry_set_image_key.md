@@ -28,7 +28,16 @@ will fall back to `AZURE_FOUNDRY_KEY`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-foundry_set_image_key("your-dalle-api-key")
-} # }
+local({
+  old <- Sys.getenv("AZURE_FOUNDRY_IMAGE_KEY", unset = NA_character_)
+  on.exit({
+    if (is.na(old)) {
+      Sys.unsetenv("AZURE_FOUNDRY_IMAGE_KEY")
+    } else {
+      Sys.setenv(AZURE_FOUNDRY_IMAGE_KEY = old)
+    }
+  })
+  foundry_set_image_key("example-image-key-not-a-secret")
+})
+#> ✔ Image API key set successfully.
 ```

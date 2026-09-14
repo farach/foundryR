@@ -40,8 +40,18 @@ request_file <- foundry_batch_requests(
 )
 
 request_file
+#> # A tibble: 1 × 3
+#>   path                                   requests endpoint     
+#>   <chr>                                     <int> <chr>        
+#> 1 /tmp/RtmpbYeDgm/file25693cfe4914.jsonl        3 /v1/responses
 head(readLines(jsonl), 2)
+#> [1] "{\"custom_id\":\"resp-001\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-5-nano\",\"input\":\"The workshop was clear and practical.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"     
+#> [2] "{\"custom_id\":\"resp-002\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-5-nano\",\"input\":\"I liked the examples but wanted more time.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"
 ```
+
+The example files use R’s temporary directory and are removed after use.
+For results you want to keep, choose an explicit output path in your own
+workflow.
 
 ## Upload and create a batch
 
@@ -51,6 +61,7 @@ are not run while building the vignette.
 ``` r
 
 file <- foundry_file_upload(jsonl, purpose = "batch")
+unlink(jsonl)
 
 batch <- foundry_batch_create(
   input_file_id = file$file_id,
@@ -63,13 +74,17 @@ sizes, completion windows, and request counts.
 
 ## Poll and download results
 
+These service calls are not run during rendering. Poll until the batch
+status is `"completed"` before downloading its output.
+
 ``` r
 
-foundry_batch_get(batch$batch_id)
+batch <- foundry_batch_get(batch$batch_id)
+output_path <- tempfile(fileext = ".jsonl")
 
 foundry_file_download(
   file_id = batch$output_file_id,
-  path = "batch-output.jsonl"
+  path = output_path
 )
 ```
 
@@ -78,8 +93,9 @@ large job:
 
 ``` r
 
-output_lines <- readLines("batch-output.jsonl", n = 2)
+output_lines <- readLines(output_path, n = 2)
 head(output_lines)
+unlink(output_path)
 ```
 
 ## Practical advice

@@ -37,7 +37,8 @@ features in foundryR.
 ### Configuring Credentials
 
 After creating the resource, get your endpoint and API key from **Keys
-and Endpoint** in the Azure Portal, then configure foundryR:
+and Endpoint** in the Azure Portal, then configure foundryR. This
+credential setup is not run when building the vignette:
 
 ``` r
 
@@ -123,8 +124,8 @@ results
 #> 12 The movie had some ac… Violence        0 safe  <list [0]>        <named list>
 ```
 
-The rendered table and chart below summarize the same live moderation
-results.
+The rendered table and chart below summarize the same moderation results
+when the suggested `gt` and `ggplot2` packages are installed.
 
 | Moderation severity by category |      |     |        |      |              |
 |---------------------------------|------|-----|--------|------|--------------|
@@ -139,7 +140,8 @@ category.](content-safety_files/figure-html/moderate-severity-chart-1.png)
 
 ### Setting Thresholds
 
-Use moderation results to filter or flag content:
+Use moderation results to filter or flag content. This example also
+requires the suggested `tidyr` package:
 
 ``` r
 
@@ -339,7 +341,9 @@ result
 
 ### Building a Safe AI Pipeline
 
-Combine all three safety features for comprehensive protection:
+Combine all three safety features in a helper. Defining the function is
+local; calling it requires configured Azure services and is not done
+here:
 
 ``` r
 

@@ -126,9 +126,16 @@ an <code>expires_after</code> object.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".jsonl"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="st">'{"custom_id":"row-1","method":"POST","url":"/v1/responses"}'</span>, <span class="va">path</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">foundry_file_upload</span><span class="op">(</span><span class="va">path</span>, purpose <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Requires a configured Azure endpoint and credentials.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">local</a></span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".jsonl"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/on.exit.html" class="external-link">on.exit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">jobs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>text <span class="op">=</span> <span class="st">"Summarize this."</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="foundry_batch_requests.html">foundry_batch_requests</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">jobs</span>, input <span class="op">=</span> <span class="st">"text"</span>, path <span class="op">=</span> <span class="va">path</span>, model <span class="op">=</span> <span class="st">"gpt-5-nano"</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">foundry_file_upload</span><span class="op">(</span><span class="va">path</span>, purpose <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

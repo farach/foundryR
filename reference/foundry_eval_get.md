@@ -45,6 +45,7 @@ A one-row tibble describing the evaluation.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint, credentials, and an evaluation ID.
 foundry_eval_get("eval_abc123")
 } # }
 ```

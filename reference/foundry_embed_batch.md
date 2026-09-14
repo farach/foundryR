@@ -104,6 +104,8 @@ A tibble with columns:
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an embedding deployment.
 # Embed many texts in parallel
 texts <- c("Hello, world!", "Data science is fun", "R is great")
 embeddings <- foundry_embed_batch(texts, model = "text-embedding-ada-002")

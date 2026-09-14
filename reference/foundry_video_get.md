@@ -44,6 +44,8 @@ A one-row tibble with generation metadata.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an existing video generation ID.
 foundry_video_get("vidgen_abc123")
 } # }
 ```

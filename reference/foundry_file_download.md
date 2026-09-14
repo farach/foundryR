@@ -54,6 +54,11 @@ A tibble with the local path, number of bytes written, and file ID.
 
 ``` r
 if (FALSE) { # \dontrun{
-foundry_file_download("file_abc123", "batch-output.jsonl")
+# Requires a configured Azure endpoint, credentials, and an uploaded file ID.
+local({
+  path <- tempfile(fileext = ".jsonl")
+  on.exit(unlink(path))
+  foundry_file_download("file_abc123", path)
+})
 } # }
 ```

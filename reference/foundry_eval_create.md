@@ -64,6 +64,7 @@ A one-row tibble describing the created evaluation.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials with evals API access.
 foundry_eval_create(
   name = "qa-accuracy",
   data_source_config = foundry_eval_data_config(

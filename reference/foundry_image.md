@@ -158,17 +158,18 @@ to download and save images locally.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure image endpoint and credentials,
+# plus a DALL-E deployment.
 # Generate a single image
 result <- foundry_image("A sunset over mountains", model = "dall-e-3")
 
 # View the image URL
 result$url
 
-# Generate multiple images with HD quality
+# Generate an image with HD quality
 result <- foundry_image(
   "A futuristic cityscape",
   model = "dall-e-3",
-  n = 2,
   quality = "hd",
   style = "vivid"
 )
@@ -182,6 +183,10 @@ result <- foundry_image(
 
 # Save an image to disk
 result <- foundry_image("A cat wearing a hat", model = "dall-e-3")
-foundry_save_image(result, "cat_hat.png")
+local({
+  path <- tempfile(fileext = ".png")
+  on.exit(unlink(path))
+  foundry_save_image(result, path)
+})
 } # }
 ```

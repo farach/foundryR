@@ -29,7 +29,12 @@ Invisibly returns `TRUE` if the endpoint was set successfully.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-foundry_set_project_endpoint(Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT"))
-} # }
+withr::with_envvar(c(AZURE_FOUNDRY_PROJECT_ENDPOINT = NA_character_), {
+  foundry_set_project_endpoint(
+    "https://example.services.ai.azure.com/api/projects/demo"
+  )
+  foundry_get_project_endpoint()
+})
+#> ✔ Project endpoint set to <https://example.services.ai.azure.com/api/projects/demo>
+#> [1] "https://example.services.ai.azure.com/api/projects/demo"
 ```

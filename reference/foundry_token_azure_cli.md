@@ -34,10 +34,12 @@ A zero-argument token provider function.
 ## Examples
 
 ``` r
+provider <- foundry_token_azure_cli()
+is.function(provider)
+#> [1] TRUE
+
 if (FALSE) { # \dontrun{
-foundry_set_token_provider(
-  foundry_token_azure_cli("https://ai.azure.com"),
-  scope = "project"
-)
+# Requires Azure CLI installed and signed in to the intended Azure tenant.
+token <- provider()
 } # }
 ```

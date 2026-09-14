@@ -66,6 +66,7 @@ A tibble with one row per run.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint, credentials, and an evaluation ID.
 foundry_eval_runs("eval_abc123", status = "completed")
 } # }
 ```

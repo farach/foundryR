@@ -29,11 +29,8 @@ Invisibly returns TRUE if key was set successfully.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# Set key for current session only
-foundry_set_key("your-api-key-here")
-
-# Set key interactively and store permanently
-foundry_set_key(store = TRUE)
-} # }
+withr::with_envvar(c(AZURE_FOUNDRY_KEY = NA_character_), {
+  foundry_set_key("example-key-not-a-secret")
+})
+#> ✔ API key set for current session.
 ```

@@ -44,6 +44,8 @@ A one-row tibble with job metadata.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an existing video job ID.
 foundry_video_job_get("videojob_abc123")
 } # }
 ```

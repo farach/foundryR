@@ -44,6 +44,7 @@ A one-row tibble with file metadata.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint, credentials, and an uploaded file ID.
 foundry_file_get("file_abc123")
 } # }
 ```

@@ -30,7 +30,8 @@ Invisibly returns the previous provider.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-foundry_set_token_provider(foundry_token_azure_cli())
-} # }
+local({
+  old <- foundry_set_token_provider(foundry_token_azure_cli())
+  on.exit(foundry_set_token_provider(old))
+})
 ```

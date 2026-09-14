@@ -49,9 +49,26 @@ A tibble with columns:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-texts <- c("I love R", "R is my favorite language", "Python is also good")
-embeddings <- foundry_embed(texts, model = "text-embedding-ada-002")
+# Toy vectors demonstrate local computation without calling Azure.
+embeddings <- tibble::tibble(
+  text = c("Vector A", "Vector B", "Vector C"),
+  embedding = list(c(1, 0), c(1, 1), c(0, 1))
+)
 foundry_similarity(embeddings)
-} # }
+#> # A tibble: 3 × 3
+#>   text_1   text_2   similarity
+#>   <chr>    <chr>         <dbl>
+#> 1 Vector A Vector B      0.707
+#> 2 Vector B Vector C      0.707
+#> 3 Vector A Vector C      0    
+foundry_similarity(embeddings, top_k = 1)
+#> # A tibble: 1 × 3
+#>   text_1   text_2   similarity
+#>   <chr>    <chr>         <dbl>
+#> 1 Vector A Vector B      0.707
+foundry_similarity(embeddings, as_matrix = TRUE)
+#>           Vector A  Vector B  Vector C
+#> Vector A 1.0000000 0.7071068 0.0000000
+#> Vector B 0.7071068 1.0000000 0.7071068
+#> Vector C 0.0000000 0.7071068 1.0000000
 ```

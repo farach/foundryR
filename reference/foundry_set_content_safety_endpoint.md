@@ -27,13 +27,10 @@ Invisibly returns TRUE if endpoint was set successfully.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-foundry_set_content_safety_endpoint(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"))
-
-# Store permanently
-foundry_set_content_safety_endpoint(
-  Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"),
-  store = TRUE
-)
-} # }
+withr::with_envvar(c(AZURE_CONTENT_SAFETY_ENDPOINT = NA_character_), {
+  foundry_set_content_safety_endpoint(
+    "https://example.cognitiveservices.azure.com"
+  )
+})
+#> ✔ Content Safety endpoint set to <https://example.cognitiveservices.azure.com>
 ```

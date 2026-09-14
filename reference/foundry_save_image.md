@@ -44,19 +44,49 @@ time. Use this function to save images locally before the URLs expire.
 ## Examples
 
 ``` r
+# Save a one-pixel PNG without calling Azure.
+if (requireNamespace("base64enc", quietly = TRUE)) {
+  local({
+    image <- tibble::tibble(
+      url = NA_character_,
+      b64_json = paste0(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8",
+        "/x8AAwMCAO+ip1sAAAAASUVORK5CYII="
+      )
+    )
+    path <- tempfile(fileext = ".png")
+    on.exit(unlink(path))
+    foundry_save_image(image, path)
+    file.exists(path)
+  })
+}
+#> ✔ Image saved to /tmp/RtmpouSIgk/file1b02752682de.png (from base64)
+#> [1] TRUE
+
 if (FALSE) { # \dontrun{
-# Generate and save an image
-result <- foundry_image("A beautiful landscape", model = "dall-e-3")
-foundry_save_image(result, "landscape.png")
+# Requires a configured Azure image endpoint and credentials,
+# plus DALL-E deployments.
+local({
+  paths <- replicate(5, tempfile(fileext = ".png"))
+  on.exit(unlink(paths))
 
-# Save a specific image when multiple were generated
-result <- foundry_image("Colorful abstract art", model = "dall-e-3", n = 3)
-foundry_save_image(result, "art_1.png", index = 1)
-foundry_save_image(result, "art_2.png", index = 2)
-foundry_save_image(result, "art_3.png", index = 3)
+  # Generate and save an image
+  result <- foundry_image("A beautiful landscape", model = "dall-e-3")
+  foundry_save_image(result, paths[1])
 
-# Save base64-encoded image
-result <- foundry_image("A cat", model = "dall-e-3", response_format = "b64_json")
-foundry_save_image(result, "cat.png")
+  # DALL-E 2 supports generating several images per request.
+  result <- foundry_image("Colorful abstract art", model = "dall-e-2", n = 3)
+  foundry_save_image(result, paths[2], index = 1)
+  foundry_save_image(result, paths[3], index = 2)
+  foundry_save_image(result, paths[4], index = 3)
+
+  # Save a base64-encoded image
+  if (requireNamespace("base64enc", quietly = TRUE)) {
+    result <- foundry_image(
+      "A cat", model = "dall-e-3", response_format = "b64_json"
+    )
+    foundry_save_image(result, paths[5])
+  }
+})
 } # }
 ```

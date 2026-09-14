@@ -73,6 +73,8 @@ A tibble with one row per grader result, including `score`, `label`,
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials, an evaluation ID,
+# and a completed run ID.
 foundry_eval_run_output_items("eval_abc123", "evalrun_xyz")
 } # }
 ```

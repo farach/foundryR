@@ -40,6 +40,7 @@ A tibble with deletion status.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL.
 response <- foundry_response("Hello")
 foundry_response_delete(response$response_id)
 } # }

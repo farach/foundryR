@@ -215,7 +215,8 @@ is visible.</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> It is a truth universally acknowledged, that a single man i… Analy…     0.014<span style="text-decoration: underline;">6</span></span></span></code></pre></div>
 <p>Results are sorted by similarity. The two Austen lines pair together
 and the two finance lines pair together, while cross-domain pairs score
-lower.</p>
+lower. The plots in this vignette are shown when the suggested
+<code>ggplot2</code> package is installed.</p>
 <p><img src="embeddings_files/figure-html/similarity-heatmap-1.png" class="r-plt" alt="Heatmap of cosine similarity across four sentences from two domains." width="700"></p>
 </div>
 <div class="section level2">
@@ -370,7 +371,7 @@ regenerating them.</li>
 datasets.</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Example: process a large collection in batches. Not run here.</span></span>
+<code class="sourceCode R"><span><span class="co"># Defining this helper is local; calling it requires Azure credentials.</span></span>
 <span><span class="va">batch_embed</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">texts</span>, <span class="va">model</span>, <span class="va">batch_size</span> <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">n_batches</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">ceiling</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">texts</span><span class="op">)</span> <span class="op">/</span> <span class="va">batch_size</span><span class="op">)</span></span>
 <span>  <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">vector</a></span><span class="op">(</span><span class="st">"list"</span>, <span class="va">n_batches</span><span class="op">)</span></span>

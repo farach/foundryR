@@ -131,6 +131,7 @@ provider:
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires an Azure Content Safety endpoint and credentials.
 # Analyze a single text
 foundry_moderate("This is a friendly message.")
 

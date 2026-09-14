@@ -216,6 +216,8 @@ for their lifecycle calls.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+# naming a deployment that supports the Responses API.
 foundry_response("Summarize retrieval-augmented generation.")
 
 first <- foundry_response("Define catastrophic forgetting.")

@@ -53,6 +53,8 @@ A tibble with one row per batch request.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an existing batch ID.
 foundry_batch_results("batch_abc123")
 } # }
 ```

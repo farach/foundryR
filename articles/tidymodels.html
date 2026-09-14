@@ -156,7 +156,9 @@ have an embedding model deployed.</p>
 <h3 id="creating-a-recipe-with-embeddings">Creating a Recipe with Embeddings<a class="anchor" aria-label="anchor" href="#creating-a-recipe-with-embeddings"></a>
 </h3>
 <p>Use <code><a href="../reference/step_foundry_embed.html">step_foundry_embed()</a></code> to add embedding generation to
-your recipe:</p>
+your recipe. Creating the recipe is local and runs when the suggested
+<code>tidymodels</code> package is installed; <code>prep()</code> and
+<code>bake()</code> need the recorded API fixtures when rendering:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidymodels.tidymodels.org" class="external-link">tidymodels</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching packages</span> ────────────────────────────────────── tidymodels 1.5.0 ──</span></span>
@@ -186,7 +188,7 @@ your recipe:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu">recipe</span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span></span>
 <span>    <span class="va">text</span>,</span>
 <span>    model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,</span>
@@ -209,9 +211,9 @@ your recipe:</p>
 <h3 id="preparing-and-baking-the-recipe">Preparing and Baking the Recipe<a class="anchor" aria-label="anchor" href="#preparing-and-baking-the-recipe"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">prepped_recipe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/prep.html" class="external-link">prep</a></span><span class="op">(</span><span class="va">recipe_spec</span>, training <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">prepped_recipe</span> <span class="op">&lt;-</span> <span class="fu">prep</span><span class="op">(</span><span class="va">recipe_spec</span>, training <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">baked_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/bake.html" class="external-link">bake</a></span><span class="op">(</span><span class="va">prepped_recipe</span>, new_data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="va">baked_data</span> <span class="op">&lt;-</span> <span class="fu">bake</span><span class="op">(</span><span class="va">prepped_recipe</span>, new_data <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span><span class="va">baked_data</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 4 × 1,537</span></span></span>
 <span><span class="co">#&gt;   sentiment emb_text_1 emb_text_2 emb_text_3 emb_text_4 emb_text_5 emb_text_6</span></span>
@@ -267,13 +269,13 @@ calls:</p>
 <span><span class="va">test_data</span> <span class="op">&lt;-</span> <span class="fu">testing</span><span class="op">(</span><span class="va">splits</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Define recipe with embeddings</span></span>
-<span><span class="va">embedding_recipe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">review_text</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">embedding_recipe</span> <span class="op">&lt;-</span> <span class="fu">recipe</span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">review_text</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span></span>
 <span>    <span class="va">review_text</span>,</span>
 <span>    model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,</span>
 <span>    keep_original <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_normalize.html" class="external-link">step_normalize</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Normalize embedding dimensions</span></span>
+<span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>  <span class="co"># Normalize embedding dimensions</span></span>
 <span></span>
 <span><span class="co"># Define model</span></span>
 <span><span class="va">log_reg_spec</span> <span class="op">&lt;-</span> <span class="fu">logistic_reg</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -304,7 +306,7 @@ calls:</p>
 </h3>
 <p>Some models support dimension reduction for faster processing:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu">recipe</span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span></span>
 <span>    <span class="va">text</span>,</span>
 <span>    model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,</span>
@@ -326,19 +328,19 @@ Some loss in semantic precision</p>
 <span>  outcome <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">outcome</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu">recipe</span><span class="op">(</span><span class="va">outcome</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span><span class="va">title</span>, model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,</span>
 <span>                     prefix <span class="op">=</span> <span class="st">"title_"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span><span class="va">description</span>, model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,</span>
 <span>                     prefix <span class="op">=</span> <span class="st">"desc_"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_rm.html" class="external-link">step_rm</a></span><span class="op">(</span><span class="va">title</span>, <span class="va">description</span><span class="op">)</span>  <span class="co"># Remove original text columns</span></span></code></pre></div>
+<span>  <span class="fu">step_rm</span><span class="op">(</span><span class="va">title</span>, <span class="va">description</span><span class="op">)</span>  <span class="co"># Remove original text columns</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="keeping-original-columns">Keeping Original Columns<a class="anchor" aria-label="anchor" href="#keeping-original-columns"></a>
 </h3>
 <p>Sometimes you want both the text and embeddings:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu">recipe</span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span></span>
 <span>    <span class="va">text</span>,</span>
 <span>    model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,</span>
@@ -352,7 +354,7 @@ Some loss in semantic precision</p>
 </h3>
 <p>Control the naming of embedding columns:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu">recipe</span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span></span>
 <span>    <span class="va">text</span>,</span>
 <span>    model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,</span>
@@ -366,14 +368,23 @@ Some loss in semantic precision</p>
 <p><code><a href="../reference/step_foundry_embed.html">step_foundry_embed()</a></code> calls the embedding API when a
 recipe is prepared and when new data is baked. In a resampling workflow,
 each fold prepares its own recipe. That means the assessment and
-analysis sets can be embedded repeatedly across folds unless you
-precompute embeddings outside the recipe.</p>
-<p>There is no built-in cache in <code><a href="../reference/step_foundry_embed.html">step_foundry_embed()</a></code>. This
-keeps the recipe behavior explicit, but it also means cross-validation
-has a direct API cost. For large or repeated experiments, embed the text
-once with <code><a href="../reference/foundry_embed.html">foundry_embed()</a></code> or
-<code><a href="../reference/foundry_embed_batch.html">foundry_embed_batch()</a></code>, save the resulting numeric columns,
-and resample the saved embeddings.</p>
+analysis sets can be embedded repeatedly across folds unless you cache
+or precompute embeddings.</p>
+<p>The default, <code>cache = "none"</code>, does not read or write a
+disk cache. To reuse embeddings for the same text, model, and
+dimensions, opt into <code>cache = "disk"</code>. Without an explicit
+<code>cache_dir</code>, the cache stays inside <code><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir()</a></code>
+for the current R session. For a separate temporary workflow, use
+<code>cache_dir &lt;- tempfile("foundryR-cache-")</code>; after the
+workflow finishes, remove it with
+<code>unlink(cache_dir, recursive = TRUE)</code>. For persistent reuse,
+choose a directory you intend to keep.
+<code>foundry_cache_clear(cache_dir)</code> removes cached embedding
+files from that directory.</p>
+<p>For large or repeated experiments, another option is to embed the
+text once with <code><a href="../reference/foundry_embed.html">foundry_embed()</a></code> or
+<code><a href="../reference/foundry_embed_batch.html">foundry_embed_batch()</a></code>, keep the resulting numeric columns,
+and resample those embeddings:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">embedded_reviews</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_embed.html">foundry_embed</a></span><span class="op">(</span></span>
 <span>  <span class="va">reviews</span><span class="op">$</span><span class="va">text</span>,</span>
@@ -3477,7 +3488,7 @@ more.</p>
 <div class="section level2">
 <h2 id="cross-validation">Cross-validation<a class="anchor" aria-label="anchor" href="#cross-validation"></a>
 </h2>
-<p>Embeddings are generated during <code><a href="https://recipes.tidymodels.org/reference/prep.html" class="external-link">prep()</a></code>, so
+<p>Embeddings are generated during <code>prep()</code>, so
 cross-validation follows the usual tidymodels recipe lifecycle:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Create CV folds</span></span>
@@ -3499,14 +3510,14 @@ cross-validation follows the usual tidymodels recipe lifecycle:</p>
 <p>Tune the embedding dimensions alongside model hyperparameters:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Recipe with tunable dimensions</span></span>
-<span><span class="va">tunable_recipe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">tunable_recipe</span> <span class="op">&lt;-</span> <span class="fu">recipe</span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">train_data</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span></span>
 <span>    <span class="va">text</span>,</span>
 <span>    model <span class="op">=</span> <span class="st">"text-embedding-3-small"</span>,</span>
 <span>    dimensions <span class="op">=</span> <span class="fu">tune</span><span class="op">(</span><span class="op">)</span>,  <span class="co"># Will be tuned</span></span>
 <span>    keep_original <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://recipes.tidymodels.org/reference/step_normalize.html" class="external-link">step_normalize</a></span><span class="op">(</span><span class="fu"><a href="https://recipes.tidymodels.org/reference/has_role.html" class="external-link">all_numeric_predictors</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu">step_normalize</span><span class="op">(</span><span class="fu">all_numeric_predictors</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Model with tunable parameters</span></span>
 <span><span class="va">rf_spec</span> <span class="op">&lt;-</span> <span class="fu">rand_forest</span><span class="op">(</span></span>
@@ -3579,7 +3590,8 @@ can grow quickly:</p>
 <span><span class="va">bytes_per_double</span> <span class="op">&lt;-</span> <span class="fl">8</span></span>
 <span></span>
 <span><span class="va">memory_mb</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">n_texts</span> <span class="op">*</span> <span class="va">n_dims</span> <span class="op">*</span> <span class="va">bytes_per_double</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1024</span><span class="op">^</span><span class="fl">2</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">memory_mb</span><span class="op">)</span>, <span class="st">"MB for embeddings alone"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">memory_mb</span><span class="op">)</span>, <span class="st">"MB for embeddings alone"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "117 MB for embeddings alone"</span></span></code></pre></div>
 <p>Consider dimension reduction for large datasets.</p>
 </div>
 </div>
@@ -3589,11 +3601,11 @@ can grow quickly:</p>
 <div class="section level3">
 <h3 id="column-already-exists-error">“Column already exists” error<a class="anchor" aria-label="anchor" href="#column-already-exists-error"></a>
 </h3>
-<p>If you run <code><a href="https://recipes.tidymodels.org/reference/prep.html" class="external-link">prep()</a></code> multiple times, column names may
+<p>If you run <code>prep()</code> multiple times, column names may
 conflict:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use a unique prefix if reusing recipes</span></span>
-<span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/recipe.html" class="external-link">recipe</a></span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="va">recipe_spec</span> <span class="op">&lt;-</span> <span class="fu">recipe</span><span class="op">(</span><span class="va">sentiment</span> <span class="op">~</span> <span class="va">text</span>, data <span class="op">=</span> <span class="va">reviews</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="../reference/step_foundry_embed.html">step_foundry_embed</a></span><span class="op">(</span><span class="va">text</span>, model <span class="op">=</span> <span class="st">"my-model"</span>,</span>
 <span>                     prefix <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"v"</span>, <span class="fu"><a href="https://rdrr.io/r/base/format.html" class="external-link">format</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html" class="external-link">Sys.time</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"%H%M%S"</span><span class="op">)</span>, <span class="st">"_"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -3604,12 +3616,13 @@ conflict:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Prepare in smaller batches</span></span>
 <span><span class="va">small_sample</span> <span class="op">&lt;-</span> <span class="va">reviews</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice_sample</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
-<span><span class="va">prepped</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://recipes.tidymodels.org/reference/prep.html" class="external-link">prep</a></span><span class="op">(</span><span class="va">recipe_spec</span>, training <span class="op">=</span> <span class="va">small_sample</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">prepped</span> <span class="op">&lt;-</span> <span class="fu">prep</span><span class="op">(</span><span class="va">recipe_spec</span>, training <span class="op">=</span> <span class="va">small_sample</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="missing-credentials">Missing credentials<a class="anchor" aria-label="anchor" href="#missing-credentials"></a>
 </h3>
-<p>Ensure credentials are set before creating recipes:</p>
+<p>Ensure credentials are set before preparing or baking recipes. These
+configuration and network checks are not run during rendering:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check setup</span></span>
 <span><span class="fu"><a href="../reference/foundry_check_setup.html">foundry_check_setup</a></span><span class="op">(</span><span class="op">)</span></span>

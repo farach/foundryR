@@ -88,11 +88,16 @@ A tibble with the JSONL path, request count, and endpoint.
 ## Examples
 
 ``` r
-jobs <- data.frame(text = c("Summarize this.", "Extract entities."))
-path <- tempfile(fileext = ".jsonl")
-foundry_batch_requests(jobs, input = "text", path = path, model = "gpt-5-nano")
+local({
+  jobs <- data.frame(text = c("Summarize this.", "Extract entities."))
+  path <- tempfile(fileext = ".jsonl")
+  on.exit(unlink(path))
+  foundry_batch_requests(
+    jobs, input = "text", path = path, model = "gpt-5-nano"
+  )
+})
 #> # A tibble: 1 × 3
 #>   path                                   requests endpoint     
 #>   <chr>                                     <int> <chr>        
-#> 1 /tmp/RtmpjXyiDu/file1c7d694ba0bd.jsonl        2 /v1/responses
+#> 1 /tmp/RtmpouSIgk/file1b0261f226e2.jsonl        2 /v1/responses
 ```

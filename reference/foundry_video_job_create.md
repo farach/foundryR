@@ -80,6 +80,7 @@ A one-row tibble with job metadata and the raw job in a list-column.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint, credentials, and a video deployment.
 foundry_video_job_create(
   "A calm ocean at sunrise",
   model = "my-video-model",

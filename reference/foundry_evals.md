@@ -55,6 +55,7 @@ A tibble with one row per evaluation.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials with evals API access.
 foundry_evals(limit = 10)
 } # }
 ```

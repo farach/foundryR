@@ -212,17 +212,18 @@ Use <code><a href="foundry_save_image.html">foundry_save_image()</a></code> to d
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Requires a configured Azure image endpoint and credentials,</span></span></span>
+<span class="r-in"><span><span class="co"># plus a DALL-E deployment.</span></span></span>
 <span class="r-in"><span><span class="co"># Generate a single image</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">foundry_image</span><span class="op">(</span><span class="st">"A sunset over mountains"</span>, model <span class="op">=</span> <span class="st">"dall-e-3"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># View the image URL</span></span></span>
 <span class="r-in"><span><span class="va">result</span><span class="op">$</span><span class="va">url</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Generate multiple images with HD quality</span></span></span>
+<span class="r-in"><span><span class="co"># Generate an image with HD quality</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">foundry_image</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="st">"A futuristic cityscape"</span>,</span></span>
 <span class="r-in"><span>  model <span class="op">=</span> <span class="st">"dall-e-3"</span>,</span></span>
-<span class="r-in"><span>  n <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>  quality <span class="op">=</span> <span class="st">"hd"</span>,</span></span>
 <span class="r-in"><span>  style <span class="op">=</span> <span class="st">"vivid"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
@@ -236,7 +237,11 @@ Use <code><a href="foundry_save_image.html">foundry_save_image()</a></code> to d
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Save an image to disk</span></span></span>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">foundry_image</span><span class="op">(</span><span class="st">"A cat wearing a hat"</span>, model <span class="op">=</span> <span class="st">"dall-e-3"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="foundry_save_image.html">foundry_save_image</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"cat_hat.png"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">local</a></span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".png"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/on.exit.html" class="external-link">on.exit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="foundry_save_image.html">foundry_save_image</a></span><span class="op">(</span><span class="va">result</span>, <span class="va">path</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

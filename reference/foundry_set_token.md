@@ -36,7 +36,8 @@ Invisibly returns `TRUE` if the token was set successfully.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+withr::with_envvar(c(AZURE_FOUNDRY_TOKEN = NA_character_), {
 foundry_set_token("eyJ0eXAiOiJKV1QiLCJhbGciOi...")
-} # }
+})
+#> ✔ resource bearer token set for current session.
 ```

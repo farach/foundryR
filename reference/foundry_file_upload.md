@@ -58,8 +58,15 @@ A one-row tibble with file metadata.
 
 ``` r
 if (FALSE) { # \dontrun{
-path <- tempfile(fileext = ".jsonl")
-writeLines('{"custom_id":"row-1","method":"POST","url":"/v1/responses"}', path)
-foundry_file_upload(path, purpose = "batch")
+# Requires a configured Azure endpoint and credentials.
+local({
+  path <- tempfile(fileext = ".jsonl")
+  on.exit(unlink(path))
+  jobs <- data.frame(text = "Summarize this.")
+  foundry_batch_requests(
+    jobs, input = "text", path = path, model = "gpt-5-nano"
+  )
+  foundry_file_upload(path, purpose = "batch")
+})
 } # }
 ```

@@ -44,6 +44,8 @@ A one-row tibble describing the agent.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure project endpoint and credentials,
+# plus an existing agent.
 foundry_agent_get("france-facts")
 } # }
 ```

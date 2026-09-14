@@ -30,7 +30,16 @@ DALL-E is deployed on a separate Azure resource.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-foundry_set_image_endpoint(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"))
-} # }
+local({
+  old <- Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT", unset = NA_character_)
+  on.exit({
+    if (is.na(old)) {
+      Sys.unsetenv("AZURE_FOUNDRY_IMAGE_ENDPOINT")
+    } else {
+      Sys.setenv(AZURE_FOUNDRY_IMAGE_ENDPOINT = old)
+    }
+  })
+  foundry_set_image_endpoint("https://example.openai.azure.com")
+})
+#> ✔ Image endpoint set to <https://example.openai.azure.com>
 ```

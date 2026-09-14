@@ -54,6 +54,8 @@ A tibble with one row per agent version.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure project endpoint and credentials,
+# plus an existing agent.
 foundry_agent_versions("france-facts")
 } # }
 ```

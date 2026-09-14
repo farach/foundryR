@@ -21,7 +21,16 @@ Invisibly returns `TRUE` if the key was set successfully.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-foundry_set_speech_key("your-speech-key")
-} # }
+local({
+  old <- Sys.getenv("AZURE_FOUNDRY_SPEECH_KEY", unset = NA_character_)
+  on.exit({
+    if (is.na(old)) {
+      Sys.unsetenv("AZURE_FOUNDRY_SPEECH_KEY")
+    } else {
+      Sys.setenv(AZURE_FOUNDRY_SPEECH_KEY = old)
+    }
+  })
+  foundry_set_speech_key("example-speech-key-not-a-secret")
+})
+#> ✔ Speech API key set successfully.
 ```

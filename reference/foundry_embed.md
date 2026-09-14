@@ -99,6 +99,8 @@ model in Azure AI Foundry first.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus embedding deployments.
 # Single text
 foundry_embed("Hello, world!", model = "text-embedding-ada-002")
 

@@ -162,6 +162,8 @@ Or pass `endpoint` and `api_key` directly to the function.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure Content Safety endpoint and credentials.
+# Reasoning and correction also need an authorized Azure OpenAI deployment.
 # Check groundedness of a QnA response
 result <- foundry_groundedness(
   text = "The capital of France is Paris. It has a population of 12 million.",
@@ -191,11 +193,16 @@ summary_result <- foundry_groundedness(
 )
 
 # With reasoning enabled
+llm_resource <- foundry_llm_resource(
+  endpoint = "https://your-openai.openai.azure.com",
+  deployment_name = "gpt-4o"
+)
 detailed_result <- foundry_groundedness(
   text = "The product was released in 2020 and has sold millions of units.",
   grounding_sources = c("The product launched in 2021 with strong initial sales."),
   query = "When was the product released?",
-  reasoning = TRUE
+  reasoning = TRUE,
+  llm_resource = llm_resource
 )
 
 # Request corrected text (requires a bring-your-own Azure OpenAI deployment)
@@ -205,10 +212,7 @@ corrected <- foundry_groundedness(
   task = "Summarization",
   domain = "Medical",
   correction = TRUE,
-  llm_resource = foundry_llm_resource(
-    endpoint = "https://your-openai.openai.azure.com",
-    deployment_name = "gpt-5-nano"
-  )
+  llm_resource = llm_resource
 )
 corrected$correction_text
 } # }

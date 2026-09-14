@@ -105,6 +105,8 @@ A tibble with one row per input text. Metadata columns are prefixed with
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+# naming a deployment that supports structured outputs.
 schema <- list(
   type = "object",
   properties = list(

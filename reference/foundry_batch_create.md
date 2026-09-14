@@ -59,6 +59,8 @@ A one-row tibble with batch metadata.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus the ID of an uploaded batch file.
 foundry_batch_create("file_abc123", endpoint = "/v1/responses")
 } # }
 ```

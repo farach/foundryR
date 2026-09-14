@@ -108,20 +108,50 @@ Use this function to save images locally before the URLs expire.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Generate and save an image</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="foundry_image.html">foundry_image</a></span><span class="op">(</span><span class="st">"A beautiful landscape"</span>, model <span class="op">=</span> <span class="st">"dall-e-3"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">result</span>, <span class="st">"landscape.png"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Save a one-pixel PNG without calling Azure.</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"base64enc"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">local</a></span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">image</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      url <span class="op">=</span> <span class="cn">NA_character_</span>,</span></span>
+<span class="r-in"><span>      b64_json <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        <span class="st">"iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8"</span>,</span></span>
+<span class="r-in"><span>        <span class="st">"/x8AAwMCAO+ip1sAAAAASUVORK5CYII="</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".png"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/on.exit.html" class="external-link">on.exit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">image</span>, <span class="va">path</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Image saved to <span style="color: #0000BB;">/tmp/RtmpouSIgk/file1b02752682de.png</span> (from base64)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Save a specific image when multiple were generated</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="foundry_image.html">foundry_image</a></span><span class="op">(</span><span class="st">"Colorful abstract art"</span>, model <span class="op">=</span> <span class="st">"dall-e-3"</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">result</span>, <span class="st">"art_1.png"</span>, index <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">result</span>, <span class="st">"art_2.png"</span>, index <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">result</span>, <span class="st">"art_3.png"</span>, index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Requires a configured Azure image endpoint and credentials,</span></span></span>
+<span class="r-in"><span><span class="co"># plus DALL-E deployments.</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">local</a></span><span class="op">(</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">paths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".png"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/on.exit.html" class="external-link">on.exit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">paths</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Save base64-encoded image</span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="foundry_image.html">foundry_image</a></span><span class="op">(</span><span class="st">"A cat"</span>, model <span class="op">=</span> <span class="st">"dall-e-3"</span>, response_format <span class="op">=</span> <span class="st">"b64_json"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">result</span>, <span class="st">"cat.png"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># Generate and save an image</span></span></span>
+<span class="r-in"><span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="foundry_image.html">foundry_image</a></span><span class="op">(</span><span class="st">"A beautiful landscape"</span>, model <span class="op">=</span> <span class="st">"dall-e-3"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">result</span>, <span class="va">paths</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># DALL-E 2 supports generating several images per request.</span></span></span>
+<span class="r-in"><span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="foundry_image.html">foundry_image</a></span><span class="op">(</span><span class="st">"Colorful abstract art"</span>, model <span class="op">=</span> <span class="st">"dall-e-2"</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">result</span>, <span class="va">paths</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, index <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">result</span>, <span class="va">paths</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>, index <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">result</span>, <span class="va">paths</span><span class="op">[</span><span class="fl">4</span><span class="op">]</span>, index <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># Save a base64-encoded image</span></span></span>
+<span class="r-in"><span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"base64enc"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>    <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="foundry_image.html">foundry_image</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>      <span class="st">"A cat"</span>, model <span class="op">=</span> <span class="st">"dall-e-3"</span>, response_format <span class="op">=</span> <span class="st">"b64_json"</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="fu">foundry_save_image</span><span class="op">(</span><span class="va">result</span>, <span class="va">paths</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

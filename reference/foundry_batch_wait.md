@@ -54,6 +54,8 @@ The final one-row batch tibble.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an existing batch ID. Polling may run for longer than five seconds.
 foundry_batch_wait("batch_abc123", interval = 60)
 } # }
 ```

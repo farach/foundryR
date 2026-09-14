@@ -104,6 +104,8 @@ response in list-columns.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure Speech endpoint and credentials,
+# and your own local audio input file.
 foundry_translate_audio("interview-es.mp3", target_language = "en")
 } # }
 ```

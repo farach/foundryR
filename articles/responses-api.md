@@ -143,6 +143,10 @@ execution.
 [`foundry_agent()`](https://farach.github.io/foundryR/reference/foundry_agent.md)
 runs the bounded call, execute, return-output loop.
 
+The tool, MCP, web-search, and reasoning examples below need configured
+services and are not included in the recorded fixtures, so they are not
+run during rendering.
+
 ``` r
 
 get_weather <- function(location) {

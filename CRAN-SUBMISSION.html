@@ -76,12 +76,13 @@
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </li>
 <li><p>Render <code>README.md</code> from <code>README.Rmd</code> and build all vignettes without credentials or live network calls.</p></li>
+<li><p>Check every example against the CRAN manual-review rules: short offline examples run normally, longer examples use <code>\donttest{}</code>, and <code>\dontrun{}</code> explains genuine credential/software prerequisites. Never enable live Azure calls merely to remove an example wrapper.</p></li>
 </ol></div>
 <div class="section level2">
 <h2 id="id_2-run-package-tests">2. Run package tests<a class="anchor" aria-label="anchor" href="#id_2-run-package-tests"></a></h2>
 <p>Run the package tests in a clean R session:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">test</span><span class="op">(</span>stop_on_failure <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>No test may depend on Azure credentials, a writable home directory, or network access. Credentialed contract tests under <code>tests/manual/</code> are separate release checks and are not part of <code>R CMD check</code>.</p>
 </div>
 <div class="section level2">
@@ -94,6 +95,7 @@
 <h2 id="id_4-run-cran-style-checks">4. Run CRAN-style checks<a class="anchor" aria-label="anchor" href="#id_4-run-cran-style-checks"></a></h2>
 <p>Check the tarball:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">R</span> CMD check foundryR_0<span class="op">.</span><span class="dv">1.0</span><span class="op">.</span><span class="fu">tar</span><span class="op">.</span><span class="fu">gz</span> <span class="op">--</span>as-cran</span></code></pre></div>
+<p>Also run with <code>--run-donttest --timings</code>. The <code>Build CRAN source</code> workflow builds one archive, audits its contents, records its SHA-256 checksum, and checks that exact archive on all five supported CI configurations. The Ubuntu R-release job also checks the PDF manual.</p>
 <p>Resolve every package-owned error and warning. Explain unavoidable notes in <code>cran-comments.md</code>; do not claim results that were not produced from the release tarball.</p>
 <p>Run at least:</p>
 <ol style="list-style-type: decimal"><li>Local Windows R release.</li>
@@ -101,7 +103,8 @@
 <li>macOS R release through the existing GitHub Actions matrix.</li>
 <li>win-builder R-release and R-devel: <a href="https://win-builder.r-project.org/" class="external-link uri">https://win-builder.r-project.org/</a>.</li>
 <li>R-hub checks where available: <a href="https://r-hub.github.io/rhub/" class="external-link uri">https://r-hub.github.io/rhub/</a>.</li>
-</ol></div>
+</ol><p>The example-isolation check is <code>.github/scripts/check-examples.R</code>. It records per-topic runtimes, blocks HTTP requests, checks package-related session state, and rejects writes to the working directory or redirected user directories. Standard examples must finish in less than five seconds per help topic.</p>
+</div>
 <div class="section level2">
 <h2 id="id_5-update-cran-commentsmd">5. Update <code>cran-comments.md</code>
 <a class="anchor" aria-label="anchor" href="#id_5-update-cran-commentsmd"></a></h2>
@@ -119,7 +122,8 @@
 <li>Re-run the complete check matrix.</li>
 <li>Update <code>cran-comments.md</code> with the resubmission response.</li>
 <li>Submit a newly built tarball with a new version when CRAN requests one.</li>
-</ol></div>
+</ol><p>For the September 2026 resubmission, retain version 0.1.0: this version has not been published, and the reviewer did not request a version bump. Include a point-by-point response in the submission comments, then reply on the existing review thread with <code>cran-submissions@r-project.org</code> copied. Upload only the checked <code>.tar.gz</code>, not a GitHub ZIP or the supporting log bundle.</p>
+</div>
 <div class="section level2">
 <h2 id="id_8-after-acceptance">8. After acceptance<a class="anchor" aria-label="anchor" href="#id_8-after-acceptance"></a></h2>
 <p>Tag the accepted commit, create a GitHub release from that tag, rebuild the pkgdown site, and only then add <code>install.packages("foundryR")</code> to the README.</p>

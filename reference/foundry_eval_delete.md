@@ -45,6 +45,8 @@ A one-row tibble with `eval_id`, `deleted`, and `object`.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an existing evaluation you can delete.
 foundry_eval_delete("eval_abc123")
 } # }
 ```

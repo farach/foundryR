@@ -94,6 +94,13 @@ A tibble with the output path, byte count, model, voice, and format.
 
 ``` r
 if (FALSE) { # \dontrun{
-foundry_speak("Hello from R.", model = "gpt-4o-mini-tts", voice = "alloy")
+# Requires a configured Azure endpoint, credentials, and a speech deployment.
+local({
+  path <- tempfile(fileext = ".mp3")
+  on.exit(unlink(path))
+  foundry_speak(
+    "Hello from R.", model = "gpt-4o-mini-tts", voice = "alloy", path = path
+  )
+})
 } # }
 ```

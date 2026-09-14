@@ -136,7 +136,16 @@ data frame into the JSON Lines shape expected by the Batch API.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">request_file</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">jsonl</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   path                                   requests endpoint     </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> /tmp/RtmpbYeDgm/file25693cfe4914.jsonl        3 /v1/responses</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">jsonl</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "{\"custom_id\":\"resp-001\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-5-nano\",\"input\":\"The workshop was clear and practical.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"     </span></span>
+<span><span class="co">#&gt; [2] "{\"custom_id\":\"resp-002\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-5-nano\",\"input\":\"I liked the examples but wanted more time.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"</span></span></code></pre></div>
+<p>The example files use R’s temporary directory and are removed after
+use. For results you want to keep, choose an explicit output path in
+your own workflow.</p>
 </div>
 <div class="section level2">
 <h2 id="upload-and-create-a-batch">Upload and create a batch<a class="anchor" aria-label="anchor" href="#upload-and-create-a-batch"></a>
@@ -145,6 +154,7 @@ data frame into the JSON Lines shape expected by the Batch API.</p>
 chunks are not run while building the vignette.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_file_upload.html">foundry_file_upload</a></span><span class="op">(</span><span class="va">jsonl</span>, purpose <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">jsonl</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_batch_create.html">foundry_batch_create</a></span><span class="op">(</span></span>
 <span>  input_file_id <span class="op">=</span> <span class="va">file</span><span class="op">$</span><span class="va">file_id</span>,</span>
@@ -156,18 +166,23 @@ sizes, completion windows, and request counts.</p>
 <div class="section level2">
 <h2 id="poll-and-download-results">Poll and download results<a class="anchor" aria-label="anchor" href="#poll-and-download-results"></a>
 </h2>
+<p>These service calls are not run during rendering. Poll until the
+batch status is <code>"completed"</code> before downloading its
+output.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_batch_get.html">foundry_batch_get</a></span><span class="op">(</span><span class="va">batch</span><span class="op">$</span><span class="va">batch_id</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_batch_get.html">foundry_batch_get</a></span><span class="op">(</span><span class="va">batch</span><span class="op">$</span><span class="va">batch_id</span><span class="op">)</span></span>
+<span><span class="va">output_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".jsonl"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/foundry_file_download.html">foundry_file_download</a></span><span class="op">(</span></span>
 <span>  file_id <span class="op">=</span> <span class="va">batch</span><span class="op">$</span><span class="va">output_file_id</span>,</span>
-<span>  path <span class="op">=</span> <span class="st">"batch-output.jsonl"</span></span>
+<span>  path <span class="op">=</span> <span class="va">output_path</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Output files are JSONL too. Read a few lines first before parsing a
 large job:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">output_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="st">"batch-output.jsonl"</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output_lines</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">output_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">output_path</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output_lines</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">output_path</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="practical-advice">Practical advice<a class="anchor" aria-label="anchor" href="#practical-advice"></a>

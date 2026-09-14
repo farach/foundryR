@@ -50,6 +50,8 @@ A tibble with one row per category and raw response payloads.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure Content Safety endpoint and credentials,
+# base64enc, and your own local image.png input file.
 foundry_moderate_image("image.png")
 } # }
 ```

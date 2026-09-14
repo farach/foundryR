@@ -89,6 +89,8 @@ and geographic boundaries, and tool usage can incur additional costs.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+# naming a deployment with access to the web-search tool.
 foundry_web_search(
   "What are the latest Azure AI Foundry Responses API updates?"
 )

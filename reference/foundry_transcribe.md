@@ -117,8 +117,12 @@ response in list-columns.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires configured Azure Speech/OpenAI endpoints and credentials,
+# the corresponding models, and your own local audio input files.
 foundry_transcribe("interview.mp3", model = "mai-transcribe-1.5")
 foundry_transcribe("interview.mp3", service = "openai", model = "gpt-4o-transcribe")
-foundry_transcribe("speech.wav", service = "openai", model = "whisper", api = "deployment")
+foundry_transcribe(
+  "speech.wav", service = "openai", model = "whisper", api = "deployment"
+)
 } # }
 ```

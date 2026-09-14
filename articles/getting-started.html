@@ -141,21 +141,46 @@ embedding deployments.</p>
 <div class="section level2">
 <h2 id="configure-credentials">Configure credentials<a class="anchor" aria-label="anchor" href="#configure-credentials"></a>
 </h2>
-<p>Set credentials for the current R session:</p>
+<p>Set credentials for the current R session. Credential setup is shown
+but not run when building this vignette:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/foundry_set_key.html">foundry_set_key</a></span><span class="op">(</span><span class="st">"your-api-key"</span><span class="op">)</span></span></code></pre></div>
-<p>For persistent local configuration, use
-<code>store = TRUE</code>:</p>
+<p>For persistent local configuration in your own workflow,
+<code>store = TRUE</code> uses the package configuration file under
+<code>tools::R_user_dir("foundryR", "config")</code> unless you set the
+<code>foundryR.config_file</code> option. It does not modify
+<code>.Renviron</code>. The file is plain text, so prefer session-only
+credentials or refreshable token providers for production use.</p>
+<p>This demonstration instead uses a temporary file and placeholder
+values, then removes the file and restores the previous options and
+environment variables:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span><span class="op">)</span>, store <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/foundry_set_key.html">foundry_set_key</a></span><span class="op">(</span><span class="st">"your-api-key"</span>, store <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p>You can also edit <code>.Renviron</code> directly:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">usethis</span><span class="fu">::</span><span class="fu">edit_r_environ</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>Add values like these, then restart R:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">local</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">config_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"foundryR-config-"</span>, fileext <span class="op">=</span> <span class="st">".json"</span><span class="op">)</span></span>
+<span>  <span class="va">old_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>foundryR.config_file <span class="op">=</span> <span class="va">config_file</span><span class="op">)</span></span>
+<span>  <span class="va">old_env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span>, <span class="st">"AZURE_FOUNDRY_KEY"</span><span class="op">)</span>,</span>
+<span>    unset <span class="op">=</span> <span class="cn">NA_character_</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/on.exit.html" class="external-link">on.exit</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span><span class="va">old_options</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.unsetenv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">old_env</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">old_env</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span>    <span class="va">keep</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">old_env</span><span class="op">)</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="va">keep</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">Sys.setenv</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">old_env</span><span class="op">[</span><span class="va">keep</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">config_file</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="st">"https://example.openai.azure.com"</span>, store <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/foundry_set_key.html">foundry_set_key</a></span><span class="op">(</span><span class="st">"example-key-not-a-secret"</span>, store <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>You can also edit your chosen <code>.Renviron</code> file manually
+with a text editor. The vignette does not open an editor or write this
+file. Add values like these, then restart R:</p>
 <pre class="text"><code>AZURE_FOUNDRY_ENDPOINT=https://&lt;resource-name&gt;.openai.azure.com
 AZURE_FOUNDRY_KEY=your-api-key
 AZURE_FOUNDRY_MODEL=my-gpt4
@@ -168,7 +193,7 @@ AZURE_FOUNDRY_EMBED_MODEL=my-embedding-deployment</code></pre>
 environments that already use service principals, managed identity, or
 Azure role-based access control, use a Microsoft Entra ID bearer
 token:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_token.html">foundry_set_token</a></span><span class="op">(</span><span class="st">"your-entra-token"</span><span class="op">)</span></span></code></pre></div>
 <p>foundryR sends the token in the <code>Authorization</code> header. If
 both a token and an API key are configured, the token takes precedence
@@ -177,14 +202,16 @@ for supported calls.</p>
 <div class="section level2">
 <h2 id="validate-setup">Validate setup<a class="anchor" aria-label="anchor" href="#validate-setup"></a>
 </h2>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>These checks contact your configured Azure resource and are not run
+during rendering.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_check_setup.html">foundry_check_setup</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Test a specific deployment:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_check_setup.html">foundry_check_setup</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-5-nano"</span><span class="op">)</span></span></code></pre></div>
 <p>If you need to see deployments exposed by the v1 model metadata
 endpoint, use:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_models.html">foundry_models</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">models</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"owned_by"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 </div>
@@ -196,7 +223,7 @@ structured outputs, tools, and richer token metadata. The examples below
 omit <code>model =</code>, so foundryR reads the deployment from
 <code>AZURE_FOUNDRY_MODEL</code>; pass <code>model =</code> to target a
 specific deployment.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">response</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span><span class="st">"Answer in one sentence: what is R?"</span><span class="op">)</span></span>
@@ -204,7 +231,7 @@ specific deployment.</p>
 <span><span class="va">response</span><span class="op">$</span><span class="va">output_text</span></span>
 <span><span class="co">#&gt; [1] "R is a free, open-source programming language and environment for statistical computing and graphics, widely used for data analysis and visualization."</span></span></code></pre></div>
 <p>Chain a follow-up turn with <code>previous_response_id</code>:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">follow_up</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Explain why that matters for data analysis in one sentence."</span>,</span>
 <span>  previous_response_id <span class="op">=</span> <span class="va">response</span><span class="op">$</span><span class="va">response_id</span></span>
@@ -218,7 +245,7 @@ specific deployment.</p>
 </h2>
 <p>Use JSON Schema when you need model output to become analyzable
 columns:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"object"</span>,</span>
 <span>  properties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -247,7 +274,7 @@ default for supported models.</p>
 </h2>
 <p>Embeddings convert text to numeric vectors for clustering, semantic
 search, near-duplicate detection, and downstream models:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">texts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"The tutorial was clear."</span>,</span>
 <span>  <span class="st">"The lecture needed more examples."</span>,</span>
@@ -269,11 +296,11 @@ search, near-duplicate detection, and downstream models:</p>
 <p>Content Safety uses a separate Azure AI Content Safety resource. In
 the Azure portal, create an Azure AI Content Safety resource, open
 <strong>Keys and Endpoint</strong>, then configure foundryR:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_content_safety_endpoint.html">foundry_set_content_safety_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_CONTENT_SAFETY_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/foundry_set_content_safety_key.html">foundry_set_content_safety_key</a></span><span class="op">(</span><span class="st">"your-content-safety-key"</span><span class="op">)</span></span></code></pre></div>
 <p>Use groundedness and shields as auditable safety gates:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="st">"The program enrolled 82 students in 2026."</span></span>
 <span><span class="va">answer</span> <span class="op">&lt;-</span> <span class="st">"The program enrolled 82 students in 2026."</span></span>
 <span></span>
@@ -308,7 +335,7 @@ web-search prompts.</p>
 </h2>
 <p>Chat completions are still available for simple assistant
 replies:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_chat.html">foundry_chat</a></span><span class="op">(</span><span class="st">"Answer in one sentence: what is the tidyverse?"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 9</span></span></span>
 <span><span class="co">#&gt;   role      content          model finish_reason prompt_tokens completion_tokens</span></span>

@@ -236,6 +236,9 @@ with <code>type = "function"</code> and follow-up tool outputs with
 and keeps the R function reference for local execution.
 <code><a href="../reference/foundry_agent.html">foundry_agent()</a></code> runs the bounded call, execute,
 return-output loop.</p>
+<p>The tool, MCP, web-search, and reasoning examples below need
+configured services and are not included in the recorded fixtures, so
+they are not run during rendering.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">get_weather</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">location</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>location <span class="op">=</span> <span class="va">location</span>, temperature <span class="op">=</span> <span class="st">"70 F"</span><span class="op">)</span></span>

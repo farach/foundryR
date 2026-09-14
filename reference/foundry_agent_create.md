@@ -98,6 +98,8 @@ A one-row tibble describing the created agent.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure project endpoint and credentials,
+# plus a model deployment.
 foundry_agent_create(
   name = "france-facts",
   model = "gpt-5-nano",

@@ -30,11 +30,8 @@ Invisibly returns TRUE if key was set successfully.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# Set key for current session only
-foundry_set_content_safety_key("your-api-key-here")
-
-# Set key interactively and store permanently
-foundry_set_content_safety_key(store = TRUE)
-} # }
+withr::with_envvar(c(AZURE_CONTENT_SAFETY_KEY = NA_character_), {
+  foundry_set_content_safety_key("example-key-not-a-secret")
+})
+#> ✔ Content Safety API key set for current session.
 ```

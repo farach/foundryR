@@ -27,7 +27,8 @@ The project endpoint URL string, or `NULL`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-foundry_get_project_endpoint()
-} # }
+foundry_get_project_endpoint(
+  "https://example.services.ai.azure.com/api/projects/demo"
+)
+#> [1] "https://example.services.ai.azure.com/api/projects/demo"
 ```

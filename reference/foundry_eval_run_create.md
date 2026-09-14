@@ -62,6 +62,8 @@ A one-row tibble describing the created run.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials, an evaluation ID,
+# and an uploaded JSONL file matching its data-source configuration.
 foundry_eval_run_create(
   eval_id = "eval_abc123",
   data_source = foundry_eval_run_data(file_id = "file-xyz"),

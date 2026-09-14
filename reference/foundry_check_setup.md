@@ -51,11 +51,23 @@ Invisibly returns a list with configuration status:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-# Check basic configuration
-foundry_check_setup()
+if (requireNamespace("withr", quietly = TRUE)) {
+  withr::with_options(list(foundryR.config_file = tempfile()), {
+    withr::with_envvar(c(
+      AZURE_FOUNDRY_ENDPOINT = "https://example.openai.azure.com",
+      AZURE_FOUNDRY_KEY = "example-key-not-a-secret",
+      AZURE_FOUNDRY_TOKEN = "",
+      AZURE_OPENAI_TOKEN = ""
+    ), {
+      status <- foundry_check_setup(verbose = FALSE)
+      status$all_ok
+    })
+  })
+}
+#> [1] TRUE
 
-# Also test a specific deployment
+if (FALSE) { # \dontrun{
+# Requires an Azure deployment, endpoint, and credentials; makes an API call.
 foundry_check_setup(model = "my-gpt4")
 } # }
 ```

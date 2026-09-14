@@ -44,6 +44,8 @@ A tibble with deletion status.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus the ID of a file you can delete.
 foundry_file_delete("file_abc123")
 } # }
 ```

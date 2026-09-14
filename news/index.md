@@ -5,6 +5,25 @@
 Initial CRAN release of foundryR, a tidy interface to Microsoft Azure AI
 Foundry.
 
+### CRAN resubmission
+
+- Short offline examples now run during package checks; authenticated
+  Azure and external-software examples explain their prerequisites.
+  File-writing examples use temporary locations and clean up their
+  output.
+- [`codebook_diff()`](https://farach.github.io/foundryR/reference/codebook_diff.md)
+  now returns a printable character-vector object without writing to the
+  console when assigned;
+  [`format()`](https://rdrr.io/r/base/format.html) provides the plain
+  diff lines.
+- `step_foundry_embed(cache = "disk")` and
+  [`foundry_cache_clear()`](https://farach.github.io/foundryR/reference/foundry_cache_clear.md)
+  now default to a cache inside the R session’s temporary directory. Set
+  `cache_dir` explicitly for a persistent cache. Existing user-directory
+  caches are not deleted or migrated.
+- Vignette replay hooks now restore environment variables, options, and
+  redactor settings when replay ends.
+
 ### New features
 
 - Added Agent Service support for named, versioned prompt agents with
@@ -208,9 +227,7 @@ Foundry.
 
 - [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
   now checks for before generating its default step identifier, and is
-  declared for its exported
-  [`tidy()`](https://generics.r-lib.org/reference/tidy.html) method
-  (CRAN readiness).
+  declared for its exported `tidy()` method (CRAN readiness).
 
 - [`foundry_groundedness()`](https://farach.github.io/foundryR/reference/foundry_groundedness.md)
   now supports the Content Safety correction feature via

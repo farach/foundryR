@@ -49,6 +49,7 @@ A tibble with one row per batch.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure endpoint and credentials.
 foundry_batches(limit = 10)
 } # }
 ```

@@ -260,6 +260,8 @@ repeated-extraction consistency, and record reproducibility metadata.
 - [`foundry_codebook()`](https://farach.github.io/foundryR/reference/foundry_codebook.md)
   : Create a measurement codebook
 - [`codebook_diff()`](https://farach.github.io/foundryR/reference/codebook_diff.md)
+  [`format(`*`<foundry_codebook_diff>`*`)`](https://farach.github.io/foundryR/reference/codebook_diff.md)
+  [`print(`*`<foundry_codebook_diff>`*`)`](https://farach.github.io/foundryR/reference/codebook_diff.md)
   : Compare two codebooks
 - [`foundry_provenance()`](https://farach.github.io/foundryR/reference/foundry_provenance.md)
   : Capture model and schema provenance

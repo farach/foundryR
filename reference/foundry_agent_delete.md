@@ -44,6 +44,8 @@ A one-row tibble with `agent_name` and `deleted`.
 
 ``` r
 if (FALSE) { # \dontrun{
+# Requires a configured Azure project endpoint and credentials,
+# plus an existing agent you can delete.
 foundry_agent_delete("france-facts")
 } # }
 ```
