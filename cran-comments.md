@@ -39,20 +39,22 @@ R-release, R-devel, and R-oldrel-1. They include the offline unit tests and
 snapshots, `R CMD check --as-cran --run-donttest`, example timing and
 side-effect checks, and pkgdown rendering with local link and asset checks.
 
-Final native check results are recorded after the release jobs complete.
-The September 1 pretest results are not being reused as resubmission results.
+All five native jobs completed with `Status: OK` (0 errors, 0 warnings, and
+0 notes) on September 14, 2026 UTC:
 
-## Local environment note
+- Windows x64: R 4.6.1.
+- macOS ARM64: R 4.6.1.
+- Ubuntu x64: R 4.6.1, R-devel (2026-09-12 r90533), and R 4.5.3.
 
-The local host cannot produce a valid full `R CMD check` result. Loading a
-freshly downloaded CRAN binary of either `rlang` or `cli` alone exits the x86_64
-R process with Windows status `0xC0000409` on this ARM64 machine. The same
-environment-level failure terminates package installation during lazy loading.
-This reproduces without loading foundryR.
+Each platform's offline test run reported 988 passing expectations, no failures,
+errors, or warnings, and 10 intentional live-Azure integration-test skips.
+The example audit covers 107 help topics, excludes credentialed `\dontrun{}`
+code, and executes the `\donttest{}` example as well. All standard examples
+meet the five-second-per-topic limit without live HTTP requests or persistent
+file writes.
 
-The native Windows x64 GitHub Actions job completed with `Status: OK`, as did
-the macOS and Linux jobs. The local emulation failure is therefore not a package
-check failure.
+CI run: <https://github.com/farach/foundryR/actions/runs/34792782471>.
+The September 1 pretests are not being reused as resubmission results.
 
 ## Method references
 
