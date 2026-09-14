@@ -43,7 +43,7 @@ request_file
 #> # A tibble: 1 × 3
 #>   path                                   requests endpoint     
 #>   <chr>                                     <int> <chr>        
-#> 1 /tmp/RtmpbYeDgm/file25693cfe4914.jsonl        3 /v1/responses
+#> 1 /tmp/Rtmpr9nMpQ/file23db47d646b2.jsonl        3 /v1/responses
 head(readLines(jsonl), 2)
 #> [1] "{\"custom_id\":\"resp-001\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-5-nano\",\"input\":\"The workshop was clear and practical.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"     
 #> [2] "{\"custom_id\":\"resp-002\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-5-nano\",\"input\":\"I liked the examples but wanted more time.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"
