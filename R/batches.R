@@ -25,9 +25,14 @@
 #' @export
 #'
 #' @examples
-#' jobs <- data.frame(text = c("Summarize this.", "Extract entities."))
-#' path <- tempfile(fileext = ".jsonl")
-#' foundry_batch_requests(jobs, input = "text", path = path, model = "gpt-5-nano")
+#' local({
+#'   jobs <- data.frame(text = c("Summarize this.", "Extract entities."))
+#'   path <- tempfile(fileext = ".jsonl")
+#'   on.exit(unlink(path))
+#'   foundry_batch_requests(
+#'     jobs, input = "text", path = path, model = "gpt-5-nano"
+#'   )
+#' })
 foundry_batch_requests <- function(data,
                                    input,
                                    path,
@@ -149,6 +154,8 @@ foundry_batch_requests <- function(data,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus an existing batch ID.
 #' foundry_batch_results("batch_abc123")
 #' }
 foundry_batch_results <- function(batch_id,
@@ -220,6 +227,8 @@ foundry_batch_results <- function(batch_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus an existing batch ID. Polling may run for longer than five seconds.
 #' foundry_batch_wait("batch_abc123", interval = 60)
 #' }
 foundry_batch_wait <- function(batch_id,
@@ -283,9 +292,17 @@ foundry_batch_wait <- function(batch_id,
 #'
 #' @examples
 #' \dontrun{
-#' jobs <- data.frame(text = c("Great service.", "Slow support."))
-#' schema <- foundry_schema(sentiment = schema_string())
-#' foundry_extract_batch(jobs, text_col = "text", schema = schema, model = "gpt-5-nano")
+#' # Requires a configured Azure endpoint, credentials, and a batch deployment.
+#' local({
+#'   jobs <- data.frame(text = c("Great service.", "Slow support."))
+#'   schema <- foundry_schema(sentiment = schema_string())
+#'   path <- tempfile(fileext = ".jsonl")
+#'   on.exit(unlink(path))
+#'   foundry_extract_batch(
+#'     jobs, text_col = "text", schema = schema,
+#'     model = "gpt-5-nano", path = path
+#'   )
+#' })
 #' }
 foundry_extract_batch <- function(data,
                                   text_col,
@@ -441,6 +458,8 @@ foundry_usage <- function(x, rates = NULL) {
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus the ID of an uploaded batch file.
 #' foundry_batch_create("file_abc123", endpoint = "/v1/responses")
 #' }
 foundry_batch_create <- function(input_file_id,
@@ -487,6 +506,7 @@ foundry_batch_create <- function(input_file_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials.
 #' foundry_batches(limit = 10)
 #' }
 foundry_batches <- function(limit = NULL,
@@ -526,6 +546,8 @@ foundry_batches <- function(limit = NULL,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus an existing batch ID.
 #' foundry_batch_get("batch_abc123")
 #' }
 foundry_batch_get <- function(batch_id,
@@ -558,6 +580,8 @@ foundry_batch_get <- function(batch_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus the ID of a batch that can be cancelled.
 #' foundry_batch_cancel("batch_abc123")
 #' }
 foundry_batch_cancel <- function(batch_id,

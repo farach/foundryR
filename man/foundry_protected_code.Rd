@@ -50,6 +50,8 @@ quickstarts and has no published OpenAPI specification. It requires the
 
 \examples{
 \dontrun{
+# Requires a configured Azure Content Safety endpoint and credentials
+# with access to the protected-code preview API.
 foundry_protected_code("import pygame\npygame.init()")
 }
 }

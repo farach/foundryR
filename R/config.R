@@ -10,13 +10,21 @@
 #' @return Invisibly returns TRUE if endpoint was set successfully.
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#' foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
+#' @examplesIf requireNamespace("withr", quietly = TRUE)
+#' withr::with_envvar(c(AZURE_FOUNDRY_ENDPOINT = NA_character_), {
+#'   foundry_set_endpoint("https://example.openai.azure.com")
+#'   foundry_get_endpoint()
+#' })
 #'
-#' # Store permanently
-#' foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), store = TRUE)
-#' }
+#' local({
+#'   config_file <- tempfile("foundryR-config-", fileext = ".json")
+#'   on.exit(unlink(config_file))
+#'   withr::with_options(list(foundryR.config_file = config_file), {
+#'     withr::with_envvar(c(AZURE_FOUNDRY_ENDPOINT = NA_character_), {
+#'       foundry_set_endpoint("https://example.openai.azure.com", store = TRUE)
+#'     })
+#'   })
+#' })
 foundry_set_endpoint <- function(endpoint, store = FALSE) {
 
   if (missing(endpoint) || is.null(endpoint) || endpoint == "") {
@@ -50,10 +58,7 @@ foundry_set_endpoint <- function(endpoint, store = FALSE) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Get current endpoint
-#' foundry_get_endpoint()
-#' }
+#' foundry_get_endpoint("https://example.openai.azure.com/")
 foundry_get_endpoint <- function(endpoint = NULL, required = FALSE) {
   if (is.null(endpoint)) {
     endpoint <- Sys.getenv("AZURE_FOUNDRY_ENDPOINT")
@@ -92,10 +97,13 @@ foundry_get_endpoint <- function(endpoint = NULL, required = FALSE) {
 #' @return Invisibly returns `TRUE` if the endpoint was set successfully.
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#' foundry_set_project_endpoint(Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT"))
-#' }
+#' @examplesIf requireNamespace("withr", quietly = TRUE)
+#' withr::with_envvar(c(AZURE_FOUNDRY_PROJECT_ENDPOINT = NA_character_), {
+#'   foundry_set_project_endpoint(
+#'     "https://example.services.ai.azure.com/api/projects/demo"
+#'   )
+#'   foundry_get_project_endpoint()
+#' })
 foundry_set_project_endpoint <- function(endpoint, store = FALSE) {
   if (missing(endpoint) || is.null(endpoint) || endpoint == "") {
     cli::cli_abort("Project endpoint URL is required.")
@@ -126,9 +134,9 @@ foundry_set_project_endpoint <- function(endpoint, store = FALSE) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' foundry_get_project_endpoint()
-#' }
+#' foundry_get_project_endpoint(
+#'   "https://example.services.ai.azure.com/api/projects/demo"
+#' )
 foundry_get_project_endpoint <- function(endpoint = NULL, required = FALSE) {
   if (is.null(endpoint)) {
     endpoint <- Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT")

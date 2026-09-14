@@ -11,7 +11,8 @@ vignette: >
 fixture_dir <- "files-batches"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
 # inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
@@ -29,7 +30,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r libraries}
+```{r libraries, eval = TRUE}
 library(foundryR)
 ```
 
@@ -42,7 +43,7 @@ classification, or large-scale summarization.
 `foundry_batch_requests()` runs locally. It converts a data frame into the JSON
 Lines shape expected by the Batch API.
 
-```{r batch-jsonl}
+```{r batch-jsonl, eval = TRUE}
 survey <- data.frame(
   id = c("resp-001", "resp-002", "resp-003"),
   response = c(
@@ -69,6 +70,9 @@ request_file
 head(readLines(jsonl), 2)
 ```
 
+The example files use R's temporary directory and are removed after use. For
+results you want to keep, choose an explicit output path in your own workflow.
+
 ## Upload and create a batch
 
 Uploading and batch creation call the Foundry service, so these chunks are not
@@ -76,6 +80,7 @@ run while building the vignette.
 
 ```{r upload-create, eval = FALSE}
 file <- foundry_file_upload(jsonl, purpose = "batch")
+unlink(jsonl)
 
 batch <- foundry_batch_create(
   input_file_id = file$file_id,
@@ -88,20 +93,25 @@ completion windows, and request counts.
 
 ## Poll and download results
 
+These service calls are not run during rendering. Poll until the batch status
+is `"completed"` before downloading its output.
+
 ```{r poll-download, eval = FALSE}
-foundry_batch_get(batch$batch_id)
+batch <- foundry_batch_get(batch$batch_id)
+output_path <- tempfile(fileext = ".jsonl")
 
 foundry_file_download(
   file_id = batch$output_file_id,
-  path = "batch-output.jsonl"
+  path = output_path
 )
 ```
 
 Output files are JSONL too. Read a few lines first before parsing a large job:
 
 ```{r output-shape, eval = FALSE}
-output_lines <- readLines("batch-output.jsonl", n = 2)
+output_lines <- readLines(output_path, n = 2)
 head(output_lines)
+unlink(output_path)
 ```
 
 ## Practical advice
@@ -111,7 +121,8 @@ head(output_lines)
 - Store prompts and schema versions with your analysis code for reproducibility.
 - Download both output and error files when a batch finishes.
 
-```{r cleanup, include = FALSE}
+```{r cleanup, include = FALSE, eval = TRUE}
+unlink(jsonl)
 if (run_api) {
   httptest2::end_vignette()
 }

@@ -56,6 +56,8 @@ a text prompt.
 }
 \examples{
 \dontrun{
+# Requires a configured Azure image endpoint and credentials,
+# an image deployment, and your own local input.png image.
 foundry_image_edit("input.png", "Make the sky more dramatic", model = "gpt-image-1")
 }
 }

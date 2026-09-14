@@ -71,6 +71,8 @@ foundry_agreement <- function(data, estimate, truth) {
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+#' # naming a deployment that supports structured outputs.
 #' schema <- foundry_schema(label = schema_enum(c("yes", "no")))
 #' foundry_consistency(c("Example text"), schema, n = 3)
 #' }

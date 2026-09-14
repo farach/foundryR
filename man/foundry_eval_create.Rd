@@ -45,6 +45,7 @@ more graders (\code{testing_criteria}). Evaluations are run against data with
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials with evals API access.
 foundry_eval_create(
   name = "qa-accuracy",
   data_source_config = foundry_eval_data_config(

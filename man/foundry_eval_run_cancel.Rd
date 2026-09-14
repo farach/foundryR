@@ -35,6 +35,8 @@ Cancel an evaluation run
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials, an evaluation ID,
+# and a run ID that can be cancelled.
 foundry_eval_run_cancel("eval_abc123", "evalrun_xyz")
 }
 }

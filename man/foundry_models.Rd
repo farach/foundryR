@@ -35,6 +35,8 @@ other v1 helpers.
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials.
+# Replace gpt-5-nano with an existing deployment name.
 foundry_models()
 foundry_models("gpt-5-nano")
 }

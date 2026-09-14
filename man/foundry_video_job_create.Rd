@@ -54,6 +54,7 @@ feature and returns a job that should be polled with \code{foundry_video_job_get
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint, credentials, and a video deployment.
 foundry_video_job_create(
   "A calm ocean at sunrise",
   model = "my-video-model",

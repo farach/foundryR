@@ -10,9 +10,17 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' foundry_set_speech_endpoint(Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT"))
-#' }
+#' local({
+#'   old <- Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT", unset = NA_character_)
+#'   on.exit({
+#'     if (is.na(old)) {
+#'       Sys.unsetenv("AZURE_FOUNDRY_SPEECH_ENDPOINT")
+#'     } else {
+#'       Sys.setenv(AZURE_FOUNDRY_SPEECH_ENDPOINT = old)
+#'     }
+#'   })
+#'   foundry_set_speech_endpoint("https://example.cognitiveservices.azure.com")
+#' })
 foundry_set_speech_endpoint <- function(endpoint) {
   foundry_check_character_scalar(endpoint, "endpoint")
   endpoint <- sub("/$", "", endpoint)
@@ -30,9 +38,17 @@ foundry_set_speech_endpoint <- function(endpoint) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' foundry_set_speech_key("your-speech-key")
-#' }
+#' local({
+#'   old <- Sys.getenv("AZURE_FOUNDRY_SPEECH_KEY", unset = NA_character_)
+#'   on.exit({
+#'     if (is.na(old)) {
+#'       Sys.unsetenv("AZURE_FOUNDRY_SPEECH_KEY")
+#'     } else {
+#'       Sys.setenv(AZURE_FOUNDRY_SPEECH_KEY = old)
+#'     }
+#'   })
+#'   foundry_set_speech_key("example-speech-key-not-a-secret")
+#' })
 foundry_set_speech_key <- function(key) {
   foundry_check_character_scalar(key, "key")
   Sys.setenv(AZURE_FOUNDRY_SPEECH_KEY = key)
@@ -81,9 +97,13 @@ foundry_set_speech_key <- function(key) {
 #'
 #' @examples
 #' \dontrun{
+#' # Requires configured Azure Speech/OpenAI endpoints and credentials,
+#' # the corresponding models, and your own local audio input files.
 #' foundry_transcribe("interview.mp3", model = "mai-transcribe-1.5")
 #' foundry_transcribe("interview.mp3", service = "openai", model = "gpt-4o-transcribe")
-#' foundry_transcribe("speech.wav", service = "openai", model = "whisper", api = "deployment")
+#' foundry_transcribe(
+#'   "speech.wav", service = "openai", model = "whisper", api = "deployment"
+#' )
 #' }
 foundry_transcribe <- function(file,
                                model = NULL,
@@ -165,6 +185,8 @@ foundry_transcribe <- function(file,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure Speech endpoint and credentials,
+#' # and your own local audio input file.
 #' foundry_translate_audio("interview-es.mp3", target_language = "en")
 #' }
 foundry_translate_audio <- function(file,
@@ -249,7 +271,14 @@ foundry_translate_audio <- function(file,
 #'
 #' @examples
 #' \dontrun{
-#' foundry_speak("Hello from R.", model = "gpt-4o-mini-tts", voice = "alloy")
+#' # Requires a configured Azure endpoint, credentials, and a speech deployment.
+#' local({
+#'   path <- tempfile(fileext = ".mp3")
+#'   on.exit(unlink(path))
+#'   foundry_speak(
+#'     "Hello from R.", model = "gpt-4o-mini-tts", voice = "alloy", path = path
+#'   )
+#' })
 #' }
 foundry_speak <- function(text,
                           model = NULL,

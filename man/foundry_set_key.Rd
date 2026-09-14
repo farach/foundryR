@@ -21,11 +21,9 @@ Set or update your Azure AI Foundry API key for authentication.
 The key can be obtained from the Azure Portal under your Azure OpenAI resource.
 }
 \examples{
-\dontrun{
-# Set key for current session only
-foundry_set_key("your-api-key-here")
-
-# Set key interactively and store permanently
-foundry_set_key(store = TRUE)
-}
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+withr::with_envvar(c(AZURE_FOUNDRY_KEY = NA_character_), {
+  foundry_set_key("example-key-not-a-secret")
+})
+\dontshow{\}) # examplesIf}
 }

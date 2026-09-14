@@ -87,6 +87,7 @@ endpoint and either an API key or a resource-scoped bearer-token provider:
 
 \examples{
 \dontrun{
+# Requires an Azure Content Safety endpoint and credentials.
 # Analyze a single text
 foundry_moderate("This is a friendly message.")
 

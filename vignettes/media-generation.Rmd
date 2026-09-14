@@ -19,7 +19,8 @@ vignette: >
 fixture_dir <- "media-generation"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
 # inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
@@ -41,6 +42,9 @@ knitr::opts_chunk$set(
 # real picture reliably offline, with no external-file handling (mirrors the
 # <audio> players in the audio vignette).
 embed_image <- function(path, width = "60%", alt = "Generated image") {
+  if (!requireNamespace("base64enc", quietly = TRUE)) {
+    return(invisible(NULL))
+  }
   uri <- paste0("data:image/jpeg;base64,", base64enc::base64encode(path))
   knitr::asis_output(
     sprintf('<img src="%s" width="%s" alt="%s">', uri, width, alt)
@@ -102,7 +106,9 @@ embed_image(
 ```
 
 Image URLs are temporary. Save images that belong in reports, stimuli, or
-audited records.
+audited records to a location you choose. This vignette uses temporary files and
+removes them after use. Inline image display requires the suggested `base64enc`
+package.
 
 ## Edit an image
 
@@ -110,6 +116,7 @@ audited records.
 illustrative (it needs an image file on disk) and is not run here:
 
 ```{r edit-call, eval = FALSE}
+edited_path <- tempfile(fileext = ".jpeg")
 edited <- foundry_image_edit(
   image = img_path,
   prompt = "Use a blue, Microsoft-inspired color palette.",
@@ -117,7 +124,8 @@ edited <- foundry_image_edit(
   output_format = "jpeg"
 )
 
-foundry_save_image(edited, "red-panda-blue.jpeg")
+foundry_save_image(edited, edited_path)
+unlink(edited_path)
 ```
 
 ## Generate video (preview)
@@ -137,10 +145,12 @@ job <- foundry_video_job_create(
 
 job <- foundry_video_job_get(job$job_id)
 
+video_path <- tempfile(fileext = ".mp4")
 foundry_video_download(
   generation_id = job$generation_id,
-  path = "cluster-animation.mp4"
+  path = video_path
 )
+unlink(video_path)
 ```
 
 ## When to use these APIs
@@ -152,8 +162,9 @@ foundry_video_download(
 - Track costs separately from text calls. Image and video generation are usually
   more expensive than text and embedding calls.
 
-```{r cleanup, include = FALSE}
+```{r cleanup, include = FALSE, eval = TRUE}
 if (run_api) {
+  unlink(img_path)
   httptest2::end_vignette()
 }
 ```

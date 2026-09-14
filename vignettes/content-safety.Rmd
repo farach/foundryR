@@ -11,7 +11,8 @@ vignette: >
 fixture_dir <- "content-safety"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
 # inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
@@ -60,7 +61,7 @@ Azure AI Content Safety is a **separate Azure resource** from Azure OpenAI. You 
 
 ### Configuring Credentials
 
-After creating the resource, get your endpoint and API key from **Keys and Endpoint** in the Azure Portal, then configure foundryR:
+After creating the resource, get your endpoint and API key from **Keys and Endpoint** in the Azure Portal, then configure foundryR. This credential setup is not run when building the vignette:
 
 ```{r config, eval = FALSE}
 library(foundryR)
@@ -118,9 +119,10 @@ results <- foundry_moderate(texts)
 results
 ```
 
-The rendered table and chart below summarize the same live moderation results.
+The rendered table and chart below summarize the same moderation results when
+the suggested `gt` and `ggplot2` packages are installed.
 
-```{r moderate-summary-rendered, echo = FALSE}
+```{r moderate-summary-rendered, echo = FALSE, eval = run_api && requireNamespace("gt", quietly = TRUE)}
 results |>
   dplyr::group_by(category) |>
   dplyr::summarise(
@@ -137,7 +139,7 @@ results |>
   gt::tab_options(table.font.names = "Inter")
 ```
 
-```{r moderate-severity-chart, echo = FALSE, fig.alt = "Stacked bar chart of moderation labels by Content Safety category."}
+```{r moderate-severity-chart, echo = FALSE, eval = run_api && requireNamespace("ggplot2", quietly = TRUE), fig.alt = "Stacked bar chart of moderation labels by Content Safety category."}
 safety_counts <- results |>
   dplyr::count(category, label, name = "texts")
 
@@ -169,9 +171,10 @@ ggplot2::ggplot(
 
 ### Setting Thresholds
 
-Use moderation results to filter or flag content:
+Use moderation results to filter or flag content. This example also requires
+the suggested `tidyr` package:
 
-```{r moderate-threshold}
+```{r moderate-threshold, eval = run_api && requireNamespace("tidyr", quietly = TRUE)}
 library(dplyr)
 library(tidyr)
 
@@ -317,9 +320,10 @@ result
 
 ### Building a Safe AI Pipeline
 
-Combine all three safety features for comprehensive protection:
+Combine all three safety features in a helper. Defining the function is local;
+calling it requires configured Azure services and is not done here:
 
-```{r safe-pipeline, eval = FALSE}
+```{r safe-pipeline, eval = TRUE}
 library(dplyr)
 
 safe_ai_response <- function(user_input, context_docs, model = NULL) {

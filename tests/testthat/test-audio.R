@@ -7,7 +7,10 @@ test_that("foundry speech configuration helpers set values", {
   suppressMessages(foundry_set_speech_endpoint("https://speech.example.com/"))
   suppressMessages(foundry_set_speech_key("speech-key"))
 
-  expect_equal(Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT"), "https://speech.example.com")
+  expect_equal(
+    Sys.getenv("AZURE_FOUNDRY_SPEECH_ENDPOINT"),
+    "https://speech.example.com"
+  )
   expect_equal(Sys.getenv("AZURE_FOUNDRY_SPEECH_KEY"), "speech-key")
 })
 
@@ -18,7 +21,7 @@ test_that("foundry_transcribe builds LLM Speech multipart request", {
     AZURE_FOUNDRY_SPEECH_KEY = "speech-key",
     AZURE_FOUNDRY_SPEECH_TOKEN = ""
   )
-  audio <- tempfile(fileext = ".wav")
+  audio <- withr::local_tempfile(fileext = ".wav")
   writeBin(charToRaw("fake audio"), audio)
   captured <- NULL
   mock_resp <- mock_httr2_response(list(
@@ -43,7 +46,11 @@ test_that("foundry_transcribe builds LLM Speech multipart request", {
     .package = "httr2"
   )
 
-  result <- foundry_transcribe(audio, locales = "en-US", phrase_list = "foundryR")
+  result <- foundry_transcribe(
+    audio,
+    locales = "en-US",
+    phrase_list = "foundryR"
+  )
 
   expect_match(captured$url, "/speechtotext/transcriptions:transcribe")
   expect_equal(captured$method, "POST")
@@ -58,7 +65,7 @@ test_that("foundry_translate_audio uses speech translate task", {
     AZURE_FOUNDRY_SPEECH_KEY = "speech-key",
     AZURE_FOUNDRY_SPEECH_TOKEN = ""
   )
-  audio <- tempfile(fileext = ".mp3")
+  audio <- withr::local_tempfile(fileext = ".mp3")
   writeBin(charToRaw("fake audio"), audio)
   mock_request(list(combinedPhrases = list(list(text = "Translated text."))))
 
@@ -70,7 +77,7 @@ test_that("foundry_translate_audio uses speech translate task", {
 
 test_that("foundry_transcribe can use OpenAI audio preview endpoint", {
   setup_mock_env()
-  audio <- tempfile(fileext = ".wav")
+  audio <- withr::local_tempfile(fileext = ".wav")
   writeBin(charToRaw("fake audio"), audio)
   captured <- NULL
   mock_resp <- mock_httr2_response(list(
@@ -99,7 +106,10 @@ test_that("foundry_transcribe can use OpenAI audio preview endpoint", {
   expect_match(captured$url, "/openai/v1/audio/transcriptions")
   expect_match(captured$url, "api-version=preview")
   expect_valid_multipart_request(captured)
-  expect_equal(sum(names(captured$body$data) == "timestamp_granularities[]"), 2L)
+  expect_equal(
+    sum(names(captured$body$data) == "timestamp_granularities[]"),
+    2L
+  )
   expect_equal(sum(names(captured$body$data) == "include[]"), 1L)
   expect_equal(captured$body$data$temperature, "0")
   expect_equal(result$text, "OpenAI-compatible transcript.")
@@ -107,7 +117,7 @@ test_that("foundry_transcribe can use OpenAI audio preview endpoint", {
 
 test_that("foundry_speak writes binary audio", {
   setup_mock_env()
-  path <- tempfile(fileext = ".mp3")
+  path <- withr::local_tempfile(fileext = ".mp3")
   mock_resp <- mock_httr2_raw_response(charToRaw("audio bytes"))
 
   testthat::local_mocked_bindings(

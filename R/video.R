@@ -24,6 +24,7 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and a video deployment.
 #' foundry_video_job_create(
 #'   "A calm ocean at sunrise",
 #'   model = "my-video-model",
@@ -102,6 +103,8 @@ foundry_video_job_create <- function(prompt,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials
+#' # with access to the video preview API.
 #' foundry_video_jobs(limit = 10)
 #' }
 foundry_video_jobs <- function(limit = 20L,
@@ -151,6 +154,8 @@ foundry_video_jobs <- function(limit = 20L,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus an existing video job ID.
 #' foundry_video_job_get("videojob_abc123")
 #' }
 foundry_video_job_get <- function(job_id,
@@ -184,6 +189,8 @@ foundry_video_job_get <- function(job_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus an existing video job you can delete.
 #' foundry_video_job_delete("videojob_abc123")
 #' }
 foundry_video_job_delete <- function(job_id,
@@ -218,6 +225,8 @@ foundry_video_job_delete <- function(job_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus an existing video generation ID.
 #' foundry_video_get("vidgen_abc123")
 #' }
 foundry_video_get <- function(generation_id,
@@ -256,7 +265,13 @@ foundry_video_get <- function(generation_id,
 #'
 #' @examples
 #' \dontrun{
-#' foundry_video_download("vidgen_abc123", "clip.mp4")
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus a completed video generation ID.
+#' local({
+#'   path <- tempfile(fileext = ".mp4")
+#'   on.exit(unlink(path))
+#'   foundry_video_download("vidgen_abc123", path)
+#' })
 #' }
 foundry_video_download <- function(generation_id,
                                    path,

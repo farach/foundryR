@@ -31,6 +31,8 @@ Delete a Foundry agent
 }
 \examples{
 \dontrun{
+# Requires a configured Azure project endpoint and credentials,
+# plus an existing agent you can delete.
 foundry_agent_delete("france-facts")
 }
 }

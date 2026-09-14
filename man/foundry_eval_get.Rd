@@ -32,6 +32,7 @@ Retrieve an evaluation
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint, credentials, and an evaluation ID.
 foundry_eval_get("eval_abc123")
 }
 }

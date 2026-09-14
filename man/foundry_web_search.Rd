@@ -63,6 +63,8 @@ boundaries, and tool usage can incur additional costs.
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+# naming a deployment with access to the web-search tool.
 foundry_web_search(
   "What are the latest Azure AI Foundry Responses API updates?"
 )

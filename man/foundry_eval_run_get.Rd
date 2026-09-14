@@ -36,6 +36,7 @@ Retrieve an evaluation run
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint, credentials, and evaluation/run IDs.
 foundry_eval_run_get("eval_abc123", "evalrun_xyz")
 }
 }

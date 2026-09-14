@@ -11,7 +11,8 @@ vignette: >
 fixture_dir <- "getting-started"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
 # inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
@@ -62,7 +63,8 @@ pak::pak("farach/foundryR")
 
 ## Configure credentials
 
-Set credentials for the current R session:
+Set credentials for the current R session. Credential setup is shown but not
+run when building this vignette:
 
 ```{r config-session, eval = FALSE}
 library(foundryR)
@@ -71,20 +73,41 @@ foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
 foundry_set_key("your-api-key")
 ```
 
-For persistent local configuration, use `store = TRUE`:
+For persistent local configuration in your own workflow, `store = TRUE` uses
+the package configuration file under `tools::R_user_dir("foundryR", "config")`
+unless you set the `foundryR.config_file` option. It does not modify
+`.Renviron`. The file is plain text, so prefer session-only credentials or
+refreshable token providers for production use.
+
+This demonstration instead uses a temporary file and placeholder values, then
+removes the file and restores the previous options and environment variables:
 
 ```{r config-persistent, eval = FALSE}
-foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), store = TRUE)
-foundry_set_key("your-api-key", store = TRUE)
+local({
+  config_file <- tempfile("foundryR-config-", fileext = ".json")
+  old_options <- options(foundryR.config_file = config_file)
+  old_env <- Sys.getenv(
+    c("AZURE_FOUNDRY_ENDPOINT", "AZURE_FOUNDRY_KEY"),
+    unset = NA_character_
+  )
+  on.exit({
+    options(old_options)
+    Sys.unsetenv(names(old_env)[is.na(old_env)])
+    keep <- !is.na(old_env)
+    if (any(keep)) {
+      do.call(Sys.setenv, as.list(old_env[keep]))
+    }
+    unlink(config_file)
+  }, add = TRUE)
+
+  foundry_set_endpoint("https://example.openai.azure.com", store = TRUE)
+  foundry_set_key("example-key-not-a-secret", store = TRUE)
+})
 ```
 
-You can also edit `.Renviron` directly:
-
-```{r edit-renviron, eval = FALSE}
-usethis::edit_r_environ()
-```
-
-Add values like these, then restart R:
+You can also edit your chosen `.Renviron` file manually with a text editor.
+The vignette does not open an editor or write this file. Add values like these,
+then restart R:
 
 ```text
 AZURE_FOUNDRY_ENDPOINT=https://<resource-name>.openai.azure.com
@@ -107,6 +130,9 @@ foundryR sends the token in the `Authorization` header. If both a token and an
 API key are configured, the token takes precedence for supported calls.
 
 ## Validate setup
+
+These checks contact your configured Azure resource and are not run during
+rendering.
 
 ```{r check-setup, eval = FALSE}
 foundry_check_setup()

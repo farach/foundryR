@@ -55,9 +55,10 @@ the API; \code{"disk"} caches each text's embedding on disk (keyed on the text,
 model, and dimensions) so cross-validation folds and repeated bakes reuse
 embeddings instead of re-calling the API.}
 
-\item{cache_dir}{Character. Directory for the disk cache. Defaults to
-\code{tools::R_user_dir("foundryR", "cache")}. Clear it with
-\code{\link[=foundry_cache_clear]{foundry_cache_clear()}}.}
+\item{cache_dir}{Character. Directory for the disk cache. Defaults to a
+package-specific directory inside \code{\link[=tempdir]{tempdir()}}, lasting only for the current
+R session. Supply a directory explicitly to persist embeddings across
+sessions. Clear it with \code{\link[=foundry_cache_clear]{foundry_cache_clear()}}.}
 
 \item{columns}{Character vector. Internal use only. Stores column names after
 training.}
@@ -115,43 +116,31 @@ embeddings instead of re-calling the API
 }
 }
 \examples{
-\dontrun{
-library(recipes)
-
-# Sample data
+\donttest{
+# Loading the optional modeling packages can take more than five seconds.
+if (requireNamespace("recipes", quietly = TRUE)) {
 df <- data.frame(
   text = c("Hello world", "Machine learning is great", "R is awesome"),
   category = c("greeting", "tech", "tech")
 )
 
-# Create a recipe with Foundry embeddings
-rec <- recipe(~ text, data = df) \%>\%
+rec <- recipes::recipe(~ text, data = df) |>
   step_foundry_embed(text, model = "text-embedding-ada-002")
+rec
+}
+}
 
-# Prepare and bake the recipe
-prepped <- prep(rec, training = df)
-baked <- bake(prepped, new_data = df)
-
-# With custom dimensions (model-dependent)
-rec_custom <- recipe(~ text, data = df) \%>\%
+\dontrun{
+# Requires recipes, an Azure embedding deployment, endpoint, and credentials.
+df <- data.frame(text = c("Hello world", "Machine learning is great"))
+rec <- recipes::recipe(~ text, data = df) |>
   step_foundry_embed(
-    text,
-    model = "text-embedding-3-small",
-    dimensions = 256,
-    prefix = "vec_"
+    text, model = "text-embedding-3-small", dimensions = 256,
+    cache = "disk", cache_dir = file.path(tempdir(), "example-embeddings")
   )
-
-# Keep original text column
-rec_keep <- recipe(~ text, data = df) \%>\%
-  step_foundry_embed(text, model = "text-embedding-ada-002", keep_original = TRUE)
-
-# Use in a tidymodels workflow
-library(tidymodels)
-
-wf <- workflow() \%>\%
-  add_recipe(rec) \%>\%
-  add_model(logistic_reg()) \%>\%
-  fit(data = train_data)
+prepped <- recipes::prep(rec, training = df)
+baked <- recipes::bake(prepped, new_data = df)
+foundry_cache_clear(file.path(tempdir(), "example-embeddings"))
 }
 
 }

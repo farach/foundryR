@@ -23,7 +23,8 @@ polling jobs and keyless production environments where tokens should be
 refreshed automatically.
 }
 \examples{
-\dontrun{
-foundry_set_token_provider(foundry_token_azure_cli())
-}
+local({
+  old <- foundry_set_token_provider(foundry_token_azure_cli())
+  on.exit(foundry_set_token_provider(old))
+})
 }

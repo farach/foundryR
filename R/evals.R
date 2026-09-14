@@ -425,6 +425,7 @@ foundry_eval_run_data <- function(file_id = NULL, content = NULL) {
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials with evals API access.
 #' foundry_eval_create(
 #'   name = "qa-accuracy",
 #'   data_source_config = foundry_eval_data_config(
@@ -497,6 +498,7 @@ foundry_eval_create <- function(name = NULL,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials with evals API access.
 #' foundry_evals(limit = 10)
 #' }
 foundry_evals <- function(limit = NULL,
@@ -535,6 +537,7 @@ foundry_evals <- function(limit = NULL,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and an evaluation ID.
 #' foundry_eval_get("eval_abc123")
 #' }
 foundry_eval_get <- function(eval_id,
@@ -567,6 +570,8 @@ foundry_eval_get <- function(eval_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus an existing evaluation you can delete.
 #' foundry_eval_delete("eval_abc123")
 #' }
 foundry_eval_delete <- function(eval_id,
@@ -610,6 +615,8 @@ foundry_eval_delete <- function(eval_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials, an evaluation ID,
+#' # and an uploaded JSONL file matching its data-source configuration.
 #' foundry_eval_run_create(
 #'   eval_id = "eval_abc123",
 #'   data_source = foundry_eval_run_data(file_id = "file-xyz"),
@@ -670,6 +677,7 @@ foundry_eval_run_create <- function(eval_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and an evaluation ID.
 #' foundry_eval_runs("eval_abc123", status = "completed")
 #' }
 foundry_eval_runs <- function(eval_id,
@@ -720,6 +728,7 @@ foundry_eval_runs <- function(eval_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and evaluation/run IDs.
 #' foundry_eval_run_get("eval_abc123", "evalrun_xyz")
 #' }
 foundry_eval_run_get <- function(eval_id,
@@ -755,6 +764,8 @@ foundry_eval_run_get <- function(eval_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials, an evaluation ID,
+#' # and a run ID that can be cancelled.
 #' foundry_eval_run_cancel("eval_abc123", "evalrun_xyz")
 #' }
 foundry_eval_run_cancel <- function(eval_id,
@@ -799,6 +810,8 @@ foundry_eval_run_cancel <- function(eval_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials, an evaluation ID,
+#' # and a completed run ID.
 #' foundry_eval_run_output_items("eval_abc123", "evalrun_xyz")
 #' }
 foundry_eval_run_output_items <- function(eval_id,

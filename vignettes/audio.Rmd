@@ -17,7 +17,8 @@ vignette: >
 fixture_dir <- "audio"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
-run_api <- recording || have_fixtures
+run_api <- requireNamespace("httptest2", quietly = TRUE) &&
+  (recording || have_fixtures)
 
 # Attach foundryR before start_vignette(): httptest2 only sources the package's
 # inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
@@ -38,6 +39,9 @@ knitr::opts_chunk$set(
 # produced, so readers can play the output (not just read its size). On replay
 # the file holds the recorded audio, so this works offline with no credentials.
 embed_audio <- function(path) {
+  if (!requireNamespace("base64enc", quietly = TRUE)) {
+    return(invisible(NULL))
+  }
   uri <- paste0("data:audio/mpeg;base64,", base64enc::base64encode(path))
   knitr::asis_output(
     sprintf(
@@ -82,7 +86,7 @@ address ("And so, my fellow Americans..."). This clip ships with the package and
 is the de facto "hello, world" of open-source speech recognition, so the
 transcript is easy to check against a recording everyone knows.
 
-```{r sample}
+```{r sample, eval = TRUE}
 sample_audio <- system.file("extdata/samples/jfk.wav", package = "foundryR")
 basename(sample_audio)
 ```
@@ -119,20 +123,24 @@ head(transcript$phrases[[1]])
 
 `foundry_speak()` writes binary audio to disk and returns the file path and byte
 count -- handy for experiment stimuli, accessibility assets, and demos. Use your
-text-to-speech deployment name for `model`.
+text-to-speech deployment name for `model`. The examples use temporary files and
+remove them after use; choose an explicit path in your own workflow for audio
+you want to keep.
 
 ```{r speak}
+speech_path <- tempfile(fileext = ".mp3")
 speech <- foundry_speak(
   "Hello, world.",
   model = "gpt-4o-mini-tts",
   voice = "alloy",
-  path = tempfile(fileext = ".mp3")
+  path = speech_path
 )
 
 speech[, c("bytes", "model", "voice", "format")]
 ```
 
-Those bytes are the real audio the model returned. Play them here:
+Those bytes are the real audio the model returned. Play them here when the
+suggested `base64enc` package is installed:
 
 ```{r speak-play, echo = FALSE}
 embed_audio(speech$path)
@@ -146,11 +154,12 @@ Spanish clip, then translate it to English with whisper -- both are real API
 calls.
 
 ```{r translate-synth}
+spanish_path <- tempfile(fileext = ".mp3")
 spanish_clip <- foundry_speak(
   "La reunion fue muy util.",
   model = "gpt-4o-mini-tts",
   voice = "alloy",
-  path = tempfile(fileext = ".mp3")
+  path = spanish_path
 )
 ```
 
@@ -181,8 +190,9 @@ translation$text
 - Request `response_format = "verbose_json"` to get segment-level timing from
   whisper; the default format returns the transcript text only.
 
-```{r cleanup, include = FALSE}
+```{r cleanup, include = FALSE, eval = TRUE}
 if (run_api) {
+  unlink(c(speech_path, spanish_path))
   httptest2::end_vignette()
 }
 ```

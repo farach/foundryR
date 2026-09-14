@@ -7,8 +7,9 @@
 foundry_cache_clear(cache_dir = NULL)
 }
 \arguments{
-\item{cache_dir}{Character. Cache directory. Defaults to
-\code{tools::R_user_dir("foundryR", "cache")}.}
+\item{cache_dir}{Character. Cache directory. Defaults to the session's
+temporary embedding cache. Supply the same explicit directory used by
+\code{\link[=step_foundry_embed]{step_foundry_embed()}} to clear a persistent cache.}
 }
 \value{
 Invisibly, the number of cache files removed.
@@ -18,7 +19,11 @@ Delete cached embeddings written by \code{\link[=step_foundry_embed]{step_foundr
 \code{cache = "disk"}.
 }
 \examples{
-\dontrun{
-foundry_cache_clear()
-}
+local({
+  cache_dir <- tempfile("foundryR-cache-")
+  dir.create(cache_dir)
+  on.exit(unlink(cache_dir, recursive = TRUE))
+  saveRDS(c(1, 0, 0), file.path(cache_dir, "example.rds"))
+  foundry_cache_clear(cache_dir)
+})
 }

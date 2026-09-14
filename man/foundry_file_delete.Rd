@@ -31,6 +31,8 @@ Delete a Microsoft Foundry file
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus the ID of a file you can delete.
 foundry_file_delete("file_abc123")
 }
 }

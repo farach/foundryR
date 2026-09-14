@@ -40,6 +40,7 @@ List uploaded Microsoft Foundry files
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials.
 foundry_files(purpose = "batch", limit = 10)
 }
 }

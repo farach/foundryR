@@ -91,6 +91,8 @@
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+#' # naming a deployment that supports the Responses API.
 #' foundry_response("Summarize retrieval-augmented generation.")
 #'
 #' first <- foundry_response("Define catastrophic forgetting.")
@@ -370,6 +372,8 @@ foundry_tool <- function(fun,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+#' # naming a deployment that supports Responses API function calling.
 #' get_weather <- function(location) {
 #'   list(location = location, temperature = "70 F")
 #' }
@@ -474,6 +478,8 @@ foundry_agent <- function(input,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL.
+#' # The agent example also needs a project endpoint and an existing my-agent.
 #' response <- foundry_response("Hello")
 #' foundry_response_retrieve(response$response_id)
 #'
@@ -511,6 +517,7 @@ foundry_response_retrieve <- function(response_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL.
 #' response <- foundry_response("Hello")
 #' foundry_response_delete(response$response_id)
 #' }
@@ -546,6 +553,8 @@ foundry_response_delete <- function(response_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials, and the ID of
+#' # an existing background response that can be cancelled.
 #' foundry_response_cancel("resp_abc123")
 #' }
 foundry_response_cancel <- function(response_id,
@@ -575,6 +584,8 @@ foundry_response_cancel <- function(response_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus an existing stored response ID.
 #' foundry_response_input_items("resp_abc123")
 #' }
 foundry_response_input_items <- function(response_id,
@@ -680,6 +691,8 @@ foundry_build_response_lifecycle_request <- function(path,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+#' # naming a deployment that supports structured outputs.
 #' schema <- list(
 #'   type = "object",
 #'   properties = list(
@@ -1021,6 +1034,8 @@ foundry_extract_error_row <- function(i,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
+#' # naming a deployment with access to the web-search tool.
 #' foundry_web_search(
 #'   "What are the latest Azure AI Foundry Responses API updates?"
 #' )

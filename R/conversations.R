@@ -15,6 +15,8 @@
 #' @name foundry_conversations
 #'
 #' @examples
+#' # Requires a configured Azure endpoint and credentials with permission
+#' # to create and delete the example conversation.
 #' if (interactive() &&
 #'     nzchar(Sys.getenv("AZURE_FOUNDRY_ENDPOINT")) &&
 #'     nzchar(Sys.getenv("AZURE_FOUNDRY_KEY"))) {

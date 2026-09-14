@@ -19,9 +19,16 @@
 #'
 #' @examples
 #' \dontrun{
-#' path <- tempfile(fileext = ".jsonl")
-#' writeLines('{"custom_id":"row-1","method":"POST","url":"/v1/responses"}', path)
-#' foundry_file_upload(path, purpose = "batch")
+#' # Requires a configured Azure endpoint and credentials.
+#' local({
+#'   path <- tempfile(fileext = ".jsonl")
+#'   on.exit(unlink(path))
+#'   jobs <- data.frame(text = "Summarize this.")
+#'   foundry_batch_requests(
+#'     jobs, input = "text", path = path, model = "gpt-5-nano"
+#'   )
+#'   foundry_file_upload(path, purpose = "batch")
+#' })
 #' }
 foundry_file_upload <- function(path,
                                 purpose = c("assistants", "batch", "fine-tune", "evals"),
@@ -79,6 +86,7 @@ foundry_file_upload <- function(path,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials.
 #' foundry_files(purpose = "batch", limit = 10)
 #' }
 foundry_files <- function(purpose = NULL,
@@ -121,6 +129,7 @@ foundry_files <- function(purpose = NULL,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint, credentials, and an uploaded file ID.
 #' foundry_file_get("file_abc123")
 #' }
 foundry_file_get <- function(file_id,
@@ -153,6 +162,8 @@ foundry_file_get <- function(file_id,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure endpoint and credentials,
+#' # plus the ID of a file you can delete.
 #' foundry_file_delete("file_abc123")
 #' }
 foundry_file_delete <- function(file_id,
@@ -191,7 +202,12 @@ foundry_file_delete <- function(file_id,
 #'
 #' @examples
 #' \dontrun{
-#' foundry_file_download("file_abc123", "batch-output.jsonl")
+#' # Requires a configured Azure endpoint, credentials, and an uploaded file ID.
+#' local({
+#'   path <- tempfile(fileext = ".jsonl")
+#'   on.exit(unlink(path))
+#'   foundry_file_download("file_abc123", path)
+#' })
 #' }
 foundry_file_download <- function(file_id,
                                   path,

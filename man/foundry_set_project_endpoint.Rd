@@ -22,7 +22,12 @@ from the Foundry portal because Azure's project endpoint shape can vary by
 service generation.
 }
 \examples{
-\dontrun{
-foundry_set_project_endpoint(Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT"))
-}
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+withr::with_envvar(c(AZURE_FOUNDRY_PROJECT_ENDPOINT = NA_character_), {
+  foundry_set_project_endpoint(
+    "https://example.services.ai.azure.com/api/projects/demo"
+  )
+  foundry_get_project_endpoint()
+})
+\dontshow{\}) # examplesIf}
 }

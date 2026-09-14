@@ -14,9 +14,17 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' foundry_set_image_endpoint(Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT"))
-#' }
+#' local({
+#'   old <- Sys.getenv("AZURE_FOUNDRY_IMAGE_ENDPOINT", unset = NA_character_)
+#'   on.exit({
+#'     if (is.na(old)) {
+#'       Sys.unsetenv("AZURE_FOUNDRY_IMAGE_ENDPOINT")
+#'     } else {
+#'       Sys.setenv(AZURE_FOUNDRY_IMAGE_ENDPOINT = old)
+#'     }
+#'   })
+#'   foundry_set_image_endpoint("https://example.openai.azure.com")
+#' })
 foundry_set_image_endpoint <- function(endpoint) {
  if (is.null(endpoint) || endpoint == "") {
     cli::cli_abort("Image endpoint is required and cannot be empty.")
@@ -82,9 +90,17 @@ foundry_get_image_endpoint <- function(required = FALSE) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' foundry_set_image_key("your-dalle-api-key")
-#' }
+#' local({
+#'   old <- Sys.getenv("AZURE_FOUNDRY_IMAGE_KEY", unset = NA_character_)
+#'   on.exit({
+#'     if (is.na(old)) {
+#'       Sys.unsetenv("AZURE_FOUNDRY_IMAGE_KEY")
+#'     } else {
+#'       Sys.setenv(AZURE_FOUNDRY_IMAGE_KEY = old)
+#'     }
+#'   })
+#'   foundry_set_image_key("example-image-key-not-a-secret")
+#' })
 foundry_set_image_key <- function(key) {
   if (is.null(key) || is.na(key) || key == "") {
     cli::cli_abort("Image API key cannot be empty.")
@@ -202,17 +218,18 @@ foundry_get_image_key <- function(key = NULL, required = FALSE) {
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure image endpoint and credentials,
+#' # plus a DALL-E deployment.
 #' # Generate a single image
 #' result <- foundry_image("A sunset over mountains", model = "dall-e-3")
 #'
 #' # View the image URL
 #' result$url
 #'
-#' # Generate multiple images with HD quality
+#' # Generate an image with HD quality
 #' result <- foundry_image(
 #'   "A futuristic cityscape",
 #'   model = "dall-e-3",
-#'   n = 2,
 #'   quality = "hd",
 #'   style = "vivid"
 #' )
@@ -226,7 +243,11 @@ foundry_get_image_key <- function(key = NULL, required = FALSE) {
 #'
 #' # Save an image to disk
 #' result <- foundry_image("A cat wearing a hat", model = "dall-e-3")
-#' foundry_save_image(result, "cat_hat.png")
+#' local({
+#'   path <- tempfile(fileext = ".png")
+#'   on.exit(unlink(path))
+#'   foundry_save_image(result, path)
+#' })
 #' }
 foundry_image <- function(prompt,
                           model = NULL,
@@ -408,6 +429,8 @@ foundry_parse_image_response <- function(result,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure image endpoint and credentials,
+#' # an image deployment, and your own local input.png image.
 #' foundry_image_edit("input.png", "Make the sky more dramatic", model = "gpt-image-1")
 #' }
 foundry_image_edit <- function(image,
@@ -555,20 +578,48 @@ foundry_resolve_image_model <- function(model) {
 #' @export
 #'
 #' @examples
+#' # Save a one-pixel PNG without calling Azure.
+#' if (requireNamespace("base64enc", quietly = TRUE)) {
+#'   local({
+#'     image <- tibble::tibble(
+#'       url = NA_character_,
+#'       b64_json = paste0(
+#'         "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8",
+#'         "/x8AAwMCAO+ip1sAAAAASUVORK5CYII="
+#'       )
+#'     )
+#'     path <- tempfile(fileext = ".png")
+#'     on.exit(unlink(path))
+#'     foundry_save_image(image, path)
+#'     file.exists(path)
+#'   })
+#' }
+#'
 #' \dontrun{
-#' # Generate and save an image
-#' result <- foundry_image("A beautiful landscape", model = "dall-e-3")
-#' foundry_save_image(result, "landscape.png")
+#' # Requires a configured Azure image endpoint and credentials,
+#' # plus DALL-E deployments.
+#' local({
+#'   paths <- replicate(5, tempfile(fileext = ".png"))
+#'   on.exit(unlink(paths))
 #'
-#' # Save a specific image when multiple were generated
-#' result <- foundry_image("Colorful abstract art", model = "dall-e-3", n = 3)
-#' foundry_save_image(result, "art_1.png", index = 1)
-#' foundry_save_image(result, "art_2.png", index = 2)
-#' foundry_save_image(result, "art_3.png", index = 3)
+#'   # Generate and save an image
+#'   result <- foundry_image("A beautiful landscape", model = "dall-e-3")
+#'   foundry_save_image(result, paths[1])
 #'
-#' # Save base64-encoded image
-#' result <- foundry_image("A cat", model = "dall-e-3", response_format = "b64_json")
-#' foundry_save_image(result, "cat.png")
+#'   # DALL-E 2 supports generating several images per request.
+#'   result <- foundry_image("Colorful abstract art", model = "dall-e-2", n = 3)
+#'   foundry_save_image(result, paths[2], index = 1)
+#'   foundry_save_image(result, paths[3], index = 2)
+#'   foundry_save_image(result, paths[4], index = 3)
+#'
+#'   # Save a base64-encoded image
+#'   if (requireNamespace("base64enc", quietly = TRUE)) {
+#'     result <- foundry_image(
+#'       "A cat", model = "dall-e-3", response_format = "b64_json"
+#'     )
+#'     foundry_save_image(result, paths[5])
+#'   }
+#' })
 #' }
 foundry_save_image <- function(image_result, path, index = 1) {
   # Validate input

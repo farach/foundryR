@@ -27,6 +27,7 @@ docs/
 tests/testthat/_snaps/*
 !tests/testthat/_snaps/codebook.md
 !tests/testthat/_snaps/responses.md
+!tests/testthat/_snaps/recipe.md
 
 # Environment
 .Renviron

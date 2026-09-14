@@ -31,6 +31,8 @@ A tibble with deletion status.
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an existing video job you can delete.
 foundry_video_job_delete("videojob_abc123")
 }
 }

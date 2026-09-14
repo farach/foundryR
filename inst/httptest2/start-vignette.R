@@ -18,105 +18,143 @@
 # When real credentials are present we leave them untouched so recording works.
 local({
   placeholders <- list(
-    AZURE_FOUNDRY_ENDPOINT         = "https://example.openai.azure.com",
-    AZURE_FOUNDRY_KEY              = "not-a-real-key",
-    AZURE_FOUNDRY_MODEL            = "gpt-5-nano",
-    AZURE_FOUNDRY_EMBED_MODEL      = "text-embedding-3-small",
-    AZURE_FOUNDRY_IMAGE_ENDPOINT   = "https://example.openai.azure.com",
-    AZURE_FOUNDRY_IMAGE_KEY        = "not-a-real-key",
-    AZURE_FOUNDRY_IMAGE_MODEL      = "gpt-image-2",
-    AZURE_FOUNDRY_SPEECH_ENDPOINT  = "https://example.cognitiveservices.azure.com",
-    AZURE_FOUNDRY_SPEECH_KEY       = "not-a-real-key",
-    AZURE_CONTENT_SAFETY_ENDPOINT  = "https://example.cognitiveservices.azure.com",
-    AZURE_CONTENT_SAFETY_KEY       = "not-a-real-key",
+    AZURE_FOUNDRY_ENDPOINT = "https://example.openai.azure.com",
+    AZURE_FOUNDRY_KEY = "not-a-real-key",
+    AZURE_FOUNDRY_MODEL = "gpt-5-nano",
+    AZURE_FOUNDRY_EMBED_MODEL = "text-embedding-3-small",
+    AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://example.openai.azure.com",
+    AZURE_FOUNDRY_IMAGE_KEY = "not-a-real-key",
+    AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-2",
+    AZURE_FOUNDRY_SPEECH_ENDPOINT = "https://example.cognitiveservices.azure.com",
+    AZURE_FOUNDRY_SPEECH_KEY = "not-a-real-key",
+    AZURE_CONTENT_SAFETY_ENDPOINT = "https://example.cognitiveservices.azure.com",
+    AZURE_CONTENT_SAFETY_KEY = "not-a-real-key",
     AZURE_FOUNDRY_PROJECT_ENDPOINT = "https://example.services.ai.azure.com/api/projects/demo",
-    ONET_API_KEY                   = "not-a-real-key"
+    ONET_API_KEY = "not-a-real-key"
   )
+  old_env <- Sys.getenv(names(placeholders), unset = NA_character_)
+  old_options <- options(
+    "foundryR.sequential_requests",
+    "foundryR.doc_restore",
+    "httptest2.redactor",
+    "httptest2.redactor.packages"
+  )
+  restore <- function() {
+    Sys.unsetenv(names(old_env)[is.na(old_env)])
+    keep <- !is.na(old_env)
+    if (any(keep)) {
+      do.call(Sys.setenv, as.list(old_env[keep]))
+    }
+    options(old_options)
+    invisible(NULL)
+  }
+  ready <- FALSE
+  on.exit(if (!ready) restore())
+  options(foundryR.doc_restore = restore)
+
   for (nm in names(placeholders)) {
     if (!nzchar(Sys.getenv(nm))) {
       do.call(Sys.setenv, stats::setNames(list(placeholders[[nm]]), nm))
     }
   }
-})
 
-# Batched foundryR calls (foundry_embed(), foundry_extract()) use
-# httr2::req_perform_parallel() by default, which bypasses httptest2's mocking
-# hook so those requests can neither be recorded nor replayed. Force the
-# sequential request path here so every documented call is captured on record and
-# served from fixtures on replay. This runs in both modes, so it is a no-op for
-# builds that make no API calls.
-options(foundryR.sequential_requests = TRUE)
+  # Batched foundryR calls (foundry_embed(), foundry_extract()) use
+  # httr2::req_perform_parallel() by default, which bypasses httptest2's mocking
+  # hook so those requests can neither be recorded nor replayed. Force the
+  # sequential request path here so every documented call is captured on record and
+  # served from fixtures on replay. This runs in both modes, so it is a no-op for
+  # builds that make no API calls.
+  options(foundryR.sequential_requests = TRUE)
 
-# Map each configured real host to a placeholder so fixture paths and bodies are
-# portable. Evaluated at source time: during recording the environment holds the
-# real hosts; during replay it holds the placeholders above, which makes the
-# substitutions harmless no-ops.
-.foundry_doc_host_map <- local({
-  host_of <- function(url) sub("/.*$", "", sub("^https?://", "", url))
-  pairs <- list(
-    c("AZURE_FOUNDRY_ENDPOINT",         "example.openai.azure.com"),
-    c("AZURE_FOUNDRY_IMAGE_ENDPOINT",   "example.openai.azure.com"),
-    c("AZURE_FOUNDRY_SPEECH_ENDPOINT",  "example.cognitiveservices.azure.com"),
-    c("AZURE_CONTENT_SAFETY_ENDPOINT",  "example.cognitiveservices.azure.com"),
-    c("AZURE_FOUNDRY_PROJECT_ENDPOINT", "example.services.ai.azure.com")
-  )
-  map <- list()
-  for (p in pairs) {
-    real <- host_of(Sys.getenv(p[1]))
-    if (nzchar(real) && !identical(real, p[2])) {
-      map[[real]] <- p[2]
-    }
-  }
-  map
-})
-
-# Secret values to scrub from recorded bodies, gathered from the environment at
-# source time. Empty during replay, so nothing is scrubbed then.
-.foundry_doc_secrets <- local({
-  keys <- c(
-    "AZURE_FOUNDRY_KEY", "AZURE_FOUNDRY_IMAGE_KEY", "AZURE_FOUNDRY_SPEECH_KEY",
-    "AZURE_CONTENT_SAFETY_KEY", "AZURE_FOUNDRY_TOKEN", "ONET_API_KEY"
-  )
-  vals <- vapply(keys, Sys.getenv, character(1))
-  unname(vals[nzchar(vals) & vals != "not-a-real-key"])
-})
-
-httptest2::set_redactor(function(response) {
-  response <- httptest2::redact_headers(
-    response,
-    c("api-key", "Authorization", "Ocp-Apim-Subscription-Key", "X-API-Key")
-  )
-
-  # Always rewrite the real host in the request URL echoed on the response
-  # object, for every content type.
-  for (real_host in names(.foundry_doc_host_map)) {
-    response$url <- gsub(
-      real_host, .foundry_doc_host_map[[real_host]], response$url,
-      fixed = TRUE
+  # Map each configured real host to a placeholder so fixture paths and bodies are
+  # portable. Evaluated at source time: during recording the environment holds the
+  # real hosts; during replay it holds the placeholders above, which makes the
+  # substitutions harmless no-ops.
+  .foundry_doc_host_map <- local({
+    host_of <- function(url) sub("/.*$", "", sub("^https?://", "", url))
+    pairs <- list(
+      c("AZURE_FOUNDRY_ENDPOINT", "example.openai.azure.com"),
+      c("AZURE_FOUNDRY_IMAGE_ENDPOINT", "example.openai.azure.com"),
+      c("AZURE_FOUNDRY_SPEECH_ENDPOINT", "example.cognitiveservices.azure.com"),
+      c("AZURE_CONTENT_SAFETY_ENDPOINT", "example.cognitiveservices.azure.com"),
+      c("AZURE_FOUNDRY_PROJECT_ENDPOINT", "example.services.ai.azure.com")
     )
-  }
+    map <- list()
+    for (p in pairs) {
+      real <- host_of(Sys.getenv(p[1]))
+      if (nzchar(real) && !identical(real, p[2])) {
+        map[[real]] <- p[2]
+      }
+    }
+    map
+  })
 
-  # Only run string substitution on textual bodies. Binary bodies (audio/mpeg
-  # from foundry_speak(), and similar) never contain the host or key, and
-  # coercing them through a string replacement corrupts the bytes -- which would
-  # make replayed audio unusable and break downstream multipart matching.
-  content_type <- tryCatch(
-    httr2::resp_content_type(response),
-    error = function(e) NA_character_
-  )
-  is_text <- !is.na(content_type) &&
-    grepl("json|text|xml|javascript|html|urlencoded|csv", content_type,
-          ignore.case = TRUE)
-  if (is_text) {
+  # Secret values to scrub from recorded bodies, gathered from the environment at
+  # source time. Empty during replay, so nothing is scrubbed then.
+  .foundry_doc_secrets <- local({
+    keys <- c(
+      "AZURE_FOUNDRY_KEY",
+      "AZURE_FOUNDRY_IMAGE_KEY",
+      "AZURE_FOUNDRY_SPEECH_KEY",
+      "AZURE_CONTENT_SAFETY_KEY",
+      "AZURE_FOUNDRY_TOKEN",
+      "ONET_API_KEY"
+    )
+    vals <- vapply(keys, Sys.getenv, character(1))
+    unname(vals[nzchar(vals) & vals != "not-a-real-key"])
+  })
+
+  httptest2::set_redactor(function(response) {
+    response <- httptest2::redact_headers(
+      response,
+      c("api-key", "Authorization", "Ocp-Apim-Subscription-Key", "X-API-Key")
+    )
+
+    # Always rewrite the real host in the request URL echoed on the response
+    # object, for every content type.
     for (real_host in names(.foundry_doc_host_map)) {
-      response <- httptest2::gsub_response(
-        response, real_host, .foundry_doc_host_map[[real_host]],
+      response$url <- gsub(
+        real_host,
+        .foundry_doc_host_map[[real_host]],
+        response$url,
         fixed = TRUE
       )
     }
-    for (secret in .foundry_doc_secrets) {
-      response <- httptest2::gsub_response(response, secret, "REDACTED", fixed = TRUE)
+
+    # Only run string substitution on textual bodies. Binary bodies (audio/mpeg
+    # from foundry_speak(), and similar) never contain the host or key, and
+    # coercing them through a string replacement corrupts the bytes -- which would
+    # make replayed audio unusable and break downstream multipart matching.
+    content_type <- tryCatch(
+      httr2::resp_content_type(response),
+      error = function(e) NA_character_
+    )
+    is_text <- !is.na(content_type) &&
+      grepl(
+        "json|text|xml|javascript|html|urlencoded|csv",
+        content_type,
+        ignore.case = TRUE
+      )
+    if (is_text) {
+      for (real_host in names(.foundry_doc_host_map)) {
+        response <- httptest2::gsub_response(
+          response,
+          real_host,
+          .foundry_doc_host_map[[real_host]],
+          fixed = TRUE
+        )
+      }
+      for (secret in .foundry_doc_secrets) {
+        response <- httptest2::gsub_response(
+          response,
+          secret,
+          "REDACTED",
+          fixed = TRUE
+        )
+      }
     }
-  }
-  response
+    response
+  })
+  ready <- TRUE
+  invisible(NULL)
 })

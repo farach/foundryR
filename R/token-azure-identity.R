@@ -46,30 +46,24 @@
 #'   Azure CLI instead.
 #'
 #' @examples
-#' \dontrun{
-#' # Service principal with a client secret
-#' foundry_set_token_provider(
-#'   foundry_token_azure_identity(
-#'     tenant = "your-tenant-id",
-#'     app = "your-client-id",
-#'     password = Sys.getenv("AZURE_CLIENT_SECRET")
-#'   )
+#' # Creating providers is local: no tokens are acquired or credentials checked.
+#' provider <- foundry_token_azure_identity(
+#'   tenant = "example-tenant-id",
+#'   app = "example-client-id",
+#'   password = "example-client-secret-not-a-secret"
 #' )
+#' is.function(provider)
 #'
-#' # Managed identity inside Azure
-#' foundry_set_token_provider(
-#'   foundry_token_azure_identity(managed_identity = TRUE)
-#' )
+#' # A managed-identity provider acquires tokens only when called inside Azure.
+#' managed_provider <- foundry_token_azure_identity(managed_identity = TRUE)
+#' is.function(managed_provider)
 #'
-#' # Project-scoped APIs use a different audience and provider slot
-#' foundry_set_token_provider(
-#'   foundry_token_azure_identity(
-#'     resource = "https://ai.azure.com",
-#'     managed_identity = TRUE
-#'   ),
-#'   scope = "project"
+#' # Register this provider with scope = "project" for project APIs.
+#' project_provider <- foundry_token_azure_identity(
+#'   resource = "https://ai.azure.com",
+#'   managed_identity = TRUE
 #' )
-#' }
+#' is.function(project_provider)
 foundry_token_azure_identity <- function(resource = "https://cognitiveservices.azure.com",
                                          tenant = Sys.getenv("AZURE_TENANT_ID"),
                                          app = Sys.getenv("AZURE_CLIENT_ID"),

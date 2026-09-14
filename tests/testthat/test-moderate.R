@@ -3,7 +3,7 @@
 # ============================================================================
 
 test_that("foundry_moderate requires endpoint", {
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
   withr::local_envvar(
     AZURE_CONTENT_SAFETY_ENDPOINT = "",
     AZURE_CONTENT_SAFETY_KEY = "test-key"
@@ -15,7 +15,7 @@ test_that("foundry_moderate requires endpoint", {
 test_that("foundry_moderate requires an API key or resource token", {
   withr::defer(foundry_set_token_provider(NULL, scope = "resource"))
   foundry_set_token_provider(NULL, scope = "resource")
-  withr::local_options(foundryR.config_file = tempfile())
+  withr::local_options(foundryR.config_file = withr::local_tempfile())
   withr::local_envvar(
     AZURE_CONTENT_SAFETY_ENDPOINT = "https://test.cognitiveservices.azure.com",
     AZURE_CONTENT_SAFETY_KEY = "",
@@ -42,10 +42,17 @@ test_that("foundry_moderate handles empty input", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 0)
-  expect_named(result, c(
-    "text", "category", "severity", "label",
-    "blocklist_matches", "raw_response"
-  ))
+  expect_named(
+    result,
+    c(
+      "text",
+      "category",
+      "severity",
+      "label",
+      "blocklist_matches",
+      "raw_response"
+    )
+  )
 })
 
 # ============================================================================
@@ -76,11 +83,18 @@ test_that("foundry_moderate returns tibble with mocked safe response", {
   result <- foundry_moderate("This is a friendly message.")
 
   expect_s3_class(result, "tbl_df")
-  expect_equal(nrow(result), 4)  # 4 categories
-  expect_named(result, c(
-    "text", "category", "severity", "label",
-    "blocklist_matches", "raw_response"
-  ))
+  expect_equal(nrow(result), 4) # 4 categories
+  expect_named(
+    result,
+    c(
+      "text",
+      "category",
+      "severity",
+      "label",
+      "blocklist_matches",
+      "raw_response"
+    )
+  )
 
   # All severities should be 0 (safe)
   expect_true(all(result$severity == 0))
@@ -184,6 +198,18 @@ test_that("foundry_moderate returns tibble with real API", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 4)
-  expect_named(result, c("text", "category", "severity", "label", "blocklist_matches", "raw_response"))
-  expect_true(all(result$category %in% c("Hate", "Sexual", "SelfHarm", "Violence")))
+  expect_named(
+    result,
+    c(
+      "text",
+      "category",
+      "severity",
+      "label",
+      "blocklist_matches",
+      "raw_response"
+    )
+  )
+  expect_true(all(
+    result$category %in% c("Hate", "Sexual", "SelfHarm", "Violence")
+  ))
 })

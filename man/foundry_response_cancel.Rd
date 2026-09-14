@@ -29,6 +29,8 @@ Cancel a background Responses API response
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials, and the ID of
+# an existing background response that can be cancelled.
 foundry_response_cancel("resp_abc123")
 }
 }

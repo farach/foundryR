@@ -65,6 +65,8 @@ foundry_content_safety_request <- function(path,
 #'
 #' @examples
 #' \dontrun{
+#' # Requires a configured Azure Content Safety endpoint and credentials,
+#' # base64enc, and your own local image.png input file.
 #' foundry_moderate_image("image.png")
 #' }
 foundry_moderate_image <- function(image,
@@ -105,6 +107,7 @@ foundry_moderate_image <- function(image,
 #' @export
 #'
 #' @examples
+#' # Requires a configured Azure Content Safety endpoint and credentials.
 #' if (interactive() &&
 #'     nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT")) &&
 #'     nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_KEY"))) {
@@ -161,6 +164,8 @@ foundry_protected_material <- function(text,
 #' @name foundry_blocklists
 #'
 #' @examples
+#' # Requires a configured Azure Content Safety endpoint and credentials
+#' # with permission to create and delete the example blocklist.
 #' if (interactive() &&
 #'     nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT")) &&
 #'     nzchar(Sys.getenv("AZURE_CONTENT_SAFETY_KEY"))) {

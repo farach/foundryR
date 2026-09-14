@@ -42,6 +42,12 @@ content type.
 }
 \examples{
 \dontrun{
-foundry_video_download("vidgen_abc123", "clip.mp4")
+# Requires a configured Azure endpoint and credentials,
+# plus a completed video generation ID.
+local({
+  path <- tempfile(fileext = ".mp4")
+  on.exit(unlink(path))
+  foundry_video_download("vidgen_abc123", path)
+})
 }
 }

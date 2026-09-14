@@ -29,6 +29,8 @@ Retrieve a stored Responses API response
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL.
+# The agent example also needs a project endpoint and an existing my-agent.
 response <- foundry_response("Hello")
 foundry_response_retrieve(response$response_id)
 

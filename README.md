@@ -54,14 +54,31 @@ foundry_check_setup()
 ```
 
 Use `store = TRUE` to persist package settings under
-`tools::R_user_dir("foundryR", "config")` without modifying `.Renviron`:
+`tools::R_user_dir("foundryR", "config")` without modifying `.Renviron`.
+The demonstration below instead uses a temporary configuration file,
+removes it afterward, and restores the previous session settings:
 
 ``` r
-foundry_set_endpoint(
-  "https://<resource-name>.openai.azure.com",
-  store = TRUE
-)
-foundry_set_key("your-api-key", store = TRUE)
+local({
+  config_file <- tempfile("foundryR-config-", fileext = ".json")
+  old_options <- options(foundryR.config_file = config_file)
+  old_env <- Sys.getenv(
+    c("AZURE_FOUNDRY_ENDPOINT", "AZURE_FOUNDRY_KEY"),
+    unset = NA_character_
+  )
+  on.exit({
+    options(old_options)
+    Sys.unsetenv(names(old_env)[is.na(old_env)])
+    keep <- !is.na(old_env)
+    if (any(keep)) {
+      do.call(Sys.setenv, as.list(old_env[keep]))
+    }
+    unlink(config_file)
+  }, add = TRUE)
+
+  foundry_set_endpoint("https://example.openai.azure.com", store = TRUE)
+  foundry_set_key("example-key-not-a-secret", store = TRUE)
+})
 ```
 
 The package configuration file is plain text. It inherits the

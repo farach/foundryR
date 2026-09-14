@@ -27,7 +27,9 @@ remain supported, but Microsoft recommends keyless authentication for
 production workloads.
 }
 \examples{
-\dontrun{
+\dontshow{if (requireNamespace("withr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+withr::with_envvar(c(AZURE_FOUNDRY_TOKEN = NA_character_), {
 foundry_set_token("eyJ0eXAiOiJKV1QiLCJhbGciOi...")
-}
+})
+\dontshow{\}) # examplesIf}
 }

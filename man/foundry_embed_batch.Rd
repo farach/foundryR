@@ -62,6 +62,8 @@ batches concurrently while tracking errors gracefully.
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint and credentials,
+# plus an embedding deployment.
 # Embed many texts in parallel
 texts <- c("Hello, world!", "Data science is fun", "R is great")
 embeddings <- foundry_embed_batch(texts, model = "text-embedding-ada-002")

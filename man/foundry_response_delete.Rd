@@ -29,6 +29,7 @@ Delete a stored Responses API response
 }
 \examples{
 \dontrun{
+# Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL.
 response <- foundry_response("Hello")
 foundry_response_delete(response$response_id)
 }
