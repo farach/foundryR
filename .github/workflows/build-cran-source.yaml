@@ -82,6 +82,10 @@ jobs:
       - uses: r-lib/actions/setup-tinytex@v2
         if: matrix.config.os == 'ubuntu-latest' && matrix.config.r == 'release'
 
+      - name: Install HTML manual validator
+        if: matrix.config.os == 'ubuntu-latest' && matrix.config.r == 'release'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq tidy
+
       - uses: actions/download-artifact@v4
         with:
           name: foundryR-cran-source
