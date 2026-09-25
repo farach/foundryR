@@ -16,7 +16,7 @@ version.}
 A named list describing an \code{agent_reference}.
 }
 \description{
-Build the \code{agent_reference} object used to run a stored Azure AI Foundry
+Build the \code{agent_reference} object used to run a stored Microsoft Foundry
 agent through \code{\link[=foundry_response]{foundry_response()}}. Pass the resulting object (or simply the
 agent name) to the \code{agent} argument of \code{foundry_response()}.
 }

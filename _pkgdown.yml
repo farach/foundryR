@@ -16,20 +16,20 @@ template:
   assets: pkgdown
 
 home:
-  title: foundryR - Tidy Azure AI Foundry workflows
+  title: foundryR - Tidy Microsoft Foundry workflows
   description: >
-    A tibble-native R interface to Microsoft Azure AI Foundry for Content
+    A tibble-native R interface to Microsoft Foundry for Content
     Safety, Responses API workflows, strict extraction, embeddings, batch jobs,
     files, audio, media helpers, and chat completions.
   sidebar:
-    structure: [links, license, community, citation, authors, dev]
+    structure: [links, microsoft, license, community, citation, authors, dev]
     components:
-      links:
-        title: Links
+      microsoft:
+        title: Microsoft resources
         text: |
-          - [Azure AI Foundry](https://azure.microsoft.com/en-us/products/ai-foundry/)
-          - [Azure OpenAI Documentation](https://learn.microsoft.com/azure/ai-services/openai/)
-          - [Azure AI Content Safety](https://azure.microsoft.com/products/ai-services/ai-content-safety/)
+          - [Microsoft Foundry](https://azure.microsoft.com/en-us/products/ai-foundry/)
+          - [Microsoft Foundry documentation](https://learn.microsoft.com/azure/foundry/)
+          - [Azure AI Content Safety](https://learn.microsoft.com/azure/ai-services/content-safety/overview)
 
 navbar:
   bg: primary
@@ -160,9 +160,9 @@ reference:
 
   - title: Agents
     desc: >
-      Create, list, and manage named, versioned prompt agents on the Foundry
-      Agent Service, then run a stored agent by name through
-      [foundry_response()] with `agent_reference`.
+      Create, list, and manage named, versioned prompt agents in Foundry
+      Agent Service, then run a stored agent by name with the `agent` argument
+      of `foundry_response()`.
     contents:
       - foundry_agent_create
       - foundry_agents
@@ -226,7 +226,7 @@ reference:
 
   - title: Evaluations
     desc: >
-      Run Azure AI Foundry cloud evaluations. Define graders (string check,
+      Run Microsoft Foundry cloud evaluations. Define graders (string check,
       text similarity, model-graded labels and scores, and Azure built-in
       evaluators), create evaluations, and inspect per-row grader results as
       tibbles.
@@ -273,7 +273,8 @@ reference:
 
   - title: Chat completions
     desc: >
-      Send chat-completion requests to Azure AI Foundry deployments.
+      Send chat-completion requests to Azure OpenAI deployments in Microsoft
+      Foundry.
     contents:
       - foundry_chat
 
@@ -288,8 +289,8 @@ reference:
 
   - title: Experimental media
     desc: >
-      Generate and edit images with v1 preview image models, and manage preview
-      video generation jobs.
+      Generate and edit images with GPT-image models through the v1 image APIs,
+      and manage preview video generation jobs.
     contents:
       - foundry_image
       - foundry_image_edit
@@ -305,7 +306,8 @@ reference:
 
   - title: Model discovery
     desc: >
-      Explore available model deployments in your Azure AI Foundry resource.
+      Explore the model deployments available in your Microsoft Foundry or
+      Azure OpenAI resource.
     contents:
       - foundry_models
 
@@ -350,4 +352,4 @@ footer:
     package: >
       foundryR is developed by [Alex Farach](https://github.com/farach)
     azure: >
-      Powered by [Azure AI Foundry](https://azure.microsoft.com/en-us/products/ai-foundry/)
+      Built for [Microsoft Foundry](https://azure.microsoft.com/en-us/products/ai-foundry/)

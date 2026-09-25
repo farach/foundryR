@@ -35,7 +35,7 @@ Default: \code{"predictor"}.}
 \item{trained}{Logical. Internal use only. Indicates whether the step has been
 trained.}
 
-\item{model}{Character. The deployment name of an Azure AI Foundry embedding
+\item{model}{Character. The deployment name of a Microsoft Foundry embedding
 model (e.g., "text-embedding-ada-002", "text-embedding-3-small"). If \code{NULL},
 defaults to the \code{AZURE_FOUNDRY_EMBED_MODEL} environment variable.}
 
@@ -80,7 +80,7 @@ of existing steps.
 A tibble with columns: \code{terms}, \code{model}, \code{dimensions}, \code{id}
 }
 \description{
-Create text embeddings using an Azure AI Foundry model as part of a tidymodels
+Create text embeddings using a Microsoft Foundry model as part of a tidymodels
 recipe. This step converts text columns into embedding features for downstream
 modeling tasks such as classification, regression, or clustering.
 }

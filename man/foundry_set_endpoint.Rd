@@ -2,7 +2,7 @@
 % Please edit documentation in R/config.R
 \name{foundry_set_endpoint}
 \alias{foundry_set_endpoint}
-\title{Set Azure AI Foundry Endpoint}
+\title{Set Microsoft Foundry Endpoint}
 \usage{
 foundry_set_endpoint(endpoint, store = FALSE)
 }
@@ -17,7 +17,7 @@ package-specific user configuration file. Default: \code{FALSE}.}
 Invisibly returns TRUE if endpoint was set successfully.
 }
 \description{
-Set the base endpoint URL for your Azure AI Foundry resource.
+Set the base endpoint URL for your Microsoft Foundry resource.
 }
 \examples{
 \dontshow{if (requireNamespace("withr", quietly = TRUE)) withAutoprint(\{ # examplesIf}

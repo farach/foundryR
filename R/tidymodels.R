@@ -1,6 +1,6 @@
 #' Foundry Embedding Recipe Step
 #'
-#' Create text embeddings using an Azure AI Foundry model as part of a tidymodels
+#' Create text embeddings using a Microsoft Foundry model as part of a tidymodels
 #' recipe. This step converts text columns into embedding features for downstream
 #' modeling tasks such as classification, regression, or clustering.
 #'
@@ -13,7 +13,7 @@
 #'   Default: `"predictor"`.
 #' @param trained Logical. Internal use only. Indicates whether the step has been
 #'   trained.
-#' @param model Character. The deployment name of an Azure AI Foundry embedding
+#' @param model Character. The deployment name of a Microsoft Foundry embedding
 #'   model (e.g., "text-embedding-ada-002", "text-embedding-3-small"). If `NULL`,
 #'   defaults to the `AZURE_FOUNDRY_EMBED_MODEL` environment variable.
 #' @param dimensions Integer or NULL. The number of dimensions for the output

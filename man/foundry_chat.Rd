@@ -2,7 +2,7 @@
 % Please edit documentation in R/chat.R
 \name{foundry_chat}
 \alias{foundry_chat}
-\title{Chat with an Azure AI Model}
+\title{Chat with a Microsoft Foundry model}
 \usage{
 foundry_chat(
   message,
@@ -79,7 +79,7 @@ A tibble with columns:
 }
 }
 \description{
-Send a message to an Azure AI Foundry deployed model and receive a response.
+Send a message to a Microsoft Foundry deployed model and receive a response.
 Returns a tibble with the assistant's response and usage metadata.
 }
 \examples{

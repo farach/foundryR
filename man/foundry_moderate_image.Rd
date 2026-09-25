@@ -27,7 +27,8 @@ foundry_moderate_image(
 \item{api_version}{Character. API version. Defaults to \code{"2024-09-01"}.}
 }
 \value{
-A tibble with one row per category and raw response payloads.
+A tibble with one row per category and columns \code{source}, \code{category},
+\code{severity}, \code{label}, and \code{raw_response}.
 }
 \description{
 Analyze an image for harmful content with Azure AI Content Safety. \code{image}

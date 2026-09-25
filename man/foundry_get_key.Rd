@@ -2,7 +2,7 @@
 % Please edit documentation in R/auth.R
 \name{foundry_get_key}
 \alias{foundry_get_key}
-\title{Get Azure AI Foundry API Key}
+\title{Get Microsoft Foundry API Key}
 \usage{
 foundry_get_key(key = NULL, required = FALSE)
 }

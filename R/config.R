@@ -1,6 +1,6 @@
-#' Set Azure AI Foundry Endpoint
+#' Set Microsoft Foundry Endpoint
 #'
-#' Set the base endpoint URL for your Azure AI Foundry resource.
+#' Set the base endpoint URL for your Microsoft Foundry resource.
 #'
 #' @param endpoint Character string containing the endpoint URL.
 #'   Example: the endpoint URL from your Foundry resource.
@@ -47,7 +47,7 @@ foundry_set_endpoint <- function(endpoint, store = FALSE) {
 }
 
 
-#' Get Azure AI Foundry Endpoint
+#' Get Microsoft Foundry Endpoint
 #'
 #' Retrieve the endpoint URL from the environment or a provided value.
 #'
@@ -83,9 +83,9 @@ foundry_get_endpoint <- function(endpoint = NULL, required = FALSE) {
 }
 
 
-#' Set Azure AI Foundry project endpoint
+#' Set Microsoft Foundry project endpoint
 #'
-#' Set the project endpoint used by project-scoped Foundry APIs such as Azure
+#' Set the project endpoint used by project-scoped Foundry APIs such as
 #' evaluators and Agent Service operations. Prefer copying the full endpoint
 #' from the Foundry portal because Azure's project endpoint shape can vary by
 #' service generation.
@@ -122,7 +122,7 @@ foundry_set_project_endpoint <- function(endpoint, store = FALSE) {
 }
 
 
-#' Get Azure AI Foundry project endpoint
+#' Get Microsoft Foundry project endpoint
 #'
 #' Retrieve the project endpoint URL from the environment or a provided value.
 #'

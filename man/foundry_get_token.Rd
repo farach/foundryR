@@ -2,7 +2,7 @@
 % Please edit documentation in R/auth.R
 \name{foundry_get_token}
 \alias{foundry_get_token}
-\title{Get Azure AI Foundry Bearer Token}
+\title{Get Microsoft Foundry Bearer Token}
 \usage{
 foundry_get_token(
   token = NULL,

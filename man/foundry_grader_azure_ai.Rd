@@ -2,7 +2,7 @@
 % Please edit documentation in R/evals.R
 \name{foundry_grader_azure_ai}
 \alias{foundry_grader_azure_ai}
-\title{Azure AI built-in evaluator grader}
+\title{Microsoft Foundry built-in evaluator grader}
 \usage{
 foundry_grader_azure_ai(
   name,
@@ -30,7 +30,7 @@ the latest version on the service when omitted.}
 A named list describing an \code{azure_ai_evaluator} grader.
 }
 \description{
-Reference an Azure AI Foundry built-in evaluator (a \verb{builtin.*} ID such as
+Reference a Microsoft Foundry built-in evaluator (a \verb{builtin.*} ID such as
 \code{builtin.coherence} or \code{builtin.groundedness}) as a grader. This grader type
 is only available on the project-scoped Foundry endpoint.
 }

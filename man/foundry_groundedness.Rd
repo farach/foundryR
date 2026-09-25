@@ -91,7 +91,7 @@ This helps identify hallucinations or unsupported claims in AI-generated text.
 \subsection{Authentication}{
 
 This function uses Azure Content Safety credentials, which are separate from
-the Azure AI Foundry (OpenAI) credentials used by other foundryR functions.
+the Azure OpenAI credentials used by other foundryR functions.
 
 Set environment variables:
 

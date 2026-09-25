@@ -16,6 +16,7 @@
 ^dev$
 ^PINBOARD\.md$
 ^SPEC-measurement-layer\.md$
+^maintainer$
 ^rollout$
 ^sessions$
 ^tools$

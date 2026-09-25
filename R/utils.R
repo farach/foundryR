@@ -1,6 +1,6 @@
-#' Build Azure AI Foundry Request
+#' Build Microsoft Foundry Request
 #'
-#' Internal function to construct httr2 requests for Azure AI Foundry API.
+#' Internal function to construct httr2 requests for Microsoft Foundry API.
 #'
 #' @param deployment Character. The deployment name.
 #' @param endpoint_path Character. The API endpoint path (e.g., "chat/completions").
@@ -44,7 +44,7 @@ foundry_build_request <- function(deployment,
 }
 
 
-#' Build Azure AI Foundry v1 Request
+#' Build Microsoft Foundry v1 Request
 #'
 #' Internal function to construct httr2 requests for Azure OpenAI in Microsoft
 #' Foundry's v1 data-plane API.

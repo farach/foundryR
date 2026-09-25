@@ -237,9 +237,9 @@ foundry_grader_score_model <- function(name,
 }
 
 
-#' Azure AI built-in evaluator grader
+#' Microsoft Foundry built-in evaluator grader
 #'
-#' Reference an Azure AI Foundry built-in evaluator (a `builtin.*` ID such as
+#' Reference a Microsoft Foundry built-in evaluator (a `builtin.*` ID such as
 #' `builtin.coherence` or `builtin.groundedness`) as a grader. This grader type
 #' is only available on the project-scoped Foundry endpoint.
 #'

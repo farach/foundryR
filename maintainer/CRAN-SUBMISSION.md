@@ -99,13 +99,27 @@ archive or the repository directory.
 4. Update `cran-comments.md` with the resubmission response.
 5. Submit a newly built tarball with a new version when CRAN requests one.
 
-For the September 2026 resubmission, retain version 0.1.0: this version has not
-been published, and the reviewer did not request a version bump. Include a
+Keep the version unchanged only when resubmitting a version that CRAN has not
+published and the reviewer has not requested a version bump. Include a
 point-by-point response in the submission comments, then reply on the existing
 review thread with `cran-submissions@r-project.org` copied. Upload only the
 checked `.tar.gz`, not a GitHub ZIP or the supporting log bundle.
 
 ## 8. After acceptance
 
-Tag the accepted commit, create a GitHub release from that tag, rebuild the
-pkgdown site, and only then add `install.packages("foundryR")` to the README.
+Tag the commit that produced the accepted tarball, create a GitHub release from
+that tag, and rebuild the pkgdown site. Publish the GitHub release before
+merging later documentation changes: the release event rebuilds the site from
+the tag, and the next push to `main` rebuilds it again from current sources.
+
+Every later CRAN submission needs a higher version number than the published
+release.
+
+## Release history
+
+| Version | Submitted | Published on CRAN | Source commit |
+|---|---|---|---|
+| 0.1.0 | 2026-09-14 (resubmission after manual review) | 2026-09-24 | `3322acf6bdd28a63f6e8e6154dd4e0a71b5a37a0` |
+
+The published 0.1.0 tarball matches the checked upload except for the `MD5`
+file and the `Repository` and `Date/Publication` fields that CRAN adds.

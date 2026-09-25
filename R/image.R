@@ -1,7 +1,8 @@
 #' Set Image Generation Endpoint
 #'
-#' Set the Azure endpoint for image generation (DALL-E). Use this when your
-#' DALL-E model is deployed on a different Azure resource than your chat/embedding models.
+#' Set the Azure OpenAI endpoint for image generation. Use this when your
+#' image-generation deployment is on a different Azure OpenAI resource than
+#' your chat or embedding deployments.
 #'
 #' @param endpoint Character. The full Azure endpoint URL for image generation.
 #'
@@ -9,7 +10,8 @@
 #'
 #' @details
 #' If not set, `foundry_image()` will fall back to `AZURE_FOUNDRY_ENDPOINT`.
-#' Use this function when DALL-E is deployed on a separate Azure resource.
+#' Use this function when image generation is deployed on a separate Azure
+#' OpenAI resource.
 #'
 #' @export
 #'
@@ -65,7 +67,7 @@ foundry_get_image_endpoint <- function(required = FALSE) {
       cli::cli_abort(c(
         "Image endpoint is required but not set.",
         "i" = "Set {.envvar AZURE_FOUNDRY_IMAGE_ENDPOINT} or use {.fun foundry_set_image_endpoint}.",
-        "i" = "Alternatively, set {.envvar AZURE_FOUNDRY_ENDPOINT} if DALL-E is on your main resource."
+        "i" = "Alternatively, set {.envvar AZURE_FOUNDRY_ENDPOINT} if your image deployment is on your main resource."
       ))
     }
     return(NULL)
@@ -77,8 +79,8 @@ foundry_get_image_endpoint <- function(required = FALSE) {
 
 #' Set Image Generation API Key
 #'
-#' Set the API key for image generation. Use this when your DALL-E model
-#' uses a different API key than your chat/embedding models.
+#' Set the API key for image generation. Use this when the image-generation
+#' resource uses a different API key than your chat or embedding resource.
 #'
 #' @param key Character. The API key for image generation.
 #'
@@ -154,27 +156,34 @@ foundry_get_image_key <- function(key = NULL, required = FALSE) {
 }
 
 
-#' Generate Images with DALL-E
+#' Generate Images with Microsoft Foundry
 #'
-#' Generate images using an Azure AI Foundry deployed DALL-E model. Returns a
-#' tibble with the generated image URLs or base64-encoded data, along with
-#' metadata about the generation.
+#' Generate images with an image-generation deployment such as a GPT-image-series
+#' model. Returns a tibble with base64-encoded image data, a URL only if a
+#' legacy deployment returned one, and metadata about the generation.
 #'
 #' @param prompt Character. A text description of the desired image(s).
-#' @param model Character. The deployment name of a DALL-E model.
-#'   Defaults to the environment variable `AZURE_FOUNDRY_IMAGE_MODEL`.
+#' @param model Character. The image-generation deployment name, for example a
+#'   GPT-image-series deployment. Defaults to the environment variable
+#'   `AZURE_FOUNDRY_IMAGE_MODEL`.
 #' @param n Integer. Number of images to generate (1-10). Default: 1.
 #' @param size Character. The size of the generated image(s).
-#'   Modern v1 image models support `"auto"`, `"1024x1024"`, `"1536x1024"`,
-#'   and `"1024x1536"`. DALL-E deployments also support older sizes such as
-#'   `"1792x1024"`, `"1024x1792"`, `"512x512"`, and `"256x256"`.
-#' @param quality Character. The quality of the image. Modern v1 models support
-#'   `"auto"`, `"low"`, `"medium"`, and `"high"`. DALL-E 3 supports
-#'   `"standard"` and `"hd"`.
-#' @param style Character. Optional DALL-E 3 style, `"vivid"` or `"natural"`.
-#' @param response_format Character. Optional DALL-E response format, `"url"`
-#'   or `"b64_json"`. This is not supported by `gpt-image-1`-series models,
-#'   which return base64 image data.
+#'   This version of foundryR accepts `"auto"`, `"1024x1024"`, `"1536x1024"`,
+#'   and `"1024x1536"` for GPT-image models. GPT-Image-2 and GPT-Image-2.5
+#'   support custom dimensions in the service, but this version validates only
+#'   these fixed sizes. Older `"256x256"`, `"512x512"`, `"1792x1024"`, and
+#'   `"1024x1792"` sizes applied to retired DALL-E models.
+#' @param quality Character. The quality of the image. GPT-image models support
+#'   `"auto"`, `"low"`, `"medium"`, and `"high"`. `"standard"` and `"hd"`
+#'   applied to retired DALL-E 3 deployments. GPT-Image-2.5 also supports
+#'   `"xhigh"` and `"max"` in the service, but this version of foundryR does
+#'   not yet accept those values.
+#' @param style Character. Optional DALL-E style, `"vivid"` or `"natural"`.
+#'   DALL-E models were retired by Azure on March 4, 2026; this argument is
+#'   kept for compatibility with legacy deployments.
+#' @param response_format Character. Optional legacy DALL-E response format,
+#'   `"url"` or `"b64_json"`. DALL-E models were retired by Azure on March 4,
+#'   2026; GPT-image models return base64 image data.
 #' @param output_format Character. Optional v1 image output format, `"png"`,
 #'   `"jpeg"`, or `"webp"`.
 #' @param output_compression Integer. Optional v1 compression level from 0 to
@@ -193,9 +202,11 @@ foundry_get_image_key <- function(key = NULL, required = FALSE) {
 #' @return A tibble with columns:
 #'   \describe{
 #'     \item{prompt}{Character. The original prompt provided.}
-#'     \item{revised_prompt}{Character. DALL-E's interpretation/revision of the prompt (DALL-E 3 only).}
-#'     \item{url}{Character. URL to the generated image (NA if response_format is "b64_json").}
-#'     \item{b64_json}{Character. Base64-encoded image data (NA if response_format is "url").}
+#'     \item{revised_prompt}{Character. Revised prompt when the service
+#'       returns one, usually `NA` for GPT-image models.}
+#'     \item{url}{Character. URL to the generated image, `NA` unless a legacy
+#'       deployment returns a URL.}
+#'     \item{b64_json}{Character. Base64-encoded image data.}
 #'     \item{output_format}{Character. Requested or returned output format.}
 #'     \item{created}{POSIXct. Timestamp when the image was created.}
 #'     \item{raw_image}{List. Raw image object returned by the service.}
@@ -203,46 +214,45 @@ foundry_get_image_key <- function(key = NULL, required = FALSE) {
 #'
 #' @details
 #' **Model Requirements**: The `model` parameter must be an image-capable
-#' deployment such as a DALL-E or `gpt-image-1`-series deployment. Chat models
-#' cannot generate images.
+#' deployment such as a GPT-image-series deployment. Chat models cannot generate
+#' images. Azure retired DALL-E 3 on March 4, 2026; see
+#' <https://learn.microsoft.com/azure/foundry/openai/how-to/dall-e>.
 #'
 #' **Size Availability**:
-#' - gpt-image-1 series: auto, 1024x1024, 1536x1024, 1024x1536
-#' - DALL-E 3: 1024x1024, 1792x1024, 1024x1792
-#' - DALL-E 2: 256x256, 512x512, 1024x1024
+#' - GPT-image models in this version of foundryR: auto, 1024x1024, 1536x1024,
+#'   1024x1536.
+#' - GPT-Image-2 and GPT-Image-2.5 support custom dimensions in the service,
+#'   but this version validates only the fixed sizes above.
+#' - Retired DALL-E models used older sizes such as 256x256, 512x512,
+#'   1792x1024, and 1024x1792.
 #'
-#' **URL Expiration**: Image URLs returned by the API are temporary and will expire.
-#' Use `foundry_save_image()` to download and save images locally.
+#' GPT-image results are returned as base64 image data. Use
+#' `foundry_save_image()` to decode and write them to disk; saving base64 data
+#' requires the \pkg{base64enc} package.
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' # Requires a configured Azure image endpoint and credentials,
-#' # plus a DALL-E deployment.
+#' # plus an image-generation deployment.
 #' # Generate a single image
-#' result <- foundry_image("A sunset over mountains", model = "dall-e-3")
+#' result <- foundry_image("A sunset over mountains", model = "gpt-image-2")
 #'
-#' # View the image URL
-#' result$url
+#' # View the base64 image data
+#' result$b64_json
 #'
-#' # Generate an image with HD quality
+#' # Generate a smaller JPEG output
 #' result <- foundry_image(
 #'   "A futuristic cityscape",
-#'   model = "dall-e-3",
-#'   quality = "hd",
-#'   style = "vivid"
-#' )
-#'
-#' # Get base64-encoded images instead of URLs
-#' result <- foundry_image(
-#'   "An abstract painting",
-#'   model = "dall-e-3",
-#'   response_format = "b64_json"
+#'   model = "gpt-image-2",
+#'   quality = "low",
+#'   output_format = "jpeg",
+#'   output_compression = 60
 #' )
 #'
 #' # Save an image to disk
-#' result <- foundry_image("A cat wearing a hat", model = "dall-e-3")
+#' result <- foundry_image("A cat wearing a hat", model = "gpt-image-2")
 #' local({
 #'   path <- tempfile(fileext = ".png")
 #'   on.exit(unlink(path))
@@ -569,11 +579,12 @@ foundry_resolve_image_model <- function(model) {
 #'
 #' @details
 #' This function handles both URL and base64-encoded images automatically.
-#' For URL-based images, it downloads the image from the temporary Azure URL.
-#' For base64-encoded images, it decodes the data and writes it to file.
+#' Base64-encoded image data is the normal GPT-image path; it is decoded and
+#' written to `path`. URL handling is kept for legacy deployments whose
+#' temporary image URLs expire.
 #'
-#' **Note**: Image URLs from Azure are temporary and expire after a short time.
-#' Use this function to save images locally before the URLs expire.
+#' **Note**: If a legacy deployment returns a URL, use this function to save the
+#' image locally before the temporary URL expires.
 #'
 #' @export
 #'
@@ -597,27 +608,20 @@ foundry_resolve_image_model <- function(model) {
 #'
 #' \dontrun{
 #' # Requires a configured Azure image endpoint and credentials,
-#' # plus DALL-E deployments.
+#' # plus an image-generation deployment.
 #' local({
-#'   paths <- replicate(5, tempfile(fileext = ".png"))
+#'   paths <- replicate(3, tempfile(fileext = ".png"))
 #'   on.exit(unlink(paths))
 #'
-#'   # Generate and save an image
-#'   result <- foundry_image("A beautiful landscape", model = "dall-e-3")
-#'   foundry_save_image(result, paths[1])
-#'
-#'   # DALL-E 2 supports generating several images per request.
-#'   result <- foundry_image("Colorful abstract art", model = "dall-e-2", n = 3)
-#'   foundry_save_image(result, paths[2], index = 1)
-#'   foundry_save_image(result, paths[3], index = 2)
-#'   foundry_save_image(result, paths[4], index = 3)
-#'
-#'   # Save a base64-encoded image
+#'   result <- foundry_image(
+#'     "Colorful abstract art",
+#'     model = "gpt-image-2",
+#'     n = 3
+#'   )
 #'   if (requireNamespace("base64enc", quietly = TRUE)) {
-#'     result <- foundry_image(
-#'       "A cat", model = "dall-e-3", response_format = "b64_json"
-#'     )
-#'     foundry_save_image(result, paths[5])
+#'     foundry_save_image(result, paths[1], index = 1)
+#'     foundry_save_image(result, paths[2], index = 2)
+#'     foundry_save_image(result, paths[3], index = 3)
 #'   }
 #' })
 #' }

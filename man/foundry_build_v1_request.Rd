@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{foundry_build_v1_request}
 \alias{foundry_build_v1_request}
-\title{Build Azure AI Foundry v1 Request}
+\title{Build Microsoft Foundry v1 Request}
 \usage{
 foundry_build_v1_request(
   path,

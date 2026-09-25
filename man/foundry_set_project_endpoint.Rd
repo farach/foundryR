@@ -2,7 +2,7 @@
 % Please edit documentation in R/config.R
 \name{foundry_set_project_endpoint}
 \alias{foundry_set_project_endpoint}
-\title{Set Azure AI Foundry project endpoint}
+\title{Set Microsoft Foundry project endpoint}
 \usage{
 foundry_set_project_endpoint(endpoint, store = FALSE)
 }
@@ -16,7 +16,7 @@ package-specific user configuration file.}
 Invisibly returns \code{TRUE} if the endpoint was set successfully.
 }
 \description{
-Set the project endpoint used by project-scoped Foundry APIs such as Azure
+Set the project endpoint used by project-scoped Foundry APIs such as
 evaluators and Agent Service operations. Prefer copying the full endpoint
 from the Foundry portal because Azure's project endpoint shape can vary by
 service generation.
