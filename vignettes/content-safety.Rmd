@@ -161,6 +161,14 @@ wrap_label <- function(x, width = 24) {
     USE.NAMES = FALSE
   )
 }
+wrap_text <- function(lines, width) {
+  wrapped <- vapply(
+    lines,
+    function(line) paste(strwrap(line, width), collapse = "\n"),
+    character(1)
+  )
+  paste(wrapped, collapse = "\n")
+}
 
 review_threshold <- 2
 severity_palette <- grDevices::colorRampPalette(c("#F3F2F1", "#A4262C"))(8)
@@ -214,14 +222,20 @@ ggplot2::ggplot(severity_grid, ggplot2::aes(x = category, y = text)) +
   ggplot2::scale_x_discrete(position = "top") +
   ggplot2::scale_y_discrete(labels = wrap_label) +
   ggplot2::labs(
-    title = severity_chart_title,
-    subtitle = sprintf(
-      "Severity by text and harm category (0 safe, 2 low, 4 medium, 6 high); review at %d or more",
-      review_threshold
+    title = wrap_text(severity_chart_title, 62),
+    subtitle = wrap_text(
+      c(
+        "Severity by text and harm category (0 safe, 2 low, 4 medium, 6 high)",
+        sprintf("Texts at severity %d or more need review", review_threshold)
+      ),
+      84
     ),
     x = NULL,
     y = NULL,
-    caption = "foundry_moderate() results for the three sample texts above. Tiles darken as severity rises."
+    caption = wrap_text(
+      "foundry_moderate() results for the three sample texts above. Tiles darken as severity rises.",
+      101
+    )
   ) +
   ggplot2::theme_minimal(base_size = 12) +
   ggplot2::theme(

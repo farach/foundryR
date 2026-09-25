@@ -156,9 +156,17 @@ pair_data$pair <- factor(pair_data$pair, levels = pair_data$pair)
 same_scores <- pair_data$similarity[pair_data$source_match == "same"]
 cross_scores <- pair_data$similarity[pair_data$source_match == "different"]
 similarity_chart_title <- if (min(same_scores) > max(cross_scores)) {
-  "Every same-source pair scores higher than every cross-source pair"
+  "Same-source pairs outscore every cross-source pair"
 } else {
-  "Same-source pairs tend to score higher than cross-source pairs"
+  "Same-source pairs tend to outscore cross-source pairs"
+}
+wrap_text <- function(lines, width) {
+  wrapped <- vapply(
+    lines,
+    function(line) paste(strwrap(line, width), collapse = "\n"),
+    character(1)
+  )
+  paste(wrapped, collapse = "\n")
 }
 similarity_chart_alt <- paste0(
   similarity_chart_title,
@@ -196,11 +204,20 @@ ggplot2::ggplot(
   ) +
   ggplot2::coord_cartesian(xlim = c(min(0, pair_data$similarity), 1)) +
   ggplot2::labs(
-    title = similarity_chart_title,
-    subtitle = "Cosine similarity for all six pairs of two Austen lines and two finance sentences",
+    title = wrap_text(similarity_chart_title, 62),
+    subtitle = wrap_text(
+      "Cosine similarity for all six pairs of two Austen lines and two finance sentences",
+      84
+    ),
     x = "Cosine similarity",
     y = NULL,
-    caption = "Blue bars pair sentences from the same source. Scores from foundry_similarity() on text-embedding-3-small embeddings."
+    caption = wrap_text(
+      c(
+        "Blue bars pair sentences from the same source.",
+        "Scores from foundry_similarity() on text-embedding-3-small embeddings."
+      ),
+      101
+    )
   ) +
   ggplot2::theme_minimal(base_size = 12) +
   ggplot2::theme(
@@ -313,6 +330,14 @@ projection_title <- if (clusters_are_pure) {
 } else {
   "k-means clusters mostly follow the three topics"
 }
+wrap_text <- function(lines, width) {
+  wrapped <- vapply(
+    lines,
+    function(line) paste(strwrap(line, width), collapse = "\n"),
+    character(1)
+  )
+  paste(wrapped, collapse = "\n")
+}
 projection_alt <- paste0(
   projection_title,
   ". Scatter plot of nine sentence embeddings on their first two principal components; ",
@@ -351,11 +376,23 @@ ggplot2::ggplot(
   ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0.08, 0.22))) +
   ggplot2::coord_cartesian(clip = "off") +
   ggplot2::labs(
-    title = projection_title,
-    subtitle = "Nine sentences on the first two principal components of their embeddings;\ncolor and shape show the k-means cluster (k = 3)",
+    title = wrap_text(projection_title, 62),
+    subtitle = wrap_text(
+      c(
+        "Nine sentences on the first two principal components of their embeddings",
+        "Color and shape show the k-means cluster (k = 3)"
+      ),
+      84
+    ),
     x = "Principal component 1",
     y = "Principal component 2",
-    caption = "Embeddings from text-embedding-3-small via foundry_embed(). Axis positions are relative, so tick values are omitted."
+    caption = wrap_text(
+      c(
+        "Embeddings from text-embedding-3-small via foundry_embed().",
+        "Axis positions are relative, so tick values are omitted."
+      ),
+      101
+    )
   ) +
   ggplot2::theme_minimal(base_size = 12) +
   ggplot2::theme(

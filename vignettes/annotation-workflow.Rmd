@@ -239,6 +239,14 @@ text_on <- function(fill) {
   ifelse(luminance > 0.179, "black", "white")
 }
 capitalize <- function(x) paste0(toupper(substring(x, 1, 1)), substring(x, 2))
+wrap_text <- function(lines, width) {
+  wrapped <- vapply(
+    lines,
+    function(line) paste(strwrap(line, width), collapse = "\n"),
+    character(1)
+  )
+  paste(wrapped, collapse = "\n")
+}
 
 sentiment_colors <- c(
   positive = "#0072B2",
@@ -314,11 +322,11 @@ ggplot2::ggplot(
   ) +
   ggplot2::scale_y_discrete(labels = capitalize) +
   ggplot2::labs(
-    title = theme_chart_title,
+    title = wrap_text(theme_chart_title, 62),
     subtitle = "Responses by primary theme and extracted sentiment",
     x = "Responses",
     y = NULL,
-    caption = "Labels from foundry_extract() on the six example responses above."
+    caption = wrap_text("Labels from foundry_extract() on the six example responses above.", 101)
   ) +
   ggplot2::theme_minimal(base_size = 12) +
   ggplot2::theme(
