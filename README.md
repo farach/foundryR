@@ -9,6 +9,8 @@
 
 <!-- badges: start -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/foundryR)](https://CRAN.R-project.org/package=foundryR)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/farach/foundryR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/farach/foundryR/actions/workflows/R-CMD-check.yaml)
@@ -35,10 +37,16 @@ Its strongest path is dataframe in, dataframe out.
 
 ## Installation
 
-Install the development version from GitHub:
+Install the released version from CRAN:
 
 ``` r
-install.packages("pak")
+install.packages("foundryR")
+```
+
+Or install the development version from GitHub:
+
+``` r
+# install.packages("pak")
 pak::pak("farach/foundryR")
 ```
 

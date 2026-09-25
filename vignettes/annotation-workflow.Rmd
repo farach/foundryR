@@ -227,32 +227,117 @@ review |>
   gt::tab_options(table.font.names = "Inter")
 ```
 
-```{r sentiment-theme-chart, echo = FALSE, eval = run_api && requireNamespace("ggplot2", quietly = TRUE), fig.alt = "Bar chart of survey response themes by sentiment."}
-theme_counts <- review |>
-  dplyr::count(primary_theme, sentiment, name = "responses")
+```{r sentiment-theme-data, include = FALSE, eval = run_api && requireNamespace("ggplot2", quietly = TRUE)}
+text_on <- function(fill) {
+  channels <- grDevices::col2rgb(fill) / 255
+  linear <- ifelse(
+    channels <= 0.04045,
+    channels / 12.92,
+    ((channels + 0.055) / 1.055)^2.4
+  )
+  luminance <- colSums(linear * c(0.2126, 0.7152, 0.0722))
+  ifelse(luminance > 0.179, "black", "white")
+}
+capitalize <- function(x) paste0(toupper(substring(x, 1, 1)), substring(x, 2))
+wrap_text <- function(lines, width) {
+  wrapped <- vapply(
+    lines,
+    function(line) paste(strwrap(line, width), collapse = "\n"),
+    character(1)
+  )
+  paste(wrapped, collapse = "\n")
+}
 
+sentiment_colors <- c(
+  positive = "#0072B2",
+  mixed = "#BBBBBB",
+  negative = "#D55E00"
+)
+sentiment_text <- stats::setNames(text_on(sentiment_colors), names(sentiment_colors))
+
+theme_counts <- review |>
+  dplyr::count(primary_theme, sentiment, name = "responses") |>
+  dplyr::mutate(sentiment = factor(sentiment, levels = names(sentiment_colors)))
+stopifnot(!anyNA(theme_counts$sentiment))
+
+theme_totals <- theme_counts |>
+  dplyr::group_by(primary_theme) |>
+  dplyr::summarise(responses = sum(responses), .groups = "drop") |>
+  dplyr::arrange(responses, dplyr::desc(primary_theme))
+theme_counts$primary_theme <- factor(
+  theme_counts$primary_theme,
+  levels = theme_totals$primary_theme
+)
+stopifnot(!anyNA(theme_counts$primary_theme))
+
+describe_theme <- function(theme) {
+  rows <- theme_counts[theme_counts$primary_theme == theme, ]
+  rows <- rows[order(rows$sentiment), ]
+  paste(rows$responses, rows$sentiment, collapse = " and ")
+}
+top_theme <- as.character(theme_totals$primary_theme[nrow(theme_totals)])
+theme_chart_title <- sprintf(
+  "%s drew %d of %d responses: %s",
+  capitalize(top_theme),
+  theme_totals$responses[nrow(theme_totals)],
+  sum(theme_totals$responses),
+  describe_theme(top_theme)
+)
+theme_chart_alt <- paste0(
+  theme_chart_title,
+  ". Stacked horizontal bars show each primary theme: ",
+  paste(
+    sprintf(
+      "%s, %s",
+      capitalize(rev(as.character(theme_totals$primary_theme))),
+      vapply(rev(as.character(theme_totals$primary_theme)), describe_theme, character(1))
+    ),
+    collapse = "; "
+  ),
+  "."
+)
+```
+
+```{r sentiment-theme-chart, echo = FALSE, eval = run_api && requireNamespace("ggplot2", quietly = TRUE), fig.alt = get0("theme_chart_alt", ifnotfound = "Stacked bar chart of survey responses by primary theme and sentiment.")}
 ggplot2::ggplot(
   theme_counts,
-  ggplot2::aes(x = primary_theme, y = responses, fill = sentiment)
+  ggplot2::aes(x = responses, y = primary_theme, fill = sentiment, group = sentiment)
 ) +
-  ggplot2::geom_col(position = "dodge", width = 0.72) +
-  ggplot2::scale_fill_manual(
-    values = c(
-      negative = "#D13438",
-      mixed = "#FFB900",
-      positive = "#107C10"
-    )
+  ggplot2::geom_col(
+    width = 0.62,
+    color = "white",
+    linewidth = 0.8,
+    position = ggplot2::position_stack(reverse = TRUE)
   ) +
+  ggplot2::geom_text(
+    ggplot2::aes(label = paste(responses, sentiment), color = sentiment),
+    position = ggplot2::position_stack(vjust = 0.5, reverse = TRUE),
+    size = 3.6
+  ) +
+  ggplot2::scale_fill_manual(values = sentiment_colors, guide = "none") +
+  ggplot2::scale_color_manual(values = sentiment_text, guide = "none") +
+  ggplot2::scale_x_continuous(
+    breaks = seq(0, max(theme_totals$responses), by = 1),
+    expand = ggplot2::expansion(mult = c(0, 0.03))
+  ) +
+  ggplot2::scale_y_discrete(labels = capitalize) +
   ggplot2::labs(
-    title = "Extracted labels make response patterns countable",
-    x = "Primary theme",
-    y = "Responses",
-    fill = "Sentiment"
+    title = wrap_text(theme_chart_title, 62),
+    subtitle = "Responses by primary theme and extracted sentiment",
+    x = "Responses",
+    y = NULL,
+    caption = wrap_text("Labels from foundry_extract() on the six example responses above.", 101)
   ) +
   ggplot2::theme_minimal(base_size = 12) +
   ggplot2::theme(
-    legend.position = "bottom",
-    panel.grid.minor = ggplot2::element_blank()
+    plot.title = ggplot2::element_text(face = "bold"),
+    plot.title.position = "plot",
+    plot.subtitle = ggplot2::element_text(color = "grey30"),
+    plot.caption = ggplot2::element_text(color = "grey40", hjust = 0),
+    plot.caption.position = "plot",
+    panel.grid.major.y = ggplot2::element_blank(),
+    panel.grid.minor = ggplot2::element_blank(),
+    axis.text.y = ggplot2::element_text(size = 11, color = "grey15")
   )
 ```
 

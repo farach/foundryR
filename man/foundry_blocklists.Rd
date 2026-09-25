@@ -76,7 +76,11 @@ foundry_blocklist_remove_items(
 \item{item_ids}{Character vector of blocklist item IDs to remove.}
 }
 \value{
-A tibble with blocklist or blocklist-item metadata.
+Blocklist list, create, and get functions return \code{name},
+\code{description}, and \code{raw_blocklist}. Item list and add functions return
+\code{item_id}, \code{text}, \code{is_regex}, and \code{raw_item}. Delete returns \code{name},
+\code{deleted}, and \code{raw_blocklist}; remove returns \code{name}, \code{removed}, and
+\code{raw_response}.
 }
 \description{
 Create, list, retrieve, delete, and edit Azure AI Content Safety blocklists.

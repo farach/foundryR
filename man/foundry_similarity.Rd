@@ -17,12 +17,14 @@ foundry_similarity(data, text_col = "text", top_k = NULL, as_matrix = FALSE)
 instead of a long pairwise tibble.}
 }
 \value{
-A tibble with columns:
+If \code{as_matrix = FALSE}, a tibble with columns:
 \describe{
 \item{text_1}{Character. First text.}
 \item{text_2}{Character. Second text.}
 \item{similarity}{Numeric. Cosine similarity between -1 and 1.}
 }
+If \code{as_matrix = TRUE}, a numeric cosine-similarity matrix with row and
+column names from \code{text_col}.
 }
 \description{
 Compute pairwise cosine similarity between all embeddings in a tibble.

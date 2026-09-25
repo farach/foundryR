@@ -11,7 +11,11 @@
 #' @param api_key Character. Optional API key override.
 #' @param endpoint Character. Optional endpoint override.
 #'
-#' @return A tibble with conversation metadata or conversation items.
+#' @return Conversation create, list, get, and update functions return
+#'   `conversation_id`, `object`, `created_at`, `metadata`, and
+#'   `raw_conversation`. Delete returns `conversation_id`, `deleted`, and
+#'   `raw_conversation`. Item functions return `item_id`, `type`, `role`,
+#'   `content`, and `raw_item`.
 #' @name foundry_conversations
 #'
 #' @examples

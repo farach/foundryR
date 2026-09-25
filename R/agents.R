@@ -1,6 +1,6 @@
 #' Reference a Foundry agent from the Responses API
 #'
-#' Build the `agent_reference` object used to run a stored Azure AI Foundry
+#' Build the `agent_reference` object used to run a stored Microsoft Foundry
 #' agent through [foundry_response()]. Pass the resulting object (or simply the
 #' agent name) to the `agent` argument of `foundry_response()`.
 #'
@@ -203,7 +203,7 @@ foundry_agent_get <- function(name,
 #' @param name Character. Agent name to delete.
 #' @inheritParams foundry_agent_create
 #'
-#' @return A one-row tibble with `agent_name` and `deleted`.
+#' @return A one-row tibble with `agent_name`, `deleted`, and `raw_agent`.
 #' @export
 #'
 #' @examples

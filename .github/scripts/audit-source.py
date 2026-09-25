@@ -14,7 +14,7 @@ if checksum_path.exists():
 excluded = {
     ".git", ".github", ".serena", ".Renviron", ".Renviron.local",
     ".Rhistory", ".RData", "cran-comments.md", "CRAN-SUBMISSION.md",
-    "SPEC-measurement-layer.md", "rollout", "sessions", "data-raw",
+    "SPEC-measurement-layer.md", "maintainer", "rollout", "sessions", "data-raw",
 }
 problems = []
 with tarfile.open(archive, "r:gz") as source:

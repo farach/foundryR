@@ -25,6 +25,8 @@
 #'     \item{.input_idx}{Integer. Original input index.}
 #'     \item{.error}{Logical. Whether the row failed.}
 #'     \item{.error_msg}{Character. Error message for failed rows.}
+#'     \item{raw_response}{List. Raw parsed response payload for successful
+#'       rows, or NULL for failed rows.}
 #'   }
 #'
 #' @details
@@ -36,7 +38,7 @@
 #'
 #' Chat models (GPT-4, Claude, Llama, etc.) cannot generate embeddings.
 #' If you only have chat models deployed, you'll need to deploy an embedding
-#' model in Azure AI Foundry first.
+#' model in Microsoft Foundry first.
 #'
 #' @export
 #'
@@ -86,12 +88,14 @@ foundry_embed <- function(text,
 #' @param as_matrix Logical. If `TRUE`, return the full cosine-similarity matrix
 #'   instead of a long pairwise tibble.
 #'
-#' @return A tibble with columns:
+#' @return If `as_matrix = FALSE`, a tibble with columns:
 #'   \describe{
 #'     \item{text_1}{Character. First text.}
 #'     \item{text_2}{Character. Second text.}
 #'     \item{similarity}{Numeric. Cosine similarity between -1 and 1.}
 #'   }
+#'   If `as_matrix = TRUE`, a numeric cosine-similarity matrix with row and
+#'   column names from `text_col`.
 #'
 #' @export
 #'

@@ -24,7 +24,7 @@ foundry_agent_delete(
 \item{api_version}{Character. API version query value. Defaults to \code{"v1"}.}
 }
 \value{
-A one-row tibble with \code{agent_name} and \code{deleted}.
+A one-row tibble with \code{agent_name}, \code{deleted}, and \code{raw_agent}.
 }
 \description{
 Delete a Foundry agent

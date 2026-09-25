@@ -2,7 +2,7 @@
 % Please edit documentation in R/auth.R
 \name{foundry_set_key}
 \alias{foundry_set_key}
-\title{Set Azure AI Foundry API Key}
+\title{Set Microsoft Foundry API Key}
 \usage{
 foundry_set_key(key = NULL, store = FALSE)
 }
@@ -17,7 +17,7 @@ package-specific user configuration file. Default: \code{FALSE}.}
 Invisibly returns TRUE if key was set successfully.
 }
 \description{
-Set or update your Azure AI Foundry API key for authentication.
+Set or update your Microsoft Foundry API key for authentication.
 The key can be obtained from the Azure Portal under your Azure OpenAI resource.
 }
 \examples{

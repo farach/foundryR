@@ -60,7 +60,8 @@ foundry_content_safety_request <- function(path,
 #' @param api_key Character. Optional Content Safety key.
 #' @param api_version Character. API version. Defaults to `"2024-09-01"`.
 #'
-#' @return A tibble with one row per category and raw response payloads.
+#' @return A tibble with one row per category and columns `source`, `category`,
+#'   `severity`, `label`, and `raw_response`.
 #' @export
 #'
 #' @examples
@@ -160,7 +161,11 @@ foundry_protected_material <- function(text,
 #' @param is_regex Logical. Whether added items are regular expressions.
 #' @inheritParams foundry_moderate_image
 #'
-#' @return A tibble with blocklist or blocklist-item metadata.
+#' @return Blocklist list, create, and get functions return `name`,
+#'   `description`, and `raw_blocklist`. Item list and add functions return
+#'   `item_id`, `text`, `is_regex`, and `raw_item`. Delete returns `name`,
+#'   `deleted`, and `raw_blocklist`; remove returns `name`, `removed`, and
+#'   `raw_response`.
 #' @name foundry_blocklists
 #'
 #' @examples

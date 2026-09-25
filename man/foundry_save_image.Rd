@@ -24,11 +24,12 @@ Works with both URL and base64-encoded image results.
 }
 \details{
 This function handles both URL and base64-encoded images automatically.
-For URL-based images, it downloads the image from the temporary Azure URL.
-For base64-encoded images, it decodes the data and writes it to file.
+Base64-encoded image data is the normal GPT-image path; it is decoded and
+written to \code{path}. URL handling is kept for legacy deployments whose
+temporary image URLs expire.
 
-\strong{Note}: Image URLs from Azure are temporary and expire after a short time.
-Use this function to save images locally before the URLs expire.
+\strong{Note}: If a legacy deployment returns a URL, use this function to save the
+image locally before the temporary URL expires.
 }
 \examples{
 # Save a one-pixel PNG without calling Azure.
@@ -50,27 +51,20 @@ if (requireNamespace("base64enc", quietly = TRUE)) {
 
 \dontrun{
 # Requires a configured Azure image endpoint and credentials,
-# plus DALL-E deployments.
+# plus an image-generation deployment.
 local({
-  paths <- replicate(5, tempfile(fileext = ".png"))
+  paths <- replicate(3, tempfile(fileext = ".png"))
   on.exit(unlink(paths))
 
-  # Generate and save an image
-  result <- foundry_image("A beautiful landscape", model = "dall-e-3")
-  foundry_save_image(result, paths[1])
-
-  # DALL-E 2 supports generating several images per request.
-  result <- foundry_image("Colorful abstract art", model = "dall-e-2", n = 3)
-  foundry_save_image(result, paths[2], index = 1)
-  foundry_save_image(result, paths[3], index = 2)
-  foundry_save_image(result, paths[4], index = 3)
-
-  # Save a base64-encoded image
+  result <- foundry_image(
+    "Colorful abstract art",
+    model = "gpt-image-2",
+    n = 3
+  )
   if (requireNamespace("base64enc", quietly = TRUE)) {
-    result <- foundry_image(
-      "A cat", model = "dall-e-3", response_format = "b64_json"
-    )
-    foundry_save_image(result, paths[5])
+    foundry_save_image(result, paths[1], index = 1)
+    foundry_save_image(result, paths[2], index = 2)
+    foundry_save_image(result, paths[3], index = 3)
   }
 })
 }

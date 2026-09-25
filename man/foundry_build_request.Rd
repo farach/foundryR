@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{foundry_build_request}
 \alias{foundry_build_request}
-\title{Build Azure AI Foundry Request}
+\title{Build Microsoft Foundry Request}
 \usage{
 foundry_build_request(
   deployment,
@@ -30,6 +30,6 @@ foundry_build_request(
 An httr2 request object (not yet performed).
 }
 \description{
-Internal function to construct httr2 requests for Azure AI Foundry API.
+Internal function to construct httr2 requests for Microsoft Foundry API.
 }
 \keyword{internal}

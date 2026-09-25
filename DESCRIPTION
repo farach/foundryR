@@ -3,7 +3,7 @@ Title: Data Frame Workflows for 'Microsoft Foundry'
 Version: 0.1.0
 Authors@R:
     person("Alex", "Farach", , "alexfarach@microsoft.com", role = c("aut", "cre", "cph"))
-Description: Work with 'Microsoft Azure AI Foundry' from data-frame-oriented
+Description: Work with 'Microsoft Foundry' from data-frame-oriented
     'R' workflows. Provides data-frame-returning helpers for 'Azure AI Content
     Safety', 'Azure OpenAI' Responses API calls, strict structured extraction,
     vector representations, files, batch jobs, audio, media, and chat

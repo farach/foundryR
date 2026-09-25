@@ -2,7 +2,7 @@
 % Please edit documentation in R/config.R
 \name{foundry_get_project_endpoint}
 \alias{foundry_get_project_endpoint}
-\title{Get Azure AI Foundry project endpoint}
+\title{Get Microsoft Foundry project endpoint}
 \usage{
 foundry_get_project_endpoint(endpoint = NULL, required = FALSE)
 }

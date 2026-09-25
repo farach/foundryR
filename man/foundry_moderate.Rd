@@ -47,6 +47,9 @@ A tibble with columns:
 \item{severity}{Integer. Severity score. Range depends on \code{output_type}:
 0-6 for FourSeverityLevels (values: 0, 2, 4, 6) or 0-7 for EightSeverityLevels.}
 \item{label}{Character. Human-readable severity label: "safe", "low", "medium", or "high".}
+\item{blocklist_matches}{List. Blocklist matches returned by the service
+for the analyzed text.}
+\item{raw_response}{List. Raw Content Safety response for the analyzed text.}
 }
 }
 \description{

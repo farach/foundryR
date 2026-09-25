@@ -2,7 +2,7 @@
 % Please edit documentation in R/image.R
 \name{foundry_image}
 \alias{foundry_image}
-\title{Generate Images with DALL-E}
+\title{Generate Images with Microsoft Foundry}
 \usage{
 foundry_image(
   prompt,
@@ -25,25 +25,32 @@ foundry_image(
 \arguments{
 \item{prompt}{Character. A text description of the desired image(s).}
 
-\item{model}{Character. The deployment name of a DALL-E model.
-Defaults to the environment variable \code{AZURE_FOUNDRY_IMAGE_MODEL}.}
+\item{model}{Character. The image-generation deployment name, for example a
+GPT-image-series deployment. Defaults to the environment variable
+\code{AZURE_FOUNDRY_IMAGE_MODEL}.}
 
 \item{n}{Integer. Number of images to generate (1-10). Default: 1.}
 
 \item{size}{Character. The size of the generated image(s).
-Modern v1 image models support \code{"auto"}, \code{"1024x1024"}, \code{"1536x1024"},
-and \code{"1024x1536"}. DALL-E deployments also support older sizes such as
-\code{"1792x1024"}, \code{"1024x1792"}, \code{"512x512"}, and \code{"256x256"}.}
+This version of foundryR accepts \code{"auto"}, \code{"1024x1024"}, \code{"1536x1024"},
+and \code{"1024x1536"} for GPT-image models. GPT-Image-2 and GPT-Image-2.5
+support custom dimensions in the service, but this version validates only
+these fixed sizes. Older \code{"256x256"}, \code{"512x512"}, \code{"1792x1024"}, and
+\code{"1024x1792"} sizes applied to retired DALL-E models.}
 
-\item{quality}{Character. The quality of the image. Modern v1 models support
-\code{"auto"}, \code{"low"}, \code{"medium"}, and \code{"high"}. DALL-E 3 supports
-\code{"standard"} and \code{"hd"}.}
+\item{quality}{Character. The quality of the image. GPT-image models support
+\code{"auto"}, \code{"low"}, \code{"medium"}, and \code{"high"}. \code{"standard"} and \code{"hd"}
+applied to retired DALL-E 3 deployments. GPT-Image-2.5 also supports
+\code{"xhigh"} and \code{"max"} in the service, but this version of foundryR does
+not yet accept those values.}
 
-\item{style}{Character. Optional DALL-E 3 style, \code{"vivid"} or \code{"natural"}.}
+\item{style}{Character. Optional DALL-E style, \code{"vivid"} or \code{"natural"}.
+DALL-E models were retired by Azure on March 4, 2026; this argument is
+kept for compatibility with legacy deployments.}
 
-\item{response_format}{Character. Optional DALL-E response format, \code{"url"}
-or \code{"b64_json"}. This is not supported by \code{gpt-image-1}-series models,
-which return base64 image data.}
+\item{response_format}{Character. Optional legacy DALL-E response format,
+\code{"url"} or \code{"b64_json"}. DALL-E models were retired by Azure on March 4,
+2026; GPT-image models return base64 image data.}
 
 \item{output_format}{Character. Optional v1 image output format, \code{"png"},
 \code{"jpeg"}, or \code{"webp"}.}
@@ -71,61 +78,62 @@ which return base64 image data.}
 A tibble with columns:
 \describe{
 \item{prompt}{Character. The original prompt provided.}
-\item{revised_prompt}{Character. DALL-E's interpretation/revision of the prompt (DALL-E 3 only).}
-\item{url}{Character. URL to the generated image (NA if response_format is "b64_json").}
-\item{b64_json}{Character. Base64-encoded image data (NA if response_format is "url").}
+\item{revised_prompt}{Character. Revised prompt when the service
+returns one, usually \code{NA} for GPT-image models.}
+\item{url}{Character. URL to the generated image, \code{NA} unless a legacy
+deployment returns a URL.}
+\item{b64_json}{Character. Base64-encoded image data.}
 \item{output_format}{Character. Requested or returned output format.}
 \item{created}{POSIXct. Timestamp when the image was created.}
 \item{raw_image}{List. Raw image object returned by the service.}
 }
 }
 \description{
-Generate images using an Azure AI Foundry deployed DALL-E model. Returns a
-tibble with the generated image URLs or base64-encoded data, along with
-metadata about the generation.
+Generate images with an image-generation deployment such as a GPT-image-series
+model. Returns a tibble with base64-encoded image data, a URL only if a
+legacy deployment returned one, and metadata about the generation.
 }
 \details{
 \strong{Model Requirements}: The \code{model} parameter must be an image-capable
-deployment such as a DALL-E or \code{gpt-image-1}-series deployment. Chat models
-cannot generate images.
+deployment such as a GPT-image-series deployment. Chat models cannot generate
+images. Azure retired DALL-E 3 on March 4, 2026; see
+\url{https://learn.microsoft.com/azure/foundry/openai/how-to/dall-e}.
 
 \strong{Size Availability}:
 \itemize{
-\item gpt-image-1 series: auto, 1024x1024, 1536x1024, 1024x1536
-\item DALL-E 3: 1024x1024, 1792x1024, 1024x1792
-\item DALL-E 2: 256x256, 512x512, 1024x1024
+\item GPT-image models in this version of foundryR: auto, 1024x1024, 1536x1024,
+1024x1536.
+\item GPT-Image-2 and GPT-Image-2.5 support custom dimensions in the service,
+but this version validates only the fixed sizes above.
+\item Retired DALL-E models used older sizes such as 256x256, 512x512,
+1792x1024, and 1024x1792.
 }
 
-\strong{URL Expiration}: Image URLs returned by the API are temporary and will expire.
-Use \code{foundry_save_image()} to download and save images locally.
+GPT-image results are returned as base64 image data. Use
+\code{foundry_save_image()} to decode and write them to disk; saving base64 data
+requires the \pkg{base64enc} package.
 }
 \examples{
 \dontrun{
 # Requires a configured Azure image endpoint and credentials,
-# plus a DALL-E deployment.
+# plus an image-generation deployment.
 # Generate a single image
-result <- foundry_image("A sunset over mountains", model = "dall-e-3")
+result <- foundry_image("A sunset over mountains", model = "gpt-image-2")
 
-# View the image URL
-result$url
+# View the base64 image data
+result$b64_json
 
-# Generate an image with HD quality
+# Generate a smaller JPEG output
 result <- foundry_image(
   "A futuristic cityscape",
-  model = "dall-e-3",
-  quality = "hd",
-  style = "vivid"
-)
-
-# Get base64-encoded images instead of URLs
-result <- foundry_image(
-  "An abstract painting",
-  model = "dall-e-3",
-  response_format = "b64_json"
+  model = "gpt-image-2",
+  quality = "low",
+  output_format = "jpeg",
+  output_compression = 60
 )
 
 # Save an image to disk
-result <- foundry_image("A cat wearing a hat", model = "dall-e-3")
+result <- foundry_image("A cat wearing a hat", model = "gpt-image-2")
 local({
   path <- tempfile(fileext = ".png")
   on.exit(unlink(path))

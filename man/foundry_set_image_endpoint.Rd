@@ -13,12 +13,14 @@ foundry_set_image_endpoint(endpoint)
 Invisibly returns the endpoint that was set.
 }
 \description{
-Set the Azure endpoint for image generation (DALL-E). Use this when your
-DALL-E model is deployed on a different Azure resource than your chat/embedding models.
+Set the Azure OpenAI endpoint for image generation. Use this when your
+image-generation deployment is on a different Azure OpenAI resource than
+your chat or embedding deployments.
 }
 \details{
 If not set, \code{foundry_image()} will fall back to \code{AZURE_FOUNDRY_ENDPOINT}.
-Use this function when DALL-E is deployed on a separate Azure resource.
+Use this function when image generation is deployed on a separate Azure
+OpenAI resource.
 }
 \examples{
 local({

@@ -61,7 +61,11 @@ foundry_conversation_items_add(
 \item{items}{List. Conversation input items to add.}
 }
 \value{
-A tibble with conversation metadata or conversation items.
+Conversation create, list, get, and update functions return
+\code{conversation_id}, \code{object}, \code{created_at}, \code{metadata}, and
+\code{raw_conversation}. Delete returns \code{conversation_id}, \code{deleted}, and
+\code{raw_conversation}. Item functions return \code{item_id}, \code{type}, \code{role},
+\code{content}, and \code{raw_item}.
 }
 \description{
 Create, list, retrieve, update, and delete server-side conversations used by

@@ -1,6 +1,6 @@
-#' Set Azure AI Foundry API Key
+#' Set Microsoft Foundry API Key
 #'
-#' Set or update your Azure AI Foundry API key for authentication.
+#' Set or update your Microsoft Foundry API key for authentication.
 #' The key can be obtained from the Azure Portal under your Azure OpenAI resource.
 #'
 #' @param key Character string containing your API key, or NULL to set interactively.
@@ -43,7 +43,7 @@ foundry_set_key <- function(key = NULL, store = FALSE) {
 }
 
 
-#' Get Azure AI Foundry API Key
+#' Get Microsoft Foundry API Key
 #'
 #' Retrieve the API key from the environment or a provided value.
 #' This is primarily an internal function used by other foundryR functions.
@@ -74,7 +74,7 @@ foundry_get_key <- function(key = NULL, required = FALSE) {
 }
 
 
-#' Set Azure AI Foundry Bearer Token
+#' Set Microsoft Foundry Bearer Token
 #'
 #' Set a Microsoft Entra ID bearer token for keyless authentication. API keys
 #' remain supported, but Microsoft recommends keyless authentication for
@@ -119,7 +119,7 @@ foundry_set_token <- function(token,
 }
 
 
-#' Get Azure AI Foundry Bearer Token
+#' Get Microsoft Foundry Bearer Token
 #'
 #' Retrieve a bearer token from the environment or a provided value.
 #'

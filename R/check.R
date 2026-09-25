@@ -1,6 +1,6 @@
 #' Check foundryR Setup
 #'
-#' Validates your Azure AI Foundry configuration and provides helpful
+#' Validates your Microsoft Foundry configuration and provides helpful
 #' guidance if anything is missing or misconfigured.
 #'
 #' @param model Character. Optional deployment name to test. If provided,
@@ -10,8 +10,12 @@
 #' @return Invisibly returns a list with configuration status:
 #'   \describe{
 #'     \item{endpoint}{The configured endpoint URL, or NA if not set.}
+#'     \item{project_endpoint}{The configured project endpoint URL, or NA if
+#'       not set.}
 #'     \item{key_set}{Logical. TRUE if an API key is configured.}
 #'     \item{token_set}{Logical. TRUE if a bearer token is configured.}
+#'     \item{token_provider_set}{Logical. TRUE if a resource-scoped bearer token
+#'       provider is configured.}
 #'     \item{model_tested}{The deployment name tested, or NA if none.}
 #'     \item{api_ok}{Logical. TRUE if the API test succeeded, NA if not tested.}
 #'     \item{all_ok}{Logical. TRUE if all checks passed.}

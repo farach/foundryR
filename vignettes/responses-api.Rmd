@@ -203,7 +203,7 @@ citations into a tidy list-column:
 
 ```{r web-search, eval = FALSE}
 answer <- foundry_web_search(
-  "What changed recently in Azure AI Foundry Responses API?",
+  "What changed recently in the Microsoft Foundry Responses API?",
   search_context_size = "high"
 )
 
