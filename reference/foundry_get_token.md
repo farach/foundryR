@@ -1,4 +1,4 @@
-# Get Azure AI Foundry Bearer Token
+# Get Microsoft Foundry Bearer Token
 
 Retrieve a bearer token from the environment or a provided value.
 

@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/farach/foundryR/blob/v0.1.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/farach/foundryR/blob/main/DESCRIPTION)
 
 Farach A (2026). *foundryR: Data Frame Workflows for 'Microsoft
 Foundry'*. R package version 0.1.0,

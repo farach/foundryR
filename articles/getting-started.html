@@ -96,7 +96,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Getting started with foundryR</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/v0.1.0/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/main/vignettes/getting-started.Rmd" class="external-link"><code>vignettes/getting-started.Rmd</code></a></small>
       <div class="d-none name"><code>getting-started.Rmd</code></div>
     </div>
 
@@ -105,10 +105,11 @@
 <div class="section level2">
 <h2 id="what-you-need-from-azure">What you need from Azure<a class="anchor" aria-label="anchor" href="#what-you-need-from-azure"></a>
 </h2>
-<p>foundryR talks to deployed Azure AI Foundry and Azure OpenAI
-resources. Before writing R code, create or identify:</p>
+<p>foundryR talks to deployed Azure OpenAI resources and Microsoft
+Foundry (formerly Azure AI Foundry) projects. Before writing R code,
+create or identify:</p>
 <ol style="list-style-type: decimal">
-<li>An Azure OpenAI resource or Azure AI Foundry project with an OpenAI
+<li>An Azure OpenAI resource or Microsoft Foundry project with an OpenAI
 endpoint.</li>
 <li>At least one chat or Responses API deployment, for example
 <code>gpt-5-nano</code>.</li>
@@ -120,7 +121,7 @@ groundedness, or prompt-shield checks.</li>
 </ol>
 <p>In the Azure portal, open your Azure OpenAI resource, then use
 <strong>Keys and Endpoint</strong> to copy the endpoint URL and an API
-key. In Azure AI Foundry, use the deployments page to create model
+key. In the Foundry portal, use the deployments page to create model
 deployments and record their deployment names.</p>
 <blockquote>
 <p><strong>Deployment name vs base model name</strong></p>
@@ -134,8 +135,13 @@ embedding deployments.</p>
 <div class="section level2">
 <h2 id="install-foundryr">Install foundryR<a class="anchor" aria-label="anchor" href="#install-foundryr"></a>
 </h2>
+<p>Install the released version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"foundryR"</span><span class="op">)</span></span></code></pre></div>
+<p>To try unreleased changes, install the development version from
+GitHub:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
 <span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"farach/foundryR"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -143,7 +149,7 @@ embedding deployments.</p>
 </h2>
 <p>Set credentials for the current R session. Credential setup is shown
 but not run when building this vignette:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
@@ -157,7 +163,7 @@ credentials or refreshable token providers for production use.</p>
 <p>This demonstration instead uses a temporary file and placeholder
 values, then removes the file and restores the previous options and
 environment variables:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">local</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">config_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="st">"foundryR-config-"</span>, fileext <span class="op">=</span> <span class="st">".json"</span><span class="op">)</span></span>
 <span>  <span class="va">old_options</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>foundryR.config_file <span class="op">=</span> <span class="va">config_file</span><span class="op">)</span></span>
@@ -193,7 +199,7 @@ AZURE_FOUNDRY_EMBED_MODEL=my-embedding-deployment</code></pre>
 environments that already use service principals, managed identity, or
 Azure role-based access control, use a Microsoft Entra ID bearer
 token:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_token.html">foundry_set_token</a></span><span class="op">(</span><span class="st">"your-entra-token"</span><span class="op">)</span></span></code></pre></div>
 <p>foundryR sends the token in the <code>Authorization</code> header. If
 both a token and an API key are configured, the token takes precedence
@@ -204,14 +210,14 @@ for supported calls.</p>
 </h2>
 <p>These checks contact your configured Azure resource and are not run
 during rendering.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_check_setup.html">foundry_check_setup</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Test a specific deployment:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_check_setup.html">foundry_check_setup</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"gpt-5-nano"</span><span class="op">)</span></span></code></pre></div>
 <p>If you need to see deployments exposed by the v1 model metadata
 endpoint, use:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_models.html">foundry_models</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">models</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"owned_by"</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 </div>
@@ -223,7 +229,7 @@ structured outputs, tools, and richer token metadata. The examples below
 omit <code>model =</code>, so foundryR reads the deployment from
 <code>AZURE_FOUNDRY_MODEL</code>; pass <code>model =</code> to target a
 specific deployment.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">response</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span><span class="st">"Answer in one sentence: what is R?"</span><span class="op">)</span></span>
@@ -231,7 +237,7 @@ specific deployment.</p>
 <span><span class="va">response</span><span class="op">$</span><span class="va">output_text</span></span>
 <span><span class="co">#&gt; [1] "R is a free, open-source programming language and environment for statistical computing and graphics, widely used for data analysis and visualization."</span></span></code></pre></div>
 <p>Chain a follow-up turn with <code>previous_response_id</code>:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">follow_up</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Explain why that matters for data analysis in one sentence."</span>,</span>
 <span>  previous_response_id <span class="op">=</span> <span class="va">response</span><span class="op">$</span><span class="va">response_id</span></span>
@@ -245,7 +251,7 @@ specific deployment.</p>
 </h2>
 <p>Use JSON Schema when you need model output to become analyzable
 columns:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"object"</span>,</span>
 <span>  properties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
@@ -274,7 +280,7 @@ default for supported models.</p>
 </h2>
 <p>Embeddings convert text to numeric vectors for clustering, semantic
 search, near-duplicate detection, and downstream models:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">texts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"The tutorial was clear."</span>,</span>
 <span>  <span class="st">"The lecture needed more examples."</span>,</span>
@@ -296,11 +302,11 @@ search, near-duplicate detection, and downstream models:</p>
 <p>Content Safety uses a separate Azure AI Content Safety resource. In
 the Azure portal, create an Azure AI Content Safety resource, open
 <strong>Keys and Endpoint</strong>, then configure foundryR:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_content_safety_endpoint.html">foundry_set_content_safety_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_CONTENT_SAFETY_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/foundry_set_content_safety_key.html">foundry_set_content_safety_key</a></span><span class="op">(</span><span class="st">"your-content-safety-key"</span><span class="op">)</span></span></code></pre></div>
 <p>Use groundedness and shields as auditable safety gates:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">source</span> <span class="op">&lt;-</span> <span class="st">"The program enrolled 82 students in 2026."</span></span>
 <span><span class="va">answer</span> <span class="op">&lt;-</span> <span class="st">"The program enrolled 82 students in 2026."</span></span>
 <span></span>
@@ -335,7 +341,7 @@ web-search prompts.</p>
 </h2>
 <p>Chat completions are still available for simple assistant
 replies:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_chat.html">foundry_chat</a></span><span class="op">(</span><span class="st">"Answer in one sentence: what is the tidyverse?"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 9</span></span></span>
 <span><span class="co">#&gt;   role      content          model finish_reason prompt_tokens completion_tokens</span></span>
@@ -378,7 +384,7 @@ groundedness, and shields.</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. Powered by <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. Built for <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Microsoft Foundry</a></p>
 </div>
 
     </footer>

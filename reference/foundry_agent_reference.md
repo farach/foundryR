@@ -1,7 +1,7 @@
 # Reference a Foundry agent from the Responses API
 
-Build the `agent_reference` object used to run a stored Azure AI Foundry
-agent through
+Build the `agent_reference` object used to run a stored Microsoft
+Foundry agent through
 [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md).
 Pass the resulting object (or simply the agent name) to the `agent`
 argument of

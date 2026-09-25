@@ -91,7 +91,11 @@ foundry_blocklist_remove_items(
 
 ## Value
 
-A tibble with blocklist or blocklist-item metadata.
+Blocklist list, create, and get functions return `name`, `description`,
+and `raw_blocklist`. Item list and add functions return `item_id`,
+`text`, `is_regex`, and `raw_item`. Delete returns `name`, `deleted`,
+and `raw_blocklist`; remove returns `name`, `removed`, and
+`raw_response`.
 
 ## Examples
 

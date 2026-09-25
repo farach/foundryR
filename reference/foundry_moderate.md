@@ -85,6 +85,14 @@ A tibble with columns:
   Character. Human-readable severity label: "safe", "low", "medium", or
   "high".
 
+- blocklist_matches:
+
+  List. Blocklist matches returned by the service for the analyzed text.
+
+- raw_response:
+
+  List. Raw Content Safety response for the analyzed text.
+
 ## Details
 
 The Azure Content Safety API analyzes text for four types of harmful

@@ -1,7 +1,7 @@
-# Set Azure AI Foundry project endpoint
+# Set Microsoft Foundry project endpoint
 
 Set the project endpoint used by project-scoped Foundry APIs such as
-Azure evaluators and Agent Service operations. Prefer copying the full
+evaluators and Agent Service operations. Prefer copying the full
 endpoint from the Foundry portal because Azure's project endpoint shape
 can vary by service generation.
 

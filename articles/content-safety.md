@@ -4,11 +4,14 @@
 
 Responsible AI work needs safeguards against harmful content,
 unsupported model claims, and adversarial prompts. foundryR integrates
-with **Azure AI Content Safety** and returns each check as a tibble: -
-**Content Moderation**: Detect harmful content across multiple
-categories - **Groundedness Detection**: Identify when AI responses are
-not supported by source documents (hallucination detection) - **Prompt
-Shields**: Protect against prompt injection and jailbreak attempts
+with **Azure AI Content Safety** and returns each check as a tibble:
+
+- **Content Moderation**: Detect harmful content across multiple
+  categories
+- **Groundedness Detection**: Identify when AI responses are not
+  supported by source documents (hallucination detection)
+- **Prompt Shields**: Protect against prompt injection and jailbreak
+  attempts
 
 These results can be logged, joined back to source records, and reviewed
 as part of an auditable R pipeline.
@@ -91,9 +94,13 @@ result
 #> 4 I love R programming! Violence        0 safe  <list [0]>        <named list>
 ```
 
-The function returns one row per category. Severity scores range from
-0-6: - **0**: Safe content - **2**: Low severity - **4**: Medium
-severity - **6**: High severity
+The function returns one row per category. With the default
+`output_type = "FourSeverityLevels"`, severity scores take these values:
+
+- **0**: Safe content
+- **2**: Low severity
+- **4**: Medium severity
+- **6**: High severity
 
 ### Analyzing Multiple Texts
 
@@ -135,8 +142,10 @@ when the suggested `gt` and `ggplot2` packages are installed.
 | Sexual                          | 3    | 0   | 0      | 0    | 0            |
 | Violence                        | 3    | 0   | 0      | 0    | 0            |
 
-![Stacked bar chart of moderation labels by Content Safety
-category.](content-safety_files/figure-html/moderate-severity-chart-1.png)
+![None of the 3 texts reached the review threshold. Grid of Azure AI
+Content Safety severity scores for 3 sample texts across the Hate,
+SelfHarm, Sexual, Violence categories. Every tile shows severity 0
+(safe).](content-safety_files/figure-html/moderate-severity-chart-1.png)
 
 ### Setting Thresholds
 
@@ -176,6 +185,10 @@ moderated %>%
 #> # A tibble: 0 × 2
 #> # ℹ 2 variables: text <chr>, max_severity <int>
 ```
+
+None of these sample comments reaches severity 2 in any category, so the
+filtered result is empty. With real user content, rows that need review
+appear here.
 
 ## Hallucination Detection with foundry_groundedness()
 

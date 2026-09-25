@@ -61,7 +61,7 @@ the Responses API."><meta property="og:image" content="https://farach.github.io/
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Manage Responses API conversations</h1>
-      <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/v0.1.0/R/conversations.R" class="external-link"><code>R/conversations.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/main/R/conversations.R" class="external-link"><code>R/conversations.R</code></a></small>
       <div class="d-none name"><code>foundry_conversations.Rd</code></div>
     </div>
 
@@ -142,7 +142,11 @@ the Responses API.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A tibble with conversation metadata or conversation items.</p>
+    <p>Conversation create, list, get, and update functions return
+<code>conversation_id</code>, <code>object</code>, <code>created_at</code>, <code>metadata</code>, and
+<code>raw_conversation</code>. Delete returns <code>conversation_id</code>, <code>deleted</code>, and
+<code>raw_conversation</code>. Item functions return <code>item_id</code>, <code>type</code>, <code>role</code>,
+<code>content</code>, and <code>raw_item</code>.</p>
     </div>
 
     <div class="section level2">
@@ -173,7 +177,7 @@ the Responses API.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. Powered by <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. Built for <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Microsoft Foundry</a></p>
 </div>
 
     </footer></div>

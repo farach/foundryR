@@ -92,7 +92,7 @@ if (FALSE) { # \dontrun{
 # Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL
 # naming a deployment with access to the web-search tool.
 foundry_web_search(
-  "What are the latest Azure AI Foundry Responses API updates?"
+  "What are the latest Microsoft Foundry Responses API updates?"
 )
 } # }
 ```

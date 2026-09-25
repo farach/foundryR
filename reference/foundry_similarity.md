@@ -32,7 +32,7 @@ foundry_similarity(data, text_col = "text", top_k = NULL, as_matrix = FALSE)
 
 ## Value
 
-A tibble with columns:
+If `as_matrix = FALSE`, a tibble with columns:
 
 - text_1:
 
@@ -45,6 +45,9 @@ A tibble with columns:
 - similarity:
 
   Numeric. Cosine similarity between -1 and 1.
+
+If `as_matrix = TRUE`, a numeric cosine-similarity matrix with row and
+column names from `text_col`.
 
 ## Examples
 

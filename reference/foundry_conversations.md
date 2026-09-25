@@ -74,7 +74,11 @@ foundry_conversation_items_add(
 
 ## Value
 
-A tibble with conversation metadata or conversation items.
+Conversation create, list, get, and update functions return
+`conversation_id`, `object`, `created_at`, `metadata`, and
+`raw_conversation`. Delete returns `conversation_id`, `deleted`, and
+`raw_conversation`. Item functions return `item_id`, `type`, `role`,
+`content`, and `raw_item`.
 
 ## Examples
 

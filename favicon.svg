@@ -1,16 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 181.65 209.76" width="181.65" height="209.76" role="img" aria-labelledby="title desc">
-  <title id="title">foundryR icon</title>
-  <desc id="desc">A compact Swiss-minimal foundryR icon with a geometric forge mark.</desc>
-
-  <polygon points="90.82,2.5 179.15,53.69 179.15,156.07 90.82,207.26 2.5,156.07 2.5,53.69" fill="#F7FBFD" stroke="#0078D4" stroke-width="5" />
-
-  <g transform="translate(90.82 91)">
-    <path d="M-43 33C-32 16 -18 7 0 7S32 16 43 33L28 45C20 36 11 32 0 32S-20 36 -28 45Z" fill="#005A9E" />
-    <path d="M-32 46H32L20 67H-20Z" fill="#FFD36E" />
-    <path d="M0 -45L36 -7L0 33L-36 -7Z" fill="#23A7E0" />
-    <path d="M0 -45L36 -7L0 7L-36 -7Z" fill="#A7DDF4" />
-    <path d="M-36 -7L0 7V33Z" fill="#5BC7F2" />
-    <path d="M36 -7L0 7V33Z" fill="#0078D4" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 600" width="520" height="600" role="img" aria-labelledby="title desc">
+  <title id="title">foundryR</title>
+  <desc id="desc">foundryR icon: a white ingot on an indigo gradient hexagon.</desc>
+  <defs>
+    <linearGradient id="foundryr-field" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#7274FF"/>
+      <stop offset="0.48" stop-color="#4F42FD"/>
+      <stop offset="1" stop-color="#2C08AC"/>
+    </linearGradient>
+  </defs>
+  <path d="M237.48 23 Q260 10 282.52 23 L488.63 142 Q511.15 155 511.15 181 L511.15 419 Q511.15 445 488.63 458 L282.52 577 Q260 590 237.48 577 L31.37 458 Q8.85 445 8.85 419 L8.85 181 Q8.85 155 31.37 142 Z" fill="url(#foundryr-field)"/>
+  <clipPath id="foundryr-ingot-icon"><path d="M96.6 370.3 Q85.2 370.3 91.14 360.57 L141.96 277.43 Q147.9 267.7 156.34 260.03 L181.26 237.37 Q189.7 229.7 201.1 229.7 L364.5 229.7 Q375.9 229.7 382.47 239.02 L428.23 303.98 Q434.8 313.3 426.25 320.84 L378.75 362.76 Q370.2 370.3 358.8 370.3 Z"/></clipPath>
+  <g clip-path="url(#foundryr-ingot-icon)">
+    <path d="M85.2 370.3 Q85.2 370.3 85.2 370.3 L147.9 267.7 Q147.9 267.7 147.9 267.7 L189.7 229.7 Q189.7 229.7 189.7 229.7 L375.9 229.7 Q375.9 229.7 375.9 229.7 L434.8 313.3 Q434.8 313.3 434.8 313.3 L370.2 370.3 Q370.2 370.3 370.2 370.3 Z" fill="#B7B3FF"/>
+    <path d="M147.9 267.7 Q147.9 267.7 147.9 267.7 L334.1 267.7 Q334.1 267.7 334.1 267.7 L370.2 370.3 Q370.2 370.3 370.2 370.3 L85.2 370.3 Q85.2 370.3 85.2 370.3 Z" fill="#E2E0FF"/>
+    <path d="M147.9 267.7 Q147.9 267.7 147.9 267.7 L189.7 229.7 Q189.7 229.7 189.7 229.7 L375.9 229.7 Q375.9 229.7 375.9 229.7 L334.1 267.7 Q334.1 267.7 334.1 267.7 Z" fill="#FFFFFF"/>
   </g>
 </svg>

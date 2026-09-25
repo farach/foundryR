@@ -1,4 +1,4 @@
-# Set Azure AI Foundry Bearer Token
+# Set Microsoft Foundry Bearer Token
 
 Set a Microsoft Entra ID bearer token for keyless authentication. API
 keys remain supported, but Microsoft recommends keyless authentication

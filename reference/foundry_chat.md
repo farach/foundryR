@@ -1,6 +1,6 @@
-# Chat with an Azure AI Model
+# Chat with a Microsoft Foundry model
 
-Send a message to an Azure AI Foundry deployed model and receive a
+Send a message to a Microsoft Foundry deployed model and receive a
 response. Returns a tibble with the assistant's response and usage
 metadata.
 

@@ -21,11 +21,18 @@ Its strongest path is dataframe in, dataframe out.
 
 ## Installation
 
-Install the development version from GitHub:
+Install the released version from CRAN:
 
 ``` r
 
-install.packages("pak")
+install.packages("foundryR")
+```
+
+Or install the development version from GitHub:
+
+``` r
+
+# install.packages("pak")
 pak::pak("farach/foundryR")
 ```
 

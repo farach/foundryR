@@ -211,8 +211,11 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   )
 ```
 
-Lower dimensions mean: - Faster model training - Less memory usage -
-Some loss in semantic precision
+Lower dimensions mean:
+
+- Faster model training
+- Less memory usage
+- Some loss in semantic precision
 
 ### Multiple Text Columns
 
@@ -261,7 +264,7 @@ recipe_spec <- recipe(sentiment ~ text, data = reviews) %>%
   step_foundry_embed(
     text,
     model = "text-embedding-3-small",
-    prefix = "embed_"  # Columns will be embed_001, embed_002, etc.
+    prefix = "embed_"  # Columns will be embed_text_1, embed_text_2, etc.
   )
 ```
 

@@ -96,7 +96,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Content Safety and Responsible AI</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/v0.1.0/vignettes/content-safety.Rmd" class="external-link"><code>vignettes/content-safety.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/main/vignettes/content-safety.Rmd" class="external-link"><code>vignettes/content-safety.Rmd</code></a></small>
       <div class="d-none name"><code>content-safety.Rmd</code></div>
     </div>
 
@@ -108,11 +108,18 @@
 <p>Responsible AI work needs safeguards against harmful content,
 unsupported model claims, and adversarial prompts. foundryR integrates
 with <strong>Azure AI Content Safety</strong> and returns each check as
-a tibble: - <strong>Content Moderation</strong>: Detect harmful content
-across multiple categories - <strong>Groundedness Detection</strong>:
-Identify when AI responses are not supported by source documents
-(hallucination detection) - <strong>Prompt Shields</strong>: Protect
-against prompt injection and jailbreak attempts</p>
+a tibble:</p>
+<ul>
+<li>
+<strong>Content Moderation</strong>: Detect harmful content across
+multiple categories</li>
+<li>
+<strong>Groundedness Detection</strong>: Identify when AI responses
+are not supported by source documents (hallucination detection)</li>
+<li>
+<strong>Prompt Shields</strong>: Protect against prompt injection
+and jailbreak attempts</li>
+</ul>
 <p>These results can be logged, joined back to source records, and
 reviewed as part of an auditable R pipeline.</p>
 </div>
@@ -215,10 +222,19 @@ suicide</li>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> I love R programming! Sexual          0 safe  <span style="color: #949494;">&lt;list [0]&gt;</span>        <span style="color: #949494;">&lt;named list&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> I love R programming! SelfHarm        0 safe  <span style="color: #949494;">&lt;list [0]&gt;</span>        <span style="color: #949494;">&lt;named list&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> I love R programming! Violence        0 safe  <span style="color: #949494;">&lt;list [0]&gt;</span>        <span style="color: #949494;">&lt;named list&gt;</span></span></span></code></pre></div>
-<p>The function returns one row per category. Severity scores range from
-0-6: - <strong>0</strong>: Safe content - <strong>2</strong>: Low
-severity - <strong>4</strong>: Medium severity - <strong>6</strong>:
-High severity</p>
+<p>The function returns one row per category. With the default
+<code>output_type = "FourSeverityLevels"</code>, severity scores take
+these values:</p>
+<ul>
+<li>
+<strong>0</strong>: Safe content</li>
+<li>
+<strong>2</strong>: Low severity</li>
+<li>
+<strong>4</strong>: Medium severity</li>
+<li>
+<strong>6</strong>: High severity</li>
+</ul>
 </div>
 <div class="section level3">
 <h3 id="analyzing-multiple-texts">Analyzing Multiple Texts<a class="anchor" aria-label="anchor" href="#analyzing-multiple-texts"></a>
@@ -749,7 +765,7 @@ packages are installed.</p>
 </tbody>
 </table>
 </div>
-<p><img src="content-safety_files/figure-html/moderate-severity-chart-1.png" class="r-plt" alt="Stacked bar chart of moderation labels by Content Safety category." width="700"></p>
+<p><img src="content-safety_files/figure-html/moderate-severity-chart-1.png" class="r-plt" alt="None of the 3 texts reached the review threshold. Grid of Azure AI Content Safety severity scores for 3 sample texts across the Hate, SelfHarm, Sexual, Violence categories. Every tile shows severity 0 (safe)." width="700"></p>
 </div>
 <div class="section level3">
 <h3 id="setting-thresholds">Setting Thresholds<a class="anchor" aria-label="anchor" href="#setting-thresholds"></a>
@@ -787,6 +803,9 @@ requires the suggested <code>tidyr</code> package:</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">text</span>, <span class="va">max_severity</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 0 × 2</span></span></span>
 <span><span class="co">#&gt; <span style="color: #949494;"># ℹ 2 variables: text &lt;chr&gt;, max_severity &lt;int&gt;</span></span></span></code></pre></div>
+<p>None of these sample comments reaches severity 2 in any category, so
+the filtered result is empty. With real user content, rows that need
+review appear here.</p>
 </div>
 </div>
 <div class="section level2">
@@ -1098,7 +1117,7 @@ semantic search</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. Powered by <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. Built for <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Microsoft Foundry</a></p>
 </div>
 
     </footer>

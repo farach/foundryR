@@ -2,10 +2,11 @@
 
 ## What you need from Azure
 
-foundryR talks to deployed Azure AI Foundry and Azure OpenAI resources.
-Before writing R code, create or identify:
+foundryR talks to deployed Azure OpenAI resources and Microsoft Foundry
+(formerly Azure AI Foundry) projects. Before writing R code, create or
+identify:
 
-1.  An Azure OpenAI resource or Azure AI Foundry project with an OpenAI
+1.  An Azure OpenAI resource or Microsoft Foundry project with an OpenAI
     endpoint.
 2.  At least one chat or Responses API deployment, for example
     `gpt-5-nano`.
@@ -16,8 +17,8 @@ Before writing R code, create or identify:
 5.  Either API keys or a Microsoft Entra ID token.
 
 In the Azure portal, open your Azure OpenAI resource, then use **Keys
-and Endpoint** to copy the endpoint URL and an API key. In Azure AI
-Foundry, use the deployments page to create model deployments and record
+and Endpoint** to copy the endpoint URL and an API key. In the Foundry
+portal, use the deployments page to create model deployments and record
 their deployment names.
 
 > **Deployment name vs base model name**
@@ -29,9 +30,18 @@ their deployment names.
 
 ## Install foundryR
 
+Install the released version from CRAN:
+
 ``` r
 
-install.packages("pak")
+install.packages("foundryR")
+```
+
+To try unreleased changes, install the development version from GitHub:
+
+``` r
+
+# install.packages("pak")
 pak::pak("farach/foundryR")
 ```
 

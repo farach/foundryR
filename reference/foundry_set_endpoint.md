@@ -1,6 +1,6 @@
-# Set Azure AI Foundry Endpoint
+# Set Microsoft Foundry Endpoint
 
-Set the base endpoint URL for your Azure AI Foundry resource.
+Set the base endpoint URL for your Microsoft Foundry resource.
 
 ## Usage
 
@@ -44,5 +44,5 @@ local({
   })
 })
 #> ✔ Endpoint set to <https://example.openai.azure.com>
-#> ✔ Endpoint stored in /tmp/RtmpXHEusg/foundryR-config-1b293ca17f07.json
+#> ✔ Endpoint stored in /tmp/RtmpYeO30b/foundryR-config-1b07290ca2b5.json
 ```

@@ -1,7 +1,7 @@
 # Set Image Generation API Key
 
-Set the API key for image generation. Use this when your DALL-E model
-uses a different API key than your chat/embedding models.
+Set the API key for image generation. Use this when the image-generation
+resource uses a different API key than your chat or embedding resource.
 
 ## Usage
 

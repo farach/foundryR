@@ -1,4 +1,4 @@
-# Build Azure AI Foundry v1 Request
+# Build Microsoft Foundry v1 Request
 
 Internal function to construct httr2 requests for Azure OpenAI in
 Microsoft Foundry's v1 data-plane API.

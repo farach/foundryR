@@ -1,4 +1,4 @@
-# Get Azure AI Foundry API Key
+# Get Microsoft Foundry API Key
 
 Retrieve the API key from the environment or a provided value. This is
 primarily an internal function used by other foundryR functions.

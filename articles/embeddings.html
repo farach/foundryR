@@ -96,7 +96,7 @@
       <img src="../logo.svg" class="logo" alt=""><h1>Working with Embeddings</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/v0.1.0/vignettes/embeddings.Rmd" class="external-link"><code>vignettes/embeddings.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/main/vignettes/embeddings.Rmd" class="external-link"><code>vignettes/embeddings.Rmd</code></a></small>
       <div class="d-none name"><code>embeddings.Rmd</code></div>
     </div>
 
@@ -217,7 +217,7 @@ is visible.</p>
 and the two finance lines pair together, while cross-domain pairs score
 lower. The plots in this vignette are shown when the suggested
 <code>ggplot2</code> package is installed.</p>
-<p><img src="embeddings_files/figure-html/similarity-heatmap-1.png" class="r-plt" alt="Heatmap of cosine similarity across four sentences from two domains." width="700"></p>
+<p><img src="embeddings_files/figure-html/similarity-pairs-1.png" class="r-plt" alt="Same-source pairs outscore every cross-source pair. Horizontal bar chart of cosine similarity for six sentence pairs: Finance 1 and Finance 2 0.62; Austen 1 and Austen 2 0.32; Austen 2 and Finance 1 0.07; Austen 2 and Finance 2 0.07; Austen 1 and Finance 1 0.04; Austen 1 and Finance 2 0.01." width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="use-case-finding-similar-documents">Use case: finding similar documents<a class="anchor" aria-label="anchor" href="#use-case-finding-similar-documents"></a>
@@ -306,7 +306,7 @@ sports sentences without any labels:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">7</span> Soccer is the world's most popular sport        3</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">8</span> Basketball requires speed and agility           3</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">9</span> Tennis matches can last for hours               3</span></span></code></pre></div>
-<p><img src="embeddings_files/figure-html/projection-1.png" class="r-plt" alt="Two-dimensional PCA projection of sentence embeddings, colored by k-means cluster." width="700"></p>
+<p><img src="embeddings_files/figure-html/projection-1.png" class="r-plt" alt="k-means recovers the three topics from the embeddings alone. Scatter plot of nine sentence embeddings on their first two principal components; cluster 1 holds 3 of 3 programming sentences; cluster 2 holds 3 of 3 food sentences; cluster 3 holds 3 of 3 sports sentences." width="700"></p>
 <p>The clusters recover the three topics from the raw text alone.</p>
 </div>
 <div class="section level2">
@@ -396,7 +396,7 @@ datasets.</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. Powered by <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. Built for <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Microsoft Foundry</a></p>
 </div>
 
     </footer>

@@ -8,9 +8,9 @@ setup. Microsoft Entra token audiences are endpoint-family-specific.
 - [`foundry_check_setup()`](https://farach.github.io/foundryR/reference/foundry_check_setup.md)
   : Check foundryR Setup
 - [`foundry_set_key()`](https://farach.github.io/foundryR/reference/foundry_set_key.md)
-  : Set Azure AI Foundry API Key
+  : Set Microsoft Foundry API Key
 - [`foundry_set_token()`](https://farach.github.io/foundryR/reference/foundry_set_token.md)
-  : Set Azure AI Foundry Bearer Token
+  : Set Microsoft Foundry Bearer Token
 - [`foundry_set_token_provider()`](https://farach.github.io/foundryR/reference/foundry_set_token_provider.md)
   : Set a Microsoft Entra ID token provider
 - [`foundry_token_azure_cli()`](https://farach.github.io/foundryR/reference/foundry_token_azure_cli.md)
@@ -18,13 +18,13 @@ setup. Microsoft Entra token audiences are endpoint-family-specific.
 - [`foundry_token_azure_identity()`](https://farach.github.io/foundryR/reference/foundry_token_azure_identity.md)
   : Create a Microsoft Entra ID token provider using AzureAuth
 - [`foundry_set_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_endpoint.md)
-  : Set Azure AI Foundry Endpoint
+  : Set Microsoft Foundry Endpoint
 - [`foundry_get_endpoint()`](https://farach.github.io/foundryR/reference/foundry_get_endpoint.md)
-  : Get Azure AI Foundry Endpoint
+  : Get Microsoft Foundry Endpoint
 - [`foundry_set_project_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_project_endpoint.md)
-  : Set Azure AI Foundry project endpoint
+  : Set Microsoft Foundry project endpoint
 - [`foundry_get_project_endpoint()`](https://farach.github.io/foundryR/reference/foundry_get_project_endpoint.md)
-  : Get Azure AI Foundry project endpoint
+  : Get Microsoft Foundry project endpoint
 - [`foundry_set_speech_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_speech_endpoint.md)
   : Set Microsoft Foundry Speech endpoint
 - [`foundry_set_speech_key()`](https://farach.github.io/foundryR/reference/foundry_set_speech_key.md)
@@ -116,9 +116,9 @@ answers.
 
 ## Agents
 
-Create, list, and manage named, versioned prompt agents on the Foundry
-Agent Service, then run a stored agent by name through
-\[foundry_response()\] with `agent_reference`.
+Create, list, and manage named, versioned prompt agents in Foundry Agent
+Service, then run a stored agent by name with the `agent` argument of
+[`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md).
 
 - [`foundry_agent_create()`](https://farach.github.io/foundryR/reference/foundry_agent_create.md)
   : Create a Foundry agent
@@ -208,7 +208,7 @@ jobs for large-scale annotation, extraction, and classification.
 
 ## Evaluations
 
-Run Azure AI Foundry cloud evaluations. Define graders (string check,
+Run Microsoft Foundry cloud evaluations. Define graders (string check,
 text similarity, model-graded labels and scores, and Azure built-in
 evaluators), create evaluations, and inspect per-row grader results as
 tibbles.
@@ -222,7 +222,7 @@ tibbles.
 - [`foundry_grader_score_model()`](https://farach.github.io/foundryR/reference/foundry_grader_score_model.md)
   : Score-model grader
 - [`foundry_grader_azure_ai()`](https://farach.github.io/foundryR/reference/foundry_grader_azure_ai.md)
-  : Azure AI built-in evaluator grader
+  : Microsoft Foundry built-in evaluator grader
 - [`foundry_eval_item()`](https://farach.github.io/foundryR/reference/foundry_eval_item.md)
   : Build an evaluation item for model-based graders
 - [`foundry_eval_data_config()`](https://farach.github.io/foundryR/reference/foundry_eval_data_config.md)
@@ -286,10 +286,11 @@ Add Foundry text embeddings to tidymodels recipes.
 
 ## Chat completions
 
-Send chat-completion requests to Azure AI Foundry deployments.
+Send chat-completion requests to Azure OpenAI deployments in Microsoft
+Foundry.
 
 - [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
-  : Chat with an Azure AI Model
+  : Chat with a Microsoft Foundry model
 
 ## Audio and speech
 
@@ -305,11 +306,11 @@ through LLM Speech, and synthesize text-to-speech audio files.
 
 ## Experimental media
 
-Generate and edit images with v1 preview image models, and manage
-preview video generation jobs.
+Generate and edit images with GPT-image models through the v1 image
+APIs, and manage preview video generation jobs.
 
 - [`foundry_image()`](https://farach.github.io/foundryR/reference/foundry_image.md)
-  : Generate Images with DALL-E
+  : Generate Images with Microsoft Foundry
 - [`foundry_image_edit()`](https://farach.github.io/foundryR/reference/foundry_image_edit.md)
   **\[experimental\]** : Edit an image with Microsoft Foundry
 - [`foundry_save_image()`](https://farach.github.io/foundryR/reference/foundry_save_image.md)
@@ -335,7 +336,8 @@ preview video generation jobs.
 
 ## Model discovery
 
-Explore available model deployments in your Azure AI Foundry resource.
+Explore the model deployments available in your Microsoft Foundry or
+Azure OpenAI resource.
 
 - [`foundry_models()`](https://farach.github.io/foundryR/reference/foundry_models.md)
   : List or retrieve available model deployments

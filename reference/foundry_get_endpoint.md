@@ -1,4 +1,4 @@
-# Get Azure AI Foundry Endpoint
+# Get Microsoft Foundry Endpoint
 
 Retrieve the endpoint URL from the environment or a provided value.
 

@@ -80,6 +80,11 @@ A tibble with columns:
 
   Character. Error message for failed rows.
 
+- raw_response:
+
+  List. Raw parsed response payload for successful rows, or NULL for
+  failed rows.
+
 ## Details
 
 **Important**: The `model` parameter must be a deployment of an
@@ -93,7 +98,7 @@ A tibble with columns:
 
 Chat models (GPT-4, Claude, Llama, etc.) cannot generate embeddings. If
 you only have chat models deployed, you'll need to deploy an embedding
-model in Azure AI Foundry first.
+model in Microsoft Foundry first.
 
 ## Examples
 

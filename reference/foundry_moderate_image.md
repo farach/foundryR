@@ -44,7 +44,8 @@ foundry_moderate_image(
 
 ## Value
 
-A tibble with one row per category and raw response payloads.
+A tibble with one row per category and columns `source`, `category`,
+`severity`, `label`, and `raw_response`.
 
 ## Examples
 

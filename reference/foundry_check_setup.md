@@ -1,6 +1,6 @@
 # Check foundryR Setup
 
-Validates your Azure AI Foundry configuration and provides helpful
+Validates your Microsoft Foundry configuration and provides helpful
 guidance if anything is missing or misconfigured.
 
 ## Usage
@@ -28,6 +28,10 @@ Invisibly returns a list with configuration status:
 
   The configured endpoint URL, or NA if not set.
 
+- project_endpoint:
+
+  The configured project endpoint URL, or NA if not set.
+
 - key_set:
 
   Logical. TRUE if an API key is configured.
@@ -35,6 +39,11 @@ Invisibly returns a list with configuration status:
 - token_set:
 
   Logical. TRUE if a bearer token is configured.
+
+- token_provider_set:
+
+  Logical. TRUE if a resource-scoped bearer token provider is
+  configured.
 
 - model_tested:
 

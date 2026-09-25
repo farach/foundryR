@@ -4,27 +4,8 @@
 
 CRAN release: 2026-09-24
 
-Initial CRAN release of foundryR, a tidy interface to Microsoft Azure AI
-Foundry.
-
-### CRAN resubmission
-
-- Short offline examples now run during package checks; authenticated
-  Azure and external-software examples explain their prerequisites.
-  File-writing examples use temporary locations and clean up their
-  output.
-- [`codebook_diff()`](https://farach.github.io/foundryR/reference/codebook_diff.md)
-  now returns a printable character-vector object without writing to the
-  console when assigned;
-  [`format()`](https://rdrr.io/r/base/format.html) provides the plain
-  diff lines.
-- `step_foundry_embed(cache = "disk")` and
-  [`foundry_cache_clear()`](https://farach.github.io/foundryR/reference/foundry_cache_clear.md)
-  now default to a cache inside the R session’s temporary directory. Set
-  `cache_dir` explicitly for a persistent cache. Existing user-directory
-  caches are not deleted or migrated.
-- Vignette replay hooks now restore environment variables, options, and
-  redactor settings when replay ends.
+Initial CRAN release of foundryR, a tidy interface to Microsoft Foundry
+(formerly Azure AI Foundry).
 
 ### New features
 
@@ -40,13 +21,13 @@ Foundry.
   (backed by
   [`foundry_agent_reference()`](https://farach.github.io/foundryR/reference/foundry_agent_reference.md))
   that runs a stored agent by name through the project-scoped Responses
-  endpoint (roadmap 2026 H2).
+  endpoint.
 - Added Content Safety image moderation, protected-material detection,
   and text blocklist helpers with
   [`foundry_moderate_image()`](https://farach.github.io/foundryR/reference/foundry_moderate_image.md),
   [`foundry_protected_material()`](https://farach.github.io/foundryR/reference/foundry_protected_material.md),
   [`foundry_blocklists()`](https://farach.github.io/foundryR/reference/foundry_blocklists.md),
-  and related blocklist item functions (roadmap 2026 H2).
+  and related blocklist item functions.
 - Added cloud evaluation workflows with grader constructors
   ([`foundry_grader_string_check()`](https://farach.github.io/foundryR/reference/foundry_grader_string_check.md),
   [`foundry_grader_text_similarity()`](https://farach.github.io/foundryR/reference/foundry_grader_text_similarity.md),
@@ -65,7 +46,7 @@ Foundry.
   [`foundry_eval_run_cancel()`](https://farach.github.io/foundryR/reference/foundry_eval_run_cancel.md)),
   and
   [`foundry_eval_run_output_items()`](https://farach.github.io/foundryR/reference/foundry_eval_run_output_items.md),
-  which returns per-row grader scores as a tibble (roadmap 2026 H2).
+  which returns per-row grader scores as a tibble.
 - Added preview Content Safety operations:
   [`foundry_protected_code()`](https://farach.github.io/foundryR/reference/foundry_protected_code.md)
   for protected-material-in-code detection,
@@ -77,22 +58,20 @@ Foundry.
   [`foundry_agent_tool_call()`](https://farach.github.io/foundryR/reference/foundry_agent_tool_call.md),
   and
   [`foundry_agent_message()`](https://farach.github.io/foundryR/reference/foundry_agent_message.md)
-  builders) for agent task-adherence checks (roadmap 2026 H2).
+  builders) for agent task-adherence checks.
 - Added Responses API conversation and vector store helpers, including
   [`foundry_conversation_create()`](https://farach.github.io/foundryR/reference/foundry_conversations.md),
   [`foundry_conversations()`](https://farach.github.io/foundryR/reference/foundry_conversations.md),
   [`foundry_vector_store_create()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md),
   [`foundry_vector_search()`](https://farach.github.io/foundryR/reference/foundry_vector_stores.md),
   and
-  [`foundry_tool_file_search()`](https://farach.github.io/foundryR/reference/foundry_tool_file_search.md)
-  (roadmap 2026 H2).
+  [`foundry_tool_file_search()`](https://farach.github.io/foundryR/reference/foundry_tool_file_search.md).
 - Added
   [`foundry_codebook()`](https://farach.github.io/foundryR/reference/foundry_codebook.md)
   and
   [`codebook_diff()`](https://farach.github.io/foundryR/reference/codebook_diff.md)
   for versioned measurement-layer codebooks with deterministic SHA-256
-  hashes, schema helper wrappers, print output, and codebook diffs
-  (measurement layer M1).
+  hashes, schema helper wrappers, print output, and codebook diffs.
 - Added schema constructors with
   [`foundry_schema()`](https://farach.github.io/foundryR/reference/foundry_schema.md),
   [`schema_string()`](https://farach.github.io/foundryR/reference/schema_constructors.md),
@@ -104,14 +83,14 @@ Foundry.
   [`schema_object()`](https://farach.github.io/foundryR/reference/schema_constructors.md),
   and
   [`as_foundry_schema()`](https://farach.github.io/foundryR/reference/as_foundry_schema.md)
-  for strict structured-output schemas (roadmap 2026 H2).
+  for strict structured-output schemas.
 - Added validation helpers
   [`foundry_agreement()`](https://farach.github.io/foundryR/reference/foundry_agreement.md),
   [`foundry_consistency()`](https://farach.github.io/foundryR/reference/foundry_consistency.md),
   and
   [`foundry_provenance()`](https://farach.github.io/foundryR/reference/foundry_provenance.md)
   for publication-oriented annotation checks and reproducibility
-  metadata (roadmap 2026 H2).
+  metadata.
 - Added v1 Batch API workflows with
   [`foundry_batch_create()`](https://farach.github.io/foundryR/reference/foundry_batch_create.md),
   [`foundry_batches()`](https://farach.github.io/foundryR/reference/foundry_batches.md),
@@ -142,8 +121,7 @@ Foundry.
   and
   [`foundry_usage()`](https://farach.github.io/foundryR/reference/foundry_usage.md)
   to complete the batch annotation loop from JSONL requests through
-  parsed tibble results and user-supplied cost summaries (roadmap 2026
-  H2).
+  parsed tibble results and user-supplied cost summaries.
 - Added
   [`foundry_image_edit()`](https://farach.github.io/foundryR/reference/foundry_image_edit.md)
   for v1 preview image editing with local image and optional mask
@@ -152,21 +130,20 @@ Foundry.
   [`foundry_response_cancel()`](https://farach.github.io/foundryR/reference/foundry_response_cancel.md)
   and
   [`foundry_response_input_items()`](https://farach.github.io/foundryR/reference/foundry_response_input_items.md)
-  for background Responses API workflows and response introspection
-  (roadmap 2026 H2).
+  for background Responses API workflows and response introspection.
 - Added
   [`foundry_set_project_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_project_endpoint.md),
   [`foundry_get_project_endpoint()`](https://farach.github.io/foundryR/reference/foundry_get_project_endpoint.md),
   [`foundry_set_token_provider()`](https://farach.github.io/foundryR/reference/foundry_set_token_provider.md),
   and
   [`foundry_token_azure_cli()`](https://farach.github.io/foundryR/reference/foundry_token_azure_cli.md)
-  for project-scoped APIs and refreshable Microsoft Entra authentication
-  (roadmap 2026 H2).
+  for project-scoped APIs and refreshable Microsoft Entra
+  authentication.
 - Added
   [`foundry_token_azure_identity()`](https://farach.github.io/foundryR/reference/foundry_token_azure_identity.md),
   a refreshable Microsoft Entra ID token provider backed by that
   supports service principals, managed identity, and interactive or
-  device-code flows (roadmap 2026 H2).
+  device-code flows.
 - Added
   [`foundry_set_speech_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_speech_endpoint.md),
   [`foundry_set_speech_key()`](https://farach.github.io/foundryR/reference/foundry_set_speech_key.md),
@@ -184,7 +161,7 @@ Foundry.
 - Added
   [`foundry_cache_clear()`](https://farach.github.io/foundryR/reference/foundry_cache_clear.md)
   to remove embeddings cached on disk by
-  `step_foundry_embed(cache = "disk")` (roadmap 2026 H2).
+  `step_foundry_embed(cache = "disk")`.
 - Added
   [`foundry_video_job_create()`](https://farach.github.io/foundryR/reference/foundry_video_job_create.md),
   [`foundry_video_jobs()`](https://farach.github.io/foundryR/reference/foundry_video_jobs.md),
@@ -199,21 +176,17 @@ Foundry.
 
 - Configuration setters with `store = TRUE` now persist under
   `tools::R_user_dir("foundryR", "config")` instead of modifying
-  `.Renviron`; the API support matrix and CRAN submission runbook now
-  document lifecycle and release boundaries (CRAN readiness).
-
+  `.Renviron`.
 - [`foundry_moderate()`](https://farach.github.io/foundryR/reference/foundry_moderate.md),
   [`foundry_moderate_image()`](https://farach.github.io/foundryR/reference/foundry_moderate_image.md),
   and
   [`foundry_protected_material()`](https://farach.github.io/foundryR/reference/foundry_protected_material.md)
   now accept resource-scoped Microsoft Entra token providers in addition
-  to Content Safety API keys (CRAN readiness).
-
+  to Content Safety API keys.
 - [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
   and its retrieve, cancel, delete, and input-item helpers now accept an
   explicit `project_endpoint`, keeping agent-backed response lifecycles
-  on one project endpoint (CRAN readiness).
-
+  on one project endpoint.
 - [`foundry_token_azure_cli()`](https://farach.github.io/foundryR/reference/foundry_token_azure_cli.md),
   [`foundry_token_azure_identity()`](https://farach.github.io/foundryR/reference/foundry_token_azure_identity.md),
   [`foundry_set_token()`](https://farach.github.io/foundryR/reference/foundry_set_token.md),
@@ -221,24 +194,25 @@ Foundry.
   [`foundry_set_token_provider()`](https://farach.github.io/foundryR/reference/foundry_set_token_provider.md)
   now separate resource and project authentication, default resource
   tokens to the documented Cognitive Services audience, and use the AI
-  audience only for project operations (CRAN readiness).
-
+  audience only for project operations.
 - Parallel HTTP helpers now default to at most two active requests, and
   the web-search compliance warning uses package-local state rather than
-  changing global R options (CRAN readiness).
-
+  changing global R options.
 - [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
   now checks for before generating its default step identifier, and is
-  declared for its exported `tidy()` method (CRAN readiness).
-
+  declared for its exported `tidy()` method.
 - [`foundry_groundedness()`](https://farach.github.io/foundryR/reference/foundry_groundedness.md)
   now supports the Content Safety correction feature via
   `correction = TRUE` with a bring-your-own Azure OpenAI deployment
   described by the new
   [`foundry_llm_resource()`](https://farach.github.io/foundryR/reference/foundry_llm_resource.md),
   returning a `correction_text` column, and surfaces per-segment
-  `ungrounded_reasons` when `reasoning = TRUE` (roadmap 2026 H2).
-
+  `ungrounded_reasons` when `reasoning = TRUE`.
+- [`codebook_diff()`](https://farach.github.io/foundryR/reference/codebook_diff.md)
+  returns a printable character-vector object, so assigning the result
+  produces no console output;
+  [`format()`](https://rdrr.io/r/base/format.html) returns the plain
+  diff lines.
 - [`as_foundry_schema()`](https://farach.github.io/foundryR/reference/as_foundry_schema.md)
   now converts
   [`ellmer::type_object()`](https://ellmer.tidyverse.org/reference/type_boolean.html)
@@ -246,71 +220,54 @@ Foundry.
   existing type definitions in
   [`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
   and
-  [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
-  (roadmap 2026 H2).
-
+  [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md).
 - [`foundry_agreement()`](https://farach.github.io/foundryR/reference/foundry_agreement.md)
   now reports Krippendorff’s alpha alongside Cohen’s and Fleiss’ kappa,
-  using when installed and a base-R nominal fallback otherwise (roadmap
-  2026 H2).
-
+  using when installed and a base-R nominal fallback otherwise.
 - [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
   now accepts `reasoning_effort` and returns `reasoning_tokens` and
   `cached_input_tokens` when chat-completions responses report those
   fields.
-
 - [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
   now defaults to the `/openai/v1/chat/completions` endpoint while
-  keeping `api = "deployment"` as a legacy escape hatch (roadmap 2026
-  H2).
-
+  keeping `api = "deployment"` as a legacy escape hatch.
 - [`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md)
   now uses the `/openai/v1/embeddings` array endpoint by default,
   returns row-level `.error` and `.error_msg` fields, and keeps
-  `api = "deployment"` as a legacy escape hatch (roadmap 2026 H2).
-
+  `api = "deployment"` as a legacy escape hatch.
 - [`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
   now accepts data frames with `text_col`, preserves original columns,
   runs requests in parallel, and returns parse or HTTP failures as
-  `.error` rows instead of aborting the whole job (roadmap 2026 H2).
-
+  `.error` rows instead of aborting the whole job.
 - [`foundry_image()`](https://farach.github.io/foundryR/reference/foundry_image.md)
   now uses the v1 preview image generation endpoint by default, supports
   newer image options such as `output_format`, `output_compression`,
   `background`, and `moderation`, and keeps the legacy deployment
   endpoint available with `api = "deployment"`.
-
 - [`foundry_moderate()`](https://farach.github.io/foundryR/reference/foundry_moderate.md)
   now supports Content Safety blocklists and keeps raw response payloads
-  in list-columns (roadmap 2026 H2).
-
+  in list-columns.
 - [`foundry_models()`](https://farach.github.io/foundryR/reference/foundry_models.md)
   now calls the v1 model and deployment metadata endpoints instead of
   sending a dummy chat request.
-
 - [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
   now accepts background, conversation, prompt-cache,
   parallel-tool-call, max-tool-call, safety-identifier, and
-  reasoning-summary controls from the v1 Responses API (roadmap 2026
-  H2).
-
+  reasoning-summary controls from the v1 Responses API.
 - [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
   accepts
   [`foundry_tool()`](https://farach.github.io/foundryR/reference/foundry_tool.md)
   objects in `tools`, strips local R function references from request
   bodies, and returns `cached_input_tokens` when the Responses API
   reports cached input tokens.
-
 - [`foundry_similarity()`](https://farach.github.io/foundryR/reference/foundry_similarity.md)
   now computes all pairwise cosine similarities with a single vectorized
   matrix product, supports `top_k`, and can return a similarity matrix
-  with `as_matrix = TRUE` (roadmap 2026 H2).
-
+  with `as_matrix = TRUE`.
 - [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md)
-  now supports `cache = "disk"` with an optional `cache_dir` to persist
-  embeddings across bakes, and builds embedding columns from a single
-  matrix instead of a per-cell fill loop (roadmap 2026 H2).
-
+  supports `cache = "disk"`, which stores embeddings in the R session’s
+  temporary directory unless you supply `cache_dir` for a persistent
+  cache, and builds all embedding columns in one pass.
 - [`foundry_transcribe()`](https://farach.github.io/foundryR/reference/foundry_transcribe.md),
   [`foundry_translate_audio()`](https://farach.github.io/foundryR/reference/foundry_translate_audio.md),
   and
@@ -326,14 +283,15 @@ Foundry.
   Responses API workflows, strict extraction, embeddings, batch jobs,
   and research annotation workflows, with chat completions kept as a
   maintained convenience layer.
-- The README, vignettes, and website articles now show real Azure AI
+- The README, vignettes, and website articles now show real Microsoft
   Foundry output. Each documentation page runs once against live
   resources with `data-raw/record-doc-outputs.R`, which captures every
   API response as a sanitized fixture; all later builds (R CMD check,
   pkgdown, CRAN, CI) replay those fixtures and render the real tibbles,
   images, and audio with no credentials and no network calls. When
   fixtures are absent the API chunks simply do not evaluate, so nothing
-  is fabricated.
+  is fabricated. Replay restores the session’s environment variables and
+  options when it finishes.
 - Added an onet2r integration as a website-only pkgdown article that
   pulls real occupation data from O\*NET, embeds it with
   [`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md),
@@ -342,6 +300,9 @@ Foundry.
   [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md);
   the redactor now strips the O\*NET `X-API-Key` header so its fixtures
   carry no secrets.
+- Examples that need no credentials run during package checks; examples
+  that call Azure services state their prerequisites, and examples that
+  write files use temporary paths.
 - Media helpers are grouped as experimental media while the core
   research surface is documented separately.
 - Media documentation now uses one image and video generation vignette

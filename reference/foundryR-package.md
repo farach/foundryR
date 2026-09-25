@@ -1,13 +1,13 @@
 # foundryR: Data Frame Workflows for 'Microsoft Foundry'
 
-Work with 'Microsoft Azure AI Foundry' from data-frame-oriented 'R'
-workflows. Provides data-frame-returning helpers for 'Azure AI Content
-Safety', 'Azure OpenAI' Responses API calls, strict structured
-extraction, vector representations, files, batch jobs, audio, media, and
-chat completions. Supports research annotation, safety gates, semantic
-search, and 'tidymodels' recipes. Helps teams keep model workflows
-inside their 'Azure' environment while preserving analyzable outputs.
-See the Microsoft Foundry REST API documentation
+Work with 'Microsoft Foundry' from data-frame-oriented 'R' workflows.
+Provides data-frame-returning helpers for 'Azure AI Content Safety',
+'Azure OpenAI' Responses API calls, strict structured extraction, vector
+representations, files, batch jobs, audio, media, and chat completions.
+Supports research annotation, safety gates, semantic search, and
+'tidymodels' recipes. Helps teams keep model workflows inside their
+'Azure' environment while preserving analyzable outputs. See the
+Microsoft Foundry REST API documentation
 <https://learn.microsoft.com/rest/api/microsoft-foundry/> and Azure AI
 Content Safety documentation
 <https://learn.microsoft.com/azure/ai-services/content-safety/>.

@@ -243,8 +243,10 @@ when the suggested `gt` and `ggplot2` packages are installed.
 | 5 | The instructor explained regression well. | positive | instruction | No review | The instructor explained regression well. |
 | 6 | The course needed more examples before the final exam. | negative | instruction | Review | The course needed more examples before the final exam. |
 
-![Bar chart of survey response themes by
-sentiment.](annotation-workflow_files/figure-html/sentiment-theme-chart-1.png)
+![Instruction drew 4 of 6 responses: 2 positive and 2 negative. Stacked
+horizontal bars show each primary theme: Instruction, 2 positive and 2
+negative; Assessment, 1 mixed; Support, 1
+positive.](annotation-workflow_files/figure-html/sentiment-theme-chart-1.png)
 
 The workflow leaves a trail: raw response, extracted labels, model
 metadata, embedding similarity, and groundedness checks. That trail is

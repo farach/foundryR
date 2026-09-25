@@ -38,7 +38,7 @@ foundry_agent_delete(
 
 ## Value
 
-A one-row tibble with `agent_name` and `deleted`.
+A one-row tibble with `agent_name`, `deleted`, and `raw_agent`.
 
 ## Examples
 

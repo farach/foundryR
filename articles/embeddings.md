@@ -120,8 +120,11 @@ the two finance lines pair together, while cross-domain pairs score
 lower. The plots in this vignette are shown when the suggested `ggplot2`
 package is installed.
 
-![Heatmap of cosine similarity across four sentences from two
-domains.](embeddings_files/figure-html/similarity-heatmap-1.png)
+![Same-source pairs outscore every cross-source pair. Horizontal bar
+chart of cosine similarity for six sentence pairs: Finance 1 and Finance
+2 0.62; Austen 1 and Austen 2 0.32; Austen 2 and Finance 1 0.07; Austen
+2 and Finance 2 0.07; Austen 1 and Finance 1 0.04; Austen 1 and Finance
+2 0.01.](embeddings_files/figure-html/similarity-pairs-1.png)
 
 ## Use case: finding similar documents
 
@@ -215,8 +218,11 @@ cluster_embeddings |>
 #> 9 Tennis matches can last for hours               3
 ```
 
-![Two-dimensional PCA projection of sentence embeddings, colored by
-k-means cluster.](embeddings_files/figure-html/projection-1.png)
+![k-means recovers the three topics from the embeddings alone. Scatter
+plot of nine sentence embeddings on their first two principal
+components; cluster 1 holds 3 of 3 programming sentences; cluster 2
+holds 3 of 3 food sentences; cluster 3 holds 3 of 3 sports
+sentences.](embeddings_files/figure-html/projection-1.png)
 
 The clusters recover the three topics from the raw text alone.
 

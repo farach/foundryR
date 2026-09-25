@@ -7,7 +7,7 @@ Labor’s O\*NET database: occupation titles, descriptions, skills, tasks,
 and technology requirements for roughly a thousand occupations. It
 returns tidy tibbles.
 
-foundryR turns text into data with Azure AI Foundry: embeddings for
+foundryR turns text into data with Microsoft Foundry: embeddings for
 semantic comparison, and chat completions for summarization. The two fit
 together naturally because onet2r produces the text that foundryR
 reasons over, and both speak tibbles.
@@ -19,12 +19,13 @@ match’s real O\*NET description with a chat model.
 
 ## Setup
 
-onet2r is on GitHub, not CRAN. Install both packages with pak:
+foundryR is on CRAN; onet2r is on GitHub, not CRAN. Install them with:
 
 ``` r
 
+install.packages("foundryR")
+
 # install.packages("pak")
-pak::pak("farach/foundryR")
 pak::pak("farach/onet2r")
 ```
 
@@ -34,7 +35,7 @@ during rendering:
 
 ``` r
 
-# Azure AI Foundry (foundryR)
+# Microsoft Foundry / Azure OpenAI (foundryR)
 foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
 foundry_set_key(Sys.getenv("AZURE_FOUNDRY_KEY"))
 

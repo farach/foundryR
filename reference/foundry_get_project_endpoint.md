@@ -1,4 +1,4 @@
-# Get Azure AI Foundry project endpoint
+# Get Microsoft Foundry project endpoint
 
 Retrieve the project endpoint URL from the environment or a provided
 value.

@@ -8,7 +8,7 @@ library(foundryR)
 foundryR and ellmer both make language-model work possible from R. They
 are not substitutes for every use case. ellmer is the better fit for
 provider-portable chat. foundryR is the better fit when the work is tied
-to Azure AI Foundry and the output needs to become data. The two are
+to Microsoft Foundry and the output needs to become data. The two are
 complementary: you can describe a structure once with ellmer’s type
 system and hand it to foundryR for strict, tibble-shaped extraction.
 
@@ -16,7 +16,7 @@ system and hand it to foundryR for strict, tibble-shaped extraction.
 
 | Question | Use foundryR | Use ellmer |
 |----|----|----|
-| Are you committed to Azure AI Foundry? | Yes | Sometimes |
+| Are you committed to Microsoft Foundry? | Yes | Sometimes |
 | Do you need Azure AI Content Safety? | Yes | No |
 | Do you need Azure’s Files and Batch APIs? | Yes | No |
 | Do you need strict schema-constrained extraction as tibbles? | Yes | Sometimes |
@@ -135,7 +135,7 @@ for the native path, and
 for using Azure Content Safety as a pipeline gate.
 
 The practical rule is simple: use ellmer when you need the best R chat
-client, and use foundryR when you need Azure AI Foundry results as data
+client, and use foundryR when you need Microsoft Foundry results as data
 – and use
 [`as_foundry_schema()`](https://farach.github.io/foundryR/reference/as_foundry_schema.md)
 when you want both.

@@ -1,6 +1,6 @@
-# Set Azure AI Foundry API Key
+# Set Microsoft Foundry API Key
 
-Set or update your Azure AI Foundry API key for authentication. The key
+Set or update your Microsoft Foundry API key for authentication. The key
 can be obtained from the Azure Portal under your Azure OpenAI resource.
 
 ## Usage

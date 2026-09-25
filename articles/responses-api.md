@@ -211,7 +211,7 @@ tidy list-column:
 ``` r
 
 answer <- foundry_web_search(
-  "What changed recently in Azure AI Foundry Responses API?",
+  "What changed recently in the Microsoft Foundry Responses API?",
   search_context_size = "high"
 )
 

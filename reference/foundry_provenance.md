@@ -39,5 +39,5 @@ foundry_provenance(
 #> # A tibble: 1 × 5
 #>   model      schema_hash        package_version captured_at         metadata    
 #>   <chr>      <chr>              <chr>           <dttm>              <list>      
-#> 1 gpt-5-nano b633f54253aaf4d37… 0.1.0           2026-09-25 19:49:22 <named list>
+#> 1 gpt-5-nano b633f54253aaf4d37… 0.1.0           2026-09-25 20:33:42 <named list>
 ```

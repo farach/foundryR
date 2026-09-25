@@ -1,6 +1,6 @@
-# Build Azure AI Foundry Request
+# Build Microsoft Foundry Request
 
-Internal function to construct httr2 requests for Azure AI Foundry API.
+Internal function to construct httr2 requests for Microsoft Foundry API.
 
 ## Usage
 

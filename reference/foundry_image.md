@@ -1,8 +1,9 @@
-# Generate Images with DALL-E
+# Generate Images with Microsoft Foundry
 
-Generate images using an Azure AI Foundry deployed DALL-E model. Returns
-a tibble with the generated image URLs or base64-encoded data, along
-with metadata about the generation.
+Generate images with an image-generation deployment such as a
+GPT-image-series model. Returns a tibble with base64-encoded image data,
+a URL only if a legacy deployment returned one, and metadata about the
+generation.
 
 ## Usage
 
@@ -34,8 +35,9 @@ foundry_image(
 
 - model:
 
-  Character. The deployment name of a DALL-E model. Defaults to the
-  environment variable `AZURE_FOUNDRY_IMAGE_MODEL`.
+  Character. The image-generation deployment name, for example a
+  GPT-image-series deployment. Defaults to the environment variable
+  `AZURE_FOUNDRY_IMAGE_MODEL`.
 
 - n:
 
@@ -43,26 +45,32 @@ foundry_image(
 
 - size:
 
-  Character. The size of the generated image(s). Modern v1 image models
-  support `"auto"`, `"1024x1024"`, `"1536x1024"`, and `"1024x1536"`.
-  DALL-E deployments also support older sizes such as `"1792x1024"`,
-  `"1024x1792"`, `"512x512"`, and `"256x256"`.
+  Character. The size of the generated image(s). This version of
+  foundryR accepts `"auto"`, `"1024x1024"`, `"1536x1024"`, and
+  `"1024x1536"` for GPT-image models. GPT-Image-2 and GPT-Image-2.5
+  support custom dimensions in the service, but this version validates
+  only these fixed sizes. Older `"256x256"`, `"512x512"`, `"1792x1024"`,
+  and `"1024x1792"` sizes applied to retired DALL-E models.
 
 - quality:
 
-  Character. The quality of the image. Modern v1 models support
-  `"auto"`, `"low"`, `"medium"`, and `"high"`. DALL-E 3 supports
-  `"standard"` and `"hd"`.
+  Character. The quality of the image. GPT-image models support
+  `"auto"`, `"low"`, `"medium"`, and `"high"`. `"standard"` and `"hd"`
+  applied to retired DALL-E 3 deployments. GPT-Image-2.5 also supports
+  `"xhigh"` and `"max"` in the service, but this version of foundryR
+  does not yet accept those values.
 
 - style:
 
-  Character. Optional DALL-E 3 style, `"vivid"` or `"natural"`.
+  Character. Optional DALL-E style, `"vivid"` or `"natural"`. DALL-E
+  models were retired by Azure on March 4, 2026; this argument is kept
+  for compatibility with legacy deployments.
 
 - response_format:
 
-  Character. Optional DALL-E response format, `"url"` or `"b64_json"`.
-  This is not supported by `gpt-image-1`-series models, which return
-  base64 image data.
+  Character. Optional legacy DALL-E response format, `"url"` or
+  `"b64_json"`. DALL-E models were retired by Azure on March 4, 2026;
+  GPT-image models return base64 image data.
 
 - output_format:
 
@@ -111,17 +119,17 @@ A tibble with columns:
 
 - revised_prompt:
 
-  Character. DALL-E's interpretation/revision of the prompt (DALL-E 3
-  only).
+  Character. Revised prompt when the service returns one, usually `NA`
+  for GPT-image models.
 
 - url:
 
-  Character. URL to the generated image (NA if response_format is
-  "b64_json").
+  Character. URL to the generated image, `NA` unless a legacy deployment
+  returns a URL.
 
 - b64_json:
 
-  Character. Base64-encoded image data (NA if response_format is "url").
+  Character. Base64-encoded image data.
 
 - output_format:
 
@@ -138,51 +146,49 @@ A tibble with columns:
 ## Details
 
 **Model Requirements**: The `model` parameter must be an image-capable
-deployment such as a DALL-E or `gpt-image-1`-series deployment. Chat
-models cannot generate images.
+deployment such as a GPT-image-series deployment. Chat models cannot
+generate images. Azure retired DALL-E 3 on March 4, 2026; see
+<https://learn.microsoft.com/azure/foundry/openai/how-to/dall-e>.
 
 **Size Availability**:
 
-- gpt-image-1 series: auto, 1024x1024, 1536x1024, 1024x1536
+- GPT-image models in this version of foundryR: auto, 1024x1024,
+  1536x1024, 1024x1536.
 
-- DALL-E 3: 1024x1024, 1792x1024, 1024x1792
+- GPT-Image-2 and GPT-Image-2.5 support custom dimensions in the
+  service, but this version validates only the fixed sizes above.
 
-- DALL-E 2: 256x256, 512x512, 1024x1024
+- Retired DALL-E models used older sizes such as 256x256, 512x512,
+  1792x1024, and 1024x1792.
 
-**URL Expiration**: Image URLs returned by the API are temporary and
-will expire. Use
+GPT-image results are returned as base64 image data. Use
 [`foundry_save_image()`](https://farach.github.io/foundryR/reference/foundry_save_image.md)
-to download and save images locally.
+to decode and write them to disk; saving base64 data requires the
+base64enc package.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
 # Requires a configured Azure image endpoint and credentials,
-# plus a DALL-E deployment.
+# plus an image-generation deployment.
 # Generate a single image
-result <- foundry_image("A sunset over mountains", model = "dall-e-3")
+result <- foundry_image("A sunset over mountains", model = "gpt-image-2")
 
-# View the image URL
-result$url
+# View the base64 image data
+result$b64_json
 
-# Generate an image with HD quality
+# Generate a smaller JPEG output
 result <- foundry_image(
   "A futuristic cityscape",
-  model = "dall-e-3",
-  quality = "hd",
-  style = "vivid"
-)
-
-# Get base64-encoded images instead of URLs
-result <- foundry_image(
-  "An abstract painting",
-  model = "dall-e-3",
-  response_format = "b64_json"
+  model = "gpt-image-2",
+  quality = "low",
+  output_format = "jpeg",
+  output_compression = 60
 )
 
 # Save an image to disk
-result <- foundry_image("A cat wearing a hat", model = "dall-e-3")
+result <- foundry_image("A cat wearing a hat", model = "gpt-image-2")
 local({
   path <- tempfile(fileext = ".png")
   on.exit(unlink(path))

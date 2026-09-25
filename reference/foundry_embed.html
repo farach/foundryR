@@ -63,7 +63,7 @@ and corresponding embedding vectors stored as a list-column."><meta property="og
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Generate Text Embeddings</h1>
-      <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/v0.1.0/R/embed.R" class="external-link"><code>R/embed.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/main/R/embed.R" class="external-link"><code>R/embed.R</code></a></small>
       <div class="d-none name"><code>foundry_embed.Rd</code></div>
     </div>
 
@@ -143,6 +143,10 @@ the legacy deployment-path endpoint.</p></dd>
 <dt>.error_msg</dt>
 <dd><p>Character. Error message for failed rows.</p></dd>
 
+<dt>raw_response</dt>
+<dd><p>List. Raw parsed response payload for successful
+rows, or NULL for failed rows.</p></dd>
+
 
 </dl></div>
     <div class="section level2">
@@ -153,7 +157,7 @@ not a chat model. Common embedding models include:</p><ul><li><p><code>text-embe
 <li><p><code>text-embedding-3-large</code></p></li>
 </ul><p>Chat models (GPT-4, Claude, Llama, etc.) cannot generate embeddings.
 If you only have chat models deployed, you'll need to deploy an embedding
-model in Azure AI Foundry first.</p>
+model in Microsoft Foundry first.</p>
     </div>
 
     <div class="section level2">
@@ -182,7 +186,7 @@ model in Azure AI Foundry first.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. Powered by <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Azure AI Foundry</a></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1. Built for <a href="https://azure.microsoft.com/en-us/products/ai-foundry/" class="external-link">Microsoft Foundry</a></p>
 </div>
 
     </footer></div>
