@@ -2,6 +2,8 @@
 
 ## foundryR 0.1.0
 
+CRAN release: 2026-09-24
+
 Initial CRAN release of foundryR, a tidy interface to Microsoft Azure AI
 Foundry.
 
