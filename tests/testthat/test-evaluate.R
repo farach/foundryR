@@ -884,3 +884,41 @@ test_that("results require a completed run", {
     "foundry_eval_run_wait"
   )
 })
+
+
+test_that("foundry_eval_existing_schema reads project-endpoint item schemas", {
+  item <- list(
+    type = "object",
+    properties = list(
+      comment = list(type = "string"),
+      foundryr_row_id = list(type = "string")
+    )
+  )
+  sample <- list(type = "object", properties = list(output_text = list(type = "string")))
+  project_eval <- tibble::tibble(
+    eval_id = "eval_1",
+    data_source_config = list(list(
+      type = "custom",
+      item_schema = list(),
+      include_sample_schema = TRUE,
+      schema = list(item = item, sample = sample)
+    ))
+  )
+  data <- tibble::tibble(comment = c("a", "b"))
+
+  expect_no_warning(
+    schema <- foundry_eval_existing_schema(project_eval, data, needs_sample = TRUE)
+  )
+  expect_named(schema$properties, c("comment", "foundryr_row_id"))
+
+  no_flag <- project_eval
+  no_flag$data_source_config[[1]]$include_sample_schema <- NULL
+  expect_no_error(foundry_eval_existing_schema(no_flag, data, needs_sample = TRUE))
+
+  no_sample <- no_flag
+  no_sample$data_source_config[[1]]$schema$sample <- NULL
+  expect_error(
+    foundry_eval_existing_schema(no_sample, data, needs_sample = TRUE),
+    "without a sample schema"
+  )
+})

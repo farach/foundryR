@@ -213,6 +213,12 @@ foundry_transcribe <- function(file,
 #' retires on 2026-12-15. The `gpt-4o-mini-transcribe` version `2025-12-15` is
 #' generally available until 2027-06-15.
 #'
+#' In live testing, an Azure `whisper` version `001` deployment returned Spanish
+#' speech as Spanish text through the translations route in two of three
+#' attempts, so check the language of the output before you rely on it.
+#' Transcribing in the source language with [foundry_transcribe()] and
+#' translating the text with [foundry_response()] is an alternative.
+#'
 #' @return A one-row tibble with translated text, phrase-level detail, and the
 #'   raw response in list-columns.
 #' @export
@@ -685,10 +691,26 @@ foundry_parse_audio_result <- function(result, file, model, task) {
     model = model %||% NA_character_,
     text = text,
     duration_ms = duration_ms,
-    language = result$language %||% result$locale %||% NA_character_,
+    language = foundry_audio_language(result),
     phrases = list(foundry_audio_phrases(result)),
     raw_response = list(result)
   )
+}
+
+
+# Speech fast transcription reports the detected locale on each phrase rather
+# than once per response, so fall back to the distinct phrase locales.
+foundry_audio_language <- function(result) {
+  language <- result$language %||% result$locale
+  if (!is.null(language)) {
+    return(as.character(language))
+  }
+  locales <- unlist(
+    lapply(result$phrases %||% list(), function(phrase) phrase$locale),
+    use.names = FALSE
+  )
+  locales <- unique(locales[!is.na(locales) & nzchar(locales)])
+  if (length(locales) == 0L) NA_character_ else paste(locales, collapse = ", ")
 }
 
 

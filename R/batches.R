@@ -477,14 +477,20 @@ foundry_extract_batch_results <- function(batch_id,
     } else {
       as.character(input_data[[text_col]][[row_idx[[i]]]])
     }
+    problem <- if (isTRUE(result$.error[[1]])) {
+      msg <- result$.error_msg[[1]] %||% NA_character_
+      if (is.na(msg)) "Batch request failed." else msg
+    } else {
+      foundry_extract_problem(result)
+    }
     base <- tibble::tibble(
       .input_idx = row_idx[[i]],
       .input_text = input_text,
       .response_id = result$response_id[[1]] %||% NA_character_,
       .status = result$status[[1]] %||% NA_character_,
       .output_text = result$output_text[[1]] %||% NA_character_,
-      .error = isTRUE(result$.error[[1]]) || !is.na(result$structured_error[[1]] %||% NA_character_),
-      .error_msg = result$.error_msg[[1]] %||% result$structured_error[[1]] %||% NA_character_,
+      .error = !is.na(problem),
+      .error_msg = problem,
       raw_response = result$raw_response
     )
     if (keep_raw && "raw_batch_result" %in% names(result)) {

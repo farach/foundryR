@@ -34,7 +34,7 @@ These changes can alter the output of code written for 0.1.0. Most fix behavior 
 - `foundry_extract_batch_results()` collects a finished extraction batch later, joins the results to the original rows through their `row-N` IDs, and flattens the fields the way `foundry_extract()` does. It warns about input rows that have no result. `foundry_extract_batch(wait = TRUE)` now uses it.
 - `foundry_moderate()` gains a `blocklist_hit` column, and `foundry_transcribe()` gains an `enhanced` argument.
 - `foundry_check_setup()` reports project-endpoint authentication and the session route, and shows only the last four characters of an API key.
-- New vignettes: `vignette("evaluations")` walks through model and agent evaluations, and `vignette("evaluation-analysis")` covers uncertainty, paired comparisons, and judge validation for evaluation results.
+- The articles are rewritten around research tasks, and each shows output recorded from live Microsoft Foundry resources. New articles cover evaluations (`vignette("evaluations")`) and the analysis of evaluation results (`vignette("evaluation-analysis")`). The comparison with ellmer now lives in the README and `vignette("responses-api")`. The O*NET integration article is withdrawn until it can be re-recorded, because its text did not match its recorded output.
 
 ## Deprecated and defunct
 
@@ -49,7 +49,7 @@ These changes can alter the output of code written for 0.1.0. Most fix behavior 
 - `foundry_blocklist_create()` without a description sends `{}`, not `[]`, which the service rejected. Conversation and vector store updates with no fields send `{}` as well.
 - `foundry_moderate()` keeps blocklist matches when a blocklist hit halts analysis and labels those rows "blocked". It used to drop them.
 - `foundry_groundedness(correction = TRUE)` sends `correction`, the field the service reads; Microsoft Learn documents `mitigating`, which the live service ignores. `ungrounded_pct` is always numeric.
-- `foundry_protected_code()` checks the service's 110-character minimum before sending a request.
+- `foundry_protected_code()` checks the service's length requirement, more than 110 characters per snippet, before sending a request.
 - `foundry_batch_results()` leaves plain-text output as text instead of reporting a JSON parse error, and reads downloaded output as UTF-8. `foundry_batch_requests()` writes numbers at full precision and missing values as `null`.
 - `foundry_embed()` and `foundry_embed_batch()` treat empty strings like missing input: the row gets an error and nothing is sent.
 - `foundry_usage()` accepts rates as a named list.
@@ -62,6 +62,11 @@ These changes can alter the output of code written for 0.1.0. Most fix behavior 
 - `foundry_eval_run_output_items()` follows the service's pagination and returns every output item. It previously returned only the first page, which silently truncated larger runs. `limit` still caps the number of output items returned.
 - `codebook_diff()` shows key-level changes inside a changed field, such as `enum: +workload`, instead of cutting values off at 77 characters.
 - `foundry_models()` is documented correctly: it lists the models available to your resource, not your deployments.
+- `foundry_extract()` and `foundry_extract_batch_results()` mark a row as an error when the response carries no structured data, and `.error_msg` names the reason, such as a refusal, a content-filter stop, a token-limit stop, or JSON that did not parse. These rows used to have empty fields and `.error = FALSE`, so they looked like valid missing answers.
+- `foundry_image()` fills `output_format` for gpt-image models, which report the format once for the whole response instead of once per image.
+- `foundry_evaluate(eval_id = ...)` reads the item schema of an evaluation stored on a project endpoint, which reports it in a different place from the resource endpoint. It used to warn that it could not read the schema and skip the check that the evaluation can carry your columns.
+- `foundry_transcribe()` fills `language` for Speech fast transcription from the locales the service reports on each phrase. It was always `NA`.
+- `foundry_set_token_provider()` warns when an Azure CLI provider requests tokens for the wrong kind of endpoint. Project endpoints need `https://ai.azure.com` tokens and resource endpoints need Cognitive Services tokens. Setup and error messages now suggest `foundry_token_azure_cli("https://ai.azure.com")` for project endpoints.
 - The 0.1.0 entry below said `foundry_agreement()` reports Fleiss' kappa. It reports Cohen's kappa and Krippendorff's alpha; the entry has been corrected.
 - foundryR now requires httr2 1.1.1 or later, the version whose features it uses. irr is no longer a suggested package.
 
@@ -86,7 +91,7 @@ Initial CRAN release of foundryR, a tidy interface to Microsoft Foundry (formerl
 - Added `foundry_image_edit()` for v1 preview image editing with local image and optional mask uploads.
 - Added `foundry_response_cancel()` and `foundry_response_input_items()` for background Responses API workflows and response introspection.
 - Added `foundry_set_project_endpoint()`, `foundry_get_project_endpoint()`, `foundry_set_token_provider()`, and `foundry_token_azure_cli()` for project-scoped APIs and refreshable Microsoft Entra authentication.
-- Added `foundry_token_azure_identity()`, a refreshable Microsoft Entra ID token provider backed by \pkg{AzureAuth} that supports service principals, managed identity, and interactive or device-code flows.
+- Added `foundry_token_azure_identity()`, a refreshable Microsoft Entra ID token provider backed by AzureAuth that supports service principals, managed identity, and interactive or device-code flows.
 - Added `foundry_set_speech_endpoint()`, `foundry_set_speech_key()`, `foundry_transcribe()`, and `foundry_translate_audio()` for LLM Speech and MAI-Transcribe workflows.
 - Added `foundry_set_token()` for Microsoft Entra ID bearer-token authentication across Foundry requests.
 - Added `foundry_speak()` for v1 preview text-to-speech output saved to local audio files.
@@ -100,11 +105,11 @@ Initial CRAN release of foundryR, a tidy interface to Microsoft Foundry (formerl
 - `foundry_response()` and its retrieve, cancel, delete, and input-item helpers now accept an explicit `project_endpoint`, keeping agent-backed response lifecycles on one project endpoint.
 - `foundry_token_azure_cli()`, `foundry_token_azure_identity()`, `foundry_set_token()`, and `foundry_set_token_provider()` now separate resource and project authentication, default resource tokens to the documented Cognitive Services audience, and use the AI audience only for project operations.
 - Parallel HTTP helpers now default to at most two active requests, and the web-search compliance warning uses package-local state rather than changing global R options.
-- `step_foundry_embed()` now checks for \pkg{recipes} before generating its default step identifier, and \pkg{generics} is declared for its exported `tidy()` method.
+- `step_foundry_embed()` now checks for recipes before generating its default step identifier, and generics is declared for its exported `tidy()` method.
 - `foundry_groundedness()` now supports the Content Safety correction feature via `correction = TRUE` with a bring-your-own Azure OpenAI deployment described by the new `foundry_llm_resource()`, returning a `correction_text` column, and surfaces per-segment `ungrounded_reasons` when `reasoning = TRUE`.
 - `codebook_diff()` returns a printable character-vector object, so assigning the result produces no console output; `format()` returns the plain diff lines.
 - `as_foundry_schema()` now converts `ellmer::type_object()` specifications to strict JSON Schema, so ellmer users can reuse existing type definitions in `foundry_extract()` and `foundry_response()`.
-- `foundry_agreement()` now reports Krippendorff's alpha alongside Cohen's kappa, using \pkg{irr} when installed and a base-R nominal fallback otherwise.
+- `foundry_agreement()` now reports Krippendorff's alpha alongside Cohen's kappa, using irr when installed and a base-R nominal fallback otherwise.
 - `foundry_chat()` now accepts `reasoning_effort` and returns `reasoning_tokens` and `cached_input_tokens` when chat-completions responses report those fields.
 - `foundry_chat()` now defaults to the `/openai/v1/chat/completions` endpoint while keeping `api = "deployment"` as a legacy escape hatch.
 - `foundry_embed()` now uses the `/openai/v1/embeddings` array endpoint by default, returns row-level `.error` and `.error_msg` fields, and keeps `api = "deployment"` as a legacy escape hatch.
@@ -121,7 +126,7 @@ Initial CRAN release of foundryR, a tidy interface to Microsoft Foundry (formerl
 ## Documentation and package metadata
 
 - Documentation now positions foundryR around Azure AI Content Safety, Responses API workflows, strict extraction, embeddings, batch jobs, and research annotation workflows, with chat completions kept as a maintained convenience layer.
-- The README, vignettes, and website articles now show real Microsoft Foundry output. Each documentation page runs once against live resources with `data-raw/record-doc-outputs.R`, which captures every API response as a sanitized \pkg{httptest2} fixture; all later builds (R CMD check, pkgdown, CRAN, CI) replay those fixtures and render the real tibbles, images, and audio with no credentials and no network calls. When fixtures are absent the API chunks simply do not evaluate, so nothing is fabricated. Replay restores the session's environment variables and options when it finishes.
+- The README, vignettes, and website articles now show real Microsoft Foundry output. Each documentation page runs once against live resources with `data-raw/record-doc-outputs.R`, which captures every API response as a sanitized httptest2 fixture; all later builds (R CMD check, pkgdown, CRAN, CI) replay those fixtures and render the real tibbles, images, and audio with no credentials and no network calls. When fixtures are absent the API chunks simply do not evaluate, so nothing is fabricated. Replay restores the session's environment variables and options when it finishes.
 - Added an onet2r integration as a website-only pkgdown article that pulls real occupation data from O\*NET, embeds it with `foundry_embed()`, ranks occupations by semantic similarity, and summarizes the top match with `foundry_chat()`; the redactor now strips the O\*NET `X-API-Key` header so its fixtures carry no secrets.
 - Examples that need no credentials run during package checks; examples that call Azure services state their prerequisites, and examples that write files use temporary paths.
 - Media helpers are grouped as experimental media while the core research surface is documented separately.

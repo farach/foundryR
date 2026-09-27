@@ -149,7 +149,7 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
         cli::cli_alert_info("No project-scoped Microsoft Entra ID token")
         cli::cli_bullets(c(
           "i" = "Project responses, agents, conversations, files, and vector stores can use your API key.",
-          "i" = "Project evaluations need a token: {.code foundry_set_token_provider(foundry_token_azure_cli(), scope = \"project\")}."
+          "i" = "Project evaluations need a token: {.code foundry_set_token_provider(foundry_token_azure_cli(\"https://ai.azure.com\"), scope = \"project\")}."
         ))
       }
       cli::cli_alert_info(

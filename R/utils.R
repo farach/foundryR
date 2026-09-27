@@ -113,7 +113,7 @@ foundry_build_project_request <- function(path,
     cli::cli_abort(c(
       "Evaluations on a Foundry project endpoint need a Microsoft Entra ID token, not an API key.",
       "i" = "The service answers HTTP 403 to API keys there.",
-      "i" = "Drop {.arg api_key} and authenticate with {.code foundry_set_token_provider(foundry_token_azure_cli(), scope = \"project\")}, {.fn foundry_token_azure_identity}, or {.code foundry_set_token(scope = \"project\")}."
+      "i" = "Drop {.arg api_key} and authenticate with {.code foundry_set_token_provider(foundry_token_azure_cli(\"https://ai.azure.com\"), scope = \"project\")}, {.fn foundry_token_azure_identity}, or {.code foundry_set_token(scope = \"project\")}."
     ))
   }
   base_url <- foundry_get_project_endpoint(endpoint = endpoint, required = TRUE)
@@ -210,7 +210,7 @@ foundry_authenticate_request <- function(req,
     cli::cli_abort(c(
       "Evaluations on a Foundry project endpoint need a Microsoft Entra ID token.",
       "i" = "The service answers HTTP 403 to API keys there.",
-      "i" = "Use {.code foundry_set_token_provider(foundry_token_azure_cli(), scope = \"project\")}, {.fn foundry_token_azure_identity}, or {.code foundry_set_token(scope = \"project\")}."
+      "i" = "Use {.code foundry_set_token_provider(foundry_token_azure_cli(\"https://ai.azure.com\"), scope = \"project\")}, {.fn foundry_token_azure_identity}, or {.code foundry_set_token(scope = \"project\")}."
     ))
   }
   if (required) {

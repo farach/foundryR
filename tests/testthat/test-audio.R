@@ -262,6 +262,32 @@ test_that("foundry_parse_audio_result uses OpenAI verbose_json duration seconds"
   expect_equal(result$duration_ms, 11000L)
 })
 
+test_that("foundry_parse_audio_result reads the language from phrase locales", {
+  one_locale <- list(
+    durationMilliseconds = 2000L,
+    combinedPhrases = list(list(text = "Hello world.")),
+    phrases = list(
+      list(offsetMilliseconds = 0L, durationMilliseconds = 900L, text = "Hello", locale = "en-US"),
+      list(offsetMilliseconds = 900L, durationMilliseconds = 1100L, text = "world.", locale = "en-US")
+    )
+  )
+  two_locales <- one_locale
+  two_locales$phrases[[2]]$locale <- "es-ES"
+
+  expect_equal(
+    foundry_parse_audio_result(one_locale, "a.wav", NULL, "transcription")$language,
+    "en-US"
+  )
+  expect_equal(
+    foundry_parse_audio_result(two_locales, "a.wav", NULL, "transcription")$language,
+    "en-US, es-ES"
+  )
+  expect_equal(
+    foundry_parse_audio_result(list(text = "x", language = "english"), "a.wav", "whisper", "translation")$language,
+    "english"
+  )
+})
+
 test_that("Speech enhanced mode region errors are actionable", {
   setup_mock_env()
   withr::local_envvar(

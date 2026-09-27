@@ -591,7 +591,21 @@ foundry_eval_item_schema <- function(data, item_schema = NULL) {
 # still refuses to match rows without the echoed key.
 foundry_eval_existing_schema <- function(evaluation, data, needs_sample) {
   config <- evaluation$data_source_config[[1]] %||% list()
-  item <- config$item_schema %||% config$schema$properties$item
+  # Resource endpoints return the item schema under `schema$properties$item`.
+  # Project endpoints return an empty `item_schema` and the schema under
+  # `schema$item`. Use the first candidate that describes any fields.
+  candidates <- list(
+    config$item_schema,
+    config$schema$properties$item,
+    config$schema$item
+  )
+  item <- NULL
+  for (candidate in candidates) {
+    if (is.list(candidate) && length(candidate$properties) > 0L) {
+      item <- candidate
+      break
+    }
+  }
   properties <- item$properties
   if (is.null(properties)) {
     cli::cli_warn(c(
@@ -610,7 +624,9 @@ foundry_eval_existing_schema <- function(evaluation, data, needs_sample) {
     ))
   }
   has_sample <- config$include_sample_schema %||%
-    (if (is.null(config$schema)) NA else !is.null(config$schema$properties$sample))
+    (if (is.null(config$schema)) NA else {
+      !is.null(config$schema$properties$sample) || !is.null(config$schema$sample)
+    })
   if (needs_sample && isFALSE(has_sample)) {
     cli::cli_abort(c(
       "Evaluation {.val {evaluation$eval_id[[1]]}} was created without a sample schema.",

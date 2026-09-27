@@ -309,3 +309,115 @@ test_that("foundry_extract_batch_results warns about input rows without results"
   expect_equal(nrow(result), 1L)
   expect_equal(result$.input_idx, 1L)
 })
+
+extract_label_schema <- function() {
+  list(
+    type = "object",
+    properties = list(label = list(type = "string")),
+    required = "label",
+    additionalProperties = FALSE
+  )
+}
+
+test_that("foundry_extract marks responses without structured data as errors", {
+  setup_mock_env()
+  filtered <- list(
+    id = "resp_cf",
+    object = "response",
+    status = "incomplete",
+    incomplete_details = list(reason = "content_filter"),
+    model = "gpt-5-nano",
+    output = list(list(type = "reasoning", id = "rs_1", summary = list())),
+    usage = list(input_tokens = 0L, output_tokens = 0L, total_tokens = 0L)
+  )
+  refused <- list(
+    id = "resp_rf",
+    object = "response",
+    status = "completed",
+    model = "gpt-4.1",
+    output = list(list(
+      type = "message",
+      role = "assistant",
+      content = list(list(type = "refusal", refusal = "I can't help with that."))
+    ))
+  )
+  truncated <- mock_response_api_response(output_text = "{\"label\":\"ye")
+  truncated$status <- "incomplete"
+  truncated$incomplete_details <- list(reason = "max_output_tokens")
+  responses <- list(
+    mock_httr2_response(filtered),
+    mock_httr2_response(refused),
+    mock_httr2_response(truncated)
+  )
+  testthat::local_mocked_bindings(
+    req_perform_parallel = function(reqs, ...) responses,
+    .package = "httr2"
+  )
+
+  result <- foundry_extract(
+    c("one", "two", "three"),
+    schema = extract_label_schema(),
+    model = "gpt-4.1"
+  )
+
+  expect_equal(result$.error, c(TRUE, TRUE, TRUE))
+  expect_true(all(is.na(result$label)))
+  expect_equal(result$.status, c("incomplete", "completed", "incomplete"))
+  expect_match(result$.error_msg[[1]], "incomplete (content_filter)", fixed = TRUE)
+  expect_match(result$.error_msg[[1]], "content filter configuration", fixed = TRUE)
+  expect_match(result$.error_msg[[2]], "The model refused: I can't help with that.", fixed = TRUE)
+  expect_match(result$.error_msg[[3]], "incomplete (max_output_tokens)", fixed = TRUE)
+  expect_identical(result$.error_msg[[3]], foundry_incomplete_message("max_output_tokens"))
+})
+
+test_that("foundry_extract_batch_results keeps the reason for failed rows", {
+  setup_mock_env()
+  batch <- list(
+    id = "batch_123",
+    status = "completed",
+    endpoint = "/v1/responses",
+    output_file_id = "file_out"
+  )
+  broken <- mock_response_api_response(output_text = "not json", response_id = "resp_1")
+  filtered <- list(
+    id = "resp_2",
+    object = "response",
+    status = "incomplete",
+    incomplete_details = list(reason = "content_filter"),
+    model = "gpt-5-nano",
+    output = list()
+  )
+  line <- function(custom_id, response) {
+    jsonlite::toJSON(
+      list(
+        custom_id = custom_id,
+        request = list(body = list(text = list(format = list(type = "json_schema")))),
+        response = list(status_code = 200, body = response)
+      ),
+      auto_unbox = TRUE
+    )
+  }
+  output <- paste(c(line("row-1", broken), line("row-2", filtered)), collapse = "\n")
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      if (grepl("/content$", req$url)) {
+        httr2::response(
+          status_code = 200L,
+          url = req$url,
+          headers = list(`content-type` = "application/octet-stream"),
+          body = charToRaw(output)
+        )
+      } else {
+        mock_httr2_response(batch)
+      }
+    },
+    .package = "httr2"
+  )
+  data <- tibble::tibble(text = c("first", "second"))
+
+  result <- foundry_extract_batch_results("batch_123", data, extract_label_schema())
+
+  expect_equal(result$.error, c(TRUE, TRUE))
+  expect_false(anyNA(result$.error_msg))
+  expect_match(result$.error_msg[[2]], "incomplete (content_filter)", fixed = TRUE)
+})

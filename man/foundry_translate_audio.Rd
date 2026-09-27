@@ -79,6 +79,12 @@ transcription and MAI-Transcribe do not translate. For Azure OpenAI audio,
 pass the deployment name explicitly in \code{model}. Azure \code{whisper} version \code{001}
 retires on 2026-12-15. The \verb{gpt-4o-mini-transcribe} version \code{2025-12-15} is
 generally available until 2027-06-15.
+
+In live testing, an Azure \code{whisper} version \code{001} deployment returned Spanish
+speech as Spanish text through the translations route in two of three
+attempts, so check the language of the output before you rely on it.
+Transcribing in the source language with \code{\link[=foundry_transcribe]{foundry_transcribe()}} and
+translating the text with \code{\link[=foundry_response]{foundry_response()}} is an alternative.
 }
 \examples{
 \dontrun{

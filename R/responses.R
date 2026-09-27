@@ -949,13 +949,13 @@ foundry_extract_parse_parallel_response <- function(resp,
   }
 
   response <- foundry_parse_response(result, parse_json = TRUE)
-  structured_error <- response$structured_error[[1]]
-  if (!is.na(structured_error)) {
+  problem <- foundry_extract_problem(response)
+  if (!is.na(problem)) {
     return(foundry_extract_error_row(
       i,
       input_text,
       response$status,
-      structured_error,
+      problem,
       flatten = flatten,
       raw_response = response$raw_response[[1]]
     ))
@@ -1000,6 +1000,55 @@ foundry_extract_error_row <- function(i,
   )
   if (!flatten) out$.data <- list(NULL)
   out
+}
+
+
+# A response without parsed structured data is an extraction failure. Name the
+# cause so a row of missing fields is never mistaken for a valid empty answer.
+foundry_extract_problem <- function(response) {
+  structured_error <- response$structured_error[[1]] %||% NA_character_
+  if (!is.null(response$structured[[1]]) && is.na(structured_error)) {
+    return(NA_character_)
+  }
+
+  status <- response$status[[1]] %||% NA_character_
+  reason <- response$incomplete_reason[[1]] %||% NA_character_
+  refusal <- response$refusal[[1]] %||% NA_character_
+  problems <- character()
+  if (!is.na(refusal) && nzchar(refusal)) {
+    problems <- c(problems, paste0("The model refused: ", refusal))
+  }
+  if (identical(status, "incomplete")) {
+    problems <- c(problems, foundry_incomplete_message(reason))
+  }
+  # A parse error is only a symptom when the model refused or stopped early.
+  if (!is.na(structured_error) && length(problems) == 0L) {
+    problems <- structured_error
+  }
+  if (length(problems) == 0L) {
+    problems <- "The response contained no structured output."
+  }
+  paste(problems, collapse = " ")
+}
+
+
+foundry_incomplete_message <- function(reason) {
+  if (is.na(reason) || !nzchar(reason)) {
+    return("The response is incomplete.")
+  }
+  hint <- switch(
+    reason,
+    content_filter = paste(
+      " The Azure content filter stopped the output;",
+      "check the content filter configuration on the deployment."
+    ),
+    max_output_tokens = paste(
+      " The output-token limit was reached;",
+      "raise `max_output_tokens` or lower the reasoning effort."
+    ),
+    ""
+  )
+  paste0("The response is incomplete (", reason, ").", hint)
 }
 
 

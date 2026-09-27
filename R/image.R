@@ -402,7 +402,8 @@ foundry_parse_image_response <- function(result,
       revised_prompt = img$revised_prompt %||% NA_character_,
       url = img$url %||% NA_character_,
       b64_json = img$b64_json %||% NA_character_,
-      output_format = output_format %||% img$output_format %||% NA_character_,
+      output_format = output_format %||% img$output_format %||%
+        result$output_format %||% NA_character_,
       created = created_time,
       raw_image = list(img)
     )
