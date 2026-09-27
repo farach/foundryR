@@ -20,6 +20,17 @@ test_that("foundry_batch_requests writes executable JSONL", {
   expect_equal(first$body$input, "one")
 })
 
+test_that("foundry_batch_requests writes LF-separated lines on every platform", {
+  data <- data.frame(text = c("one", "two"))
+  path <- withr::local_tempfile(fileext = ".jsonl")
+
+  foundry_batch_requests(data, input = "text", path = path, model = "gpt-4.1")
+
+  bytes <- readBin(path, "raw", n = file.size(path))
+  expect_false(as.raw(13L) %in% bytes)
+  expect_equal(sum(bytes == as.raw(10L)), 2L)
+})
+
 test_that("foundry_batch_requests preserves numeric precision and missing values", {
   data <- data.frame(
     text = "one",

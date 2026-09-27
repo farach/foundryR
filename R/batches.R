@@ -135,7 +135,13 @@ foundry_batch_requests <- function(data,
     )
   })
 
-  writeLines(lines, path, useBytes = TRUE)
+  # A binary connection keeps "\n" record separators on every platform, as JSON
+  # Lines expects; text mode would write "\r\n" on Windows.
+  con <- file(path, open = "wb")
+  tryCatch(
+    writeLines(lines, con, sep = "\n", useBytes = TRUE),
+    finally = close(con)
+  )
   tibble::tibble(
     path = normalizePath(path, winslash = "/", mustWork = FALSE),
     requests = length(lines),

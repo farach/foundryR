@@ -50,7 +50,7 @@ These changes can alter the output of code written for 0.1.0. Most fix behavior 
 - `foundry_moderate()` keeps blocklist matches when a blocklist hit halts analysis and labels those rows "blocked". It used to drop them.
 - `foundry_groundedness(correction = TRUE)` sends `correction`, the field the service reads; Microsoft Learn documents `mitigating`, which the live service ignores. `ungrounded_pct` is always numeric.
 - `foundry_protected_code()` checks the service's length requirement, more than 110 characters per snippet, before sending a request.
-- `foundry_batch_results()` leaves plain-text output as text instead of reporting a JSON parse error, and reads downloaded output as UTF-8. `foundry_batch_requests()` writes numbers at full precision and missing values as `null`.
+- `foundry_batch_results()` leaves plain-text output as text instead of reporting a JSON parse error, and reads downloaded output as UTF-8. `foundry_batch_requests()` writes numbers at full precision and missing values as `null`, and separates lines with `\n` on every platform; on Windows it used to write `\r\n`.
 - `foundry_embed()` and `foundry_embed_batch()` treat empty strings like missing input: the row gets an error and nothing is sent.
 - `foundry_usage()` accepts rates as a named list.
 - `foundry_transcribe()` places `transcribe_style` under `enhancedMode.modelOptions`, as Microsoft Learn documents, reports enhanced-mode region failures with guidance, and fills `duration_ms` from Whisper `verbose_json` responses.
