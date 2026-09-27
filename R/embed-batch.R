@@ -13,7 +13,8 @@
 #' @param batch_size Integer. Number of texts to include in each batch request.
 #'   Default: 100.
 #' @param max_active Integer. Maximum number of concurrent requests. Default: 2.
-#' @param progress Logical. Whether to show a progress bar. Default: TRUE.
+#' @param progress Logical. Whether to show a progress bar. Defaults to
+#'   `getOption("foundryR.progress", interactive())`.
 #' @param api Character. Endpoint style. `"v1"` (default) sends requests to
 #'   `/openai/v1/embeddings` with `model` in the JSON body. `"deployment"` keeps
 #'   the legacy deployment-path endpoint.
@@ -67,7 +68,7 @@ foundry_embed_batch <- function(text,
                                  dimensions = NULL,
                                  batch_size = 100L,
                                  max_active = 2L,
-                                 progress = TRUE,
+                                 progress = getOption("foundryR.progress", interactive()),
                                  api = c("v1", "deployment"),
                                  api_key = NULL,
                                  api_version = NULL) {
@@ -117,8 +118,8 @@ foundry_embed_batch <- function(text,
   }
 
   # Split text into batches with their original indices
-  valid_idx <- which(!is.na(text))
-  na_idx <- which(is.na(text))
+  valid_idx <- which(!is.na(text) & nzchar(text))
+  invalid_idx <- which(is.na(text) | !nzchar(text))
   batches <- batch_indexed_vector(text, valid_idx, batch_size)
 
   # Build requests for each batch
@@ -173,10 +174,7 @@ foundry_embed_batch <- function(text,
       error_msg <- if (is_error_obj) {
         conditionMessage(resp)
       } else {
-        tryCatch(
-          foundry_error_body(resp),
-          error = function(e) "Unknown error"
-        )
+        foundry_error_message(resp)
       }
 
       # Return error rows for all texts in this batch
@@ -229,7 +227,7 @@ foundry_embed_batch <- function(text,
           n_dims = NA_integer_,
           .error = TRUE,
           .error_msg = "Embedding not found in response",
-          raw_response = list(result)
+          raw_response = list(foundry_embedding_row_response(result, NULL))
         ))
       }
 
@@ -242,27 +240,42 @@ foundry_embed_batch <- function(text,
         n_dims = length(emb_vec),
         .error = FALSE,
         .error_msg = NA_character_,
-        raw_response = list(result)
+        raw_response = list(foundry_embedding_row_response(result, emb_entry))
       )
     })
   })
 
-  if (length(na_idx) > 0L) {
-    na_rows <- tibble::tibble(
-      .input_idx = na_idx,
-      text = text[na_idx],
-      embedding = replicate(length(na_idx), NULL, simplify = FALSE),
-      n_dims = rep(NA_integer_, length(na_idx)),
-      .error = rep(TRUE, length(na_idx)),
-      .error_msg = rep("Input text is NA.", length(na_idx)),
-      raw_response = replicate(length(na_idx), NULL, simplify = FALSE)
+  if (length(invalid_idx) > 0L) {
+    invalid_msg <- vapply(text[invalid_idx], function(value) {
+      if (is.na(value)) "Input text is NA." else "Input text is empty."
+    }, character(1), USE.NAMES = FALSE)
+    invalid_rows <- tibble::tibble(
+      .input_idx = invalid_idx,
+      text = text[invalid_idx],
+      embedding = replicate(length(invalid_idx), NULL, simplify = FALSE),
+      n_dims = rep(NA_integer_, length(invalid_idx)),
+      .error = rep(TRUE, length(invalid_idx)),
+      .error_msg = invalid_msg,
+      raw_response = replicate(length(invalid_idx), NULL, simplify = FALSE)
     )
-    results <- dplyr::bind_rows(results, na_rows)
+    results <- dplyr::bind_rows(results, invalid_rows)
   }
 
   # Sort by original index and return
   results %>%
     dplyr::arrange(.input_idx)
+}
+
+
+foundry_embedding_row_response <- function(result, emb_entry) {
+  row_data <- emb_entry %||% list()
+  row_data$embedding <- NULL
+  list(
+    object = result$object %||% NA_character_,
+    model = result$model %||% NA_character_,
+    usage = result$usage %||% NULL,
+    data = list(row_data)
+  )
 }
 
 

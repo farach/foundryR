@@ -29,6 +29,48 @@ test_that("foundry_file_upload builds multipart request", {
   expect_equal(captured$method, "POST")
   expect_equal(result$file_id, "file_123")
   expect_equal(result$purpose, "batch")
+  expect_null(captured$body$data$expires_after)
+})
+
+test_that("foundry_file_upload sends an expiry only when asked", {
+  setup_mock_env()
+  path <- withr::local_tempfile(fileext = ".txt")
+  writeLines("Office hours are on Fridays.", path)
+  captured <- list()
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured[[length(captured) + 1L]] <<- req
+      mock_httr2_response(list(id = "file_1", purpose = "assistants"))
+    },
+    .package = "httr2"
+  )
+
+  foundry_file_upload(path)
+  expect_null(captured[[1]]$body$data$expires_after)
+
+  foundry_file_upload(path, purpose = "batch", expires_after_seconds = 3600)
+  expiry <- jsonlite::fromJSON(as.character(captured[[2]]$body$data$expires_after))
+  expect_equal(expiry, list(anchor = "created_at", seconds = 3600L))
+})
+
+test_that("foundry_file_upload can target a project endpoint", {
+  setup_mock_env()
+  project <- "https://acct.services.ai.azure.com/api/projects/demo"
+  withr::local_envvar(AZURE_FOUNDRY_PROJECT_TOKEN = "test-project-token")
+  path <- withr::local_tempfile(fileext = ".txt")
+  writeLines("Office hours are on Fridays.", path)
+  captured <- NULL
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_httr2_response(list(id = "file_1", purpose = "assistants"))
+    },
+    .package = "httr2"
+  )
+
+  foundry_file_upload(path, project_endpoint = project)
+  expect_equal(captured$url, paste0(project, "/openai/v1/files"))
+  expect_equal(request_header(captured, "Authorization"), "Bearer test-project-token")
 })
 
 test_that("foundry_files parses list response", {

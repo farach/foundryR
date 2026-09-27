@@ -66,9 +66,10 @@ test_that("foundry_protected_code parses detection and citations", {
     .package = "httr2"
   )
 
-  result <- foundry_protected_code("import pygame")
+  code <- paste(rep("import pygame", 12), collapse = "\n")
+  result <- foundry_protected_code(code)
 
-  expect_equal(captured$body$data$code, "import pygame")
+  expect_equal(captured$body$data$code, code)
   expect_match(captured$url, "text:detectProtectedMaterialForCode")
   expect_match(captured$url, "api-version=2024-09-15-preview")
   expect_true(result$detected)
@@ -90,7 +91,7 @@ test_that("foundry_protected_code handles clean code with no citations", {
     .package = "httr2"
   )
 
-  result <- foundry_protected_code("print('hi')")
+  result <- foundry_protected_code(paste(rep("print('hi')", 12), collapse = "\n"))
 
   expect_false(result$detected)
   expect_equal(nrow(result$citations[[1]]), 0L)
@@ -98,6 +99,24 @@ test_that("foundry_protected_code handles clean code with no citations", {
 
 test_that("foundry_protected_code rejects non-character input", {
   expect_error(foundry_protected_code(123), "character")
+})
+
+test_that("foundry_protected_code rejects short input without an HTTP call", {
+  setup_content_safety_env()
+  called <- FALSE
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      called <<- TRUE
+      mock_httr2_response(list())
+    },
+    .package = "httr2"
+  )
+
+  expect_error(
+    foundry_protected_code(c(strrep("x", 111), "too short")),
+    "Short inputs: 2"
+  )
+  expect_false(called)
 })
 
 # ---------------------------------------------------------------------------

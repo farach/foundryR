@@ -178,6 +178,7 @@ test_that("tidy.step_foundry_embed returns tibble for untrained step", {
 })
 
 test_that("tidy.step_foundry_embed handles NULL model and dimensions", {
+  setup_mock_env()
   df <- data.frame(
     text = c("Hello", "World"),
     outcome = c(1, 0)
@@ -186,10 +187,20 @@ test_that("tidy.step_foundry_embed handles NULL model and dimensions", {
   rec <- recipe(outcome ~ text, data = df) %>%
     step_foundry_embed(text) # No model or dimensions specified
 
-  tidied <- tidy(rec$steps[[1]])
+  local_mocked_bindings(
+    foundry_embed = function(text, ...) {
+      tibble::tibble(
+        text = text,
+        embedding = lapply(seq_along(text), function(i) c(1, 0)),
+        n_dims = rep(2L, length(text))
+      )
+    }
+  )
+  prepped <- suppressWarnings(prep(rec, training = df))
+  tidied <- tidy(prepped$steps[[1]])
 
-  expect_true(is.na(tidied$model))
-  expect_true(is.na(tidied$dimensions))
+  expect_equal(tidied$model, "text-embedding-ada-002")
+  expect_equal(tidied$dimensions, 2L)
 })
 
 test_that("tidy.step_foundry_embed returns column names when trained", {
@@ -320,7 +331,7 @@ test_that("bake.step_foundry_embed creates embedding columns", {
     .package = "foundryR"
   )
 
-  prepped <- prep(rec, training = df)
+  prepped <- suppressWarnings(prep(rec, training = df))
   baked <- bake(prepped, new_data = NULL)
 
   # Check that embedding columns were created
@@ -351,7 +362,7 @@ test_that("bake.step_foundry_embed removes original column by default", {
     .package = "foundryR"
   )
 
-  prepped <- prep(rec, training = df)
+  prepped <- suppressWarnings(prep(rec, training = df))
   baked <- bake(prepped, new_data = NULL)
 
   expect_false("text" %in% names(baked))
@@ -380,7 +391,7 @@ test_that("bake.step_foundry_embed keeps original column when requested", {
     .package = "foundryR"
   )
 
-  prepped <- prep(rec, training = df)
+  prepped <- suppressWarnings(prep(rec, training = df))
   baked <- bake(prepped, new_data = NULL)
 
   expect_true("text" %in% names(baked))
@@ -531,7 +542,7 @@ test_that("bake.step_foundry_embed handles NA in embeddings", {
     .package = "foundryR"
   )
 
-  prepped <- prep(rec, training = df)
+  prepped <- suppressWarnings(prep(rec, training = df))
   baked <- bake(prepped, new_data = NULL)
 
   # First row should have values
@@ -579,9 +590,11 @@ test_that("default disk caching does not write to a user cache directory", {
   withr::local_envvar(R_USER_CACHE_DIR = user_cache)
   text <- withr::local_tempfile(pattern = "cache-isolation-")
   model <- "test"
+  endpoint <- foundry_get_endpoint(required = FALSE)
+  endpoint <- if (is.null(endpoint)) "" else endpoint
   cache_file <- file.path(
     foundry_cache_dir(),
-    paste0(rlang::hash(list(text, model, NULL)), ".rds")
+    paste0(rlang::hash(list(text, model, endpoint, NULL)), ".rds")
   )
   withr::defer(unlink(cache_file))
   local_mocked_bindings(
@@ -596,6 +609,91 @@ test_that("default disk caching does not write to a user cache directory", {
   expect_equal(result, list(c(1, 0)))
   expect_equal(readRDS(cache_file), c(1, 0))
   expect_length(list.files(user_cache, all.files = TRUE, no.. = TRUE), 0L)
+})
+
+test_that("prep resolves embedding model and bake keeps using it", {
+  setup_mock_env()
+  df <- data.frame(
+    text = c("Hello", "World"),
+    outcome = c(1, 0),
+    stringsAsFactors = FALSE
+  )
+  requested_models <- character()
+  local_mocked_bindings(
+    foundry_embed = function(text, model, ...) {
+      requested_models <<- c(requested_models, model)
+      tibble::tibble(
+        text = text,
+        embedding = lapply(seq_along(text), function(i) c(1, 2)),
+        n_dims = rep(2L, length(text))
+      )
+    }
+  )
+  withr::local_envvar(AZURE_FOUNDRY_EMBED_MODEL = "model-a")
+  rec <- recipe(outcome ~ text, data = df) %>%
+    step_foundry_embed(text)
+
+  prepped <- prep(rec, training = df)
+  withr::local_envvar(AZURE_FOUNDRY_EMBED_MODEL = "model-b")
+  bake(prepped, new_data = df)
+  tidied <- tidy(prepped$steps[[1]])
+
+  expect_true(all(requested_models == "model-a"))
+  expect_equal(tidied$model, "model-a")
+})
+
+test_that("prep aborts when no embedding model is configured", {
+  df <- data.frame(text = c("Hello", "World"), outcome = c(1, 0))
+  withr::local_envvar(AZURE_FOUNDRY_EMBED_MODEL = "")
+  withr::local_options(
+    foundryR.config_file = withr::local_tempfile()
+  )
+  rec <- recipe(outcome ~ text, data = df) %>%
+    step_foundry_embed(text)
+
+  expect_error(prep(rec, training = df), "Embedding model")
+})
+
+test_that("disk cache keys differ by embedding model", {
+  setup_mock_env()
+  cache_dir <- withr::local_tempdir()
+  requested <- character()
+  local_mocked_bindings(
+    foundry_embed = function(text, model, ...) {
+      requested <<- c(requested, model)
+      tibble::tibble(text = text, embedding = list(c(1, 0)), n_dims = 2L)
+    }
+  )
+
+  foundry_embed_cached("same text", "model-a", NULL, cache = "disk", cache_dir = cache_dir)
+  foundry_embed_cached("same text", "model-b", NULL, cache = "disk", cache_dir = cache_dir)
+
+  expect_setequal(requested, c("model-a", "model-b"))
+  expect_length(list.files(cache_dir, pattern = "\\.rds$"), 2L)
+})
+
+test_that("bake.step_foundry_embed treats empty strings as failed rows", {
+  setup_mock_env()
+  df <- data.frame(
+    text = c("Hello", ""),
+    outcome = c(1, 0),
+    stringsAsFactors = FALSE
+  )
+  local_mocked_bindings(
+    foundry_embed = function(text, ...) {
+      expect_equal(text, "Hello")
+      tibble::tibble(text = text, embedding = list(c(1, 2)), n_dims = 2L)
+    }
+  )
+  rec <- recipe(outcome ~ text, data = df) %>%
+    step_foundry_embed(text, model = "test")
+
+  prepped <- suppressWarnings(prep(rec, training = df))
+  expect_warning(bake(prepped, new_data = df), "1 row failed")
+  baked <- suppressWarnings(bake(prepped, new_data = df))
+
+  expect_equal(baked$emb_text_1[[1]], 1)
+  expect_true(is.na(baked$emb_text_1[[2]]))
 })
 
 test_that("cache directories must be nonempty paths", {

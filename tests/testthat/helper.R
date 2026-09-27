@@ -261,6 +261,12 @@ mock_httr2_raw_response <- function(body = charToRaw("binary"),
   )
 }
 
+# Read a request header value, including values httr2 redacts such as
+# Authorization.
+request_header <- function(req, name) {
+  httr2::req_get_headers(req, redacted = "reveal")[[name]]
+}
+
 expect_valid_multipart_request <- function(req) {
   testthat::expect_equal(req$body$type, "multipart")
   valid <- vapply(req$body$data, function(field) {

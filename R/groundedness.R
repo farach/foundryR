@@ -18,15 +18,18 @@
 #'   - `"QnA"` (default): Question-and-answer task. Requires `query` parameter.
 #'   - `"Summarization"`: Text summarization task. `query` is optional.
 #' @param reasoning Logical. If `TRUE`, includes reasoning for ungrounded
-#'   segments in the response. Default: `FALSE`.
+#'   segments in the response. Default: `FALSE`. This bring-your-own-LLM
+#'   option is deprecated and requires an Azure OpenAI GPT-4o deployment.
 #' @param correction Logical. If `TRUE`, requests corrected text that is
-#'   consistent with the grounding sources (the Content Safety "mitigating"
-#'   feature). Requires `llm_resource` and `api_version >= "2024-09-15-preview"`.
+#'   consistent with the grounding sources. Requires `llm_resource` and
+#'   `api_version >= "2024-09-15-preview"`.
 #'   The corrected text is returned in the `correction_text` column. Default:
-#'   `FALSE`.
+#'   `FALSE`. This bring-your-own-LLM option is deprecated and requires an
+#'   Azure OpenAI GPT-4o deployment.
 #' @param llm_resource List or `NULL`. Connection details for a bring-your-own
 #'   Azure OpenAI deployment, used when `correction = TRUE`. Build it with
-#'   [foundry_llm_resource()]. Default: `NULL`.
+#'   [foundry_llm_resource()]. Default: `NULL`. This option is deprecated; the
+#'   service currently accepts only GPT-4o versions 0513 and 0806.
 #' @param endpoint Character. Optional. The Azure Content Safety endpoint URL.
 #'
 #'   Defaults to the `AZURE_CONTENT_SAFETY_ENDPOINT` environment variable.
@@ -86,7 +89,8 @@
 #' @examples
 #' \dontrun{
 #' # Requires a configured Azure Content Safety endpoint and credentials.
-#' # Reasoning and correction also need an authorized Azure OpenAI deployment.
+#' # Deprecated reasoning and correction also need an authorized Azure OpenAI
+#' # GPT-4o deployment.
 #' # Check groundedness of a QnA response
 #' result <- foundry_groundedness(
 #'   text = "The capital of France is Paris. It has a population of 12 million.",
@@ -155,6 +159,28 @@ foundry_groundedness <- function(text,
   domain <- match.arg(domain)
   task <- match.arg(task)
 
+  deprecated_groundedness_details <- paste(
+    "This feature requires an Azure OpenAI GPT-4o deployment",
+    "(the service currently accepts only GPT-4o versions 0513 and 0806)",
+    "and will be removed in a future release; the core groundedness check",
+    "(ungrounded detection and percentage) stays."
+  )
+  deprecated_groundedness_arg <- NULL
+  if (!missing(reasoning)) {
+    deprecated_groundedness_arg <- "reasoning"
+  } else if (!missing(correction)) {
+    deprecated_groundedness_arg <- "correction"
+  } else if (!missing(llm_resource)) {
+    deprecated_groundedness_arg <- "llm_resource"
+  }
+  if (!is.null(deprecated_groundedness_arg)) {
+    lifecycle::deprecate_soft(
+      when = "0.2.0",
+      what = paste0("foundry_groundedness(", deprecated_groundedness_arg, ")"),
+      details = deprecated_groundedness_details
+    )
+  }
+
   # Validate required inputs
   if (missing(text) || is.null(text) || !is.character(text)) {
     cli::cli_abort("{.arg text} must be a character string.")
@@ -219,7 +245,7 @@ foundry_groundedness <- function(text,
   )
 
   if (correction) {
-    body$mitigating <- TRUE
+    body$correction <- TRUE
   }
 
   if (!is.null(llm_resource)) {
@@ -260,8 +286,8 @@ foundry_groundedness <- function(text,
   result <- httr2::resp_body_json(resp)
 
   # Extract values with defaults
-  ungrounded_detected <- result$ungroundedDetected %||% FALSE
-  ungrounded_pct <- result$ungroundedPercentage %||% 0
+  ungrounded_detected <- result$ungroundedDetected %||% NA
+  ungrounded_pct <- as.numeric(result$ungroundedPercentage %||% NA_real_)
 
   # Extract ungrounded segments and their reasons, aligned by index
   details <- result$ungroundedDetails %||% list()
@@ -296,9 +322,14 @@ foundry_groundedness <- function(text,
 
 #' Describe a bring-your-own Azure OpenAI resource for groundedness
 #'
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
 #' Build the `llm_resource` argument for [foundry_groundedness()]. Reasoning and
-#' correction both rely on an Azure OpenAI deployment (typically a provisioned
-#' GPT-4o) that Content Safety calls on your behalf.
+#' correction both rely on an Azure OpenAI GPT-4o deployment that Content Safety
+#' calls on your behalf. The service currently accepts only GPT-4o versions 0513
+#' and 0806. This bring-your-own-LLM feature is deprecated and will be removed
+#' in a future release.
 #'
 #' @param endpoint Character. The Azure OpenAI resource endpoint, for example
 #'   `"https://your-openai.openai.azure.com"`.
@@ -312,11 +343,21 @@ foundry_groundedness <- function(text,
 #' @examples
 #' foundry_llm_resource(
 #'   endpoint = "https://your-openai.openai.azure.com",
-#'   deployment_name = "gpt-5-nano"
+#'   deployment_name = "gpt-4o"
 #' )
 foundry_llm_resource <- function(endpoint,
                                  deployment_name,
                                  resource_type = "AzureOpenAI") {
+  lifecycle::deprecate_soft(
+    when = "0.2.0",
+    what = "foundry_llm_resource()",
+    details = paste(
+      "This feature requires an Azure OpenAI GPT-4o deployment",
+      "(the service currently accepts only GPT-4o versions 0513 and 0806)",
+      "and will be removed in a future release; the core groundedness check",
+      "(ungrounded detection and percentage) stays."
+    )
+  )
   foundry_check_character_scalar(endpoint, "endpoint")
   foundry_check_character_scalar(deployment_name, "deployment_name")
   foundry_check_character_scalar(resource_type, "resource_type")
@@ -370,41 +411,5 @@ foundry_validate_llm_resource <- function(llm_resource) {
 #' @return Character string with error message.
 #' @keywords internal
 groundedness_error_body <- function(resp) {
-  body <- tryCatch(
-    httr2::resp_body_json(resp),
-    error = function(e) list(error = list(message = httr2::resp_body_string(resp)))
-  )
-
-  # Azure Content Safety error format
-  error_msg <- body$error$message %||%
-    body$message %||%
-    body$error %||%
-    "Unknown API error"
-
-  error_code <- body$error$code %||% ""
-
-  # Authentication errors
-  if (grepl("401|unauthorized|invalid.*key|Unauthorized", error_msg, ignore.case = TRUE)) {
-    return("Invalid API key. Check your AZURE_CONTENT_SAFETY_KEY.")
-  }
-
-  # Not found errors
-  if (grepl("404|not found", error_msg, ignore.case = TRUE)) {
-    return(paste0(
-      "Endpoint not found. Verify your AZURE_CONTENT_SAFETY_ENDPOINT is correct. ",
-      error_msg
-    ))
-  }
-
-  # Rate limiting
-  if (grepl("429|rate limit|too many requests|throttl", error_msg, ignore.case = TRUE)) {
-    return("Rate limit exceeded. Please wait and retry.")
-  }
-
-  # Bad request (validation errors)
-  if (grepl("400|bad request|invalid", error_msg, ignore.case = TRUE)) {
-    return(paste0("Invalid request: ", error_msg))
-  }
-
-  paste0("Content Safety API error: ", error_msg)
+  foundry_classify_error(resp, service = "content_safety")
 }

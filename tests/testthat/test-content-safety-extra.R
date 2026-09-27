@@ -41,6 +41,27 @@ test_that("foundry_protected_material parses detection response", {
   expect_equal(result$text, "quoted text")
 })
 
+test_that("foundry_blocklist_create sends an empty JSON object without description", {
+  setup_content_safety_env()
+  captured <- NULL
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      mock_httr2_response(list(blocklistName = "research"))
+    },
+    .package = "httr2"
+  )
+
+  result <- foundry_blocklist_create("research")
+
+  expect_equal(result$name, "research")
+  expect_equal(
+    as.character(jsonlite::toJSON(captured$body$data, auto_unbox = TRUE)),
+    "{}"
+  )
+})
+
 test_that("documented Content Safety operations support resource tokens", {
   setup_content_safety_env()
   withr::local_envvar(AZURE_CONTENT_SAFETY_KEY = "")
@@ -133,4 +154,34 @@ test_that("blocklist helpers parse list and item responses", {
   expect_equal(items$item_id, "item-1")
   expect_match(captured[[1]], "GET .*/text/blocklists")
   expect_match(captured[[2]], "GET .*/text/blocklists/research/blocklistItems")
+})
+
+test_that("foundry_blocklist_delete handles 204 No Content", {
+  setup_content_safety_env()
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) httr2::response(status_code = 204L),
+    .package = "httr2"
+  )
+
+  result <- foundry_blocklist_delete("research")
+
+  expect_equal(result$name, "research")
+  expect_true(result$deleted)
+  expect_null(result$raw_blocklist[[1]])
+})
+
+test_that("foundry_blocklist_remove_items handles 204 No Content", {
+  setup_content_safety_env()
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) httr2::response(status_code = 204L),
+    .package = "httr2"
+  )
+
+  result <- foundry_blocklist_remove_items("research", c("item-1", "item-2"))
+
+  expect_equal(result$name, "research")
+  expect_equal(result$removed, 2L)
+  expect_null(result$raw_response[[1]])
 })

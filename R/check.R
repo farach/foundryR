@@ -16,6 +16,8 @@
 #'     \item{token_set}{Logical. TRUE if a bearer token is configured.}
 #'     \item{token_provider_set}{Logical. TRUE if a resource-scoped bearer token
 #'       provider is configured.}
+#'     \item{project_auth_set}{Logical. TRUE if a project-scoped Microsoft Entra
+#'       ID token or provider is configured, NA if no project endpoint is set.}
 #'     \item{model_tested}{The deployment name tested, or NA if none.}
 #'     \item{api_ok}{Logical. TRUE if the API test succeeded, NA if not tested.}
 #'     \item{all_ok}{Logical. TRUE if all checks passed.}
@@ -50,6 +52,7 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
     key_set = FALSE,
     token_set = FALSE,
     token_provider_set = FALSE,
+    project_auth_set = NA,
     model_tested = NA_character_,
     api_ok = NA,
     all_ok = FALSE
@@ -117,9 +120,13 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
   } else {
     if (!is.null(key)) {
       results$key_set <- TRUE
-      masked <- paste0(substr(key, 1, 4), "...", substr(key, nchar(key) - 3, nchar(key)))
+      masked <- if (nchar(key) >= 12L) {
+        paste0("configured (ends in ", substr(key, nchar(key) - 3L, nchar(key)), ")")
+      } else {
+        "configured"
+      }
       if (verbose) {
-      cli::cli_alert_success("API key: {masked}")
+        cli::cli_alert_success("API key: {masked}")
       }
     }
     if (!is.null(token)) {
@@ -128,6 +135,26 @@ foundry_check_setup <- function(model = NULL, verbose = TRUE) {
     }
     if (!is.null(provider)) {
       if (verbose) cli::cli_alert_success("Token provider: configured")
+    }
+  }
+
+  if (!is.null(project_endpoint)) {
+    project_token <- foundry_get_token(scope = "project")
+    project_provider <- foundry_get_token_provider("project")
+    results$project_auth_set <- !is.null(project_token) || !is.null(project_provider)
+    if (verbose) {
+      if (results$project_auth_set) {
+        cli::cli_alert_success("Project authentication: Microsoft Entra ID configured")
+      } else {
+        cli::cli_alert_warning("Project endpoint set, but no project-scoped Microsoft Entra ID token")
+        cli::cli_bullets(c(
+          "i" = "Project endpoints do not accept API keys.",
+          "i" = "Set one with {.code foundry_set_token_provider(foundry_token_azure_cli(), scope = \"project\")}."
+        ))
+      }
+      cli::cli_alert_info(
+        "Responses, files, vector stores, and evaluations use the {foundry_state$route} endpoint (see {.fn foundry_set_route})."
+      )
     }
   }
 

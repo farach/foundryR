@@ -22,6 +22,8 @@ not set.}
 \item{token_set}{Logical. TRUE if a bearer token is configured.}
 \item{token_provider_set}{Logical. TRUE if a resource-scoped bearer token
 provider is configured.}
+\item{project_auth_set}{Logical. TRUE if a project-scoped Microsoft Entra
+ID token or provider is configured, NA if no project endpoint is set.}
 \item{model_tested}{The deployment name tested, or NA if none.}
 \item{api_ok}{Logical. TRUE if the API test succeeded, NA if not tested.}
 \item{all_ok}{Logical. TRUE if all checks passed.}

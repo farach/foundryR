@@ -19,13 +19,17 @@ currently supported.}
 A named list matching the Content Safety \code{LLMResource} schema.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
 Build the \code{llm_resource} argument for \code{\link[=foundry_groundedness]{foundry_groundedness()}}. Reasoning and
-correction both rely on an Azure OpenAI deployment (typically a provisioned
-GPT-4o) that Content Safety calls on your behalf.
+correction both rely on an Azure OpenAI GPT-4o deployment that Content Safety
+calls on your behalf. The service currently accepts only GPT-4o versions 0513
+and 0806. This bring-your-own-LLM feature is deprecated and will be removed
+in a future release.
 }
 \examples{
 foundry_llm_resource(
   endpoint = "https://your-openai.openai.azure.com",
-  deployment_name = "gpt-5-nano"
+  deployment_name = "gpt-4o"
 )
 }

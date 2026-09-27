@@ -9,19 +9,24 @@ foundry_file_get(
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  project_endpoint = NULL
 )
 }
 \arguments{
 \item{file_id}{Character. File ID to retrieve.}
 
-\item{api_key}{Character. Optional API key override.}
+\item{api_key}{Character. Optional API key override (resource endpoint
+only).}
 
 \item{token}{Character. Optional bearer token override.}
 
 \item{endpoint}{Character. Optional endpoint override.}
 
 \item{api_version}{Character. Optional API version query value.}
+
+\item{project_endpoint}{Character. Optional project endpoint. When supplied,
+the call uses the project endpoint and Microsoft Entra ID authentication.}
 }
 \value{
 A one-row tibble with file metadata.

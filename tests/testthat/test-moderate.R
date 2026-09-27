@@ -46,10 +46,12 @@ test_that("foundry_moderate handles empty input", {
     result,
     c(
       "text",
+      ".input_idx",
       "category",
       "severity",
       "label",
       "blocklist_matches",
+      "blocklist_hit",
       "raw_response"
     )
   )
@@ -61,13 +63,17 @@ test_that("foundry_moderate handles empty input", {
 
 test_that("severity_to_label returns correct labels", {
   expect_equal(severity_to_label(0), "safe")
-  expect_equal(severity_to_label(1), "low")
+  expect_equal(severity_to_label(1), "safe")
   expect_equal(severity_to_label(2), "low")
-  expect_equal(severity_to_label(3), "medium")
+  expect_equal(severity_to_label(3), "low")
   expect_equal(severity_to_label(4), "medium")
-  expect_equal(severity_to_label(5), "high")
+  expect_equal(severity_to_label(5), "medium")
   expect_equal(severity_to_label(6), "high")
   expect_equal(severity_to_label(7), "high")
+  expect_equal(
+    vapply(0:7, severity_to_label, character(1), output_type = "EightSeverityLevels"),
+    c("safe", "safe", "low", "low", "medium", "medium", "high", "high")
+  )
   expect_true(is.na(severity_to_label(NA)))
 })
 
@@ -88,10 +94,12 @@ test_that("foundry_moderate returns tibble with mocked safe response", {
     result,
     c(
       "text",
+      ".input_idx",
       "category",
       "severity",
       "label",
       "blocklist_matches",
+      "blocklist_hit",
       "raw_response"
     )
   )
@@ -99,6 +107,7 @@ test_that("foundry_moderate returns tibble with mocked safe response", {
   # All severities should be 0 (safe)
   expect_true(all(result$severity == 0))
   expect_true(all(result$label == "safe"))
+  expect_false(any(result$blocklist_hit))
 
   # Check categories are present
   expect_true("Hate" %in% result$category)
@@ -146,7 +155,7 @@ test_that("foundry_moderate returns correct column types", {
   expect_type(result$label, "character")
 })
 
-test_that("foundry_moderate truncates long text in output", {
+test_that("foundry_moderate keeps long text in output", {
   setup_content_safety_env()
   fixture <- load_fixture("moderate", "response.json")
   mock_request(fixture)
@@ -154,9 +163,58 @@ test_that("foundry_moderate truncates long text in output", {
   long_text <- paste(rep("word", 100), collapse = " ")
   result <- foundry_moderate(long_text)
 
-  # Text in result should be truncated with "..."
-  expect_true(nchar(result$text[1]) <= 50)
-  expect_true(grepl("\\.\\.\\.$", result$text[1]))
+  expect_equal(result$text[1], long_text)
+  expect_equal(result$.input_idx, rep(1L, nrow(result)))
+})
+
+test_that("foundry_moderate exposes input indices for joining", {
+  setup_content_safety_env()
+  mock_request(mock_moderate_response())
+
+  inputs <- c("first text", "second text")
+  result <- foundry_moderate(inputs, categories = "Hate")
+
+  joined <- data.frame(.input_idx = seq_along(inputs), original = inputs) |>
+    dplyr::left_join(result, by = ".input_idx")
+
+  expect_equal(joined$original, joined$text)
+})
+
+test_that("foundry_moderate preserves blocklist hits when analysis halts", {
+  setup_content_safety_env()
+  mock_request(list(
+    blocklistsMatch = list(
+      list(blocklistName = "research", blocklistItemId = "item-1", blocklistItemText = "secret")
+    ),
+    categoriesAnalysis = list()
+  ))
+
+  result <- expect_warning(
+    foundry_moderate(
+      "contains secret",
+      categories = c("Hate", "Violence"),
+      blocklists = "research",
+      halt_on_blocklist = TRUE
+    ),
+    NA
+  )
+
+  expect_equal(result$category, c("Hate", "Violence"))
+  expect_true(all(is.na(result$severity)))
+  expect_equal(result$label, c("blocked", "blocked"))
+  expect_true(all(result$blocklist_hit))
+  expect_equal(result$blocklist_matches[[1]][[1]]$blocklistName, "research")
+})
+
+test_that("foundry_moderate returns NA label when severity is missing", {
+  setup_content_safety_env()
+  mock_request(list(categoriesAnalysis = list(list(category = "Hate"))))
+
+  result <- foundry_moderate("text", categories = "Hate")
+
+  expect_true(is.na(result$severity))
+  expect_true(is.na(result$label))
+  expect_false(result$blocklist_hit)
 })
 
 test_that("foundry_moderate works with custom categories", {
@@ -202,10 +260,12 @@ test_that("foundry_moderate returns tibble with real API", {
     result,
     c(
       "text",
+      ".input_idx",
       "category",
       "severity",
       "label",
       "blocklist_matches",
+      "blocklist_hit",
       "raw_response"
     )
   )

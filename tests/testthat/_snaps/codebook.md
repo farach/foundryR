@@ -2,7 +2,7 @@
 
     Code
       foundry_codebook(name = "Bad Name", version = "1.0.0", instructions = "Label.",
-        schema = foundry_schema(label = type_string()))
+        schema = foundry_schema(label = schema_string()))
     Condition
       Error in `foundry_check_codebook_name()`:
       ! `name` must be a lowercase slug with optional hyphens.
@@ -11,7 +11,7 @@
 
     Code
       foundry_codebook(name = "good-name", version = "1", instructions = "Label.",
-        schema = foundry_schema(label = type_string()))
+        schema = foundry_schema(label = schema_string()))
     Condition
       Error in `foundry_check_semver()`:
       ! `version` must be a semantic version string.
@@ -29,7 +29,7 @@
 
     Code
       foundry_codebook(name = "good-name", version = "1.0.0", instructions = "Label.",
-        schema = foundry_schema(label = type_string()), examples = "not-list")
+        schema = foundry_schema(label = schema_string()), examples = "not-list")
     Condition
       Error in `foundry_codebook()`:
       ! `examples` must be a list or NULL.
@@ -64,7 +64,7 @@
       +Use yes, no, or maybe.
       
       Schema:
-      ~ label: {"type":"string","description":"Task label","enum":["yes","no"]} -> {"type":"string","description":"Task label","enum":["yes","no","maybe"]}
+      ~ label.enum: +maybe
       + rationale: {"type":"string","description":"Short reason"}
       
       Examples:

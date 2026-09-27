@@ -6,7 +6,11 @@ project_url <- "https://acct.services.ai.azure.com/api/projects/demo"
 
 setup_project_env <- function(env = parent.frame()) {
   setup_mock_env(env = env)
-  withr::local_envvar(AZURE_FOUNDRY_PROJECT_ENDPOINT = project_url, .local_envir = env)
+  withr::local_envvar(
+    AZURE_FOUNDRY_PROJECT_ENDPOINT = project_url,
+    AZURE_FOUNDRY_PROJECT_TOKEN = "test-project-token",
+    .local_envir = env
+  )
 }
 
 # A minimal fake Evals service. `routes` maps anchored "METHOD path" regular
@@ -93,21 +97,22 @@ tickets <- function() {
   )
 }
 
-# Output items echo each item, including the reserved row key.
+# Output items echo each item, including the reserved row key. The live service
+# reports processing status ("completed") on each item, not pass/fail.
 fake_items <- function(data, order = seq_len(nrow(data)), passed = TRUE,
-                       echo = TRUE, text = "billing") {
+                       echo = TRUE, text = "billing", legacy_keys = FALSE) {
   lapply(order, function(i) {
     item <- lapply(data, function(column) {
       value <- column[[i]]
       if (is.factor(value)) as.character(value) else value
     })
-    item$foundryr_row_id <- as.character(i)
+    item$foundryr_row_id <- if (legacy_keys) as.character(i) else paste0("row-", i)
     list(
       id = paste0("oi_", i),
       run_id = "run_1",
       eval_id = "eval_1",
       datasource_item_id = i - 1L,
-      status = if (passed) "pass" else "fail",
+      status = "completed",
       datasource_item = if (echo) item else NULL,
       sample = list(output = list(list(role = "assistant", content = text))),
       results = list(list(
@@ -306,22 +311,61 @@ test_that("output-item pagination stops on missing or repeated cursors", {
 # Routing
 # ---------------------------------------------------------------------------
 
-test_that("eval calls prefer a configured project endpoint", {
+test_that("eval calls use the resource endpoint unless routed to the project", {
   setup_project_env()
   log <- local_fake_evals(list("^GET .*/evals/eval_1$" = fake_eval()))
 
   foundry_eval_get("eval_1")
-  expect_equal(log$requests[[1]]$url, paste0(project_url, "/openai/v1/evals/eval_1"))
-
-  foundry_eval_get("eval_1", endpoint = "https://test-resource.openai.azure.com")
   expect_equal(
-    log$requests[[2]]$url,
+    log$requests[[1]]$url,
     "https://test-resource.openai.azure.com/openai/v1/evals/eval_1"
   )
+
+  foundry_eval_get("eval_1", project_endpoint = project_url)
+  expect_equal(log$requests[[2]]$url, paste0(project_url, "/openai/v1/evals/eval_1"))
+  expect_equal(request_header(log$requests[[2]], "Authorization"), "Bearer test-project-token")
+
+  old <- suppressMessages(foundry_set_route("project"))
+  withr::defer(suppressMessages(foundry_set_route(old)))
+  foundry_eval_get("eval_1")
+  expect_equal(log$requests[[3]]$url, paste0(project_url, "/openai/v1/evals/eval_1"))
 
   expect_error(
     foundry_eval_get("eval_1", endpoint = "https://a", project_endpoint = project_url),
     "only one"
+  )
+})
+
+test_that("built-in graders move eval creation to the project endpoint with a message", {
+  setup_project_env()
+  log <- local_fake_evals(list("^POST .*/openai/v1/evals$" = fake_eval()))
+  grader <- foundry_grader_azure_ai(
+    "coherence", "builtin.coherence",
+    data_mapping = list(response = "{{item.ticket}}")
+  )
+
+  expect_message(
+    foundry_eval_create(
+      data_source_config = foundry_eval_data_config(
+        "custom",
+        item_schema = list(type = "object", properties = list(ticket = list(type = "string")))
+      ),
+      testing_criteria = grader
+    ),
+    class = "foundryR_eval_project_route"
+  )
+  expect_equal(log$requests[[1]]$url, paste0(project_url, "/openai/v1/evals"))
+
+  expect_error(
+    foundry_eval_create(
+      data_source_config = foundry_eval_data_config(
+        "custom",
+        item_schema = list(type = "object", properties = list(ticket = list(type = "string")))
+      ),
+      testing_criteria = grader,
+      endpoint = "https://test-resource.openai.azure.com"
+    ),
+    "available only on a Foundry project endpoint"
   )
 })
 
@@ -398,7 +442,7 @@ test_that("foundry_evaluate grades existing columns and joins results", {
   expect_equal(run_body$data_source$type, "jsonl")
   first_item <- run_body$data_source$source$content[[1]]$item
   expect_equal(first_item$label, "billing")
-  expect_equal(first_item$foundryr_row_id, "1")
+  expect_equal(first_item$foundryr_row_id, "row-1")
 
   expect_equal(nrow(out), 2L)
   expect_s3_class(out$label, "factor")
@@ -444,6 +488,8 @@ test_that("foundry_evaluate sends model targets and returns generated text", {
   roles <- vapply(source$input_messages$template, function(m) m$role, character(1))
   expect_equal(roles, c("developer", "user"))
   expect_equal(source$input_messages$template[[2]]$content$text, "{{item.ticket}}")
+  run_name <- requests_matching(log, "^POST .*/runs$")[[1]]$body$data$name
+  expect_true(is.character(run_name) && nzchar(run_name))
 
   expect_equal(out$.output_text, c("billing", "billing"))
 })
@@ -507,7 +553,7 @@ test_that("foundry_evaluate validates inputs before any request", {
   with_date$when <- as.Date("2026-01-01") + 0:1
   expect_error(foundry_evaluate(with_date, graders = grader), "JSON form")
   with_list <- data
-  with_list$messages <- list(list(role = "user"), list(role = "user"))
+  with_list$messages <- list(list(role = "user"), list("a", "b"))
   expect_error(foundry_evaluate(with_list, graders = grader), "item_schema")
   expect_error(
     foundry_evaluate(
@@ -533,7 +579,7 @@ test_that("foundry_evaluate validates inputs before any request", {
   expect_length(log$requests, 0L)
 })
 
-test_that("foundry_evaluate requires the project route for built-in graders", {
+test_that("foundry_evaluate needs a project endpoint for built-in graders", {
   setup_mock_env()
   log <- local_fake_evals(list())
   expect_error(
@@ -544,7 +590,7 @@ test_that("foundry_evaluate requires the project route for built-in graders", {
         data_mapping = list(response = "{{item.ticket}}")
       )
     ),
-    "project Evals route"
+    "available only on a Foundry project endpoint"
   )
   expect_length(log$requests, 0L)
 })
@@ -734,6 +780,63 @@ test_that("results are joined by the echoed row key, not by position", {
   out <- foundry_eval_run_results("eval_1", "run_1", data = data)
   expect_equal(out$ticket, data$ticket)
   expect_equal(out$.output_item_id, c("oi_1", "oi_2"))
+})
+
+test_that("results still join runs that echo legacy numeric row keys", {
+  setup_project_env()
+  data <- tickets()
+  local_fake_evals(results_routes(fake_items(data, order = c(2L, 1L), legacy_keys = TRUE)))
+
+  out <- foundry_eval_run_results("eval_1", "run_1", data = data)
+  expect_equal(out$ticket, data$ticket)
+})
+
+test_that("target runs warn about numeric-looking text columns", {
+  setup_project_env()
+  data <- data.frame(zip = c("02139", "10001"), label = c("north", "east"))
+  local_fake_evals(list(
+    "^POST .*/openai/v1/evals$" = fake_eval(),
+    "^POST .*/evals/eval_1/runs$" = fake_run("queued")
+  ))
+
+  expect_warning(
+    suppressMessages(foundry_evaluate(
+      data,
+      graders = string_grader(),
+      target = "gpt-5-mini",
+      input = "Which region is ZIP {{item.zip}} in?",
+      wait = FALSE
+    )),
+    "numeric-looking"
+  )
+})
+
+test_that("agent output text decodes JSON-encoded content parts", {
+  encoded <- '[{"annotations": [], "text": "Fridays at 5 pm."}]'
+  expect_equal(
+    foundry_eval_sample_text(list(output = list(list(role = "assistant", content = encoded)))),
+    "Fridays at 5 pm."
+  )
+  expect_equal(
+    foundry_eval_sample_text(list(output_text = '[{"type": "output_text", "text": "Hi"}]')),
+    "Hi"
+  )
+  expect_equal(foundry_eval_sample_text(list(output_text = "[not json")), "[not json")
+})
+
+test_that("list columns infer object and array item schemas", {
+  data <- tibble::tibble(
+    q = c("a", "b"),
+    meta = list(list(k = 1), list(k = 2)),
+    tags = list("x", c("y", "z"))
+  )
+  schema <- foundry_eval_item_schema(data)
+  expect_equal(schema$properties$meta$type, "object")
+  expect_equal(schema$properties$tags$type, "array")
+
+  items <- foundry_eval_items(data, schema)
+  json <- as.character(jsonlite::toJSON(items[[1]], auto_unbox = TRUE))
+  expect_match(json, "\"tags\":\\[\"x\"\\]")
 })
 
 test_that("rows without output items are kept and flagged", {

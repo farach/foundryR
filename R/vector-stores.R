@@ -2,6 +2,13 @@
 #'
 #' Create, list, retrieve, update, delete, and search hosted vector stores.
 #'
+#' Vector stores live on the endpoint where you create them. A server-side
+#' agent's `file_search` tool searches vector stores on the project endpoint,
+#' so create those stores (and upload their files) with `project_endpoint`, or
+#' after `foundry_set_route("project")`. Direct search with
+#' `foundry_vector_search()` currently rejects Microsoft Entra ID tokens; call
+#' it on the resource endpoint with an API key.
+#'
 #' @param vector_store_id Character. Vector store ID.
 #' @param name Character. Vector store name.
 #' @param file_id Character. Uploaded file ID.
@@ -15,8 +22,12 @@
 #' @param top_k Integer. Maximum search results.
 #' @param filters List. Optional search filters.
 #' @param rewrite_query Logical. Whether the service may rewrite the query.
-#' @param api_key Character. Optional API key override.
+#' @param api_key Character. Optional API key override (resource endpoint
+#'   only).
 #' @param endpoint Character. Optional endpoint override.
+#' @param token Character. Optional bearer token override.
+#' @param project_endpoint Character. Optional project endpoint. When supplied,
+#'   the call uses the project endpoint and Microsoft Entra ID authentication.
 #'
 #' @return A tibble with vector store, file, or search-result metadata.
 #' @name foundry_vector_stores
@@ -53,7 +64,9 @@ foundry_vector_store_create <- function(name,
                                         expires_after_days = NULL,
                                         metadata = NULL,
                                         api_key = NULL,
-                                        endpoint = NULL) {
+                                        endpoint = NULL,
+                                        token = NULL,
+                                        project_endpoint = NULL) {
   foundry_check_character_scalar(name, "name")
   body <- list(name = name)
   if (!is.null(file_ids)) body$file_ids <- as.list(file_ids)
@@ -64,11 +77,14 @@ foundry_vector_store_create <- function(name,
     )
   }
   if (!is.null(metadata)) body$metadata <- metadata
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "vector_stores",
     path = "vector_stores",
     body = body,
     api_key = api_key,
-    endpoint = endpoint
+    token = token,
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
   foundry_vector_store_tibble(foundry_perform(req))
 }
@@ -79,12 +95,17 @@ foundry_vector_store_create <- function(name,
 foundry_vector_stores <- function(limit = NULL,
                                   after = NULL,
                                   api_key = NULL,
-                                  endpoint = NULL) {
-  req <- foundry_build_v1_request(
+                                  endpoint = NULL,
+                                  token = NULL,
+                                  project_endpoint = NULL) {
+  req <- foundry_build_routed_request(
+    "vector_stores",
     path = "vector_stores",
     method = "GET",
     api_key = api_key,
-    endpoint = endpoint
+    token = token,
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
   req <- req |>
     httr2::req_url_query(limit = limit, after = after)
@@ -99,13 +120,18 @@ foundry_vector_stores <- function(limit = NULL,
 #' @export
 foundry_vector_store_get <- function(vector_store_id,
                                      api_key = NULL,
-                                     endpoint = NULL) {
+                                     endpoint = NULL,
+                                     token = NULL,
+                                     project_endpoint = NULL) {
   foundry_check_character_scalar(vector_store_id, "vector_store_id")
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "vector_stores",
     path = paste0("vector_stores/", vector_store_id),
     method = "GET",
     api_key = api_key,
-    endpoint = endpoint
+    token = token,
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
   foundry_vector_store_tibble(foundry_perform(req))
 }
@@ -118,9 +144,11 @@ foundry_vector_store_modify <- function(vector_store_id,
                                         metadata = NULL,
                                         expires_after_days = NULL,
                                         api_key = NULL,
-                                        endpoint = NULL) {
+                                        endpoint = NULL,
+                                        token = NULL,
+                                        project_endpoint = NULL) {
   foundry_check_character_scalar(vector_store_id, "vector_store_id")
-  body <- list()
+  body <- foundry_json_object()
   if (!is.null(name)) body$name <- name
   if (!is.null(metadata)) body$metadata <- metadata
   if (!is.null(expires_after_days)) {
@@ -129,12 +157,15 @@ foundry_vector_store_modify <- function(vector_store_id,
       days = foundry_check_positive_integer(expires_after_days, "expires_after_days")
     )
   }
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "vector_stores",
     path = paste0("vector_stores/", vector_store_id),
     body = body,
     method = "POST",
     api_key = api_key,
-    endpoint = endpoint
+    token = token,
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
   foundry_vector_store_tibble(foundry_perform(req))
 }
@@ -144,13 +175,18 @@ foundry_vector_store_modify <- function(vector_store_id,
 #' @export
 foundry_vector_store_delete <- function(vector_store_id,
                                         api_key = NULL,
-                                        endpoint = NULL) {
+                                        endpoint = NULL,
+                                        token = NULL,
+                                        project_endpoint = NULL) {
   foundry_check_character_scalar(vector_store_id, "vector_store_id")
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "vector_stores",
     path = paste0("vector_stores/", vector_store_id),
     method = "DELETE",
     api_key = api_key,
-    endpoint = endpoint
+    token = token,
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
   result <- foundry_perform(req)
   tibble::tibble(
@@ -167,13 +203,18 @@ foundry_vector_store_files <- function(vector_store_id,
                                        limit = NULL,
                                        after = NULL,
                                        api_key = NULL,
-                                       endpoint = NULL) {
+                                       endpoint = NULL,
+                                       token = NULL,
+                                       project_endpoint = NULL) {
   foundry_check_character_scalar(vector_store_id, "vector_store_id")
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "vector_stores",
     path = paste0("vector_stores/", vector_store_id, "/files"),
     method = "GET",
     api_key = api_key,
-    endpoint = endpoint
+    token = token,
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
   req <- req |>
     httr2::req_url_query(limit = limit, after = after)
@@ -186,14 +227,19 @@ foundry_vector_store_files <- function(vector_store_id,
 foundry_vector_store_file_add <- function(vector_store_id,
                                           file_id,
                                           api_key = NULL,
-                                          endpoint = NULL) {
+                                          endpoint = NULL,
+                                          token = NULL,
+                                          project_endpoint = NULL) {
   foundry_check_character_scalar(vector_store_id, "vector_store_id")
   foundry_check_character_scalar(file_id, "file_id")
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "vector_stores",
     path = paste0("vector_stores/", vector_store_id, "/files"),
     body = list(file_id = file_id),
     api_key = api_key,
-    endpoint = endpoint
+    token = token,
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
   foundry_vector_store_file_tibble(foundry_perform(req))
 }
@@ -204,14 +250,19 @@ foundry_vector_store_file_add <- function(vector_store_id,
 foundry_vector_store_file_remove <- function(vector_store_id,
                                              file_id,
                                              api_key = NULL,
-                                             endpoint = NULL) {
+                                             endpoint = NULL,
+                                             token = NULL,
+                                             project_endpoint = NULL) {
   foundry_check_character_scalar(vector_store_id, "vector_store_id")
   foundry_check_character_scalar(file_id, "file_id")
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "vector_stores",
     path = paste0("vector_stores/", vector_store_id, "/files/", file_id),
     method = "DELETE",
     api_key = api_key,
-    endpoint = endpoint
+    token = token,
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
   result <- foundry_perform(req)
   tibble::tibble(
@@ -228,16 +279,21 @@ foundry_vector_store_file_remove <- function(vector_store_id,
 foundry_vector_store_file_batch <- function(vector_store_id,
                                             file_ids,
                                             api_key = NULL,
-                                            endpoint = NULL) {
+                                            endpoint = NULL,
+                                            token = NULL,
+                                            project_endpoint = NULL) {
   foundry_check_character_scalar(vector_store_id, "vector_store_id")
   if (!is.character(file_ids) || length(file_ids) == 0L || any(is.na(file_ids))) {
     cli::cli_abort("{.arg file_ids} must be a non-empty character vector.")
   }
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "vector_stores",
     path = paste0("vector_stores/", vector_store_id, "/file_batches"),
     body = list(file_ids = as.list(file_ids)),
     api_key = api_key,
-    endpoint = endpoint
+    token = token,
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
   result <- foundry_perform(req)
   tibble::tibble(
@@ -258,7 +314,9 @@ foundry_vector_search <- function(vector_store_id,
                                   filters = NULL,
                                   rewrite_query = FALSE,
                                   api_key = NULL,
-                                  endpoint = NULL) {
+                                  endpoint = NULL,
+                                  token = NULL,
+                                  project_endpoint = NULL) {
   foundry_check_character_scalar(vector_store_id, "vector_store_id")
   foundry_check_character_scalar(query, "query")
   top_k <- foundry_check_positive_integer(top_k, "top_k")
@@ -266,11 +324,14 @@ foundry_vector_search <- function(vector_store_id,
 
   body <- list(query = query, max_num_results = top_k, rewrite_query = rewrite_query)
   if (!is.null(filters)) body$filters <- filters
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "vector_stores",
     path = paste0("vector_stores/", vector_store_id, "/search"),
     body = body,
     api_key = api_key,
-    endpoint = endpoint
+    token = token,
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
   foundry_vector_search_tibble(foundry_perform(req))
 }
@@ -362,7 +423,10 @@ foundry_vector_search_tibble <- function(result) {
   purrr::map_dfr(data, function(item) {
     content <- item$content %||% item$text %||% NA_character_
     if (is.list(content)) {
-      content <- paste(unlist(content, use.names = FALSE), collapse = "\n")
+      parts <- lapply(content, function(part) {
+        if (is.list(part)) part$text %||% NULL else part
+      })
+      content <- paste(unlist(parts, use.names = FALSE), collapse = "\n")
     }
     tibble::tibble(
       file_id = item$file_id %||% item$id %||% NA_character_,

@@ -214,8 +214,8 @@ foundry_blocklist_create <- function(name,
                                      api_key = NULL,
                                      api_version = "2024-09-01") {
   foundry_check_character_scalar(name, "name")
-  body <- list()
-  if (!is.null(description)) body$description <- description
+  body <- stats::setNames(list(), character())
+  if (!is.null(description)) body <- list(description = description)
   req <- foundry_content_safety_request(
     paste0("text/blocklists/", name),
     body = body,
@@ -389,6 +389,9 @@ foundry_validate_blob_url <- function(url) {
 
 foundry_perform_no_content <- function(req) {
   resp <- httr2::req_perform(req)
+  if (!httr2::resp_has_body(resp)) {
+    return(invisible(NULL))
+  }
   body <- httr2::resp_body_raw(resp)
   if (length(body) == 0L) {
     return(invisible(NULL))

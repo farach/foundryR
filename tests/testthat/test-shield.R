@@ -67,7 +67,7 @@ test_that("foundry_shield returns tibble for safe prompt", {
 
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 1)
-  expect_named(result, c("source", "content", "attack_detected"))
+  expect_named(result, c("source", ".input_idx", "content", "attack_detected"))
 })
 
 test_that("foundry_shield returns FALSE for safe prompt", {
@@ -151,7 +151,7 @@ test_that("foundry_shield returns correct column types", {
   expect_type(result$attack_detected, "logical")
 })
 
-test_that("foundry_shield truncates long content in output", {
+test_that("foundry_shield keeps long content in output", {
   setup_content_safety_env()
   fixture <- load_fixture("shield", "response_safe.json")
   mock_request(fixture)
@@ -159,9 +159,8 @@ test_that("foundry_shield truncates long content in output", {
   long_prompt <- paste(rep("word", 100), collapse = " ")
   result <- foundry_shield(long_prompt)
 
-  # Content should be truncated with "..."
-  expect_true(nchar(result$content) <= 100)
-  expect_true(grepl("\\.\\.\\.$", result$content))
+  expect_equal(result$content, long_prompt)
+  expect_equal(result$.input_idx, 1L)
 })
 
 # ============================================================================
@@ -179,6 +178,7 @@ test_that("parse_shield_response handles user prompt only", {
   expect_s3_class(result, "tbl_df")
   expect_equal(nrow(result), 1)
   expect_equal(result$source, "user_prompt")
+  expect_equal(result$.input_idx, 1L)
   expect_false(result$attack_detected)
 })
 
@@ -199,9 +199,40 @@ test_that("parse_shield_response handles documents", {
   # Check document attack detection
   doc1_row <- result[result$source == "document_1", ]
   expect_false(doc1_row$attack_detected)
+  expect_equal(doc1_row$.input_idx, 1L)
 
   doc2_row <- result[result$source == "document_2", ]
   expect_true(doc2_row$attack_detected)
+  expect_equal(doc2_row$.input_idx, 2L)
+})
+
+test_that("foundry_shield keeps original document indices after skipping inputs", {
+  setup_content_safety_env()
+  mock_request(mock_shield_response(user_attack = FALSE, doc_attacks = c(FALSE, TRUE)))
+
+  result <- NULL
+  expect_warning(
+    result <- foundry_shield(
+      user_prompt = "Summarize",
+      documents = c(NA_character_, "First kept document", "", "Second kept document")
+    ),
+    "Removing NA"
+  )
+
+  expect_equal(result$source, c("user_prompt", "document_2", "document_4"))
+  expect_equal(result$.input_idx, c(1L, 2L, 4L))
+  expect_equal(result$content[2:3], c("First kept document", "Second kept document"))
+})
+
+test_that("parse_shield_response returns NA when attack fields are missing", {
+  result <- parse_shield_response(
+    list(userPromptAnalysis = list(), documentsAnalysis = list(list())),
+    "Prompt",
+    "Doc"
+  )
+
+  expect_true(is.na(result$attack_detected[result$source == "user_prompt"]))
+  expect_true(is.na(result$attack_detected[result$source == "document_1"]))
 })
 
 # ============================================================================
@@ -247,6 +278,6 @@ test_that("foundry_shield returns tibble with real API", {
   result <- foundry_shield("What is the weather like today?")
 
   expect_s3_class(result, "tbl_df")
-  expect_named(result, c("source", "content", "attack_detected"))
+  expect_named(result, c("source", ".input_idx", "content", "attack_detected"))
   expect_type(result$attack_detected, "logical")
 })

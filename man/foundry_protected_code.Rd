@@ -12,7 +12,9 @@ foundry_protected_code(
 )
 }
 \arguments{
-\item{code}{Character vector. One or more code snippets to check.}
+\item{code}{Character vector. One or more code snippets to check.
+Each non-missing snippet must contain more than 110 characters; the
+preview API rejects shorter code.}
 
 \item{endpoint}{Character. Optional Content Safety endpoint. Defaults to the
 \code{AZURE_CONTENT_SAFETY_ENDPOINT} environment variable.}

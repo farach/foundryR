@@ -59,15 +59,18 @@ foundry_set_speech_key <- function(key) {
 
 #' Transcribe an audio file with Microsoft Foundry
 #'
-#' Transcribe audio through the Speech in Foundry Tools LLM Speech API, including
-#' MAI-Transcribe models, or through the Azure OpenAI v1 preview audio endpoint.
+#' Transcribe audio through standard Speech fast transcription, the Speech in
+#' Foundry Tools enhanced LLM Speech/MAI-Transcribe API, or the Azure OpenAI v1
+#' preview audio endpoint.
 #'
 #' @param file Character. Local audio file path.
-#' @param model Character. Model or deployment name. Defaults to
-#'   `"mai-transcribe-1.5"` for `service = "speech"` and to
-#'   `AZURE_FOUNDRY_MODEL` for `service = "openai"`.
-#' @param service Character. `"speech"` for LLM Speech/MAI-Transcribe or
-#'   `"openai"` for `/openai/v1/audio/transcriptions`.
+#' @param model Character. Optional Speech enhanced-mode model, or required
+#'   Azure OpenAI audio deployment name when `service = "openai"`. Leave `NULL`
+#'   with `service = "speech"` to use standard fast transcription; the returned
+#'   `model` column is `NA` for this path.
+#' @param service Character. `"speech"` for standard Speech fast transcription
+#'   or enhanced LLM Speech/MAI-Transcribe; `"openai"` for
+#'   `/openai/v1/audio/transcriptions`.
 #' @param api Character. Used when `service = "openai"`. `"v1"` calls the
 #'   `/openai/v1/...` data-plane path; `"deployment"` calls
 #'   `/openai/deployments/{model}/...`. Classic `whisper` deployments require
@@ -90,17 +93,38 @@ foundry_set_speech_key <- function(key) {
 #' @param endpoint Character. Optional endpoint override.
 #' @param api_version Character. Optional API version. Defaults to
 #'   `"2025-10-15"` for Speech and `"preview"` for OpenAI audio.
+#' @param enhanced Logical or `NULL`. For `service = "speech"`, `NULL` uses
+#'   standard fast transcription unless a model, prompt, or `transcribe_style`
+#'   requires enhanced mode. `TRUE` forces LLM Speech enhanced mode. `FALSE`
+#'   forbids enhanced mode and errors if enhanced-only options are supplied.
 #'
-#' @return A one-row tibble with transcript text, phrase-level detail, and the
-#'   raw response in list-columns.
+#' @details
+#' Standard Speech fast transcription is the default for `service = "speech"`;
+#' it works in regular Speech regions and does not require a model deployment.
+#' Enhanced LLM Speech and MAI-Transcribe modes are opt-in, preview or
+#' region-limited, and are used when `enhanced = TRUE`, `model` is supplied, or
+#' enhanced-only options such as `prompt` or `transcribe_style` are supplied.
+#'
+#' For Azure OpenAI audio, pass the deployment name explicitly in `model`.
+#' Azure `whisper` version `001` retires on 2026-12-15. The
+#' `gpt-4o-mini-transcribe` version `2025-12-15` is generally available until
+#' 2027-06-15.
+#'
+#' @return A one-row tibble with transcript text, phrase-level detail, the model
+#'   that ran (`NA` for standard Speech fast transcription), and the raw response
+#'   in list-columns.
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Requires configured Azure Speech/OpenAI endpoints and credentials,
-#' # the corresponding models, and your own local audio input files.
-#' foundry_transcribe("interview.mp3", model = "mai-transcribe-1.5")
-#' foundry_transcribe("interview.mp3", service = "openai", model = "gpt-4o-transcribe")
+#' # Requires configured Azure Speech/OpenAI endpoints and credentials
+#' # and your own local audio input files.
+#' foundry_transcribe("interview.mp3")
+#' foundry_transcribe("interview.mp3", model = "mai-transcribe-2")
+#' foundry_transcribe("interview.mp3", enhanced = TRUE, prompt = "Use names exactly.")
+#' foundry_transcribe(
+#'   "interview.mp3", service = "openai", model = "gpt-4o-transcribe"
+#' )
 #' foundry_transcribe(
 #'   "speech.wav", service = "openai", model = "whisper", api = "deployment"
 #' )
@@ -121,13 +145,13 @@ foundry_transcribe <- function(file,
                                api_key = NULL,
                                token = NULL,
                                endpoint = NULL,
-                               api_version = NULL) {
+                               api_version = NULL,
+                               enhanced = NULL) {
   service <- match.arg(service)
   api <- match.arg(api)
   foundry_check_file(file)
 
   if (identical(service, "speech")) {
-    model <- model %||% "mai-transcribe-1.5"
     return(foundry_speech_transcribe(
       file = file,
       task = "transcribe",
@@ -139,11 +163,12 @@ foundry_transcribe <- function(file,
       api_key = api_key,
       token = token,
       endpoint = endpoint,
-      api_version = api_version
+      api_version = api_version,
+      enhanced = enhanced
     ))
   }
 
-  model <- foundry_resolve_model(model)
+  model <- foundry_require_audio_model(model)
   foundry_openai_audio(
     file = file,
     path = "audio/transcriptions",
@@ -166,18 +191,27 @@ foundry_transcribe <- function(file,
 
 #' Translate an audio file with Microsoft Foundry
 #'
-#' Translate audio through LLM Speech enhanced mode or the OpenAI-compatible v1
-#' audio translations endpoint. LLM Speech supports multiple target languages;
-#' the OpenAI-compatible translations endpoint translates to English.
+#' Translate audio through Speech enhanced LLM Speech mode or the
+#' OpenAI-compatible v1 audio translations endpoint. Speech translation requires
+#' enhanced mode and a region where LLM Speech is available. The
+#' OpenAI-compatible translations endpoint translates to English.
 #'
 #' @param file Character. Local audio file path.
 #' @param target_language Character. Target language code for
 #'   `service = "speech"`, such as `"en"`, `"es"`, `"fr"`, `"de"`, `"ko"`,
 #'   `"ja"`, `"pt"`, or `"zh"`.
-#' @param model Character. Optional model or deployment name. For Speech
+#' @param model Character. Optional Speech enhanced-mode model, or required
+#'   Azure OpenAI audio deployment name when `service = "openai"`. For Speech
 #'   translation this is omitted by default because MAI-Transcribe models do not
-#'   translate. For `service = "openai"`, defaults to `AZURE_FOUNDRY_MODEL`.
+#'   translate.
 #' @inheritParams foundry_transcribe
+#'
+#' @details
+#' Speech translation uses LLM Speech enhanced mode because standard Speech fast
+#' transcription and MAI-Transcribe do not translate. For Azure OpenAI audio,
+#' pass the deployment name explicitly in `model`. Azure `whisper` version `001`
+#' retires on 2026-12-15. The `gpt-4o-mini-transcribe` version `2025-12-15` is
+#' generally available until 2027-06-15.
 #'
 #' @return A one-row tibble with translated text, phrase-level detail, and the
 #'   raw response in list-columns.
@@ -185,9 +219,12 @@ foundry_transcribe <- function(file,
 #'
 #' @examples
 #' \dontrun{
-#' # Requires a configured Azure Speech endpoint and credentials,
-#' # and your own local audio input file.
+#' # Requires a configured Azure Speech endpoint in an LLM Speech region,
+#' # credentials, and your own local audio input file.
 #' foundry_translate_audio("interview-es.mp3", target_language = "en")
+#' foundry_translate_audio(
+#'   "interview-es.mp3", service = "openai", model = "whisper", api = "deployment"
+#' )
 #' }
 foundry_translate_audio <- function(file,
                                     target_language = "en",
@@ -223,7 +260,7 @@ foundry_translate_audio <- function(file,
     ))
   }
 
-  model <- foundry_resolve_model(model)
+  model <- foundry_require_audio_model(model)
   foundry_openai_audio(
     file = file,
     path = "audio/translations",
@@ -253,7 +290,7 @@ foundry_translate_audio <- function(file,
 #' `/openai/deployments/{model}/audio/speech` path.
 #'
 #' @param text Character. Text to synthesize.
-#' @param model Character. Speech model deployment name.
+#' @param model Character. Required speech model deployment name.
 #' @param voice Character. Voice name supported by the deployed model.
 #' @param path Character. Output file path. Defaults to a temporary file.
 #' @param response_format Character. Audio format such as `"mp3"`, `"wav"`,
@@ -267,6 +304,13 @@ foundry_translate_audio <- function(file,
 #' @inheritParams foundry_transcribe
 #'
 #' @return A tibble with the output path, byte count, model, voice, and format.
+#'
+#' @details
+#' Pass the speech deployment name explicitly in `model`; audio routes do not
+#' fall back to `AZURE_FOUNDRY_MODEL` because that environment variable commonly
+#' names a chat deployment. Azure `whisper` version `001` retires on
+#' 2026-12-15. The `gpt-4o-mini-transcribe` version `2025-12-15` is generally
+#' available until 2027-06-15.
 #' @export
 #'
 #' @examples
@@ -294,7 +338,7 @@ foundry_speak <- function(text,
                           endpoint = NULL,
                           api_version = NULL) {
   foundry_check_character_scalar(text, "text")
-  model <- foundry_resolve_model(model)
+  model <- foundry_require_audio_model(model)
   foundry_check_character_scalar(voice, "voice")
   foundry_check_character_scalar(response_format, "response_format")
   api <- match.arg(api)
@@ -353,14 +397,29 @@ foundry_speech_transcribe <- function(file,
                                       api_key = NULL,
                                       token = NULL,
                                       endpoint = NULL,
-                                      api_version = NULL) {
-  enhanced <- list(enabled = TRUE, task = task)
-  if (!is.null(model)) enhanced$model <- model
-  if (!is.null(target_language)) enhanced$targetLanguage <- target_language
-  if (!is.null(prompt)) enhanced$prompt <- as.list(prompt)
-  if (!is.null(transcribe_style)) enhanced$transcribeStyle <- transcribe_style
+                                      api_version = NULL,
+                                      enhanced = NULL) {
+  enhanced <- foundry_speech_resolve_enhanced(
+    enhanced = enhanced,
+    task = task,
+    model = model,
+    prompt = prompt,
+    transcribe_style = transcribe_style
+  )
 
-  definition <- list(enhancedMode = enhanced)
+  definition <- structure(list(), names = character())
+  if (isTRUE(enhanced)) {
+    enhanced_mode <- list(enabled = TRUE, task = task)
+    if (!is.null(model)) enhanced_mode$model <- model
+    if (!is.null(target_language)) enhanced_mode$targetLanguage <- target_language
+    if (!is.null(prompt)) enhanced_mode$prompt <- as.list(prompt)
+    # Learn: MAI transcribeStyle is nested under enhancedMode.modelOptions.
+    # https://learn.microsoft.com/azure/ai-services/speech-service/mai-transcribe
+    if (!is.null(transcribe_style)) {
+      enhanced_mode$modelOptions <- list(transcribeStyle = transcribe_style)
+    }
+    definition$enhancedMode <- enhanced_mode
+  }
   if (!is.null(locales)) definition$locales <- as.list(locales)
   if (!is.null(phrase_list)) {
     definition$phraseList <- list(phrases = as.list(phrase_list))
@@ -381,7 +440,7 @@ foundry_speech_transcribe <- function(file,
       definition = jsonlite::toJSON(definition, auto_unbox = TRUE)
     )
 
-  result <- foundry_perform(req)
+  result <- foundry_perform_speech(req, task = task)
   foundry_parse_audio_result(result, file = file, model = model, task = task)
 }
 
@@ -446,6 +505,85 @@ foundry_openai_audio <- function(file,
   req <- do.call(httr2::req_body_multipart, c(list(req), multipart))
   result <- foundry_perform(req)
   foundry_parse_audio_result(result, file = file, model = model, task = task)
+}
+
+
+foundry_speech_resolve_enhanced <- function(enhanced,
+                                            task,
+                                            model = NULL,
+                                            prompt = NULL,
+                                            transcribe_style = NULL) {
+  enhanced_only <- !is.null(model) || !is.null(prompt) || !is.null(transcribe_style)
+
+  if (is.null(enhanced)) {
+    return(identical(task, "translate") || enhanced_only)
+  }
+  if (!is.logical(enhanced) || length(enhanced) != 1L || is.na(enhanced)) {
+    cli::cli_abort("{.arg enhanced} must be `TRUE`, `FALSE`, or `NULL`.")
+  }
+  if (!enhanced && enhanced_only) {
+    reasons <- c(
+      if (!is.null(model)) "{.arg model}",
+      if (!is.null(prompt)) "{.arg prompt}",
+      if (!is.null(transcribe_style)) "{.arg transcribe_style}"
+    )
+    cli::cli_abort(c(
+      "Cannot use {.arg enhanced = FALSE} with enhanced-mode options.",
+      "i" = paste0(
+        paste(reasons, collapse = ", "),
+        " requires LLM Speech or MAI-Transcribe enhanced mode."
+      )
+    ))
+  }
+  enhanced
+}
+
+
+foundry_perform_speech <- function(req, task) {
+  req <- httr2::req_error(req, is_error = function(resp) FALSE)
+  resp <- httr2::req_perform(req)
+  status <- httr2::resp_status(resp)
+  if (status < 400L) {
+    return(httr2::resp_body_json(resp))
+  }
+
+  service_message <- foundry_error_details(resp)$message
+  if (status == 400L && grepl("Enhanced mode", service_message, ignore.case = TRUE)) {
+    foundry_abort_speech_enhanced_region(service_message, task = task)
+  }
+  rlang::abort(
+    c(paste0("HTTP ", status, " from the Speech endpoint."), foundry_error_body(resp)),
+    class = c(paste0("httr2_http_", status), "httr2_http", "httr2_error"),
+    resp = resp
+  )
+}
+
+
+foundry_abort_speech_enhanced_region <- function(service_message, task) {
+  guidance <- if (identical(task, "translate")) {
+    "Use a Speech resource in a region that supports LLM Speech, or set {.code service = \"openai\"} with a Whisper deployment."
+  } else {
+    "Drop {.arg model} and enhanced options such as {.arg prompt} or {.arg transcribe_style} to use standard fast transcription."
+  }
+
+  cli::cli_abort(c(
+    "Enhanced mode (LLM Speech or MAI-Transcribe) is not available for this Speech resource's region.",
+    "i" = guidance,
+    "i" = "Region support: {.url https://learn.microsoft.com/azure/ai-services/speech-service/llm-speech}",
+    "x" = "Service message: {service_message}"
+  ))
+}
+
+
+foundry_require_audio_model <- function(model) {
+  if (is.null(model)) {
+    cli::cli_abort(c(
+      "Azure OpenAI audio calls require an explicit model/deployment name.",
+      "i" = "Specify {.arg model}; audio routes do not fall back to {.envvar AZURE_FOUNDRY_MODEL} because it commonly names a chat deployment."
+    ))
+  }
+  foundry_check_character_scalar(model, "model")
+  model
 }
 
 
@@ -527,12 +665,20 @@ foundry_get_speech_token <- function(token = NULL, required = FALSE) {
 
 foundry_parse_audio_result <- function(result, file, model, task) {
   text <- foundry_audio_text(result)
+  duration_ms <- if (!is.null(result$durationMilliseconds)) {
+    as.integer(result$durationMilliseconds)
+  } else if (!is.null(result$duration)) {
+    as.integer(round(as.numeric(result$duration) * 1000))
+  } else {
+    NA_integer_
+  }
+
   tibble::tibble(
     file = normalizePath(file, winslash = "/", mustWork = FALSE),
     task = task,
     model = model %||% NA_character_,
     text = text,
-    duration_ms = as.integer(result$durationMilliseconds %||% NA_integer_),
+    duration_ms = duration_ms,
     language = result$language %||% result$locale %||% NA_character_,
     phrases = list(foundry_audio_phrases(result)),
     raw_response = list(result)

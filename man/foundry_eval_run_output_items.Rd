@@ -23,7 +23,11 @@ foundry_eval_run_output_items(
 
 \item{run_id}{Character. Run ID.}
 
-\item{status}{Character. Optional status filter, \code{"fail"} or \code{"pass"}.}
+\item{status}{Character. Optional output-item processing status passed to
+the service, for example \code{"completed"} or \code{"failed"}. It reports whether
+the item was processed, not whether it passed; the service rejects
+\code{"fail"} and \code{"pass"}. To find failing grades, filter the returned \code{passed}
+column.}
 
 \item{order}{Character. Optional sort order, \code{"asc"} or \code{"desc"}.}
 
@@ -47,13 +51,15 @@ v1 evals surface is path-versioned, so this is usually left \code{NULL}.}
 endpoint, such as
 \code{"https://<account>.services.ai.azure.com/api/projects/<project>"}.
 Supplying it selects the project-scoped Evals route
-(\verb{<project>/openai/v1/evals}) with project authentication. When neither
-\code{endpoint} nor \code{project_endpoint} is supplied, a project endpoint set with
-\code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}} is used; otherwise the call falls back to
-the resource endpoint. Built-in \code{azure_ai_evaluator} graders, model and
-agent targets, and stored-response evaluations require the project route.
-Project and resource evaluations are stored separately, so use the same
-route for every call that touches an evaluation.}
+(\verb{<project>/openai/v1/evals}), which accepts Microsoft Entra ID tokens
+only. Without it, evaluation calls use the resource endpoint, as in
+foundryR 0.1.0, unless \code{\link[=foundry_set_route]{foundry_set_route()}} selected the project or the
+call needs a feature that exists only on a project endpoint: built-in
+\code{azure_ai_evaluator} graders, model or agent targets, or stored responses.
+Those calls use the endpoint set with \code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}} and
+print a message. Evaluations created on the project endpoint are not
+visible from the resource endpoint, so pass \code{project_endpoint} (or set the
+route) when you look them up later.}
 }
 \value{
 A tibble with one row per grader result, including \code{score}, \code{label},

@@ -240,13 +240,15 @@ foundry_grader_score_model <- function(name,
 #' Microsoft Foundry built-in evaluator grader
 #'
 #' Reference a Microsoft Foundry built-in evaluator (a `builtin.*` ID such as
-#' `builtin.coherence` or `builtin.groundedness`) as a grader. This grader type
-#' is only available on the project-scoped Foundry endpoint.
+#' `builtin.coherence` or `builtin.groundedness`) as a grader. Built-in
+#' evaluators run only on a Foundry project endpoint; [foundry_eval_create()]
+#' and [foundry_evaluate()] switch to it when a grader of this type is present.
 #'
 #' @param name Character. Grader name shown in results.
 #' @param evaluator_name Character. The evaluator ID, e.g. `"builtin.coherence"`.
 #' @param initialization_parameters List. Optional parameters passed to the
-#'   evaluator, e.g. `list(model = "gpt-5-nano")` for model-graded evaluators.
+#'   evaluator. Model-graded evaluators take the judge deployment as
+#'   `list(deployment_name = "gpt-5-mini")`.
 #' @param data_mapping Named list. Optional mapping from evaluator inputs to
 #'   dataset templates, e.g. `list(query = "{{item.query}}", response =
 #'   "{{sample.output_text}}")`.
@@ -260,7 +262,7 @@ foundry_grader_score_model <- function(name,
 #' foundry_grader_azure_ai(
 #'   name = "coherence",
 #'   evaluator_name = "builtin.coherence",
-#'   initialization_parameters = list(model = "gpt-5-nano"),
+#'   initialization_parameters = list(deployment_name = "gpt-5-mini"),
 #'   data_mapping = list(
 #'     query = "{{item.query}}",
 #'     response = "{{sample.output_text}}"
@@ -392,7 +394,9 @@ foundry_eval_data_config <- function(type = c("custom", "logs", "azure_ai_source
 #'   it. Pair it with `foundry_eval_data_config(type = "azure_ai_source",
 #'   scenario = "responses")`.
 #'
-#' Target and stored-response runs require the project Evals route.
+#' Target and stored-response runs exist only on a Foundry project endpoint.
+#' [foundry_eval_run_create()] and [foundry_evaluate()] use the configured
+#' project endpoint for them and say so.
 #'
 #' @param file_id Character. ID of a JSONL file uploaded with
 #'   [foundry_file_upload()].
@@ -501,13 +505,15 @@ foundry_eval_run_data <- function(file_id = NULL,
 #'   endpoint, such as
 #'   `"https://<account>.services.ai.azure.com/api/projects/<project>"`.
 #'   Supplying it selects the project-scoped Evals route
-#'   (`<project>/openai/v1/evals`) with project authentication. When neither
-#'   `endpoint` nor `project_endpoint` is supplied, a project endpoint set with
-#'   [foundry_set_project_endpoint()] is used; otherwise the call falls back to
-#'   the resource endpoint. Built-in `azure_ai_evaluator` graders, model and
-#'   agent targets, and stored-response evaluations require the project route.
-#'   Project and resource evaluations are stored separately, so use the same
-#'   route for every call that touches an evaluation.
+#'   (`<project>/openai/v1/evals`), which accepts Microsoft Entra ID tokens
+#'   only. Without it, evaluation calls use the resource endpoint, as in
+#'   foundryR 0.1.0, unless [foundry_set_route()] selected the project or the
+#'   call needs a feature that exists only on a project endpoint: built-in
+#'   `azure_ai_evaluator` graders, model or agent targets, or stored responses.
+#'   Those calls use the endpoint set with [foundry_set_project_endpoint()] and
+#'   print a message. Evaluations created on the project endpoint are not
+#'   visible from the resource endpoint, so pass `project_endpoint` (or set the
+#'   route) when you look them up later.
 #'
 #' @return A one-row tibble describing the created evaluation.
 #' @export
@@ -562,15 +568,22 @@ foundry_eval_create <- function(name = NULL,
     body$metadata <- metadata
   }
 
+  route <- foundry_eval_resolve_route(
+    endpoint = endpoint,
+    project_endpoint = project_endpoint,
+    needs_project = foundry_eval_needs_project(
+      graders = body$testing_criteria,
+      data_source_config = data_source_config
+    )
+  )
   req <- foundry_eval_request(
     path = "evals",
     body = body,
     method = "POST",
     api_key = api_key,
     token = token,
-    endpoint = endpoint,
     api_version = api_version,
-    project_endpoint = project_endpoint
+    route = route
   )
 
   foundry_eval_tibble(foundry_perform(req))
@@ -657,6 +670,12 @@ foundry_eval_get <- function(eval_id,
 
 #' Delete an evaluation
 #'
+#' @details
+#' The returned `deleted` column is the service's answer. On the resource
+#' endpoint the service confirms deletion. On a project endpoint it has been
+#' observed to answer `deleted = FALSE` and keep the evaluation, in which case
+#' a warning says so; delete it in the Foundry portal if you need it gone.
+#'
 #' @param eval_id Character. Evaluation ID to delete.
 #' @inheritParams foundry_eval_create
 #'
@@ -688,9 +707,16 @@ foundry_eval_delete <- function(eval_id,
   )
 
   result <- foundry_perform(req)
+  deleted <- isTRUE(result$deleted)
+  if (!deleted) {
+    cli::cli_warn(c(
+      "The service did not confirm that evaluation {.val {eval_id}} was deleted.",
+      "i" = "It answered {.code deleted = false}; check with {.fn foundry_eval_get} or delete it in the Foundry portal."
+    ))
+  }
   tibble::tibble(
     eval_id = result$eval_id %||% eval_id,
-    deleted = isTRUE(result$deleted),
+    deleted = deleted,
     object = result$object %||% NA_character_
   )
 }
@@ -703,7 +729,8 @@ foundry_eval_delete <- function(eval_id,
 #'
 #' @param eval_id Character. Evaluation ID to run.
 #' @param data_source List. A run data source from [foundry_eval_run_data()].
-#' @param name Character. Optional run name.
+#' @param name Character. Optional run name. Target and stored-response runs
+#'   need a name, so one is generated from the current UTC time when `NULL`.
 #' @param metadata List. Optional metadata attached to the run.
 #' @inheritParams foundry_eval_create
 #'
@@ -734,6 +761,10 @@ foundry_eval_run_create <- function(eval_id,
     cli::cli_abort("{.arg data_source} must be built with {.fn foundry_eval_run_data}.")
   }
 
+  needs_project <- foundry_eval_needs_project(data_source = data_source)
+  if (is.null(name) && !is.null(needs_project)) {
+    name <- foundry_eval_default_name()
+  }
   body <- list(data_source = data_source)
   if (!is.null(name)) {
     foundry_check_character_scalar(name, "name")
@@ -746,15 +777,19 @@ foundry_eval_run_create <- function(eval_id,
     body$metadata <- metadata
   }
 
+  route <- foundry_eval_resolve_route(
+    endpoint = endpoint,
+    project_endpoint = project_endpoint,
+    needs_project = needs_project
+  )
   req <- foundry_eval_request(
     path = paste0("evals/", eval_id, "/runs"),
     body = body,
     method = "POST",
     api_key = api_key,
     token = token,
-    endpoint = endpoint,
     api_version = api_version,
-    project_endpoint = project_endpoint
+    route = route
   )
 
   foundry_eval_run_tibble(foundry_perform(req))
@@ -904,7 +939,11 @@ foundry_eval_run_cancel <- function(eval_id,
 #'
 #' @param eval_id Character. Evaluation ID.
 #' @param run_id Character. Run ID.
-#' @param status Character. Optional status filter, `"fail"` or `"pass"`.
+#' @param status Character. Optional output-item processing status passed to
+#'   the service, for example `"completed"` or `"failed"`. It reports whether
+#'   the item was processed, not whether it passed; the service rejects
+#'   `"fail"` and `"pass"`. To find failing grades, filter the returned `passed`
+#'   column.
 #' @param order Character. Optional sort order, `"asc"` or `"desc"`.
 #' @param limit Integer. Optional maximum number of output items to return.
 #'   `NULL` (the default) returns all output items.
@@ -1002,51 +1041,86 @@ foundry_eval_request <- function(path,
                                  token = NULL,
                                  endpoint = NULL,
                                  api_version = NULL,
-                                 project_endpoint = NULL) {
-  route <- foundry_eval_route(endpoint = endpoint, project_endpoint = project_endpoint)
-  if (is.null(route$project_endpoint)) {
-    return(foundry_build_v1_request(
-      path = path,
-      body = body,
-      method = method,
-      api_key = api_key,
-      token = token,
-      endpoint = route$endpoint,
-      api_version = api_version
-    ))
-  }
-
-  foundry_build_project_request(
-    path = paste0("openai/v1/", sub("^/+", "", path)),
+                                 project_endpoint = NULL,
+                                 route = NULL) {
+  foundry_build_routed_request(
+    "evals",
+    path = path,
     body = body,
     method = method,
     api_key = api_key,
     token = token,
-    endpoint = route$project_endpoint,
-    api_version = api_version
+    endpoint = endpoint,
+    project_endpoint = project_endpoint,
+    api_version = api_version,
+    route = route
   )
 }
 
 
-# Resolve which Evals route a call uses. An explicit project endpoint selects
-# the project route and an explicit resource endpoint selects the resource
-# route. With neither, a configured project endpoint wins so that evaluations
-# created on the project route are found again by later calls.
-foundry_eval_route <- function(endpoint = NULL, project_endpoint = NULL) {
-  if (!is.null(endpoint) && !is.null(project_endpoint)) {
-    cli::cli_abort("Supply only one of {.arg endpoint} or {.arg project_endpoint}.")
+# Name the features of an evaluation that exist only on a project endpoint, or
+# return NULL when it can run on the resource endpoint.
+foundry_eval_needs_project <- function(graders = NULL,
+                                       target = NULL,
+                                       data_source = NULL,
+                                       data_source_config = NULL) {
+  needs <- character()
+  if (is.list(graders) && !is.null(graders$type)) {
+    graders <- list(graders)
   }
-  if (!is.null(project_endpoint)) {
-    foundry_check_character_scalar(project_endpoint, "project_endpoint")
-    return(list(endpoint = NULL, project_endpoint = sub("/+$", "", project_endpoint)))
+  uses_builtin <- length(graders) > 0L && any(vapply(graders, function(grader) {
+    is.list(grader) && identical(grader$type, "azure_ai_evaluator")
+  }, logical(1)))
+  if (uses_builtin) {
+    needs <- c(needs, "built-in evaluators")
   }
-  if (!is.null(endpoint)) {
-    return(list(endpoint = endpoint, project_endpoint = NULL))
+  source_type <- data_source$type %||% NA_character_
+  if (!is.null(target) || identical(source_type, "azure_ai_target_completions")) {
+    needs <- c(needs, "a model or agent target")
   }
-  list(
-    endpoint = NULL,
-    project_endpoint = foundry_get_project_endpoint(required = FALSE)
+  if (identical(source_type, "azure_ai_responses")) {
+    needs <- c(needs, "stored responses")
+  }
+  if (identical(data_source_config$type, "azure_ai_source")) {
+    needs <- c(needs, "a Foundry data source")
+  }
+  if (length(needs) == 0L) {
+    return(NULL)
+  }
+  paste(unique(needs), collapse = " and ")
+}
+
+
+# Resolve the Evals route, and say so when a project-only feature moved the
+# call to the configured project endpoint.
+foundry_eval_resolve_route <- function(endpoint = NULL,
+                                       project_endpoint = NULL,
+                                       needs_project = NULL) {
+  route <- foundry_resolve_route(
+    "evals",
+    endpoint = endpoint,
+    project_endpoint = project_endpoint,
+    needs_project = needs_project
   )
+  switched <- !is.null(needs_project) &&
+    is.null(endpoint) &&
+    is.null(project_endpoint) &&
+    !identical(foundry_state$route, "project")
+  if (switched) {
+    cli::cli_inform(
+      c(
+        "i" = "Using the project endpoint because this evaluation uses {needs_project}.",
+        " " = "Pass {.arg project_endpoint}, or call {.code foundry_set_route(\"project\")}, when you look it up later."
+      ),
+      class = "foundryR_eval_project_route"
+    )
+  }
+  route
+}
+
+
+foundry_eval_default_name <- function() {
+  paste("foundryR evaluation", format(Sys.time(), "%Y-%m-%d %H:%M:%S UTC", tz = "UTC"))
 }
 
 
@@ -1342,13 +1416,14 @@ foundry_eval_output_item_tibble <- function(item) {
 
 # Collapse the assistant text in an output item's `sample`. Target runs return
 # either a flat `output_text` or a list of output messages whose content is a
-# string or a list of parts with `text`.
+# string or a list of parts with `text`. Agent targets can return the parts as a
+# JSON-encoded string, which is decoded to its text.
 foundry_eval_sample_text <- function(sample) {
   if (is.null(sample)) {
     return(NA_character_)
   }
   if (is.character(sample$output_text) && length(sample$output_text) == 1L) {
-    return(sample$output_text)
+    return(paste(foundry_eval_decode_parts(sample$output_text), collapse = "\n"))
   }
 
   message_text <- function(message) {
@@ -1360,7 +1435,7 @@ foundry_eval_sample_text <- function(sample) {
     }
     content <- message$content
     if (is.character(content)) {
-      return(content)
+      return(unlist(lapply(content, foundry_eval_decode_parts), use.names = FALSE))
     }
     if (is.list(content)) {
       parts <- lapply(content, function(part) {
@@ -1376,4 +1451,25 @@ foundry_eval_sample_text <- function(sample) {
     return(NA_character_)
   }
   paste(texts, collapse = "\n")
+}
+
+
+# Return the `text` of JSON-encoded content parts such as
+# '[{"annotations": [], "text": "..."}]', or the string unchanged.
+foundry_eval_decode_parts <- function(x) {
+  if (!is.character(x) || length(x) != 1L || is.na(x) || !grepl("^\\s*[[{]", x)) {
+    return(x)
+  }
+  parsed <- tryCatch(
+    jsonlite::fromJSON(x, simplifyVector = FALSE),
+    error = function(e) NULL
+  )
+  if (!is.list(parsed)) {
+    return(x)
+  }
+  parts <- if (!is.null(names(parsed))) list(parsed) else parsed
+  texts <- unlist(lapply(parts, function(part) {
+    if (is.list(part) && is.character(part$text)) part$text else NULL
+  }), use.names = FALSE)
+  if (length(texts) > 0L) texts else x
 }

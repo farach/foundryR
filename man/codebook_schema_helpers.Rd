@@ -25,12 +25,18 @@ type_string(desc = NULL)
 A JSON Schema fragment represented as an R list.
 }
 \description{
-These light wrappers reuse foundryR's existing strict JSON Schema
-constructors while following the measurement-layer codebook vocabulary.
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}
+
+\code{type_boolean()}, \code{type_enum()}, \code{type_number()}, and \code{type_string()} are
+deprecated because they mask ellmer's functions of the same names when both
+packages are attached. Use \code{\link[=schema_boolean]{schema_boolean()}}, \code{\link[=schema_enum]{schema_enum()}},
+\code{\link[=schema_number]{schema_number()}}, and \code{\link[=schema_string]{schema_string()}} instead; they take the description
+as \code{description}. If you already describe fields with \verb{ellmer::type_*()},
+pass the ellmer type object to \code{\link[=as_foundry_schema]{as_foundry_schema()}}.
 }
 \examples{
-type_boolean("Whether AI could materially assist the task")
-type_enum("Priority label", values = c("low", "medium", "high"))
-type_number("Confidence score")
-type_string("Short rationale")
+# Use the schema_*() helpers instead:
+schema_boolean(description = "Whether AI could materially assist the task")
+schema_enum(c("low", "medium", "high"), description = "Priority label")
 }
+\keyword{internal}

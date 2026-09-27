@@ -160,24 +160,7 @@ severity_to_label <- function(severity, output_type = "FourSeverityLevels") {
     return(NA_character_)
   }
 
-  # For both output types, the mapping is based on severity ranges
-  # FourSeverityLevels returns: 0, 2, 4, 6
-  # EightSeverityLevels returns: 0, 1, 2, 3, 4, 5, 6, 7
-  #
-  # Label mapping:
-  # - safe: 0
-  # - low: 1-2
-  # - medium: 3-4
-  # - high: 5-7
-  if (severity == 0) {
-    "safe"
-  } else if (severity <= 2) {
-    "low"
-  } else if (severity <= 4) {
-    "medium"
-  } else {
-    "high"
-  }
+  c("safe", "low", "medium", "high")[severity %/% 2L + 1L]
 }
 
 
@@ -190,44 +173,7 @@ severity_to_label <- function(severity, output_type = "FourSeverityLevels") {
 #' @return Character string with error message.
 #' @keywords internal
 content_safety_error_body <- function(resp) {
-  body <- tryCatch(
-    httr2::resp_body_json(resp),
-    error = function(e) list(error = list(message = httr2::resp_body_string(resp)))
-  )
-
-  # Azure Content Safety error format
-  error_msg <- body$error$message %||%
-    body$error %||%
-    body$message %||%
-    "Unknown API error"
-
-  error_code <- body$error$code %||% ""
-
-  # Authentication errors
-  if (grepl("401|unauthorized|invalid.*key", error_msg, ignore.case = TRUE) ||
-      grepl("401|Unauthorized", error_code, ignore.case = TRUE)) {
-    return("Invalid API key. Check your AZURE_CONTENT_SAFETY_KEY or use foundry_set_content_safety_key().")
-  }
-
-  # Resource not found
-  if (grepl("404|not found", error_msg, ignore.case = TRUE)) {
-    return(paste0(
-      "Resource not found. Verify your Content Safety endpoint is correct. ",
-      error_msg
-    ))
-  }
-
-  # Rate limiting
-  if (grepl("429|rate limit|too many requests", error_msg, ignore.case = TRUE)) {
-    return("Rate limit exceeded. Please wait and retry, or increase your quota in Azure Portal.")
-  }
-
-  # Text too long
-  if (grepl("text.*too long|exceed.*limit|10000|10K", error_msg, ignore.case = TRUE)) {
-    return("Text exceeds maximum length of 10,000 characters. Please shorten your input.")
-  }
-
-  paste0("Content Safety API error: ", error_msg)
+  foundry_classify_error(resp, service = "content_safety")
 }
 
 
@@ -255,13 +201,17 @@ content_safety_error_body <- function(resp) {
 #'
 #' @return A tibble with columns:
 #'   \describe{
-#'     \item{text}{Character. The input text (truncated to 50 chars if longer).}
+#'     \item{text}{Character. The full input text.}
+#'     \item{.input_idx}{Integer. Position of the input in `text`, useful for
+#'       joining results back to caller data.}
 #'     \item{category}{Character. The harm category: "Hate", "Sexual", "SelfHarm", or "Violence".}
 #'     \item{severity}{Integer. Severity score. Range depends on `output_type`:
 #'       0-6 for FourSeverityLevels (values: 0, 2, 4, 6) or 0-7 for EightSeverityLevels.}
 #'     \item{label}{Character. Human-readable severity label: "safe", "low", "medium", or "high".}
 #'     \item{blocklist_matches}{List. Blocklist matches returned by the service
 #'       for the analyzed text.}
+#'     \item{blocklist_hit}{Logical. `TRUE` when the service returned any
+#'       blocklist match for the input text.}
 #'     \item{raw_response}{List. Raw Content Safety response for the analyzed text.}
 #'   }
 #'
@@ -278,11 +228,13 @@ content_safety_error_body <- function(resp) {
 #'
 #' **Severity Labels:**
 #' \itemize{
-#'   \item **safe** (0): No harmful content detected.
-#'   \item **low** (1-2): Mildly concerning content.
-#'   \item **medium** (3-4): Moderately harmful content.
-#'   \item **high** (5+): Severely harmful content.
+#'   \item **safe** (0-1): No harmful content detected.
+#'   \item **low** (2-3): Mildly concerning content.
+#'   \item **medium** (4-5): Moderately harmful content.
+#'   \item **high** (6-7): Severely harmful content.
 #' }
+#'
+#' The four-level scale uses the same labels at severities 0, 2, 4, and 6.
 #'
 #' @section Authentication:
 #' You need an Azure Content Safety resource to use this function. Set up the
@@ -351,10 +303,12 @@ foundry_moderate <- function(text,
   if (length(text) == 0) {
     return(tibble::tibble(
       text = character(),
+      .input_idx = integer(),
       category = character(),
       severity = integer(),
       label = character(),
       blocklist_matches = list(),
+      blocklist_hit = logical(),
       raw_response = list()
     ))
   }
@@ -367,10 +321,12 @@ foundry_moderate <- function(text,
     if (is.na(single_text)) {
       return(tibble::tibble(
         text = NA_character_,
+        .input_idx = i,
         category = categories,
         severity = NA_integer_,
         label = NA_character_,
         blocklist_matches = replicate(length(categories), NULL, simplify = FALSE),
+        blocklist_hit = FALSE,
         raw_response = replicate(length(categories), NULL, simplify = FALSE)
       ))
     }
@@ -381,13 +337,6 @@ foundry_moderate <- function(text,
         "Text at index {i} exceeds 10,000 character limit ({nchar(single_text)} chars). Truncating."
       )
       single_text <- substr(single_text, 1, 10000)
-    }
-
-    # Truncate text for display in results
-    display_text <- if (nchar(single_text) > 50) {
-      paste0(substr(single_text, 1, 47), "...")
-    } else {
-      single_text
     }
 
     # Build request body
@@ -423,42 +372,61 @@ foundry_moderate <- function(text,
     # Handle failed request
     if (is.null(result)) {
       return(tibble::tibble(
-        text = display_text,
+        text = single_text,
+        .input_idx = i,
         category = categories,
         severity = NA_integer_,
         label = NA_character_,
         blocklist_matches = replicate(length(categories), NULL, simplify = FALSE),
+        blocklist_hit = FALSE,
         raw_response = replicate(length(categories), NULL, simplify = FALSE)
       ))
     }
 
     # Parse response
+    blocklist_matches <- result$blocklistsMatch %||% result$blocklistMatches %||% list()
+    blocklist_hit <- length(blocklist_matches) > 0L
     categories_analysis <- result$categoriesAnalysis
 
     if (is.null(categories_analysis) || length(categories_analysis) == 0) {
+      if (blocklist_hit) {
+        return(tibble::tibble(
+          text = single_text,
+          .input_idx = i,
+          category = categories,
+          severity = NA_integer_,
+          label = "blocked",
+          blocklist_matches = replicate(length(categories), blocklist_matches, simplify = FALSE),
+          blocklist_hit = TRUE,
+          raw_response = replicate(length(categories), result, simplify = FALSE)
+        ))
+      }
       cli::cli_warn("Unexpected response format at index {i}. No categoriesAnalysis found.")
       return(tibble::tibble(
-        text = display_text,
+        text = single_text,
+        .input_idx = i,
         category = categories,
         severity = NA_integer_,
         label = NA_character_,
         blocklist_matches = replicate(length(categories), NULL, simplify = FALSE),
+        blocklist_hit = FALSE,
         raw_response = replicate(length(categories), result, simplify = FALSE)
       ))
     }
 
     # Extract results for each category
-    blocklist_matches <- result$blocklistsMatch %||% result$blocklistMatches %||% list()
     purrr::map_dfr(categories_analysis, function(cat_result) {
       category <- cat_result$category %||% NA_character_
       severity <- cat_result$severity %||% NA_integer_
 
       tibble::tibble(
-        text = display_text,
+        text = single_text,
+        .input_idx = i,
         category = category,
         severity = as.integer(severity),
         label = severity_to_label(severity, output_type),
         blocklist_matches = list(blocklist_matches),
+        blocklist_hit = blocklist_hit,
         raw_response = list(result)
       )
     })

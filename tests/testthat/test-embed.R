@@ -180,6 +180,33 @@ test_that("foundry_embed sends v1 array requests", {
   expect_equal(captured$body$data$input, c("one", "two"))
 })
 
+test_that("foundry_embed treats empty strings as per-row errors", {
+  setup_mock_env()
+  mock_response <- list(
+    object = "list",
+    model = "text-embedding-ada-002",
+    data = list(list(index = 0, object = "embedding", embedding = as.list(1:3))),
+    usage = list(prompt_tokens = 1, total_tokens = 1)
+  )
+  captured <- NULL
+
+  testthat::local_mocked_bindings(
+    req_perform_parallel = function(reqs, ...) {
+      captured <<- reqs[[1]]
+      list(mock_httr2_response(mock_response))
+    },
+    .package = "httr2"
+  )
+
+  result <- foundry_embed(c("a", ""), model = "text-embedding-ada-002")
+
+  expect_equal(captured$body$data$input, "a")
+  expect_false(result$.error[[1]])
+  expect_true(result$.error[[2]])
+  expect_match(result$.error_msg[[2]], "empty")
+  expect_null(result$embedding[[2]])
+})
+
 test_that("foundry_similarity can limit rows or return a matrix", {
   df <- tibble::tibble(
     text = c("a", "b", "c"),

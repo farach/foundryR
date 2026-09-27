@@ -14,6 +14,8 @@
 #' `2024-09-15-preview` api-version and its contract may change.
 #'
 #' @param code Character vector. One or more code snippets to check.
+#'   Each non-missing snippet must contain more than 110 characters; the
+#'   preview API rejects shorter code.
 #' @param endpoint Character. Optional Content Safety endpoint. Defaults to the
 #'   `AZURE_CONTENT_SAFETY_ENDPOINT` environment variable.
 #' @param api_key Character. Optional Content Safety key. Defaults to the
@@ -43,6 +45,13 @@ foundry_protected_code <- function(code,
                                    api_version = "2024-09-15-preview") {
   if (!is.character(code)) {
     cli::cli_abort("{.arg code} must be a character vector.")
+  }
+  short <- which(!is.na(code) & nchar(code) <= 110L)
+  if (length(short) > 0L) {
+    cli::cli_abort(c(
+      "{.arg code} must be more than 110 characters.",
+      "x" = "Short inputs: {.val {short}}."
+    ))
   }
 
   purrr::map_dfr(seq_along(code), function(i) {

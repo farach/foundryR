@@ -228,6 +228,10 @@ test_that("foundry_eval_create posts graders to the evals endpoint", {
 
 test_that("foundry_eval_create accepts a list of graders", {
   setup_mock_env()
+  withr::local_envvar(
+    AZURE_FOUNDRY_PROJECT_ENDPOINT = "https://acct.services.ai.azure.com/api/projects/demo",
+    AZURE_FOUNDRY_PROJECT_TOKEN = "test-project-token"
+  )
   captured <- NULL
   resp <- mock_httr2_response(mock_eval_object())
   testthat::local_mocked_bindings(
@@ -238,17 +242,21 @@ test_that("foundry_eval_create accepts a list of graders", {
     .package = "httr2"
   )
 
-  foundry_eval_create(
+  suppressMessages(foundry_eval_create(
     data_source_config = foundry_eval_data_config("logs"),
     testing_criteria = list(
       foundry_grader_string_check("a", "x", "y", "eq"),
       foundry_grader_azure_ai("b", "builtin.coherence")
     )
-  )
+  ))
 
   body <- captured$body$data
   expect_length(body$testing_criteria, 2L)
   expect_equal(body$testing_criteria[[2]]$type, "azure_ai_evaluator")
+  expect_equal(
+    captured$url,
+    "https://acct.services.ai.azure.com/api/projects/demo/openai/v1/evals"
+  )
 })
 
 test_that("foundry_eval_create rejects a bad data_source_config", {
@@ -329,6 +337,15 @@ test_that("foundry_eval_delete parses the deletion result", {
   expect_true(out$deleted)
   expect_equal(out$eval_id, "eval_1")
   expect_equal(out$object, "eval.deleted")
+})
+
+test_that("foundry_eval_delete warns when the service keeps the evaluation", {
+  setup_mock_env()
+  # Shape returned live by a project endpoint: the eval was still retrievable.
+  mock_request(list(object = "eval.deleted", deleted = FALSE, eval_id = "eval_1"))
+
+  expect_warning(out <- foundry_eval_delete("eval_1"), "did not confirm")
+  expect_false(out$deleted)
 })
 
 # ---------------------------------------------------------------------------

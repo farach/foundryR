@@ -20,6 +20,30 @@ test_that("foundry_batch_requests writes executable JSONL", {
   expect_equal(first$body$input, "one")
 })
 
+test_that("foundry_batch_requests preserves numeric precision and missing values", {
+  data <- data.frame(
+    text = "one",
+    value = 0.123456,
+    count = NA_integer_
+  )
+  path <- withr::local_tempfile(fileext = ".jsonl")
+
+  foundry_batch_requests(
+    data,
+    input = "text",
+    path = path,
+    model = "gpt-4.1",
+    body_columns = c("value", "count")
+  )
+
+  line <- readLines(path)[[1]]
+  parsed <- jsonlite::fromJSON(line, simplifyVector = FALSE)
+
+  expect_match(line, "0\\.123456")
+  expect_equal(parsed$body$value, 0.123456)
+  expect_null(parsed$body$count)
+})
+
 test_that("foundry_batch_requests writes structured output fields", {
   data <- data.frame(text = "one")
   path <- withr::local_tempfile(fileext = ".jsonl")
@@ -89,6 +113,11 @@ test_that("foundry_batch_results parses responses output JSONL", {
     jsonlite::toJSON(
       list(
         custom_id = "row-1",
+        request = list(
+          body = list(
+            text = list(format = list(type = "json_schema"))
+          )
+        ),
         response = list(status_code = 200, body = response)
       ),
       auto_unbox = TRUE
@@ -120,7 +149,94 @@ test_that("foundry_batch_results parses responses output JSONL", {
   expect_equal(result$structured[[1]]$label, "yes")
 })
 
-test_that("foundry_usage sums token columns and rates", {
+test_that("foundry_batch_results leaves plain text responses unparsed", {
+  setup_mock_env()
+  batch <- list(
+    id = "batch_123",
+    status = "completed",
+    endpoint = "/v1/responses",
+    input_file_id = "file_in",
+    output_file_id = "file_out",
+    request_counts = list(total = 1, completed = 1, failed = 0)
+  )
+  response <- mock_response_api_response(output_text = "plain text")
+  output <- paste0(
+    jsonlite::toJSON(
+      list(
+        custom_id = "row-1",
+        request = list(body = list(text = list(format = list(type = "text")))),
+        response = list(status_code = 200, body = response)
+      ),
+      auto_unbox = TRUE
+    ),
+    "\n"
+  )
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      if (grepl("/content$", req$url)) {
+        httr2::response(
+          status_code = 200L,
+          url = req$url,
+          headers = list(`content-type` = "application/octet-stream"),
+          body = charToRaw(output)
+        )
+      } else {
+        mock_httr2_response(batch)
+      }
+    },
+    .package = "httr2"
+  )
+
+  result <- foundry_batch_results("batch_123")
+
+  expect_equal(result$output_text, "plain text")
+  expect_null(result$structured[[1]])
+  expect_true(is.na(result$structured_error))
+})
+
+test_that("foundry_file_content_lines marks content as UTF-8", {
+  setup_mock_env()
+  batch <- list(
+    id = "batch_123",
+    status = "completed",
+    endpoint = "/v1/responses",
+    input_file_id = "file_in",
+    output_file_id = "file_out",
+    request_counts = list(total = 1, completed = 1, failed = 0)
+  )
+  response <- mock_response_api_response(output_text = "café")
+  output <- paste0(
+    jsonlite::toJSON(
+      list(custom_id = "row-1", response = list(status_code = 200, body = response)),
+      auto_unbox = TRUE
+    ),
+    "\n"
+  )
+
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      if (grepl("/content$", req$url)) {
+        httr2::response(
+          status_code = 200L,
+          url = req$url,
+          headers = list(`content-type` = "application/octet-stream"),
+          body = charToRaw(enc2utf8(output))
+        )
+      } else {
+        mock_httr2_response(batch)
+      }
+    },
+    .package = "httr2"
+  )
+
+  result <- foundry_batch_results("batch_123")
+
+  expect_equal(result$output_text, "café")
+  expect_equal(Encoding(result$output_text), "UTF-8")
+})
+
+test_that("foundry_usage sums token columns and rates without double-counting cache", {
   x <- tibble::tibble(
     input_tokens = c(10, 20),
     cached_input_tokens = c(2, 3),
@@ -135,5 +251,19 @@ test_that("foundry_usage sums token columns and rates", {
   expect_equal(result$input_tokens, 30)
   expect_equal(result$cached_input_tokens, 5)
   expect_equal(result$output_tokens, 9)
-  expect_equal(result$cost, 30 * 0.01 + 5 * 0.001 + 9 * 0.02)
+  expect_equal(result$cost, 25 * 0.01 + 5 * 0.001 + 9 * 0.02)
+})
+
+test_that("foundry_usage accepts named lists and defaults cache to input rate", {
+  x <- tibble::tibble(
+    input_tokens = 30,
+    cached_input_tokens = 5,
+    output_tokens = 9
+  )
+
+  vec <- foundry_usage(x, rates = c(input = 0.01, output = 0.02))
+  lst <- foundry_usage(x, rates = list(input = 0.01, output = 0.02))
+
+  expect_equal(lst$cost, vec$cost)
+  expect_equal(vec$cost, 30 * 0.01 + 9 * 0.02)
 })

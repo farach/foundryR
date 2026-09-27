@@ -42,7 +42,7 @@ test_that("foundry_groundedness accepts Summarization without query", {
   mock_request(fixture)
 
   # Should not error when task is Summarization and no query
- expect_no_error(
+  expect_no_error(
     foundry_groundedness(
       text = "Paris is the capital.",
       grounding_sources = "Paris is the capital of France.",
@@ -241,9 +241,14 @@ test_that("foundry_groundedness accepts Summarization task", {
 # ============================================================================
 
 test_that("foundry_llm_resource builds the LLMResource shape", {
-  res <- foundry_llm_resource(
-    endpoint = "https://my-openai.openai.azure.com",
-    deployment_name = "gpt-4o"
+  withr::local_options(lifecycle_verbosity = "warning")
+
+  lifecycle::expect_deprecated(
+    res <- foundry_llm_resource(
+      endpoint = "https://my-openai.openai.azure.com",
+      deployment_name = "gpt-4o"
+    ),
+    "GPT-4o"
   )
 
   expect_equal(res$resourceType, "AzureOpenAI")
@@ -253,13 +258,17 @@ test_that("foundry_llm_resource builds the LLMResource shape", {
 
 test_that("foundry_groundedness rejects correction without an llm_resource", {
   setup_content_safety_env()
+  withr::local_options(lifecycle_verbosity = "warning")
 
   expect_error(
-    foundry_groundedness(
-      text = "The patient name is Kevin.",
-      grounding_sources = "The patient name is Jane.",
-      task = "Summarization",
-      correction = TRUE
+    lifecycle::expect_deprecated(
+      foundry_groundedness(
+        text = "The patient name is Kevin.",
+        grounding_sources = "The patient name is Jane.",
+        task = "Summarization",
+        correction = TRUE
+      ),
+      "GPT-4o"
     ),
     "requires an Azure OpenAI resource"
   )
@@ -267,20 +276,25 @@ test_that("foundry_groundedness rejects correction without an llm_resource", {
 
 test_that("foundry_groundedness validates malformed llm_resource", {
   setup_content_safety_env()
+  withr::local_options(lifecycle_verbosity = "warning")
 
   expect_error(
-    foundry_groundedness(
-      text = "Test",
-      grounding_sources = "Source",
-      task = "Summarization",
-      llm_resource = list(azureOpenAIEndpoint = "https://x")
+    lifecycle::expect_deprecated(
+      foundry_groundedness(
+        text = "Test",
+        grounding_sources = "Source",
+        task = "Summarization",
+        llm_resource = list(azureOpenAIEndpoint = "https://x")
+      ),
+      "GPT-4o"
     ),
     "azureOpenAIDeploymentName"
   )
 })
 
-test_that("foundry_groundedness sends mitigating and llmResource and returns correction_text", {
+test_that("foundry_groundedness sends correction and llmResource and returns correction_text", {
   setup_content_safety_env()
+  withr::local_options(lifecycle_verbosity = "warning")
 
   captured <- NULL
   resp <- mock_httr2_response(list(
@@ -300,26 +314,63 @@ test_that("foundry_groundedness sends mitigating and llmResource and returns cor
     .package = "httr2"
   )
 
-  result <- foundry_groundedness(
-    text = "The patient name is Kevin.",
-    grounding_sources = "The patient name is Jane.",
-    task = "Summarization",
-    domain = "Medical",
-    correction = TRUE,
-    llm_resource = foundry_llm_resource(
-      endpoint = "https://my-openai.openai.azure.com",
-      deployment_name = "gpt-4o"
-    )
+  llm_resource <- list(
+    resourceType = "AzureOpenAI",
+    azureOpenAIEndpoint = "https://my-openai.openai.azure.com",
+    azureOpenAIDeploymentName = "gpt-4o"
+  )
+  lifecycle::expect_deprecated(
+    result <- foundry_groundedness(
+      text = "The patient name is Kevin.",
+      grounding_sources = "The patient name is Jane.",
+      task = "Summarization",
+      domain = "Medical",
+      correction = TRUE,
+      llm_resource = llm_resource
+    ),
+    "GPT-4o"
   )
 
-  expect_true(captured$body$data$mitigating)
+  expect_true(captured$body$data$correction)
+  expect_null(captured$body$data$mitigating)
   expect_equal(captured$body$data$llmResource$azureOpenAIDeploymentName, "gpt-4o")
   expect_equal(result$correction_text, "The patient name is Jane.")
   expect_false(result$grounded)
 })
 
+test_that("foundry_groundedness deprecates reasoning when supplied", {
+  setup_content_safety_env()
+  withr::local_options(lifecycle_verbosity = "warning")
+  mock_request(mock_groundedness_response())
+
+  lifecycle::expect_deprecated(
+    foundry_groundedness(
+      text = "Grounded text",
+      grounding_sources = "Grounded text",
+      task = "Summarization",
+      reasoning = TRUE
+    ),
+    "GPT-4o"
+  )
+})
+
+test_that("foundry_groundedness core call is not deprecated", {
+  setup_content_safety_env()
+  mock_request(mock_groundedness_response())
+
+  expect_warning(
+    foundry_groundedness(
+      text = "Grounded text",
+      grounding_sources = "Grounded text",
+      task = "Summarization"
+    ),
+    NA
+  )
+})
+
 test_that("foundry_groundedness surfaces reasons aligned with segments", {
   setup_content_safety_env()
+  withr::local_options(lifecycle_verbosity = "warning")
 
   resp <- mock_httr2_response(list(
     ungroundedDetected = TRUE,
@@ -334,11 +385,14 @@ test_that("foundry_groundedness surfaces reasons aligned with segments", {
     .package = "httr2"
   )
 
-  result <- foundry_groundedness(
-    text = "Population is 12 million. Founded in 1850.",
-    grounding_sources = "A large city founded in 1900.",
-    task = "Summarization",
-    reasoning = TRUE
+  lifecycle::expect_deprecated(
+    result <- foundry_groundedness(
+      text = "Population is 12 million. Founded in 1850.",
+      grounding_sources = "A large city founded in 1900.",
+      task = "Summarization",
+      reasoning = TRUE
+    ),
+    "GPT-4o"
   )
 
   expect_equal(result$ungrounded_segments[[1]],
@@ -350,16 +404,47 @@ test_that("foundry_groundedness surfaces reasons aligned with segments", {
 
 test_that("foundry_groundedness validates the correction flag", {
   setup_content_safety_env()
+  withr::local_options(lifecycle_verbosity = "warning")
 
   expect_error(
-    foundry_groundedness(
-      text = "Test",
-      grounding_sources = "Source",
-      task = "Summarization",
-      correction = "yes"
+    lifecycle::expect_deprecated(
+      foundry_groundedness(
+        text = "Test",
+        grounding_sources = "Source",
+        task = "Summarization",
+        correction = "yes"
+      ),
+      "GPT-4o"
     ),
     "correction"
   )
+})
+
+test_that("foundry_groundedness keeps ungrounded_pct double for integer responses", {
+  setup_content_safety_env()
+  mock_request(mock_groundedness_response(grounded = TRUE, ungrounded_pct = 0L))
+
+  result <- foundry_groundedness(
+    text = "Grounded text",
+    grounding_sources = "Grounded text",
+    task = "Summarization"
+  )
+
+  expect_type(result$ungrounded_pct, "double")
+})
+
+test_that("foundry_groundedness returns NA when groundedness field is missing", {
+  setup_content_safety_env()
+  mock_request(list(ungroundedPercentage = 0.25, ungroundedDetails = list()))
+
+  result <- foundry_groundedness(
+    text = "Text",
+    grounding_sources = "Source",
+    task = "Summarization"
+  )
+
+  expect_true(is.na(result$grounded))
+  expect_equal(result$ungrounded_pct, 0.25)
 })
 
 # ============================================================================

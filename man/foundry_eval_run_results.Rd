@@ -38,13 +38,15 @@ v1 evals surface is path-versioned, so this is usually left \code{NULL}.}
 endpoint, such as
 \code{"https://<account>.services.ai.azure.com/api/projects/<project>"}.
 Supplying it selects the project-scoped Evals route
-(\verb{<project>/openai/v1/evals}) with project authentication. When neither
-\code{endpoint} nor \code{project_endpoint} is supplied, a project endpoint set with
-\code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}} is used; otherwise the call falls back to
-the resource endpoint. Built-in \code{azure_ai_evaluator} graders, model and
-agent targets, and stored-response evaluations require the project route.
-Project and resource evaluations are stored separately, so use the same
-route for every call that touches an evaluation.}
+(\verb{<project>/openai/v1/evals}), which accepts Microsoft Entra ID tokens
+only. Without it, evaluation calls use the resource endpoint, as in
+foundryR 0.1.0, unless \code{\link[=foundry_set_route]{foundry_set_route()}} selected the project or the
+call needs a feature that exists only on a project endpoint: built-in
+\code{azure_ai_evaluator} graders, model or agent targets, or stored responses.
+Those calls use the endpoint set with \code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}} and
+print a message. Evaluations created on the project endpoint are not
+visible from the resource endpoint, so pass \code{project_endpoint} (or set the
+route) when you look them up later.}
 }
 \value{
 A tibble with one row per row of \code{data} and grader, in the row order
@@ -65,6 +67,8 @@ target latency, and estimated target cost, is attached as the \code{"run"}
 attribute.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Retrieve every output item of a completed run and join the grader results to
 the data frame that was evaluated with \code{\link[=foundry_evaluate]{foundry_evaluate()}}. Rows are matched
 only through the \code{foundryr_row_id} field that \code{foundry_evaluate()} adds to

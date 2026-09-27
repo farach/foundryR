@@ -15,9 +15,10 @@ foundry_extract(
   flatten = TRUE,
   store = FALSE,
   max_active = 2L,
-  progress = TRUE,
+  progress = getOption("foundryR.progress", interactive()),
   api_key = NULL,
   endpoint = NULL,
+  token = NULL,
   ...
 )
 }
@@ -50,11 +51,13 @@ parsed data is returned in a \code{.data} list-column.}
 \item{max_active}{Integer. Maximum number of concurrent requests.}
 
 \item{progress}{Logical. Whether to show a progress bar for parallel
-extraction.}
+extraction. Defaults to \code{getOption("foundryR.progress", interactive())}.}
 
 \item{api_key}{Character. Optional API key override.}
 
 \item{endpoint}{Character. Optional endpoint override.}
+
+\item{token}{Character. Optional bearer token override for these calls.}
 
 \item{...}{Additional parameters passed to \code{foundry_response()}.}
 }

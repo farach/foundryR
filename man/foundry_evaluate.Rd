@@ -55,7 +55,8 @@ model target, for example \code{list(max_completion_tokens = 2048)}.}
 A new run is added to it, reusing its graders, so runs can be compared in
 the Foundry portal. \code{graders} and \code{item_schema} must then be \code{NULL}.}
 
-\item{name}{Optional name for the evaluation and the run.}
+\item{name}{Optional name for the evaluation and the run. Defaults to
+\code{"foundryR evaluation <UTC date-time>"}, because target runs need a name.}
 
 \item{metadata}{Optional named list of metadata attached to the evaluation
 and the run.}
@@ -82,13 +83,15 @@ most one of \code{endpoint} and \code{project_endpoint}.}
 endpoint, such as
 \code{"https://<account>.services.ai.azure.com/api/projects/<project>"}.
 Supplying it selects the project-scoped Evals route
-(\verb{<project>/openai/v1/evals}) with project authentication. When neither
-\code{endpoint} nor \code{project_endpoint} is supplied, a project endpoint set with
-\code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}} is used; otherwise the call falls back to
-the resource endpoint. Built-in \code{azure_ai_evaluator} graders, model and
-agent targets, and stored-response evaluations require the project route.
-Project and resource evaluations are stored separately, so use the same
-route for every call that touches an evaluation.}
+(\verb{<project>/openai/v1/evals}), which accepts Microsoft Entra ID tokens
+only. Without it, evaluation calls use the resource endpoint, as in
+foundryR 0.1.0, unless \code{\link[=foundry_set_route]{foundry_set_route()}} selected the project or the
+call needs a feature that exists only on a project endpoint: built-in
+\code{azure_ai_evaluator} graders, model or agent targets, or stored responses.
+Those calls use the endpoint set with \code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}} and
+print a message. Evaluations created on the project endpoint are not
+visible from the resource endpoint, so pass \code{project_endpoint} (or set the
+route) when you look them up later.}
 }
 \value{
 With \code{wait = TRUE}, the tibble returned by
@@ -96,6 +99,8 @@ With \code{wait = TRUE}, the tibble returned by
 returned by \code{\link[=foundry_eval_run_create]{foundry_eval_run_create()}}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
 Run a Microsoft Foundry cloud evaluation from a data frame and get the
 grader results back joined to your rows. \code{foundry_evaluate()} creates the
 evaluation, starts a run, waits for it, and returns one row per input row and
@@ -119,14 +124,26 @@ both stay visible in the Foundry portal and nothing is deleted afterwards.
 Target generation and model-graded evaluators consume tokens on your
 deployments.
 
-Every item sent to the service carries a reserved \code{foundryr_row_id} field,
-and results are matched to rows of \code{data} only through that field as the
-service echoes it back. Results are never matched by position. Column types
-map to JSON Schema types (character and factor to \code{string}, logical to
-\code{boolean}, integer to \code{integer}, finite double to \code{number}). Missing values
-are rejected rather than silently dropped; recode them first. List columns
-(for example message arrays for agent evaluators) require an explicit
-\code{item_schema}.
+Evaluations that only use OpenAI graders on existing columns run on the
+resource endpoint by default. Built-in evaluators and model or agent targets
+exist only on a Foundry project endpoint, so those evaluations use the
+endpoint set with \code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}} and print a message. Pass
+the same \code{project_endpoint} (or call \code{\link[=foundry_set_route]{foundry_set_route()}}) when you look
+the evaluation up later.
+
+Every item sent to the service carries a reserved \code{foundryr_row_id} field
+(\code{"row-1"}, \code{"row-2"}, ...), and results are matched to rows of \code{data} only
+through that field as the service echoes it back. Results are never matched
+by position. Column types map to JSON Schema types (character and factor to
+\code{string}, logical to \code{boolean}, integer to \code{integer}, finite double to
+\code{number}, list columns of named lists to \code{object}, other list columns to
+\code{array}). Missing values are rejected rather than silently dropped; recode
+them first. Supply \code{item_schema} when a list column needs a more specific
+schema.
+
+In target runs, a character column that holds only numeric-looking values
+(such as ZIP codes) triggers a warning, because the service can convert
+such strings to numbers and then reject them.
 
 Before anything is created, every \verb{\{\{item.<field>\}\}} reference in the graders
 and \code{input} is checked against the columns of \code{data}.
@@ -146,6 +163,7 @@ foundry_evaluate(
     name = "label-match",
     input = "{{sample.output_text}}",
     reference = "{{item.label}}",
+    # "ilike" passes when the output contains the label, ignoring case.
     operation = "ilike"
   ),
   target = "gpt-5-mini",

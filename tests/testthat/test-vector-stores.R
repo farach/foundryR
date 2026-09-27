@@ -27,3 +27,42 @@ test_that("foundry_tool_file_search emits Responses tool shape", {
   expect_equal(tool$vector_store_ids, list("vs_1", "vs_2"))
   expect_equal(tool$max_num_results, 5L)
 })
+
+test_that("vector search joins the text of each content part", {
+  setup_mock_env()
+  mock_request(list(data = list(list(
+    file_id = "file_1",
+    score = 0.8,
+    content = list(
+      list(type = "text", text = "Office hours are on Fridays."),
+      list(type = "text", text = "Room 204.")
+    )
+  ))))
+
+  result <- foundry_vector_search("vs_123", "office hours")
+  expect_equal(result$content, "Office hours are on Fridays.\nRoom 204.")
+})
+
+test_that("vector store modify sends a JSON object and can target a project", {
+  setup_mock_env()
+  project <- "https://acct.services.ai.azure.com/api/projects/demo"
+  withr::local_envvar(AZURE_FOUNDRY_PROJECT_TOKEN = "test-project-token")
+  captured <- list()
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured[[length(captured) + 1L]] <<- req
+      mock_httr2_response(list(id = "vs_123", object = "vector_store", name = "policies"))
+    },
+    .package = "httr2"
+  )
+
+  foundry_vector_store_modify("vs_123")
+  expect_equal(
+    as.character(jsonlite::toJSON(captured[[1]]$body$data, auto_unbox = TRUE)),
+    "{}"
+  )
+
+  foundry_vector_store_create("policies", project_endpoint = project)
+  expect_equal(captured[[2]]$url, paste0(project, "/openai/v1/vector_stores"))
+  expect_equal(request_header(captured[[2]], "Authorization"), "Bearer test-project-token")
+})

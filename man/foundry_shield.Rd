@@ -31,9 +31,10 @@ A tibble with columns:
 \describe{
 \item{source}{Character. Identifies the analyzed item: "user_prompt",
 "document_1", "document_2", etc.}
-\item{content}{Character. The text that was analyzed (truncated to 100 chars
-for display).
-}
+\item{.input_idx}{Integer. Position of the analyzed input. For document
+rows, this is the original position in \code{documents}, including skipped
+\code{NA} or empty entries.}
+\item{content}{Character. The full text that was analyzed.}
 \item{attack_detected}{Logical. TRUE if a prompt injection or jailbreak
 attempt was detected.}
 }

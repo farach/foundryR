@@ -18,7 +18,9 @@ A one-row tibble.
 }
 \description{
 Create a one-row tibble that records the model, schema hash, package version,
-and timestamp for a reproducible annotation run.
+and UTC timestamp for a reproducible annotation run. The schema hash is a
+SHA-256 digest of the same canonical JSON serialization used by
+\code{\link[=foundry_codebook]{foundry_codebook()}}.
 }
 \examples{
 schema <- foundry_schema(label = schema_string())

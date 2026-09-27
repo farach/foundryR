@@ -53,7 +53,9 @@ a model deployment or agent and graders read the generated output with
 it. Pair it with \code{foundry_eval_data_config(type = "azure_ai_source", scenario = "responses")}.
 }
 
-Target and stored-response runs require the project Evals route.
+Target and stored-response runs exist only on a Foundry project endpoint.
+\code{\link[=foundry_eval_run_create]{foundry_eval_run_create()}} and \code{\link[=foundry_evaluate]{foundry_evaluate()}} use the configured
+project endpoint for them and say so.
 }
 \examples{
 foundry_eval_run_data(file_id = "file-abc123")

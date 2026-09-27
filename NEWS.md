@@ -1,20 +1,67 @@
 # foundryR (development version)
 
+## Breaking changes
+
+These changes can alter the output of code written for 0.1.0. Most fix behavior that was wrong or that the service rejected.
+
+- Project endpoints now authenticate with Microsoft Entra ID only. Calls to a project endpoint no longer fall back to an API key, and passing `api_key` together with `project_endpoint` is an error. The service rejects API keys there, so these calls already failed; they now fail before the request is sent, with a message that explains how to set a project token.
+- `foundry_transcribe()` now uses standard Speech fast transcription by default, with no enhanced mode and no model. The old default, enhanced mode with `mai-transcribe-1.5`, is rejected in many regions, including East US 2. Pass `model = "mai-transcribe-2"` or the new `enhanced = TRUE` to use MAI-Transcribe or LLM Speech where they are available.
+- `foundry_translate_audio()` no longer defaults to a MAI-Transcribe model for Speech translation, because MAI-Transcribe does not translate. Speech translation still needs LLM Speech enhanced mode.
+- OpenAI-route audio calls (`foundry_transcribe()` and `foundry_translate_audio()` with `service = "openai"`, and `foundry_speak()`) now require an explicit `model` deployment name instead of falling back to `AZURE_FOUNDRY_MODEL`, which usually names a chat deployment.
+- `foundry_file_upload()` no longer sends a 30-day expiry by default (`expires_after_seconds = NULL`). The service rejects an expiry for `purpose = "assistants"`, which is the default purpose, so default uploads failed. Pass `expires_after_seconds` to set an expiry on batch files.
+- `foundry_moderate()` now labels severities on Microsoft's scale: 0-1 safe, 2-3 low, 4-5 medium, 6-7 high. The old labels were wrong on the eight-level scale; severity 1, for example, was labeled "low".
+- `foundry_moderate()` and `foundry_shield()` keep the full input text instead of truncating it, and gain an `.input_idx` column for joining results back to your data. `foundry_shield()` names documents by their original position, so skipping an empty document no longer renumbers the rest. `foundry_moderate()` gains a `blocklist_hit` column.
+- `foundry_moderate()`, `foundry_shield()`, and `foundry_groundedness()` return `NA` when the service omits a safety field, instead of reporting the input as safe or clean.
+- `foundry_extract()` returns your columns first, then the extracted fields, then the dot-prefixed metadata. Field types now follow the schema: a JSON `null` becomes a typed `NA`, and array and object fields are always list-columns. It stops before sending any request when a schema field has the same name as one of your columns.
+- `foundry_extract()` and `foundry_embed_batch()` show progress bars only in interactive sessions. Set `options(foundryR.progress = TRUE)` to see them in scripts.
+- `foundry_embed_batch()` stores only each row's own metadata in `raw_response`. It used to copy the whole batch response, every embedding included, into every row: 22 MB instead of 2.5 MB in memory for 200 texts.
+- `foundry_usage()` no longer counts cached input tokens twice. The input token count the service reports includes cached tokens, so the cost is now `(input - cached) * input + cached * cached_input + output * output`, and cached tokens are billed at the `input` rate when no `cached_input` rate is given.
+- `foundry_agreement()` no longer switches to irr when it is installed. It always uses its own two-coder Krippendorff's alpha, so results no longer depend on which packages are installed. Kappa and alpha are `NA`, with a warning, when only one category occurs. Macro precision, recall, and F1 use one label set and drop classes whose value is undefined, with a warning, as yardstick does. It also warns when the two label sets differ and reports how many incomplete pairs it dropped.
+- `foundry_consistency()` compares records after sorting their keys, at full numeric precision. Key order no longer counts as a disagreement, and values are no longer rounded to four decimals before comparison.
+- `foundry_provenance()` records a 64-character SHA-256 schema hash, the same one `foundry_codebook()` uses, and a UTC timestamp. Hashes recorded by 0.1.0 will not match.
+- `step_foundry_embed()` resolves the embedding model at `prep()` and keeps it, so changing `AZURE_FOUNDRY_EMBED_MODEL` later no longer changes the model `bake()` uses. The disk cache key now includes the model and the endpoint.
+
 ## New features
 
-- `foundry_evaluate()` runs a Microsoft Foundry cloud evaluation from a data frame. It creates the evaluation and run, waits for the run, and returns one row per input row and grader with the input columns kept. It grades existing columns, or has Foundry generate responses with a model deployment or agent first (`target`), and `eval_id` adds a run to an existing evaluation so runs can be compared. Rows are matched to results through a reserved `foundryr_row_id` field echoed by the service and checked against the data, never by position.
+- `foundry_evaluate()` runs a Microsoft Foundry cloud evaluation from a data frame. It creates the evaluation and run, waits for the run, and returns one row per input row and grader with the input columns kept. It grades existing columns, or has Foundry generate responses with a model deployment or agent first (`target`), and `eval_id` adds a run to an existing evaluation so runs can be compared. Rows are matched to results through a reserved `foundryr_row_id` field (`"row-1"`, `"row-2"`, ...) that the service echoes back, never by position. This function and the two below are experimental.
 - `foundry_eval_run_wait()` polls an evaluation run until it finishes, and `foundry_eval_run_results()` joins a completed run's grader results to the evaluated data frame.
 - `foundry_eval_run_data()` builds target runs for model deployments and agents (`target`, `input_messages`) and stored-response runs (`response_ids`). `foundry_eval_data_config()` gains `type = "azure_ai_source"` with a `scenario` argument.
+- Evaluation functions gain a `project_endpoint` argument. They use the resource endpoint, as in 0.1.0, unless you pass `project_endpoint`, call `foundry_set_route("project")`, or the evaluation uses a feature that exists only on a project endpoint: built-in evaluators, a model or agent target, or stored responses. Those calls use the configured project endpoint and print a message saying so. Target and stored-response runs get a default name, which the service requires.
 - Evaluation run tibbles now include `per_testing_criteria_results`, target latency (`target_latency_p50_ms`, `target_latency_p95_ms`, `target_latency_samples`), and estimated target cost (`target_cost`, `target_cost_currency`, `target_cost_completeness`). Output-item tibbles include the echoed `datasource_item` and the generated `sample_output_text` and `sample_output_items`.
+- `foundry_set_route()` chooses the default endpoint for the APIs that run on both a resource and a project endpoint: responses, files, vector stores, and evaluations. The default remains the resource endpoint.
+- Conversations now work. The `foundry_conversation_*()` functions use the project endpoint, the only place conversations exist; in 0.1.0 they called the resource endpoint and always failed with HTTP 404. They gain `token` and `project_endpoint` arguments.
+- File and vector store functions gain `project_endpoint`, and vector store functions gain `token`, so the files and stores that a server-side agent searches can be created where the agent looks for them.
+- `foundry_response()` and `foundry_extract()` gain a `token` argument.
+- `foundry_extract_batch_results()` collects a finished extraction batch later, joins the results to the original rows through their `row-N` IDs, and flattens the fields the way `foundry_extract()` does. It warns about input rows that have no result. `foundry_extract_batch(wait = TRUE)` now uses it.
+- `foundry_moderate()` gains a `blocklist_hit` column, and `foundry_transcribe()` gains an `enhanced` argument.
+- `foundry_check_setup()` reports project-endpoint authentication and the session route, and shows only the last four characters of an API key.
 - New vignettes: `vignette("evaluations")` walks through model and agent evaluations, and `vignette("evaluation-analysis")` covers uncertainty, paired comparisons, and judge validation for evaluation results.
+
+## Deprecated and defunct
+
+- The video functions `foundry_video_job_create()`, `foundry_video_jobs()`, `foundry_video_job_get()`, `foundry_video_job_delete()`, `foundry_video_get()`, and `foundry_video_download()` are defunct and raise an error. Azure OpenAI retires its last Sora model (`sora-2`, version 2025-12-08) on 2026-10-15 and has announced no replacement.
+- `type_boolean()`, `type_enum()`, `type_number()`, and `type_string()` are deprecated in favor of `schema_boolean()`, `schema_enum()`, `schema_number()`, and `schema_string()`, because they mask ellmer's functions of the same names. To reuse ellmer types, pass them to `as_foundry_schema()`.
+- The bring-your-own-LLM options of `foundry_groundedness()` (`reasoning`, `correction`, and `llm_resource`) and `foundry_llm_resource()` are deprecated. They require an Azure OpenAI GPT-4o deployment, and the core groundedness check does not need them.
 
 ## Bug fixes
 
-- `foundry_eval_run_output_items()` now follows the service's pagination and returns every output item. It previously returned only the first page, which silently truncated larger runs. `limit` still caps the number of output items returned.
-
-## Behavior changes
-
-- Evaluation functions gain a `project_endpoint` argument. When neither `endpoint` nor `project_endpoint` is supplied, a project endpoint configured with `foundry_set_project_endpoint()` is now used, with project authentication; otherwise calls use the resource endpoint as before. If you configured a project endpoint but manage evaluations on the resource route, pass `endpoint` explicitly.
+- API errors now keep the service's own message. The old handler replaced any message containing "key" with "Invalid API key" and labeled any 404 "Deployment not found". The hint now depends on the HTTP status and on the endpoint called; for example, a 404 on the resource endpoint mentions that objects created on a project endpoint are not visible there. Empty error bodies and string-valued `error` fields no longer break error handling.
+- `foundry_blocklist_delete()` and `foundry_blocklist_remove_items()` no longer fail after a successful call; the service answers 204 with no body.
+- `foundry_blocklist_create()` without a description sends `{}`, not `[]`, which the service rejected. Conversation and vector store updates with no fields send `{}` as well.
+- `foundry_moderate()` keeps blocklist matches when a blocklist hit halts analysis and labels those rows "blocked". It used to drop them.
+- `foundry_groundedness(correction = TRUE)` sends `correction`, the field the service reads; Microsoft Learn documents `mitigating`, which the live service ignores. `ungrounded_pct` is always numeric.
+- `foundry_protected_code()` checks the service's 110-character minimum before sending a request.
+- `foundry_batch_results()` leaves plain-text output as text instead of reporting a JSON parse error, and reads downloaded output as UTF-8. `foundry_batch_requests()` writes numbers at full precision and missing values as `null`.
+- `foundry_embed()` and `foundry_embed_batch()` treat empty strings like missing input: the row gets an error and nothing is sent.
+- `foundry_usage()` accepts rates as a named list.
+- `foundry_transcribe()` places `transcribe_style` under `enhancedMode.modelOptions`, as Microsoft Learn documents, reports enhanced-mode region failures with guidance, and fills `duration_ms` from Whisper `verbose_json` responses.
+- `foundry_vector_search()` returns the text of each content part rather than the parts' type labels.
+- `foundry_eval_delete()` warns when the service does not confirm the deletion. A project endpoint has been observed to answer `deleted = false` and keep the evaluation.
+- `foundry_eval_run_output_items()` follows the service's pagination and returns every output item. It previously returned only the first page, which silently truncated larger runs. `limit` still caps the number of output items returned.
+- `codebook_diff()` shows key-level changes inside a changed field, such as `enum: +workload`, instead of cutting values off at 77 characters.
+- `foundry_models()` is documented correctly: it lists the models available to your resource, not your deployments.
+- The 0.1.0 entry below said `foundry_agreement()` reports Fleiss' kappa. It reports Cohen's kappa and Krippendorff's alpha; the entry has been corrected.
+- foundryR now requires httr2 1.1.1 or later, the version whose features it uses. irr is no longer a suggested package.
 
 # foundryR 0.1.0
 
@@ -55,7 +102,7 @@ Initial CRAN release of foundryR, a tidy interface to Microsoft Foundry (formerl
 - `foundry_groundedness()` now supports the Content Safety correction feature via `correction = TRUE` with a bring-your-own Azure OpenAI deployment described by the new `foundry_llm_resource()`, returning a `correction_text` column, and surfaces per-segment `ungrounded_reasons` when `reasoning = TRUE`.
 - `codebook_diff()` returns a printable character-vector object, so assigning the result produces no console output; `format()` returns the plain diff lines.
 - `as_foundry_schema()` now converts `ellmer::type_object()` specifications to strict JSON Schema, so ellmer users can reuse existing type definitions in `foundry_extract()` and `foundry_response()`.
-- `foundry_agreement()` now reports Krippendorff's alpha alongside Cohen's and Fleiss' kappa, using \pkg{irr} when installed and a base-R nominal fallback otherwise.
+- `foundry_agreement()` now reports Krippendorff's alpha alongside Cohen's kappa, using \pkg{irr} when installed and a base-R nominal fallback otherwise.
 - `foundry_chat()` now accepts `reasoning_effort` and returns `reasoning_tokens` and `cached_input_tokens` when chat-completions responses report those fields.
 - `foundry_chat()` now defaults to the `/openai/v1/chat/completions` endpoint while keeping `api = "deployment"` as a legacy escape hatch.
 - `foundry_embed()` now uses the `/openai/v1/embeddings` array endpoint by default, returns row-level `.error` and `.error_msg` fields, and keeps `api = "deployment"` as a legacy escape hatch.

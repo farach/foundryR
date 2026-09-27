@@ -1,6 +1,8 @@
 #' Evaluate a data frame with Microsoft Foundry cloud evaluation
 #'
 #' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' Run a Microsoft Foundry cloud evaluation from a data frame and get the
 #' grader results back joined to your rows. `foundry_evaluate()` creates the
 #' evaluation, starts a run, waits for it, and returns one row per input row and
@@ -23,14 +25,26 @@
 #' Target generation and model-graded evaluators consume tokens on your
 #' deployments.
 #'
-#' Every item sent to the service carries a reserved `foundryr_row_id` field,
-#' and results are matched to rows of `data` only through that field as the
-#' service echoes it back. Results are never matched by position. Column types
-#' map to JSON Schema types (character and factor to `string`, logical to
-#' `boolean`, integer to `integer`, finite double to `number`). Missing values
-#' are rejected rather than silently dropped; recode them first. List columns
-#' (for example message arrays for agent evaluators) require an explicit
-#' `item_schema`.
+#' Evaluations that only use OpenAI graders on existing columns run on the
+#' resource endpoint by default. Built-in evaluators and model or agent targets
+#' exist only on a Foundry project endpoint, so those evaluations use the
+#' endpoint set with [foundry_set_project_endpoint()] and print a message. Pass
+#' the same `project_endpoint` (or call [foundry_set_route()]) when you look
+#' the evaluation up later.
+#'
+#' Every item sent to the service carries a reserved `foundryr_row_id` field
+#' (`"row-1"`, `"row-2"`, ...), and results are matched to rows of `data` only
+#' through that field as the service echoes it back. Results are never matched
+#' by position. Column types map to JSON Schema types (character and factor to
+#' `string`, logical to `boolean`, integer to `integer`, finite double to
+#' `number`, list columns of named lists to `object`, other list columns to
+#' `array`). Missing values are rejected rather than silently dropped; recode
+#' them first. Supply `item_schema` when a list column needs a more specific
+#' schema.
+#'
+#' In target runs, a character column that holds only numeric-looking values
+#' (such as ZIP codes) triggers a warning, because the service can convert
+#' such strings to numbers and then reject them.
 #'
 #' Before anything is created, every `{{item.<field>}}` reference in the graders
 #' and `input` is checked against the columns of `data`.
@@ -57,7 +71,8 @@
 #' @param eval_id Optional ID of an evaluation created by `foundry_evaluate()`.
 #'   A new run is added to it, reusing its graders, so runs can be compared in
 #'   the Foundry portal. `graders` and `item_schema` must then be `NULL`.
-#' @param name Optional name for the evaluation and the run.
+#' @param name Optional name for the evaluation and the run. Defaults to
+#'   `"foundryR evaluation <UTC date-time>"`, because target runs need a name.
 #' @param metadata Optional named list of metadata attached to the evaluation
 #'   and the run.
 #' @param wait Logical. If `TRUE` (the default), wait for the run and return the
@@ -91,6 +106,7 @@
 #'     name = "label-match",
 #'     input = "{{sample.output_text}}",
 #'     reference = "{{item.label}}",
+#'     # "ilike" passes when the output contains the label, ignoring case.
 #'     operation = "ilike"
 #'   ),
 #'   target = "gpt-5-mini",
@@ -121,10 +137,10 @@ foundry_evaluate <- function(data,
   if (!is.null(name)) {
     foundry_check_character_scalar(name, "name")
   }
+  name <- name %||% foundry_eval_default_name()
   if (!is.null(metadata) && !is.list(metadata)) {
     cli::cli_abort("{.arg metadata} must be a named list.")
   }
-  route <- foundry_eval_route(endpoint = endpoint, project_endpoint = project_endpoint)
 
   input_messages <- NULL
   if (is.null(target)) {
@@ -145,6 +161,7 @@ foundry_evaluate <- function(data,
       foundry_eval_input_template(input, data),
       instructions
     )
+    foundry_eval_warn_numeric_text(data)
   }
 
   if (is.null(eval_id)) {
@@ -152,7 +169,6 @@ foundry_evaluate <- function(data,
       cli::cli_abort("{.arg graders} is required unless {.arg eval_id} is supplied.")
     }
     graders <- foundry_eval_normalize_criteria(graders)
-    schema <- foundry_eval_item_schema(data, item_schema)
   } else {
     foundry_check_character_scalar(eval_id, "eval_id")
     if (!is.null(graders) || !is.null(item_schema)) {
@@ -163,6 +179,16 @@ foundry_evaluate <- function(data,
         )
       )
     }
+  }
+  route <- foundry_eval_resolve_route(
+    endpoint = endpoint,
+    project_endpoint = project_endpoint,
+    needs_project = foundry_eval_needs_project(graders = graders, target = target)
+  )
+
+  if (is.null(eval_id)) {
+    schema <- foundry_eval_item_schema(data, item_schema)
+  } else {
     existing <- foundry_eval_get(
       eval_id,
       api_key = api_key,
@@ -175,7 +201,6 @@ foundry_evaluate <- function(data,
     schema <- foundry_eval_existing_schema(existing, data, needs_sample = !is.null(target))
   }
 
-  foundry_eval_check_route(route, graders, target)
   foundry_eval_check_references(
     graders = graders,
     input_messages = input_messages,
@@ -250,6 +275,9 @@ foundry_evaluate <- function(data,
 
 #' Wait for an evaluation run to finish
 #'
+#' @description
+#' `r lifecycle::badge("experimental")`
+#'
 #' Poll an evaluation run until it reaches a terminal state (`"completed"`,
 #' `"failed"`, or `"canceled"`).
 #'
@@ -280,7 +308,7 @@ foundry_eval_run_wait <- function(eval_id,
   foundry_check_character_scalar(eval_id, "eval_id")
   foundry_check_character_scalar(run_id, "run_id")
   foundry_eval_check_wait_args(interval, timeout)
-  route <- foundry_eval_route(endpoint = endpoint, project_endpoint = project_endpoint)
+  route <- foundry_resolve_route("evals", endpoint = endpoint, project_endpoint = project_endpoint)
 
   started <- Sys.time()
   repeat {
@@ -312,6 +340,9 @@ foundry_eval_run_wait <- function(eval_id,
 
 
 #' Collect evaluation results joined to the evaluated rows
+#'
+#' @description
+#' `r lifecycle::badge("experimental")`
 #'
 #' Retrieve every output item of a completed run and join the grader results to
 #' the data frame that was evaluated with [foundry_evaluate()]. Rows are matched
@@ -359,7 +390,7 @@ foundry_eval_run_results <- function(eval_id,
   foundry_check_character_scalar(eval_id, "eval_id")
   foundry_check_character_scalar(run_id, "run_id")
   foundry_eval_check_data(data)
-  route <- foundry_eval_route(endpoint = endpoint, project_endpoint = project_endpoint)
+  route <- foundry_resolve_route("evals", endpoint = endpoint, project_endpoint = project_endpoint)
 
   run <- foundry_eval_run_get(
     eval_id,
@@ -479,8 +510,18 @@ foundry_eval_column_type <- function(column, name) {
     return("number")
   }
   if (is.list(column)) {
+    cells <- column[!vapply(column, is.null, logical(1))]
+    is_object <- vapply(cells, function(cell) {
+      is.list(cell) && !is.null(names(cell)) && all(nzchar(names(cell)))
+    }, logical(1))
+    if (length(cells) > 0L && all(is_object)) {
+      return("object")
+    }
+    if (length(cells) > 0L && !any(is_object)) {
+      return("array")
+    }
     cli::cli_abort(c(
-      "Column {.field {name}} is a list column.",
+      "Column {.field {name}} mixes JSON objects and arrays, or has no values.",
       "i" = "Supply {.arg item_schema} describing its JSON structure."
     ))
   }
@@ -617,27 +658,22 @@ foundry_eval_messages <- function(input_template, instructions = NULL) {
 }
 
 
-foundry_eval_check_route <- function(route, graders, target) {
-  if (!is.null(route$project_endpoint)) {
-    return(invisible(NULL))
-  }
-  needs <- character()
-  if (!is.null(target)) {
-    needs <- c(needs, "model and agent targets")
-  }
-  uses_builtin <- any(vapply(graders, function(grader) {
-    identical(grader$type, "azure_ai_evaluator")
-  }, logical(1)))
-  if (uses_builtin) {
-    needs <- c(needs, "built-in {.code azure_ai_evaluator} graders")
-  }
-  if (length(needs) > 0L) {
-    cli::cli_abort(c(
-      paste(paste(needs, collapse = " and "), "require the project Evals route."),
-      "i" = "Pass {.arg project_endpoint} or set one with {.fn foundry_set_project_endpoint}."
+# Model targets can convert numeric-looking strings to numbers and then reject
+# them against the item schema, so flag such columns before a target run.
+foundry_eval_warn_numeric_text <- function(data) {
+  numeric_like <- names(data)[vapply(data, function(column) {
+    values <- as.character(column[!is.na(column)])
+    (is.character(column) || is.factor(column)) && length(values) > 0L &&
+      all(grepl("^\\s*-?[0-9]+(\\.[0-9]+)?\\s*$", values))
+  }, logical(1))]
+  if (length(numeric_like) > 0L) {
+    cli::cli_warn(c(
+      "Column{?s} {.field {numeric_like}} contain{?s/} only numeric-looking text.",
+      "i" = "Foundry target runs can convert such strings to numbers and then reject them against the item schema.",
+      "i" = "If the run fails with {.val is not of type 'string'}, prefix the values (for example {.val id-42})."
     ))
   }
-  invisible(NULL)
+  invisible(numeric_like)
 }
 
 
@@ -695,7 +731,7 @@ foundry_eval_items <- function(data, schema = NULL) {
       cell
     })
     names(item) <- columns
-    item[[foundry_eval_row_key]] <- as.character(i)
+    item[[foundry_eval_row_key]] <- paste0("row-", i)
     list(item = item)
   })
 }
@@ -738,7 +774,13 @@ foundry_eval_join_results <- function(items, data, eval_id, run_id) {
     ))
   }
 
-  row <- match(echoed_key, as.character(seq_len(nrow(data))))
+  # Keys are "row-N"; runs started before that change used a bare "N".
+  key_index <- suppressWarnings(as.integer(sub("^row-", "", echoed_key)))
+  row <- ifelse(
+    !is.na(key_index) & key_index >= 1L & key_index <= nrow(data),
+    key_index,
+    NA_integer_
+  )
   if (anyNA(row)) {
     cli::cli_abort(c(
       "Output items refer to rows that are not in {.arg data}.",

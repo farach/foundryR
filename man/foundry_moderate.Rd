@@ -42,13 +42,17 @@ analysis when blocklist content is found.}
 \value{
 A tibble with columns:
 \describe{
-\item{text}{Character. The input text (truncated to 50 chars if longer).}
+\item{text}{Character. The full input text.}
+\item{.input_idx}{Integer. Position of the input in \code{text}, useful for
+joining results back to caller data.}
 \item{category}{Character. The harm category: "Hate", "Sexual", "SelfHarm", or "Violence".}
 \item{severity}{Integer. Severity score. Range depends on \code{output_type}:
 0-6 for FourSeverityLevels (values: 0, 2, 4, 6) or 0-7 for EightSeverityLevels.}
 \item{label}{Character. Human-readable severity label: "safe", "low", "medium", or "high".}
 \item{blocklist_matches}{List. Blocklist matches returned by the service
 for the analyzed text.}
+\item{blocklist_hit}{Logical. \code{TRUE} when the service returned any
+blocklist match for the input text.}
 \item{raw_response}{List. Raw Content Safety response for the analyzed text.}
 }
 }
@@ -70,11 +74,13 @@ or groups based on protected attributes.
 
 \strong{Severity Labels:}
 \itemize{
-\item \strong{safe} (0): No harmful content detected.
-\item \strong{low} (1-2): Mildly concerning content.
-\item \strong{medium} (3-4): Moderately harmful content.
-\item \strong{high} (5+): Severely harmful content.
+\item \strong{safe} (0-1): No harmful content detected.
+\item \strong{low} (2-3): Mildly concerning content.
+\item \strong{medium} (4-5): Moderately harmful content.
+\item \strong{high} (6-7): Severely harmful content.
 }
+
+The four-level scale uses the same labels at severities 0, 2, 4, and 6.
 }
 \section{Authentication}{
 

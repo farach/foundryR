@@ -13,3 +13,4 @@ globalVariables(c(
 
 foundry_state <- new.env(parent = emptyenv())
 foundry_state$web_search_warned <- FALSE
+foundry_state$route <- "resource"

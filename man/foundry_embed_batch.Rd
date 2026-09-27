@@ -10,7 +10,7 @@ foundry_embed_batch(
   dimensions = NULL,
   batch_size = 100L,
   max_active = 2L,
-  progress = TRUE,
+  progress = getOption("foundryR.progress", interactive()),
   api = c("v1", "deployment"),
   api_key = NULL,
   api_version = NULL
@@ -30,7 +30,8 @@ Default: 100.}
 
 \item{max_active}{Integer. Maximum number of concurrent requests. Default: 2.}
 
-\item{progress}{Logical. Whether to show a progress bar. Default: TRUE.}
+\item{progress}{Logical. Whether to show a progress bar. Defaults to
+\code{getOption("foundryR.progress", interactive())}.}
 
 \item{api}{Character. Endpoint style. \code{"v1"} (default) sends requests to
 \verb{/openai/v1/embeddings} with \code{model} in the JSON body. \code{"deployment"} keeps

@@ -9,8 +9,10 @@ foundry_usage(x, rates = NULL)
 \arguments{
 \item{x}{Data frame with foundryR token columns.}
 
-\item{rates}{Optional named numeric vector with any of \code{input},
-\code{cached_input}, and \code{output} rates per token.}
+\item{rates}{Optional named numeric vector or list with any of \code{input},
+\code{cached_input}, and \code{output} rates per token. Service-reported
+\code{input_tokens} include cached tokens; cached tokens are billed at
+\code{cached_input} when supplied, otherwise at the \code{input} rate.}
 }
 \value{
 A one-row tibble with token totals and optional \code{cost}.

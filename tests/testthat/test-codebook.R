@@ -1,7 +1,7 @@
 test_that("foundry_codebook builds the specified object contract", {
   schema <- foundry_schema(
-    ai_applicable = type_boolean("AI could materially assist the task"),
-    confidence = type_number("Coder confidence")
+    ai_applicable = schema_boolean("AI could materially assist the task"),
+    confidence = schema_number("Coder confidence")
   )
 
   codebook <- foundry_codebook(
@@ -34,8 +34,8 @@ test_that("foundry_codebook builds the specified object contract", {
 })
 
 test_that("codebook hashes are stable and content addressed", {
-  schema <- foundry_schema(label = type_enum("Task label", c("yes", "no")))
-  single_enum_schema <- foundry_schema(label = type_enum("Only label", "yes"))
+  schema <- foundry_schema(label = schema_enum(c("yes", "no"), description = "Task label"))
+  single_enum_schema <- foundry_schema(label = schema_enum("yes", description = "Only label"))
   first <- foundry_codebook(
     name = "task-label",
     version = "1.0.0",
@@ -109,14 +109,15 @@ test_that("codebook hashes are stable and content addressed", {
   expect_failure(expect_equal(first$hash, changed$hash))
 })
 
-test_that("codebook schema helpers reuse existing schema constructors", {
-  expect_equal(type_boolean("Flag"), schema_boolean("Flag"))
-  expect_equal(type_number("Score"), schema_number("Score"))
-  expect_equal(type_string("Text"), schema_string("Text"))
-  expect_equal(
-    type_enum("Choice", c("yes", "no")),
-    schema_enum(c("yes", "no"), description = "Choice")
-  )
+test_that("deprecated type_*() helpers still match schema_*() and signal deprecation", {
+  lifecycle::expect_deprecated(flag <- type_boolean("Flag"))
+  expect_equal(flag, schema_boolean("Flag"))
+  lifecycle::expect_deprecated(score <- type_number("Score"))
+  expect_equal(score, schema_number("Score"))
+  lifecycle::expect_deprecated(text <- type_string("Text"))
+  expect_equal(text, schema_string("Text"))
+  lifecycle::expect_deprecated(choice <- type_enum("Choice", c("yes", "no")))
+  expect_equal(choice, schema_enum(c("yes", "no"), description = "Choice"))
 })
 
 test_that("foundry_codebook validates name, version, schema, and examples", {
@@ -126,7 +127,7 @@ test_that("foundry_codebook validates name, version, schema, and examples", {
       name = "Bad Name",
       version = "1.0.0",
       instructions = "Label.",
-      schema = foundry_schema(label = type_string())
+      schema = foundry_schema(label = schema_string())
     )
   )
   expect_snapshot(
@@ -135,7 +136,7 @@ test_that("foundry_codebook validates name, version, schema, and examples", {
       name = "good-name",
       version = "1",
       instructions = "Label.",
-      schema = foundry_schema(label = type_string())
+      schema = foundry_schema(label = schema_string())
     )
   )
   expect_snapshot(
@@ -153,7 +154,7 @@ test_that("foundry_codebook validates name, version, schema, and examples", {
       name = "good-name",
       version = "1.0.0",
       instructions = "Label.",
-      schema = foundry_schema(label = type_string()),
+      schema = foundry_schema(label = schema_string()),
       examples = "not-list"
     )
   )
@@ -164,7 +165,7 @@ test_that("codebook print and diff output are stable", {
     name = "task-label",
     version = "1.0.0",
     instructions = "Label each task.\nUse yes or no.",
-    schema = foundry_schema(label = type_enum("Task label", c("yes", "no"))),
+    schema = foundry_schema(label = schema_enum(c("yes", "no"), description = "Task label")),
     examples = list(list(text = "Write code", label = "yes"))
   )
   new <- foundry_codebook(
@@ -172,8 +173,8 @@ test_that("codebook print and diff output are stable", {
     version = "1.1.0",
     instructions = "Label each task.\nUse yes, no, or maybe.",
     schema = foundry_schema(
-      label = type_enum("Task label", c("yes", "no", "maybe")),
-      rationale = type_string("Short reason")
+      label = schema_enum(c("yes", "no", "maybe"), description = "Task label"),
+      rationale = schema_string("Short reason")
     ),
     examples = list(
       list(text = "Write code", label = "yes"),
@@ -192,4 +193,42 @@ test_that("codebook print and diff output are stable", {
   expect_identical(printed, unname(format(diff)))
   expect_identical(result$value, diff)
   expect_identical(result$visible, FALSE)
+})
+
+test_that("codebook_diff shows added enum values without truncation", {
+  old <- foundry_codebook(
+    name = "task-kind",
+    version = "1.0.0",
+    instructions = "Label each task.",
+    schema = foundry_schema(
+      label = schema_enum(c("bug", "feature", "docs", "test"), description = "Task label")
+    )
+  )
+  new <- foundry_codebook(
+    name = "task-kind",
+    version = "1.1.0",
+    instructions = "Label each task.",
+    schema = foundry_schema(
+      label = schema_enum(
+        c("bug", "feature", "docs", "test", "workload"),
+        description = "Task label"
+      )
+    )
+  )
+
+  diff <- codebook_diff(old, new)
+
+  expect_true(any(grepl("enum: \\+workload", diff)))
+  expect_true(any(grepl("workload", diff)))
+  expect_false(any(grepl("enum: [+-]$", diff)))
+
+  reordered <- foundry_codebook(
+    name = "task-kind",
+    version = "1.2.0",
+    instructions = "Label each task.",
+    schema = foundry_schema(
+      label = schema_enum(c("test", "docs", "feature", "bug"), description = "Task label")
+    )
+  )
+  expect_true(any(grepl("enum: reordered", codebook_diff(old, reordered))))
 })
