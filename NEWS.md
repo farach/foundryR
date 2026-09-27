@@ -34,7 +34,7 @@ These changes can alter the output of code written for 0.1.0. Most fix behavior 
 - `foundry_extract_batch_results()` collects a finished extraction batch later, joins the results to the original rows through their `row-N` IDs, and flattens the fields the way `foundry_extract()` does. It warns about input rows that have no result. `foundry_extract_batch(wait = TRUE)` now uses it.
 - `foundry_moderate()` gains a `blocklist_hit` column, and `foundry_transcribe()` gains an `enhanced` argument.
 - `foundry_check_setup()` reports project-endpoint authentication and the session route, and shows only the last four characters of an API key.
-- The articles are rewritten around research tasks, and each shows output recorded from live Microsoft Foundry resources. New articles cover evaluations (`vignette("evaluations")`) and the analysis of evaluation results (`vignette("evaluation-analysis")`). The comparison with ellmer now lives in the README and `vignette("responses-api")`. The O*NET integration article is withdrawn until it can be re-recorded, because its text did not match its recorded output.
+- The articles are rewritten around research tasks, and each shows output recorded from live Microsoft Foundry resources. New articles cover evaluations (`vignette("evaluations")`) and the analysis of evaluation results (`vignette("evaluation-analysis")`). The comparison with ellmer now lives in the README and `vignette("responses-api")`. The O*NET article is rewritten as a worked example of matching free-text job descriptions to O*NET-SOC occupations, with its output recorded live.
 
 ## Deprecated and defunct
 

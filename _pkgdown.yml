@@ -321,6 +321,7 @@ articles:
       - annotation-workflow
       - files-batches
       - embeddings
+      - articles/onet2r-integration
       - tidymodels
 
   - title: Evaluate models and agents
@@ -347,8 +348,7 @@ articles:
       - media-generation
 
 redirects:
-  - ["articles/foundryr-vs-ellmer.html", "index.html"]
-  - ["articles/onet2r-integration.html", "index.html"]
+  - ["articles/foundryr-vs-ellmer.html", "articles/responses-api.html"]
 
 footer:
   structure:

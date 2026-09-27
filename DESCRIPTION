@@ -54,5 +54,6 @@ Suggests:
     withr,
     yardstick
 Config/testthat/edition: 3
+Config/Needs/website: farach/onet2r
 VignetteBuilder: knitr
 Config/roxygen2/version: 8.1.0
