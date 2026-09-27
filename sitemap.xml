@@ -6,8 +6,9 @@
 <url><loc>https://farach.github.io/foundryR/articles/audio.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/content-safety.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/embeddings.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/articles/evaluation-analysis.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/articles/evaluations.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/files-batches.html</loc></url>
-<url><loc>https://farach.github.io/foundryR/articles/foundryr-vs-ellmer.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/getting-started.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/index.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/articles/media-generation.html</loc></url>
@@ -63,10 +64,14 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_eval_run_data.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_eval_run_get.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_eval_run_output_items.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_eval_run_results.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_eval_run_wait.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_eval_runs.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_evals.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_evaluate.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_extract.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_extract_batch.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_extract_batch_results.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_file_delete.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_file_download.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_file_get.html</loc></url>
@@ -114,6 +119,7 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_set_image_key.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_set_key.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_set_project_endpoint.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_set_route.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_set_speech_endpoint.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_set_speech_key.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_set_token.html</loc></url>
@@ -130,12 +136,7 @@
 <url><loc>https://farach.github.io/foundryR/reference/foundry_translate_audio.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_usage.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_vector_stores.html</loc></url>
-<url><loc>https://farach.github.io/foundryR/reference/foundry_video_download.html</loc></url>
-<url><loc>https://farach.github.io/foundryR/reference/foundry_video_get.html</loc></url>
-<url><loc>https://farach.github.io/foundryR/reference/foundry_video_job_create.html</loc></url>
-<url><loc>https://farach.github.io/foundryR/reference/foundry_video_job_delete.html</loc></url>
-<url><loc>https://farach.github.io/foundryR/reference/foundry_video_job_get.html</loc></url>
-<url><loc>https://farach.github.io/foundryR/reference/foundry_video_jobs.html</loc></url>
+<url><loc>https://farach.github.io/foundryR/reference/foundry_video_defunct.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/foundry_web_search.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/get_content_safety_endpoint.html</loc></url>
 <url><loc>https://farach.github.io/foundryR/reference/get_content_safety_key.html</loc></url>

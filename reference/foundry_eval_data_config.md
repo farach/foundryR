@@ -2,16 +2,19 @@
 
 Describe the shape of the data an evaluation expects. `type = "custom"`
 declares an item schema you populate per run; `type = "logs"` sources
-rows from stored completions matching a metadata filter.
+rows from stored completions matching a metadata filter;
+`type = "azure_ai_source"` lets Microsoft Foundry supply the rows for a
+service scenario, such as stored responses.
 
 ## Usage
 
 ``` r
 foundry_eval_data_config(
-  type = c("custom", "logs"),
+  type = c("custom", "logs", "azure_ai_source"),
   item_schema = NULL,
   include_sample_schema = FALSE,
-  metadata = NULL
+  metadata = NULL,
+  scenario = NULL
 )
 ```
 
@@ -19,7 +22,7 @@ foundry_eval_data_config(
 
 - type:
 
-  Character. Either `"custom"` or `"logs"`.
+  Character. One of `"custom"`, `"logs"`, or `"azure_ai_source"`.
 
 - item_schema:
 
@@ -35,6 +38,13 @@ foundry_eval_data_config(
 - metadata:
 
   List. For `type = "logs"`, the stored-completions metadata filter.
+
+- scenario:
+
+  Character. For `type = "azure_ai_source"`, the Foundry scenario, for
+  example `"responses"` to evaluate stored responses by ID (see
+  [`foundry_eval_run_data()`](https://farach.github.io/foundryR/reference/foundry_eval_run_data.md)).
+  Requires the project Evals route.
 
 ## Value
 
@@ -86,5 +96,13 @@ foundry_eval_data_config(
 #> 
 #> $include_sample_schema
 #> [1] TRUE
+#> 
+
+foundry_eval_data_config(type = "azure_ai_source", scenario = "responses")
+#> $type
+#> [1] "azure_ai_source"
+#> 
+#> $scenario
+#> [1] "responses"
 #> 
 ```

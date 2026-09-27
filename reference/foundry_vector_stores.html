@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">foundryR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -15,31 +15,33 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/getting-started.html">Get Started</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/getting-started.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
-    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
-    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Get started with foundryR</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Measure text</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">From text to defensible estimates</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Annotate at scale with the Batch API</a></li>
+    <li><a class="dropdown-item" href="../articles/embeddings.html">Embeddings for research</a></li>
+    <li><a class="dropdown-item" href="../articles/tidymodels.html">Embeddings in tidymodels recipes</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Evaluate models and agents</h6></li>
+    <li><a class="dropdown-item" href="../articles/evaluations.html">Evaluate models and agents in Microsoft Foundry</a></li>
+    <li><a class="dropdown-item" href="../articles/evaluation-analysis.html">Analyze evaluation results with uncertainty</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Safety</h6></li>
+    <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety gates in a research pipeline</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Reference</h6></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
     <li><a class="dropdown-item" href="../articles/api-support.html">API support matrix</a></li>
-    <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
-    <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
-    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
-    <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
-    <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Other modalities (experimental)</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Transcribe and translate audio</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Generate images</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -75,17 +77,27 @@
 <span>  expires_after_days <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">foundry_vector_stores</span><span class="op">(</span></span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  after <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">foundry_vector_store_get</span><span class="op">(</span><span class="va">vector_store_id</span>, api_key <span class="op">=</span> <span class="cn">NULL</span>, endpoint <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">foundry_vector_store_get</span><span class="op">(</span></span>
+<span>  <span class="va">vector_store_id</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">foundry_vector_store_modify</span><span class="op">(</span></span>
 <span>  <span class="va">vector_store_id</span>,</span>
@@ -93,38 +105,54 @@
 <span>  metadata <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  expires_after_days <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">foundry_vector_store_delete</span><span class="op">(</span><span class="va">vector_store_id</span>, api_key <span class="op">=</span> <span class="cn">NULL</span>, endpoint <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">foundry_vector_store_delete</span><span class="op">(</span></span>
+<span>  <span class="va">vector_store_id</span>,</span>
+<span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">foundry_vector_store_files</span><span class="op">(</span></span>
 <span>  <span class="va">vector_store_id</span>,</span>
 <span>  limit <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  after <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">foundry_vector_store_file_add</span><span class="op">(</span></span>
 <span>  <span class="va">vector_store_id</span>,</span>
 <span>  <span class="va">file_id</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">foundry_vector_store_file_remove</span><span class="op">(</span></span>
 <span>  <span class="va">vector_store_id</span>,</span>
 <span>  <span class="va">file_id</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">foundry_vector_store_file_batch</span><span class="op">(</span></span>
 <span>  <span class="va">vector_store_id</span>,</span>
 <span>  <span class="va">file_ids</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">foundry_vector_search</span><span class="op">(</span></span>
@@ -134,7 +162,9 @@
 <span>  filters <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  rewrite_query <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  api_key <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  endpoint <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  token <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -165,6 +195,15 @@ time.</p></dd>
 
 <dt id="arg-endpoint">endpoint<a class="anchor" aria-label="anchor" href="#arg-endpoint"></a></dt>
 <dd><p>Character. Optional endpoint override.</p></dd>
+
+
+<dt id="arg-token">token<a class="anchor" aria-label="anchor" href="#arg-token"></a></dt>
+<dd><p>Character. Optional bearer token override.</p></dd>
+
+
+<dt id="arg-project-endpoint">project_endpoint<a class="anchor" aria-label="anchor" href="#arg-project-endpoint"></a></dt>
+<dd><p>Character. Optional project endpoint. When supplied,
+the call uses the project endpoint instead of the resource endpoint.</p></dd>
 
 
 <dt id="arg-limit">limit<a class="anchor" aria-label="anchor" href="#arg-limit"></a></dt>
@@ -202,6 +241,15 @@ time.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A tibble with vector store, file, or search-result metadata.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Vector stores live on the endpoint where you create them. A server-side
+agent's <code>file_search</code> tool searches vector stores on the project endpoint,
+so create those stores (and upload their files) with <code>project_endpoint</code>, or
+after <code>foundry_set_route("project")</code>. Direct search with
+<code>foundry_vector_search()</code> currently rejects Microsoft Entra ID tokens; call
+it on the resource endpoint with an API key.</p>
     </div>
 
     <div class="section level2">

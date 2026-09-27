@@ -1,254 +1,419 @@
-# Annotating open-ended survey responses end to end
+# From text to defensible estimates
 
-Open-ended survey responses are valuable because respondents can say
-what the researcher did not anticipate. They are also expensive to code
-by hand. This vignette shows a foundryR workflow that keeps each model
-step visible in a tibble: extract structured labels, run the same prompt
-at scale with Batch, embed text for similarity work, and check that
-generated findings are grounded in the source responses.
+Calls to Azure show output recorded from a live run, and setup code is
+shown but not run.
 
-## Example data
+This article codes course evaluation comments for one primary theme and
+sentiment, then turns those labels into an estimate. The same pattern
+applies to interview transcripts, support tickets and open-ended survey
+answers. The sections below add, in order, a versioned codebook,
+readable labels, a check against hand codes, a stability check, an
+interval and a provenance record. A reviewer can ask about each one.
+
+## Start with a versioned codebook
+
+The codebook is the measurement instrument. It records the instructions,
+schema, examples and version that define what a label means.
 
 ``` r
 
 library(foundryR)
 library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
+```
 
-responses <- tibble::tibble(
-  respondent_id = 1:6,
-  response = c(
-    "The lectures were clear, but the weekly quizzes felt rushed.",
-    "I liked the examples in R. More office hours would help.",
-    "The project made the material practical.",
-    "I struggled because the instructions changed late.",
-    "The instructor explained regression well.",
-    "The course needed more examples before the final exam."
+``` r
+
+comments <- tibble::tibble(
+  comment_id = sprintf("c%02d", 1:10),
+  comment = c(
+    "The lectures were clear and the examples made regression feel concrete.",
+    "The weekly quizzes felt rushed and did not match the homework.",
+    "Office hours helped me catch up after I missed the first lab.",
+    "The slides were hard to follow because notation changed between weeks.",
+    "The final project connected the material to real policy questions.",
+    "I needed more feedback before the midterm.",
+    "The instructor explained difficult topics patiently.",
+    "The reading packet was useful, but several links were broken.",
+    "Group work helped, although the grading rubric came too late.",
+    "More examples before the final exam would have helped."
   )
 )
 ```
 
-## Extract structured annotations
-
-Start with a JSON Schema. Keep the schema small enough that a human
-reviewer can understand it.
-
 ``` r
 
-annotation_schema <- list(
-  type = "object",
-  properties = list(
-    sentiment = list(type = "string", enum = c("positive", "negative", "mixed")),
-    primary_theme = list(
-      type = "string",
-      enum = c("instruction", "assessment", "support", "materials")
-    ),
-    needs_followup = list(type = "boolean"),
-    short_summary = list(type = "string")
+course_schema <- foundry_schema(
+  theme = schema_enum(
+    c("instruction", "assessment", "support", "materials"),
+    description = paste(
+      "Primary theme: instruction, assessment, support, or materials."
+    )
   ),
-  required = c(
-    "sentiment",
-    "primary_theme",
-    "needs_followup",
-    "short_summary"
-  ),
-  additionalProperties = FALSE
-)
-```
-
-[`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
-uses strict JSON Schema mode by default for supported models. The result
-is one row per response, with schema fields as columns.
-
-``` r
-
-annotations <- foundry_extract(
-  responses$response,
-  schema = annotation_schema,
-  instructions = paste(
-    "Code each survey response for a course evaluation.",
-    "Use the respondent's words. Do not infer facts that are not stated."
+  sentiment = schema_enum(
+    c("positive", "negative", "mixed"),
+    description = "Overall sentiment toward the course element."
   )
 )
 
-coded <- bind_cols(responses, annotations)
-coded
-#> # A tibble: 6 × 14
-#>   respondent_id response             .input_idx .input_text .response_id .status
-#>           <int> <chr>                     <int> <chr>       <chr>        <chr>  
-#> 1             1 The lectures were c…          1 The lectur… resp_0b7303… comple…
-#> 2             2 I liked the example…          2 I liked th… resp_0933f6… comple…
-#> 3             3 The project made th…          3 The projec… resp_064aa2… comple…
-#> 4             4 I struggled because…          4 I struggle… resp_054a7d… comple…
-#> 5             5 The instructor expl…          5 The instru… resp_05e2d6… comple…
-#> 6             6 The course needed m…          6 The course… resp_0dfe6c… comple…
-#> # ℹ 8 more variables: .output_text <chr>, .error <lgl>, .error_msg <chr>,
-#> #   raw_response <list>, sentiment <chr>, primary_theme <chr>,
-#> #   needs_followup <lgl>, short_summary <chr>
-```
+course_instructions <- paste(
+  "Code one course evaluation comment.",
+  "Choose exactly one primary theme.",
+  "Use instruction for teaching clarity or examples.",
+  "Use assessment for quizzes, exams, projects, grading or feedback.",
+  "Use support for office hours or help outside class.",
+  "Use materials for slides, readings, links or course files.",
+  "Choose positive, negative or mixed sentiment from the student's wording."
+)
 
-## Move the same job to Azure Batch
-
-Interactive extraction is useful while designing the schema. For larger
-jobs, write a JSONL request file and submit it to Azure’s Batch API. The
-submission below requires Azure credentials and is not run during
-rendering. Its temporary request file is removed after upload.
-
-``` r
-
-jsonl <- tempfile(fileext = ".jsonl")
-
-foundry_batch_requests(
-  responses,
-  input = "response",
-  path = jsonl,
-  model = "gpt-5-nano",
-  endpoint = "/v1/responses",
-  body = list(
-    instructions = paste(
-      "Code each survey response using the supplied schema.",
-      "Return only JSON that conforms to the schema."
+course_codebook <- foundry_codebook(
+  name = "course-evaluation-codes",
+  version = "1.0.0",
+  instructions = course_instructions,
+  schema = course_schema,
+  examples = list(
+    list(
+      text = "The lectures were clear.",
+      theme = "instruction",
+      sentiment = "positive"
     ),
-    text = list(
-      format = list(
-        type = "json_schema",
-        name = "CourseEvaluationAnnotation",
-        schema = annotation_schema,
-        strict = TRUE
-      )
+    list(
+      text = "The rubric came too late.",
+      theme = "assessment",
+      sentiment = "negative"
     )
   )
 )
 
-file <- foundry_file_upload(jsonl, purpose = "batch")
-unlink(jsonl)
-batch <- foundry_batch_create(file$file_id, endpoint = "/v1/responses")
-foundry_batch_get(batch$batch_id)
+course_codebook
+#> foundry codebook: course-evaluation-codes
+#> version: 1.0.0
+#> hash: 44dc8b370cb4
+#> variables:
+#>   - theme: string [instruction, assessment, support, materials] (Primary theme: instruction, assessment, support, or materials.)
+#>   - sentiment: string [positive, negative, mixed] (Overall sentiment toward the course element.)
+#> examples: 2
 ```
 
-The Batch API is the right choice when the schema is stable and the job
-is large enough that lower cost and asynchronous execution matter more
-than immediate feedback.
-
-## Embed responses for clustering and near-duplicate checks
-
-Embeddings turn text into numeric vectors. For open-ended survey data,
-use them to find near-duplicate answers, cluster themes that were not in
-the original codebook, or build semantic search over the responses.
+Versioning matters because label changes change the estimand. If
+“workload” becomes a valid theme, yesterday’s “assessment” labels are no
+longer directly comparable with tomorrow’s labels.
 
 ``` r
 
-embeddings <- foundry_embed(
-  responses$response,
-  model = "text-embedding-3-small"
-)
-
-similarity <- foundry_similarity(embeddings)
-head(similarity, 10)
-#> # A tibble: 10 × 3
-#>    text_1                                                      text_2 similarity
-#>    <chr>                                                       <chr>       <dbl>
-#>  1 I liked the examples in R. More office hours would help.    The c…      0.546
-#>  2 The lectures were clear, but the weekly quizzes felt rushe… The c…      0.507
-#>  3 The lectures were clear, but the weekly quizzes felt rushe… I lik…      0.436
-#>  4 The instructor explained regression well.                   The c…      0.421
-#>  5 I liked the examples in R. More office hours would help.    The i…      0.416
-#>  6 The lectures were clear, but the weekly quizzes felt rushe… The i…      0.390
-#>  7 The lectures were clear, but the weekly quizzes felt rushe… I str…      0.373
-#>  8 I struggled because the instructions changed late.          The c…      0.372
-#>  9 The project made the material practical.                    The c…      0.334
-#> 10 The project made the material practical.                    The i…      0.298
-```
-
-High-similarity pairs are useful audit targets. They can reveal
-duplicate responses, repeated complaints, or places where the schema
-splits similar answers into different labels.
-
-## Validate generated findings with groundedness
-
-After coding and embedding, a researcher often writes a summary. Treat
-that summary as a claim and check it against the source responses.
-
-``` r
-
-finding <- paste(
-  "Students generally praised clear instruction and practical examples.",
-  "Several asked for more examples and more support before assessments."
-)
-
-grounding_text <- paste(responses$response, collapse = "\n")
-
-groundedness <- foundry_groundedness(
-  text = finding,
-  grounding_sources = grounding_text,
-  query = "What did students say about the course?",
-  task = "QnA"
-)
-
-groundedness
-#> # A tibble: 1 × 6
-#>   grounded grounded_pct ungrounded_pct ungrounded_segments ungrounded_reasons
-#>   <lgl>           <dbl>          <int> <list>              <list>            
-#> 1 TRUE                1              0 <chr [0]>           <chr [0]>         
-#> # ℹ 1 more variable: correction_text <chr>
-```
-
-If `grounded` is `FALSE`, inspect `ungrounded_segments` before sharing
-the finding. This does not replace human review, but it gives you an
-auditable check inside the same R workflow.
-
-## Review table
-
-``` r
-
-review <- coded |>
-  select(
-    respondent_id,
-    response,
-    sentiment,
-    primary_theme,
-    needs_followup,
-    short_summary
+course_schema_v2 <- foundry_schema(
+  theme = schema_enum(
+    c("instruction", "assessment", "support", "materials", "workload"),
+    description = paste(
+      "Primary theme: instruction, assessment, support, materials, or workload."
+    )
+  ),
+  sentiment = schema_enum(
+    c("positive", "negative", "mixed"),
+    description = "Overall sentiment toward the course element."
   )
+)
 
-review
-#> # A tibble: 6 × 6
-#>   respondent_id response    sentiment primary_theme needs_followup short_summary
-#>           <int> <chr>       <chr>     <chr>         <lgl>          <chr>        
-#> 1             1 The lectur… mixed     assessment    TRUE           The lectures…
-#> 2             2 I liked th… positive  support       TRUE           I liked the …
-#> 3             3 The projec… positive  instruction   FALSE          The project …
-#> 4             4 I struggle… negative  instruction   TRUE           I struggled …
-#> 5             5 The instru… positive  instruction   FALSE          The instruct…
-#> 6             6 The course… negative  instruction   TRUE           The course n…
+course_codebook_v2 <- foundry_codebook(
+  name = "course-evaluation-codes",
+  version = "1.1.0",
+  instructions = paste(
+    course_instructions,
+    "Use workload for comments about pacing or volume that are not mainly assessment."
+  ),
+  schema = course_schema_v2,
+  examples = course_codebook$examples
+)
+
+codebook_diff(course_codebook, course_codebook_v2)
+#> Codebook diff
+#> old: course-evaluation-codes 1.0.0 44dc8b370cb45b83fccb26264225d07b7af182a050fd67a6e222a6776e4dad89
+#> new: course-evaluation-codes 1.1.0 25a223fd7de1c485c3112ba0bf59597ad13322c9dffa6f4b0612f14f16f27282
+#> 
+#> Instructions:
+#> --- old instructions
+#> +++ new instructions
+#> @@
+#> -Code one course evaluation comment. Choose exactly one primary theme. Use instruction for teaching clarity or examples. Use assessment for quizzes, exams, projects, grading or feedback. Use support for office hours or help outside class. Use materials for slides, readings, links or course files. Choose positive, negative or mixed sentiment from the student's wording.
+#> +Code one course evaluation comment. Choose exactly one primary theme. Use instruction for teaching clarity or examples. Use assessment for quizzes, exams, projects, grading or feedback. Use support for office hours or help outside class. Use materials for slides, readings, links or course files. Choose positive, negative or mixed sentiment from the student's wording. Use workload for comments about pacing or volume that are not mainly assessment.
+#> 
+#> Schema:
+#> ~ theme.description: "Primary theme: instruction, assessment, support, or materials." -> "Primary theme: instruction, assessment, support, materials, or workload."
+#> ~ theme.enum: +workload
+#>   sentiment: no change
+#> 
+#> Examples:
+#>   (no changes)
 ```
 
-The rendered table and chart below summarize the same extraction results
-when the suggested `gt` and `ggplot2` packages are installed.
+The diff is short enough for a methods appendix or code review. It shows
+the schema and instruction changes behind any shift in label rates.
 
-| Structured annotations from open-ended responses |  |  |  |  |  |
-|----|----|----|----|----|----|
-| ID | Response | Sentiment | Theme | Follow-up | Summary |
-| 1 | The lectures were clear, but the weekly quizzes felt rushed. | mixed | assessment | Review | The lectures were clear, but the weekly quizzes felt rushed. |
-| 2 | I liked the examples in R. More office hours would help. | positive | support | Review | I liked the examples in R. More office hours would help. |
-| 3 | The project made the material practical. | positive | instruction | No review | The project made the material practical. |
-| 4 | I struggled because the instructions changed late. | negative | instruction | Review | I struggled because the instructions changed late. |
-| 5 | The instructor explained regression well. | positive | instruction | No review | The instructor explained regression well. |
-| 6 | The course needed more examples before the final exam. | negative | instruction | Review | The course needed more examples before the final exam. |
+## Extract only the coded fields
 
-![Instruction drew 4 of 6 responses: 2 positive and 2 negative. Stacked
-horizontal bars show each primary theme: Instruction, 2 positive and 2
-negative; Assessment, 1 mixed; Support, 1
-positive.](annotation-workflow_files/figure-html/sentiment-theme-chart-1.png)
+[`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
+returns input columns, extracted fields, dot-prefixed metadata and the
+raw response. Print the fields needed for the next decision, not the
+whole object.
 
-The workflow leaves a trail: raw response, extracted labels, model
-metadata, embedding similarity, and groundedness checks. That trail is
-the reason foundryR returns tibbles instead of hiding results inside
-client objects.
+``` r
+
+coding_model <- "gpt-5-nano" # your deployment name
+
+model_labels <- foundry_extract(
+  comments,
+  text_col = "comment",
+  schema = course_codebook$schema,
+  instructions = course_codebook$instructions,
+  model = coding_model
+)
+
+model_labels |>
+  select(comment_id, theme, sentiment)
+#> # A tibble: 10 × 3
+#>    comment_id theme       sentiment
+#>    <chr>      <chr>       <chr>    
+#>  1 c01        instruction positive 
+#>  2 c02        assessment  negative 
+#>  3 c03        support     positive 
+#>  4 c04        materials   negative 
+#>  5 c05        assessment  positive 
+#>  6 c06        assessment  negative 
+#>  7 c07        instruction positive 
+#>  8 c08        materials   mixed    
+#>  9 c09        assessment  mixed    
+#> 10 c10        instruction negative
+```
+
+Readable output is a quality control step. It lets a reviewer notice a
+systematic problem, such as materials comments being coded as
+instruction, before the labels become an estimate.
+
+## Compare with hand codes on a sample
+
+The next check is agreement with a reference sample. The labels below
+are hand codes written for this example. In a study, draw this sample
+before looking at model errors, and keep a second labeled sample if you
+tune the prompt or codebook.
+
+``` r
+
+hand_codes <- tibble::tibble(
+  comment_id = c("c01", "c02", "c03", "c04", "c05", "c06"),
+  human_theme = c(
+    "instruction",
+    "assessment",
+    "support",
+    "materials",
+    "assessment",
+    "assessment"
+  ),
+  human_sentiment = c(
+    "positive",
+    "negative",
+    "positive",
+    "negative",
+    "positive",
+    "negative"
+  )
+)
+
+hand_codes
+#> # A tibble: 6 × 3
+#>   comment_id human_theme human_sentiment
+#>   <chr>      <chr>       <chr>          
+#> 1 c01        instruction positive       
+#> 2 c02        assessment  negative       
+#> 3 c03        support     positive       
+#> 4 c04        materials   negative       
+#> 5 c05        assessment  positive       
+#> 6 c06        assessment  negative
+```
+
+``` r
+
+validation_sample <- model_labels |>
+  select(comment_id, theme, sentiment) |>
+  inner_join(hand_codes, by = "comment_id")
+
+theme_agreement <- foundry_agreement(
+  validation_sample,
+  estimate = "theme",
+  truth = "human_theme"
+) |>
+  mutate(variable = "theme")
+
+sentiment_agreement <- foundry_agreement(
+  validation_sample,
+  estimate = "sentiment",
+  truth = "human_sentiment"
+) |>
+  mutate(variable = "sentiment")
+
+bind_rows(theme_agreement, sentiment_agreement) |>
+  select(variable, metric, value, n)
+#> # A tibble: 12 × 4
+#>    variable  metric             value     n
+#>    <chr>     <chr>              <dbl> <int>
+#>  1 theme     accuracy               1     6
+#>  2 theme     precision_macro        1     6
+#>  3 theme     recall_macro           1     6
+#>  4 theme     f1_macro               1     6
+#>  5 theme     cohen_kappa            1     6
+#>  6 theme     krippendorff_alpha     1     6
+#>  7 sentiment accuracy               1     6
+#>  8 sentiment precision_macro        1     6
+#>  9 sentiment recall_macro           1     6
+#> 10 sentiment f1_macro               1     6
+#> 11 sentiment cohen_kappa            1     6
+#> 12 sentiment krippendorff_alpha     1     6
+```
+
+All 6 theme pairs agree in this recording. That says little on its own,
+because 6 comments written to be unambiguous are an easy test. A real
+validation sample is drawn at random from the data being coded and is
+large enough for an interval on accuracy to be informative.
+
+Accuracy is the share of complete pairs where the model and human label
+match. Macro precision, recall and F1 compute a per-class value and
+average across classes, so a rare class can matter as much as a common
+class. foundryR follows the yardstick convention: when a class has an
+undefined denominator for a macro metric, that class is dropped from
+that macro average with a warning.
+
+Cohen’s kappa discounts the agreement you would expect by chance, given
+how often each coder uses each label. foundryR computes Krippendorff’s
+alpha for nominal labels from two coders. Both are useful when a high
+raw accuracy could come from a dominant class. None of these metrics
+proves the hand codes are true, unbiased or complete. They measure
+agreement with the reference labels you supplied.
+
+## Check repeated-run stability
+
+Agreement checks accuracy against people. Stability checks whether the
+same instrument gives the same label when it is run again. A model can
+be stable and wrong.
+
+``` r
+
+stability <- foundry_consistency(
+  comments$comment[1:4],
+  schema = course_codebook$schema,
+  n = 3,
+  instructions = course_codebook$instructions,
+  model = coding_model
+)
+
+stability |>
+  select(.input_idx, successful_runs, failed_runs, modal_share, entropy)
+#> # A tibble: 4 × 5
+#>   .input_idx successful_runs failed_runs modal_share entropy
+#>        <int>           <int>       <int>       <dbl>   <dbl>
+#> 1          1               3           0           1       0
+#> 2          2               3           0           1       0
+#> 3          3               3           0           1       0
+#> 4          4               3           0           1       0
+```
+
+In this recording 4 of 4 comments received the same record in all 3
+runs. Short, clear comments are the easy case; run the same check on the
+ambiguous comments your hand coders disagreed about.
+
+`modal_share` is the largest repeated-label pattern’s share of
+successful runs. With `n = 3` and all three runs successful, it can only
+be one third, two thirds or one. `entropy` is in bits and increases when
+repeated runs split across several distinct records. These values
+summarize stability only. They do not say whether the modal label
+matches a human code.
+
+## Estimate a theme share with an interval
+
+Once the codebook is fixed and the labels have passed enough checks for
+the decision at hand, label counts become estimates. The interval below
+is an exact binomial interval from
+[`binom.test()`](https://rdrr.io/r/stats/binom.test.html), computed
+separately for each theme.
+
+``` r
+
+theme_levels <- course_codebook$schema$properties$theme$enum |> as.character()
+
+theme_estimates <- lapply(theme_levels, function(level) {
+  x <- sum(model_labels$theme == level, na.rm = TRUE)
+  n <- sum(!is.na(model_labels$theme))
+  interval <- binom.test(x, n)$conf.int
+  tibble::tibble(
+    theme = level,
+    labels = x,
+    total = n,
+    share = x / n,
+    conf_low = interval[[1]],
+    conf_high = interval[[2]]
+  )
+}) |>
+  bind_rows()
+
+theme_estimates
+#> # A tibble: 4 × 6
+#>   theme       labels total share conf_low conf_high
+#>   <chr>        <int> <int> <dbl>    <dbl>     <dbl>
+#> 1 instruction      3    10   0.3  0.0667      0.652
+#> 2 assessment       4    10   0.4  0.122       0.738
+#> 3 support          1    10   0.1  0.00253     0.445
+#> 4 materials        2    10   0.2  0.0252      0.556
+```
+
+With 10 comments, each interval is wide; the width comes from the small
+sample, not from the model. This interval covers sampling error for the
+share of comments assigned each theme, given the labels as recorded. It
+does not cover systematic model mislabeling. That is what the hand-coded
+sample is for. If you need an estimate corrected with a validation
+sample, the CRAN package `ipd` is a useful pointer for inference on
+predicted data.
+
+## Record provenance
+
+The final estimate should carry the instrument and model that produced
+it. That record lets another analyst connect a table of estimates back
+to the exact schema.
+
+``` r
+
+run_provenance <- foundry_provenance(
+  model = coding_model,
+  schema = course_codebook$schema,
+  metadata = list(
+    codebook = course_codebook$name,
+    codebook_version = course_codebook$version,
+    codebook_hash = course_codebook$hash
+  )
+)
+
+run_provenance |>
+  select(model, schema_hash, package_version, captured_at)
+#> # A tibble: 1 × 4
+#>   model      schema_hash                     package_version captured_at        
+#>   <chr>      <chr>                           <chr>           <dttm>             
+#> 1 gpt-5-nano c5ee5dc66f90546f2c3f053bd61847… 0.1.0.9000      2026-09-27 22:59:56
+```
+
+The codebook hash and schema hash are not substitutes for archiving the
+codebook. They are compact checks that the labels and report refer to
+the same instrument.
+
+## What to report
+
+For a defensible text-to-estimate workflow, report the choices that
+affect the estimate. A short methods note should cover:
+
+- the data source, unit of analysis, sample size and sampling frame;
+- the codebook name, version, hash, instructions, schema and examples;
+- the model deployment, package version, date, endpoint route and
+  sampling settings;
+- the validation sample design, hand-coding process, agreement metrics,
+  label confusions and any classes dropped from macro metrics;
+- the stability design, including `n`, successful runs, failed runs,
+  modal share and entropy;
+- the estimate, interval method, interval interpretation and what the
+  interval omits;
+- any correction method used for model mislabeling, and the validation
+  sample it depends on.

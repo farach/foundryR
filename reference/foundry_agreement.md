@@ -1,9 +1,9 @@
 # Compute agreement metrics for LLM annotation
 
-Compare model labels with human or gold-standard labels using common
-publication-friendly metrics: accuracy, macro precision/recall/F1,
-Cohen's kappa, and Krippendorff's alpha (using irr when installed,
-otherwise a base-R nominal implementation).
+Compare model labels with reference labels using accuracy, macro
+precision/recall/F1, Cohen's kappa, and nominal Krippendorff's alpha for
+two coders. These metrics describe agreement with the reference labels;
+they do not establish that the reference labels are valid.
 
 ## Usage
 
@@ -28,6 +28,17 @@ foundry_agreement(data, estimate, truth)
 ## Value
 
 A tibble with one row per metric.
+
+## Details
+
+Rows with missing labels in either column are dropped and reported; `n`
+is the number of complete pairs. If the estimate and truth label sets
+differ, a warning reports the labels only seen on one side. Macro
+metrics use the union of labels in both columns and follow the yardstick
+convention: classes whose per-class denominator is undefined for a given
+metric are dropped from that macro average with a warning. If only one
+category occurs across both columns, kappa and alpha are returned as
+`NA_real_` with a warning.
 
 ## Examples
 

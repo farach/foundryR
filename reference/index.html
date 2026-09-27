@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">foundryR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -15,31 +15,33 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/getting-started.html">Get Started</a></li>
+      <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/getting-started.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
-    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
-    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Get started with foundryR</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Measure text</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">From text to defensible estimates</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Annotate at scale with the Batch API</a></li>
+    <li><a class="dropdown-item" href="../articles/embeddings.html">Embeddings for research</a></li>
+    <li><a class="dropdown-item" href="../articles/tidymodels.html">Embeddings in tidymodels recipes</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Evaluate models and agents</h6></li>
+    <li><a class="dropdown-item" href="../articles/evaluations.html">Evaluate models and agents in Microsoft Foundry</a></li>
+    <li><a class="dropdown-item" href="../articles/evaluation-analysis.html">Analyze evaluation results with uncertainty</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Safety</h6></li>
+    <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety gates in a research pipeline</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Reference</h6></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
     <li><a class="dropdown-item" href="../articles/api-support.html">API support matrix</a></li>
-    <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
-    <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
-    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
-    <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
-    <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Other modalities (experimental)</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Transcribe and translate audio</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Generate images</a></li>
   </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -143,6 +145,13 @@
 
         <dt>
 
+          <code><a href="foundry_set_route.html">foundry_set_route()</a></code>
+
+        </dt>
+        <dd>Choose the endpoint for APIs that run on a resource or a project</dd>
+
+        <dt>
+
           <code><a href="foundry_set_speech_endpoint.html">foundry_set_speech_endpoint()</a></code>
 
         </dt>
@@ -216,7 +225,7 @@
         <dt>
 
           <code><a href="foundry_llm_resource.html">foundry_llm_resource()</a></code>
-
+          <span class="badge lifecycle lifecycle-deprecated">deprecated</span>
         </dt>
         <dd>Describe a bring-your-own Azure OpenAI resource for groundedness</dd>
 
@@ -354,13 +363,6 @@
 
         </dt>
         <dd>Schema constructors for structured outputs</dd>
-
-        <dt>
-
-          <code><a href="codebook_schema_helpers.html">type_boolean()</a></code> <code><a href="codebook_schema_helpers.html">type_enum()</a></code> <code><a href="codebook_schema_helpers.html">type_number()</a></code> <code><a href="codebook_schema_helpers.html">type_string()</a></code>
-
-        </dt>
-        <dd>Codebook schema helpers</dd>
 
         <dt>
 
@@ -582,6 +584,13 @@
 
         <dt>
 
+          <code><a href="foundry_extract_batch_results.html">foundry_extract_batch_results()</a></code>
+
+        </dt>
+        <dd>Collect completed structured extraction batch results</dd>
+
+        <dt>
+
           <code><a href="foundry_usage.html">foundry_usage()</a></code>
 
         </dt>
@@ -589,7 +598,7 @@
       </dl></div><div class="section level2">
       <h2 id="evaluations">Evaluations<a class="anchor" aria-label="anchor" href="#evaluations"></a></h2>
 
-      <div class="section-desc"><p>Run Microsoft Foundry cloud evaluations. Define graders (string check, text similarity, model-graded labels and scores, and Azure built-in evaluators), create evaluations, and inspect per-row grader results as tibbles.</p></div>
+      <div class="section-desc"><p>Run Microsoft Foundry cloud evaluations from data frames. Grade existing columns or have a model deployment or agent generate responses first, then get grader results joined to your rows. Lower-level functions build graders (string check, text similarity, model-graded labels and scores, and Azure built-in evaluators), data sources, evaluations, and runs.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -597,6 +606,27 @@
 
 
       <dl><dt>
+
+          <code><a href="foundry_evaluate.html">foundry_evaluate()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Evaluate a data frame with Microsoft Foundry cloud evaluation</dd>
+
+        <dt>
+
+          <code><a href="foundry_eval_run_wait.html">foundry_eval_run_wait()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Wait for an evaluation run to finish</dd>
+
+        <dt>
+
+          <code><a href="foundry_eval_run_results.html">foundry_eval_run_results()</a></code>
+          <span class="badge lifecycle lifecycle-experimental">experimental</span>
+        </dt>
+        <dd>Collect evaluation results joined to the evaluated rows</dd>
+
+        <dt>
 
           <code><a href="foundry_grader_string_check.html">foundry_grader_string_check()</a></code>
 
@@ -858,7 +888,7 @@
       </dl></div><div class="section level2">
       <h2 id="experimental-media">Experimental media<a class="anchor" aria-label="anchor" href="#experimental-media"></a></h2>
 
-      <div class="section-desc"><p>Generate and edit images with GPT-image models through the v1 image APIs, and manage preview video generation jobs.</p></div>
+      <div class="section-desc"><p>Generate and edit images with GPT-image models through the v1 image APIs.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -899,52 +929,10 @@
 
         </dt>
         <dd>Set Image Generation API Key</dd>
-
-        <dt>
-
-          <code><a href="foundry_video_job_create.html">foundry_video_job_create()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Create a Microsoft Foundry video generation job</dd>
-
-        <dt>
-
-          <code><a href="foundry_video_jobs.html">foundry_video_jobs()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>List Microsoft Foundry video generation jobs</dd>
-
-        <dt>
-
-          <code><a href="foundry_video_job_get.html">foundry_video_job_get()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Retrieve a Microsoft Foundry video generation job</dd>
-
-        <dt>
-
-          <code><a href="foundry_video_job_delete.html">foundry_video_job_delete()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Delete a Microsoft Foundry video generation job</dd>
-
-        <dt>
-
-          <code><a href="foundry_video_get.html">foundry_video_get()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Retrieve a Microsoft Foundry video generation</dd>
-
-        <dt>
-
-          <code><a href="foundry_video_download.html">foundry_video_download()</a></code>
-          <span class="badge lifecycle lifecycle-experimental">experimental</span>
-        </dt>
-        <dd>Download Microsoft Foundry generated video content</dd>
       </dl></div><div class="section level2">
       <h2 id="model-discovery">Model discovery<a class="anchor" aria-label="anchor" href="#model-discovery"></a></h2>
 
-      <div class="section-desc"><p>Explore the model deployments available in your Microsoft Foundry or Azure OpenAI resource.</p></div>
+      <div class="section-desc"><p>List the models available to your Microsoft Foundry or Azure OpenAI resource. Deployments, which you name when you deploy a model, are listed in the Foundry portal.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -956,7 +944,7 @@
           <code><a href="foundry_models.html">foundry_models()</a></code>
 
         </dt>
-        <dd>List or retrieve available model deployments</dd>
+        <dd>List or retrieve models available to a Foundry resource</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

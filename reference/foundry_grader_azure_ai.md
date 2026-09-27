@@ -1,8 +1,12 @@
 # Microsoft Foundry built-in evaluator grader
 
 Reference a Microsoft Foundry built-in evaluator (a `builtin.*` ID such
-as `builtin.coherence` or `builtin.groundedness`) as a grader. This
-grader type is only available on the project-scoped Foundry endpoint.
+as `builtin.coherence` or `builtin.groundedness`) as a grader. Built-in
+evaluators run only on a Foundry project endpoint;
+[`foundry_eval_create()`](https://farach.github.io/foundryR/reference/foundry_eval_create.md)
+and
+[`foundry_evaluate()`](https://farach.github.io/foundryR/reference/foundry_evaluate.md)
+switch to it when a grader of this type is present.
 
 ## Usage
 
@@ -28,8 +32,9 @@ foundry_grader_azure_ai(
 
 - initialization_parameters:
 
-  List. Optional parameters passed to the evaluator, e.g.
-  `list(model = "gpt-5-nano")` for model-graded evaluators.
+  List. Optional parameters passed to the evaluator. Model-graded
+  evaluators take the judge deployment as
+  `list(deployment_name = "gpt-5-mini")`.
 
 - data_mapping:
 
@@ -52,7 +57,7 @@ A named list describing an `azure_ai_evaluator` grader.
 foundry_grader_azure_ai(
   name = "coherence",
   evaluator_name = "builtin.coherence",
-  initialization_parameters = list(model = "gpt-5-nano"),
+  initialization_parameters = list(deployment_name = "gpt-5-mini"),
   data_mapping = list(
     query = "{{item.query}}",
     response = "{{sample.output_text}}"
@@ -68,8 +73,8 @@ foundry_grader_azure_ai(
 #> [1] "builtin.coherence"
 #> 
 #> $initialization_parameters
-#> $initialization_parameters$model
-#> [1] "gpt-5-nano"
+#> $initialization_parameters$deployment_name
+#> [1] "gpt-5-mini"
 #> 
 #> 
 #> $data_mapping

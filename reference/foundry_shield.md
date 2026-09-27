@@ -51,10 +51,15 @@ A tibble with columns:
   Character. Identifies the analyzed item: "user_prompt", "document_1",
   "document_2", etc.
 
+- .input_idx:
+
+  Integer. Position of the analyzed input. For document rows, this is
+  the original position in `documents`, including skipped `NA` or empty
+  entries.
+
 - content:
 
-  Character. The text that was analyzed (truncated to 100 chars for
-  display).
+  Character. The full text that was analyzed.
 
 - attack_detected:
 

@@ -1,63 +1,62 @@
-# Responses API, Structured Extraction, and Web Search
+# Responses API, structured extraction, and web search
 
-## Why the Responses API matters
+Calls to Azure show output recorded from a live run; setup code is shown
+but not run.
 
-Microsoft Foundry now exposes a newer v1 data-plane endpoint for Azure
-OpenAI:
+The Responses API is the foundryR route for stored response objects,
+stateful turns, built-in tools, token accounting, and schema-constrained
+output. The `model =` argument is a deployment name, and foundryR reads
+`AZURE_FOUNDRY_MODEL` when you omit it.
 
-``` text
-https://<resource>.openai.azure.com/openai/v1/responses
-```
-
-Unlike the older deployment-path chat API, the v1 Responses API sends
-the model deployment in the JSON body. It also adds stateful response
-chaining, built-in tools, structured output formats, and richer output
-metadata.
-
-foundryR wraps this with
-[`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
-while keeping the package’s tidy interface: generated text, citations,
-tool calls, token usage, and the raw response are returned as tibble
-columns.
-
-The examples below omit `model =`, so foundryR reads the deployment from
-`AZURE_FOUNDRY_MODEL`. Set it once, or pass `model =` to override per
-call.
-
-## Basic response
+By default, responses go to the resource endpoint. Pass
+`project_endpoint =` to send one call to a Foundry project instead, or
+call `foundry_set_route("project")` to send responses, files, vector
+stores, and evaluations there for the rest of the R session.
+Agent-backed responses always use the project endpoint because agents
+live in a project.
 
 ``` r
 
-library(foundryR)
+foundry_set_project_endpoint(Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT"))
 
 foundry_response(
-  "Answer in one sentence: what is retrieval-augmented generation?"
+  "Summarize the project route in one sentence.",
+  project_endpoint = Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT")
 )
-#> # A tibble: 1 × 17
-#>   response_id     status model output_text structured structured_error citations
-#>   <chr>           <chr>  <chr> <chr>       <list>     <chr>            <list>   
-#> 1 resp_08bfb26cf… compl… gpt-… Retrieval-… <NULL>     NA               <tibble> 
-#> # ℹ 10 more variables: tool_calls <list>, refusal <chr>,
-#> #   incomplete_reason <chr>, created_at <dttm>, input_tokens <int>,
-#> #   output_tokens <int>, reasoning_tokens <int>, cached_input_tokens <int>,
-#> #   total_tokens <int>, raw_response <list>
 ```
 
-The result includes:
+## Response text and usage
 
-- `response_id`: the stored Responses API object ID
-- `output_text`: generated text aggregated from the response output
-  items
-- `citations`: a list-column of URL citations, when present
-- `tool_calls`: a list-column of tool calls, such as web-search calls
-- token usage columns, including reasoning and cached input tokens when
-  the API reports them
-- a `raw_response` list-column
+[`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+returns a one-row tibble. Most analysis starts with the generated text
+and the token columns, not with the raw response.
+
+``` r
+
+basic <- foundry_response(
+  "Answer in one sentence: what is retrieval-augmented generation?"
+)
+
+basic$output_text
+#> [1] "Retrieval-augmented generation (RAG) is a method that augments a text-generating model with a retrieval component that fetches relevant documents from an external corpus and conditions the generated output on those documents to improve factual accuracy and up-to-date knowledge."
+basic[, c(
+  "input_tokens", "output_tokens", "reasoning_tokens",
+  "cached_input_tokens", "total_tokens"
+)]
+#> # A tibble: 1 × 5
+#>   input_tokens output_tokens reasoning_tokens cached_input_tokens total_tokens
+#>          <int>         <int>            <int>               <int>        <int>
+#> 1           19           356              256                   0          375
+```
+
+Reasoning models can spend tokens that do not appear in `output_text`.
+Keep the token columns in reports when cost or model behavior matters.
 
 ## Stateful turns
 
-Responses are stored by the service by default. You can chain turns by
-passing the previous `response_id`:
+Responses are stored by the service by default. Chaining with
+`previous_response_id` lets the service carry state from one turn to the
+next.
 
 ``` r
 
@@ -71,81 +70,99 @@ second <- foundry_response(
 )
 
 second$output_text
-#> [1] "Catastrophic forgetting is when a model forgets how to do earlier tasks after being trained on new ones because the updates to its parameters overwrite or disrupt the previously learned knowledge."
+#> [1] "Catastrophic forgetting is when a neural network forgets how to do an old task after learning a new one, because updating its internal parameters for the new task overwrites the adjustments it had made for the old task."
+second[, c("response_id", "input_tokens", "output_tokens", "total_tokens")]
+#> # A tibble: 1 × 4
+#>   response_id                            input_tokens output_tokens total_tokens
+#>   <chr>                                         <int>         <int>        <int>
+#> 1 resp_083254d4c0c03253006ab97c3e29a081…           77           313          390
 ```
 
-If you do not want the service to store a response, pass
-`store = FALSE`. Stateful chaining with `previous_response_id` requires
-the previous response to be stored.
+Set `store = FALSE` for stateless calls when you do not need server-side
+state. Chaining requires a stored previous response.
 
-## Structured extraction with JSON Schema
+## Structured extraction
 
-[`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
-is designed for data scientists and researchers who need to turn free
-text into analyzable variables. You provide a JSON Schema as an R list;
-foundryR sends it through the Responses API structured output format and
-returns one row per input text.
-
-[`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
-sends `strict = TRUE` in the JSON Schema format by default. For
-supported models, the service must return data that conforms to the
-schema.
+Structured output is useful when model output becomes data. The example
+below codes short comments into sentiment, topic entities, and a
+summary. foundryR’s schema helpers build the JSON Schema that Azure
+enforces.
 
 ``` r
 
-schema <- list(
-  type = "object",
-  properties = list(
-    sentiment = list(
-      type = "string",
-      enum = c("positive", "negative", "neutral")
-    ),
-    entities = list(
-      type = "array",
-      items = list(type = "string")
-    ),
-    summary = list(type = "string")
-  ),
-  required = c("sentiment", "entities", "summary"),
-  additionalProperties = FALSE
+comment_schema <- foundry_schema(
+  sentiment = schema_enum(c("positive", "negative", "neutral")),
+  entities = schema_array(schema_string()),
+  summary = schema_string()
 )
 
-texts <- c(
+comments <- c(
   "The new data pipeline reduced manual coding time by half.",
   "Participants reported confusion about the consent form."
 )
 
-foundry_extract(
-  texts,
-  schema = schema
+comment_codes <- foundry_extract(
+  comments,
+  schema = comment_schema,
+  schema_name = "CommentCode"
 )
-#> # A tibble: 2 × 11
-#>   .input_idx .input_text     .response_id .status .output_text .error .error_msg
-#>        <int> <chr>           <chr>        <chr>   <chr>        <lgl>  <chr>     
-#> 1          1 The new data p… resp_0daf26… comple… "{\"sentime… FALSE  NA        
-#> 2          2 Participants r… resp_0df47e… comple… "{\"sentime… FALSE  NA        
-#> # ℹ 4 more variables: raw_response <list>, sentiment <chr>, entities <list>,
-#> #   summary <chr>
+
+comment_codes[, c("sentiment", "entities", "summary", ".status")]
+#> # A tibble: 2 × 4
+#>   sentiment entities  summary                                            .status
+#>   <chr>     <list>    <chr>                                              <chr>  
+#> 1 positive  <chr [2]> The new data pipeline reduced manual coding time … comple…
+#> 2 negative  <chr [2]> Participants reported confusion about the consent… comple…
 ```
 
-Top-level scalar fields become regular tibble columns. Arrays and nested
-objects become list-columns, which work naturally with tidyverse
-workflows.
+Top-level scalar fields become regular columns. Arrays and nested
+objects become list-columns, so you can unnest them only when your next
+analysis needs it.
+
+If you already use ellmer type specifications, convert them locally with
+[`as_foundry_schema()`](https://farach.github.io/foundryR/reference/as_foundry_schema.md),
+which returns the JSON Schema that foundryR sends with an extraction
+request. This keeps the extraction contract in one place.
+
+``` r
+
+sentiment_spec <- ellmer::type_object(
+  sentiment = ellmer::type_enum(
+    c("positive", "negative", "neutral"),
+    description = "Overall sentiment of the response."
+  ),
+  theme = ellmer::type_string("A short theme label for the response.")
+)
+
+sentiment_schema <- as_foundry_schema(sentiment_spec)
+jsonlite::toJSON(sentiment_schema, auto_unbox = TRUE, pretty = TRUE)
+#> {
+#>   "type": "object",
+#>   "properties": {
+#>     "sentiment": {
+#>       "type": "string",
+#>       "enum": ["positive", "negative", "neutral"],
+#>       "description": "Overall sentiment of the response."
+#>     },
+#>     "theme": {
+#>       "type": "string",
+#>       "description": "A short theme label for the response."
+#>     }
+#>   },
+#>   "required": ["sentiment", "theme"],
+#>   "additionalProperties": false
+#> }
+```
 
 ## User-defined R tools
 
-The Responses API function-calling contract uses tool definitions with
-`type = "function"` and follow-up tool outputs with
-`type = "function_call_output"` plus a matching `call_id`.
 [`foundry_tool()`](https://farach.github.io/foundryR/reference/foundry_tool.md)
-builds the tool schema and keeps the R function reference for local
+describes an R function to the model and keeps the local function for
 execution.
 [`foundry_agent()`](https://farach.github.io/foundryR/reference/foundry_agent.md)
-runs the bounded call, execute, return-output loop.
-
-The tool, MCP, web-search, and reasoning examples below need configured
-services and are not included in the recorded fixtures, so they are not
-run during rendering.
+runs a bounded loop: ask the model, execute requested function calls in
+R, send the matching tool outputs back, and stop when the model returns
+a final answer.
 
 ``` r
 
@@ -156,39 +173,51 @@ get_weather <- function(location) {
 weather_tool <- foundry_tool(
   get_weather,
   description = "Get weather for a location",
-  parameters = list(
-    type = "object",
-    properties = list(location = list(type = "string")),
-    required = "location"
+  parameters = foundry_schema(
+    location = schema_string("City and state.")
   )
 )
 
-turns <- foundry_agent(
+tool_turns <- foundry_agent(
   "What is the weather in San Francisco?",
   tools = list(weather_tool),
   max_iterations = 4
 )
 
-turns[, c("iteration", "final", "output_text")]
-turns$tool_results[[1]]
+tool_turns[, c("iteration", "final", "output_text")]
+#> # A tibble: 2 × 3
+#>   iteration final output_text                                                   
+#>       <int> <lgl> <chr>                                                         
+#> 1         1 FALSE  NA                                                           
+#> 2         2 TRUE  "Current weather in San Francisco, CA: 70°F (about 21°C).\n\n…
+tool_turns$tool_calls[[1]][, c("type", "name", "call_id", "arguments")]
+#> # A tibble: 1 × 4
+#>   type          name        call_id                       arguments             
+#>   <chr>         <chr>       <chr>                         <chr>                 
+#> 1 function_call get_weather call_5b7vLutyQoRGmPdZTjSsHIRd "{\"location\":\"San …
+tool_turns$tool_results[[1]]
+#> # A tibble: 1 × 4
+#>   call_id                       name        arguments        output             
+#>   <chr>                         <chr>       <list>           <chr>              
+#> 1 call_5b7vLutyQoRGmPdZTjSsHIRd get_weather <named list [1]> "{\"location\":\"S…
 ```
 
-The loop stops with an error if the model continues requesting tools
-after `max_iterations`. This protects batch jobs from unbounded tool
-use.
+The maximum iteration count protects long jobs from unbounded tool
+loops. Set it to match the number of tool calls you are willing to
+review.
 
 ## Remote MCP tools
 
 Microsoft documents remote Model Context Protocol tools for the
-Responses API. foundryR does not add a separate MCP helper yet because
+Responses API. foundryR does not add a separate MCP helper because
 [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
-already accepts raw Responses API tool objects:
+accepts raw Responses API tool objects.
 
 ``` r
 
 mcp_tool <- list(
   type = "mcp",
-  server_label = "my_mcp_server",
+  server_label = "approved_server",
   server_url = Sys.getenv("MY_MCP_SERVER_URL"),
   require_approval = "never"
 )
@@ -199,28 +228,51 @@ foundry_response(
 )
 ```
 
-Only attach MCP servers you trust and whose data-handling behavior your
-organization has approved.
+Only attach MCP servers you trust and whose data handling your
+organization has approved. Treat the server as part of the same data
+boundary as the model call.
 
-## Web-grounded answers with citations
+## Web-grounded answers
+
+Web search sends query data to Grounding with Bing services. Microsoft
+documents that this can leave compliance or geographic boundaries and
+can incur extra cost, so avoid secrets and sensitive research data in
+web-search prompts. foundryR warns about this before the first web
+search in a session, and the option at the top of the next chunk
+acknowledges that warning.
 
 [`foundry_web_search()`](https://farach.github.io/foundryR/reference/foundry_web_search.md)
-uses the Responses API `web_search` tool and parses URL citations into a
-tidy list-column:
+requests the Responses API `web_search` tool and parses citations and
+tool calls into list-columns. The printed fields show the answer,
+sources, and search query separately.
 
 ``` r
 
-answer <- foundry_web_search(
-  "What changed recently in the Microsoft Foundry Responses API?",
-  search_context_size = "high"
+options(foundryR.web_search_warning = TRUE)
+
+web_answer <- foundry_web_search(
+  "Which version of R does the R Project website list as the latest release, and when was it released?",
+  search_context_size = "medium"
 )
 
-answer$output_text
-answer$citations[[1]]
-answer$tool_calls[[1]]
+web_answer$output_text
+#> [1] "- Latest release: R 4.6.1, nicknamed \"Happy Hop\".\n- Release date: June 24, 2026 (2026-06-24). ([r-project.org](https://www.r-project.org/?0003=))"
+web_answer$citations[[1]][, c("title", "url")]
+#> # A tibble: 1 × 2
+#>   title                                   url                             
+#>   <chr>                                   <chr>                           
+#> 1 The R Project for Statistical Computing https://www.r-project.org/?0003=
+web_answer$tool_calls[[1]][, c("type", "status", "action_type", "query")]
+#> # A tibble: 3 × 4
+#>   type            status    action_type query                   
+#>   <chr>           <chr>     <chr>       <chr>                   
+#> 1 web_search_call completed search      R latest release version
+#> 2 web_search_call completed open_page   NA                      
+#> 3 web_search_call completed open_page   NA
 ```
 
-You can optionally provide approximate location fields:
+You can pass approximate location fields when the answer depends on
+place. Keep location values coarse unless the task needs more detail.
 
 ``` r
 
@@ -233,54 +285,42 @@ foundry_web_search(
 )
 ```
 
-## Responsible use of web search
+## Reasoning token accounting
 
-Microsoft documents that web search uses Grounding with Bing Search
-and/or Grounding with Bing Custom Search. The Data Protection Addendum
-does not apply to data sent to these services, data can leave compliance
-and geographic boundaries, and tool usage can incur additional costs.
-Avoid sending secrets or sensitive research data in web-search prompts.
-
-## Reasoning models and token accounting
-
-[`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
-accepts `reasoning_effort` and sends it as
-`reasoning = list(effort = ...)`, the Responses API shape documented by
-Microsoft for reasoning models.
-[`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
-accepts the chat-completions shape, `reasoning_effort = "medium"`.
+`reasoning_effort` is sent as the Responses API `reasoning` object. The
+returned usage columns show whether hidden reasoning tokens contributed
+to cost.
 
 ``` r
 
-foundry_response(
-  "Compare the two arguments and identify the weaker premise.",
-  model = "my-reasoning-deployment",
+reasoned <- foundry_response(
+  "Compare the two arguments and identify the weaker premise: A says the survey item is valid because it is short. B says it is valid because respondents interpret it consistently.",
   reasoning_effort = "medium"
 )
+
+reasoned$output_text
+#> [1] "- Premise A: “The item is valid because it is short.”\n- Premise B: “The item is valid because respondents interpret it consistently.”\n\nWeaker premise: A.\n\nWhy:\n- Length alone does not determine validity. An item being short is a form/quality issue and may even reduce content validity if it omits important aspects. It does not logically establish that the item measures the intended construct.\n\nWhy B is stronger (though still not sufficient):\n- If respondents interpret the item consistently, that reduces measurement error and confusion, which supports reliability and, to some extent, construct validity. It is a more meaningful basis for validity than shortness.\n\nCaveats:\n- Even B does not guarantee validity. An item could be interpreted consistently but still measure the wrong construct. Validity evidence would require additional checks (content validity, convergent/divergent validity, test-retest reliability, etc.)."
+reasoned[, c(
+  "input_tokens", "output_tokens", "reasoning_tokens",
+  "cached_input_tokens", "total_tokens"
+)]
+#> # A tibble: 1 × 5
+#>   input_tokens output_tokens reasoning_tokens cached_input_tokens total_tokens
+#>          <int>         <int>            <int>               <int>        <int>
+#> 1           39          1822             1600                   0         1861
 ```
 
-The returned tibble includes `reasoning_tokens` and
-`cached_input_tokens` when the API reports them. These fields matter for
-cost review because reasoning tokens may be billed even when they are
-not visible in `output_text`.
-
-## Streaming
+## Streaming and chat completions
 
 The Azure OpenAI Responses API supports Server-Sent Events streaming,
 but foundryR does not implement streaming. The package focuses on
 reproducible, tibble-returning analytical workflows. Use ellmer when you
 need interactive streaming chat in R.
 
-## When to use `foundry_chat()` vs `foundry_response()`
-
 Use
 [`foundry_chat()`](https://farach.github.io/foundryR/reference/foundry_chat.md)
-when you want the established chat-completions interface and simple
-assistant replies.
-
-Use
+for the established chat-completions interface and simple assistant
+replies. Use
 [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
-when you need newer v1 capabilities: stateful response IDs, built-in
-tools, structured output formats, richer output items, or a
-forward-looking API surface for new Microsoft Foundry model
-capabilities.
+for response IDs, built-in tools, structured output formats, richer
+output items, and token accounting.

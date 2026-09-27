@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Responses API, Structured Extraction, and Web Search • foundryR</title>
+<title>Responses API, structured extraction, and web search • foundryR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -16,7 +16,7 @@
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Responses API, Structured Extraction, and Web Search">
+<meta property="og:title" content="Responses API, structured extraction, and web search">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">foundryR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,32 +38,34 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../articles/getting-started.html">Get Started</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/getting-started.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
-    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
-    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
+<li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Get started with foundryR</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Measure text</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">From text to defensible estimates</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Annotate at scale with the Batch API</a></li>
+    <li><a class="dropdown-item" href="../articles/embeddings.html">Embeddings for research</a></li>
+    <li><a class="dropdown-item" href="../articles/tidymodels.html">Embeddings in tidymodels recipes</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Evaluate models and agents</h6></li>
+    <li><a class="dropdown-item" href="../articles/evaluations.html">Evaluate models and agents in Microsoft Foundry</a></li>
+    <li><a class="dropdown-item" href="../articles/evaluation-analysis.html">Analyze evaluation results with uncertainty</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Safety</h6></li>
+    <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety gates in a research pipeline</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Reference</h6></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
     <li><a class="dropdown-item" href="../articles/api-support.html">API support matrix</a></li>
-    <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
-    <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
-    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
-    <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
-    <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Other modalities (experimental)</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Transcribe and translate audio</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Generate images</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -93,7 +95,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Responses API, Structured Extraction, and Web Search</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Responses API, structured extraction, and web search</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/main/vignettes/responses-api.Rmd" class="external-link"><code>vignettes/responses-api.Rmd</code></a></small>
@@ -102,64 +104,56 @@
 
     
     
-<div class="section level2">
-<h2 id="why-the-responses-api-matters">Why the Responses API matters<a class="anchor" aria-label="anchor" href="#why-the-responses-api-matters"></a>
-</h2>
-<p>Microsoft Foundry now exposes a newer v1 data-plane endpoint for
-Azure OpenAI:</p>
-<pre class="text"><code>https://&lt;resource&gt;.openai.azure.com/openai/v1/responses</code></pre>
-<p>Unlike the older deployment-path chat API, the v1 Responses API sends
-the model deployment in the JSON body. It also adds stateful response
-chaining, built-in tools, structured output formats, and richer output
-metadata.</p>
-<p>foundryR wraps this with <code><a href="../reference/foundry_response.html">foundry_response()</a></code> while
-keeping the package’s tidy interface: generated text, citations, tool
-calls, token usage, and the raw response are returned as tibble
-columns.</p>
-<p>The examples below omit <code>model =</code>, so foundryR reads the
-deployment from <code>AZURE_FOUNDRY_MODEL</code>. Set it once, or pass
-<code>model =</code> to override per call.</p>
-</div>
-<div class="section level2">
-<h2 id="basic-response">Basic response<a class="anchor" aria-label="anchor" href="#basic-response"></a>
-</h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
+<p>Calls to Azure show output recorded from a live run; setup code is
+shown but not run.</p>
+<p>The Responses API is the foundryR route for stored response objects,
+stateful turns, built-in tools, token accounting, and schema-constrained
+output. The <code>model =</code> argument is a deployment name, and
+foundryR reads <code>AZURE_FOUNDRY_MODEL</code> when you omit it.</p>
+<p>By default, responses go to the resource endpoint. Pass
+<code>project_endpoint =</code> to send one call to a Foundry project
+instead, or call <code>foundry_set_route("project")</code> to send
+responses, files, vector stores, and evaluations there for the rest of
+the R session. Agent-backed responses always use the project endpoint
+because agents live in a project.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_project_endpoint.html">foundry_set_project_endpoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_PROJECT_ENDPOINT"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Summarize the project route in one sentence."</span>,</span>
+<span>  project_endpoint <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"AZURE_FOUNDRY_PROJECT_ENDPOINT"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="response-text-and-usage">Response text and usage<a class="anchor" aria-label="anchor" href="#response-text-and-usage"></a>
+</h2>
+<p><code><a href="../reference/foundry_response.html">foundry_response()</a></code> returns a one-row tibble. Most
+analysis starts with the generated text and the token columns, not with
+the raw response.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">basic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Answer in one sentence: what is retrieval-augmented generation?"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 17</span></span></span>
-<span><span class="co">#&gt;   response_id     status model output_text structured structured_error citations</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> resp_08bfb26cf… compl… gpt-… Retrieval-… <span style="color: #949494;">&lt;NULL&gt;</span>     <span style="color: #BB0000;">NA</span>               <span style="color: #949494;">&lt;tibble&gt;</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 10 more variables: tool_calls &lt;list&gt;, refusal &lt;chr&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   incomplete_reason &lt;chr&gt;, created_at &lt;dttm&gt;, input_tokens &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   output_tokens &lt;int&gt;, reasoning_tokens &lt;int&gt;, cached_input_tokens &lt;int&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   total_tokens &lt;int&gt;, raw_response &lt;list&gt;</span></span></span></code></pre></div>
-<p>The result includes:</p>
-<ul>
-<li>
-<code>response_id</code>: the stored Responses API object ID</li>
-<li>
-<code>output_text</code>: generated text aggregated from the
-response output items</li>
-<li>
-<code>citations</code>: a list-column of URL citations, when
-present</li>
-<li>
-<code>tool_calls</code>: a list-column of tool calls, such as
-web-search calls</li>
-<li>token usage columns, including reasoning and cached input tokens
-when the API reports them</li>
-<li>a <code>raw_response</code> list-column</li>
-</ul>
+<span></span>
+<span><span class="va">basic</span><span class="op">$</span><span class="va">output_text</span></span>
+<span><span class="co">#&gt; [1] "Retrieval-augmented generation (RAG) is a method that augments a text-generating model with a retrieval component that fetches relevant documents from an external corpus and conditions the generated output on those documents to improve factual accuracy and up-to-date knowledge."</span></span>
+<span><span class="va">basic</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"input_tokens"</span>, <span class="st">"output_tokens"</span>, <span class="st">"reasoning_tokens"</span>,</span>
+<span>  <span class="st">"cached_input_tokens"</span>, <span class="st">"total_tokens"</span></span>
+<span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
+<span><span class="co">#&gt;   input_tokens output_tokens reasoning_tokens cached_input_tokens total_tokens</span></span>
+<span><span class="co">#&gt;          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>           19           356              256                   0          375</span></span></code></pre></div>
+<p>Reasoning models can spend tokens that do not appear in
+<code>output_text</code>. Keep the token columns in reports when cost or
+model behavior matters.</p>
 </div>
 <div class="section level2">
 <h2 id="stateful-turns">Stateful turns<a class="anchor" aria-label="anchor" href="#stateful-turns"></a>
 </h2>
-<p>Responses are stored by the service by default. You can chain turns
-by passing the previous <code>response_id</code>:</p>
+<p>Responses are stored by the service by default. Chaining with
+<code>previous_response_id</code> lets the service carry state from one
+turn to the next.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">first</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Define catastrophic forgetting in one sentence."</span></span>
@@ -171,75 +165,91 @@ by passing the previous <code>response_id</code>:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">second</span><span class="op">$</span><span class="va">output_text</span></span>
-<span><span class="co">#&gt; [1] "Catastrophic forgetting is when a model forgets how to do earlier tasks after being trained on new ones because the updates to its parameters overwrite or disrupt the previously learned knowledge."</span></span></code></pre></div>
-<p>If you do not want the service to store a response, pass
-<code>store = FALSE</code>. Stateful chaining with
-<code>previous_response_id</code> requires the previous response to be
-stored.</p>
+<span><span class="co">#&gt; [1] "Catastrophic forgetting is when a neural network forgets how to do an old task after learning a new one, because updating its internal parameters for the new task overwrites the adjustments it had made for the old task."</span></span>
+<span><span class="va">second</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"response_id"</span>, <span class="st">"input_tokens"</span>, <span class="st">"output_tokens"</span>, <span class="st">"total_tokens"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   response_id                            input_tokens output_tokens total_tokens</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> resp_083254d4c0c03253006ab97c3e29a081…           77           313          390</span></span></code></pre></div>
+<p>Set <code>store = FALSE</code> for stateless calls when you do not
+need server-side state. Chaining requires a stored previous
+response.</p>
 </div>
 <div class="section level2">
-<h2 id="structured-extraction-with-json-schema">Structured extraction with JSON Schema<a class="anchor" aria-label="anchor" href="#structured-extraction-with-json-schema"></a>
+<h2 id="structured-extraction">Structured extraction<a class="anchor" aria-label="anchor" href="#structured-extraction"></a>
 </h2>
-<p><code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> is designed for data scientists and
-researchers who need to turn free text into analyzable variables. You
-provide a JSON Schema as an R list; foundryR sends it through the
-Responses API structured output format and returns one row per input
-text.</p>
-<p><code><a href="../reference/foundry_extract.html">foundry_extract()</a></code> sends <code>strict = TRUE</code> in
-the JSON Schema format by default. For supported models, the service
-must return data that conforms to the schema.</p>
+<p>Structured output is useful when model output becomes data. The
+example below codes short comments into sentiment, topic entities, and a
+summary. foundryR’s schema helpers build the JSON Schema that Azure
+enforces.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  type <span class="op">=</span> <span class="st">"object"</span>,</span>
-<span>  properties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    sentiment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      type <span class="op">=</span> <span class="st">"string"</span>,</span>
-<span>      enum <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"positive"</span>, <span class="st">"negative"</span>, <span class="st">"neutral"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    entities <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>      type <span class="op">=</span> <span class="st">"array"</span>,</span>
-<span>      items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"string"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span>,</span>
-<span>    summary <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"string"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span>,</span>
-<span>  required <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sentiment"</span>, <span class="st">"entities"</span>, <span class="st">"summary"</span><span class="op">)</span>,</span>
-<span>  additionalProperties <span class="op">=</span> <span class="cn">FALSE</span></span>
+<code class="sourceCode R"><span><span class="va">comment_schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_schema.html">foundry_schema</a></span><span class="op">(</span></span>
+<span>  sentiment <span class="op">=</span> <span class="fu"><a href="../reference/schema_constructors.html">schema_enum</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"positive"</span>, <span class="st">"negative"</span>, <span class="st">"neutral"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  entities <span class="op">=</span> <span class="fu"><a href="../reference/schema_constructors.html">schema_array</a></span><span class="op">(</span><span class="fu"><a href="../reference/schema_constructors.html">schema_string</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  summary <span class="op">=</span> <span class="fu"><a href="../reference/schema_constructors.html">schema_string</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">texts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span><span class="va">comments</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"The new data pipeline reduced manual coding time by half."</span>,</span>
 <span>  <span class="st">"Participants reported confusion about the consent form."</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/foundry_extract.html">foundry_extract</a></span><span class="op">(</span></span>
-<span>  <span class="va">texts</span>,</span>
-<span>  schema <span class="op">=</span> <span class="va">schema</span></span>
+<span><span class="va">comment_codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_extract.html">foundry_extract</a></span><span class="op">(</span></span>
+<span>  <span class="va">comments</span>,</span>
+<span>  schema <span class="op">=</span> <span class="va">comment_schema</span>,</span>
+<span>  schema_name <span class="op">=</span> <span class="st">"CommentCode"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 11</span></span></span>
-<span><span class="co">#&gt;   .input_idx .input_text     .response_id .status .output_text .error .error_msg</span></span>
-<span><span class="co">#&gt;        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>          1 The new data p… resp_0daf26… comple… <span style="color: #949494;">"</span>{\"sentime… FALSE  <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>          2 Participants r… resp_0df47e… comple… <span style="color: #949494;">"</span>{\"sentime… FALSE  <span style="color: #BB0000;">NA</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 4 more variables: raw_response &lt;list&gt;, sentiment &lt;chr&gt;, entities &lt;list&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   summary &lt;chr&gt;</span></span></span></code></pre></div>
-<p>Top-level scalar fields become regular tibble columns. Arrays and
-nested objects become list-columns, which work naturally with tidyverse
-workflows.</p>
+<span></span>
+<span><span class="va">comment_codes</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sentiment"</span>, <span class="st">"entities"</span>, <span class="st">"summary"</span>, <span class="st">".status"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 4</span></span></span>
+<span><span class="co">#&gt;   sentiment entities  summary                                            .status</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> positive  <span style="color: #949494;">&lt;chr [2]&gt;</span> The new data pipeline reduced manual coding time … comple…</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> negative  <span style="color: #949494;">&lt;chr [2]&gt;</span> Participants reported confusion about the consent… comple…</span></span></code></pre></div>
+<p>Top-level scalar fields become regular columns. Arrays and nested
+objects become list-columns, so you can unnest them only when your next
+analysis needs it.</p>
+<p>If you already use ellmer type specifications, convert them locally
+with <code><a href="../reference/as_foundry_schema.html">as_foundry_schema()</a></code>, which returns the JSON Schema
+that foundryR sends with an extraction request. This keeps the
+extraction contract in one place.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sentiment_spec</span> <span class="op">&lt;-</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">type_object</a></span><span class="op">(</span></span>
+<span>  sentiment <span class="op">=</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">type_enum</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"positive"</span>, <span class="st">"negative"</span>, <span class="st">"neutral"</span><span class="op">)</span>,</span>
+<span>    description <span class="op">=</span> <span class="st">"Overall sentiment of the response."</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  theme <span class="op">=</span> <span class="fu">ellmer</span><span class="fu">::</span><span class="fu"><a href="https://ellmer.tidyverse.org/reference/type_boolean.html" class="external-link">type_string</a></span><span class="op">(</span><span class="st">"A short theme label for the response."</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sentiment_schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_foundry_schema.html">as_foundry_schema</a></span><span class="op">(</span><span class="va">sentiment_spec</span><span class="op">)</span></span>
+<span><span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html" class="external-link">toJSON</a></span><span class="op">(</span><span class="va">sentiment_schema</span>, auto_unbox <span class="op">=</span> <span class="cn">TRUE</span>, pretty <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt;   "type": "object",</span></span>
+<span><span class="co">#&gt;   "properties": {</span></span>
+<span><span class="co">#&gt;     "sentiment": {</span></span>
+<span><span class="co">#&gt;       "type": "string",</span></span>
+<span><span class="co">#&gt;       "enum": ["positive", "negative", "neutral"],</span></span>
+<span><span class="co">#&gt;       "description": "Overall sentiment of the response."</span></span>
+<span><span class="co">#&gt;     },</span></span>
+<span><span class="co">#&gt;     "theme": {</span></span>
+<span><span class="co">#&gt;       "type": "string",</span></span>
+<span><span class="co">#&gt;       "description": "A short theme label for the response."</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;   },</span></span>
+<span><span class="co">#&gt;   "required": ["sentiment", "theme"],</span></span>
+<span><span class="co">#&gt;   "additionalProperties": false</span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="user-defined-r-tools">User-defined R tools<a class="anchor" aria-label="anchor" href="#user-defined-r-tools"></a>
 </h2>
-<p>The Responses API function-calling contract uses tool definitions
-with <code>type = "function"</code> and follow-up tool outputs with
-<code>type = "function_call_output"</code> plus a matching
-<code>call_id</code>. <code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> builds the tool schema
-and keeps the R function reference for local execution.
-<code><a href="../reference/foundry_agent.html">foundry_agent()</a></code> runs the bounded call, execute,
-return-output loop.</p>
-<p>The tool, MCP, web-search, and reasoning examples below need
-configured services and are not included in the recorded fixtures, so
-they are not run during rendering.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p><code><a href="../reference/foundry_tool.html">foundry_tool()</a></code> describes an R function to the model and
+keeps the local function for execution. <code><a href="../reference/foundry_agent.html">foundry_agent()</a></code>
+runs a bounded loop: ask the model, execute requested function calls in
+R, send the matching tool outputs back, and stop when the model returns
+a final answer.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">get_weather</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">location</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>location <span class="op">=</span> <span class="va">location</span>, temperature <span class="op">=</span> <span class="st">"70 F"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -247,36 +257,48 @@ they are not run during rendering.</p>
 <span><span class="va">weather_tool</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_tool.html">foundry_tool</a></span><span class="op">(</span></span>
 <span>  <span class="va">get_weather</span>,</span>
 <span>  description <span class="op">=</span> <span class="st">"Get weather for a location"</span>,</span>
-<span>  parameters <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    type <span class="op">=</span> <span class="st">"object"</span>,</span>
-<span>    properties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>location <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"string"</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    required <span class="op">=</span> <span class="st">"location"</span></span>
+<span>  parameters <span class="op">=</span> <span class="fu"><a href="../reference/foundry_schema.html">foundry_schema</a></span><span class="op">(</span></span>
+<span>    location <span class="op">=</span> <span class="fu"><a href="../reference/schema_constructors.html">schema_string</a></span><span class="op">(</span><span class="st">"City and state."</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">turns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_agent.html">foundry_agent</a></span><span class="op">(</span></span>
+<span><span class="va">tool_turns</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_agent.html">foundry_agent</a></span><span class="op">(</span></span>
 <span>  <span class="st">"What is the weather in San Francisco?"</span>,</span>
 <span>  tools <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">weather_tool</span><span class="op">)</span>,</span>
 <span>  max_iterations <span class="op">=</span> <span class="fl">4</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">turns</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iteration"</span>, <span class="st">"final"</span>, <span class="st">"output_text"</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">turns</span><span class="op">$</span><span class="va">tool_results</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p>The loop stops with an error if the model continues requesting tools
-after <code>max_iterations</code>. This protects batch jobs from
-unbounded tool use.</p>
+<span><span class="va">tool_turns</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"iteration"</span>, <span class="st">"final"</span>, <span class="st">"output_text"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 3</span></span></span>
+<span><span class="co">#&gt;   iteration final output_text                                                   </span></span>
+<span><span class="co">#&gt;       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                                         </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>         1 FALSE  <span style="color: #BB0000;">NA</span>                                                           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span>         2 TRUE  <span style="color: #949494;">"</span>Current weather in San Francisco, CA: 70°F (about 21°C).\n\n…</span></span>
+<span><span class="va">tool_turns</span><span class="op">$</span><span class="va">tool_calls</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"name"</span>, <span class="st">"call_id"</span>, <span class="st">"arguments"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   type          name        call_id                       arguments             </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                 </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> function_call get_weather call_5b7vLutyQoRGmPdZTjSsHIRd <span style="color: #949494;">"</span>{\"location\":\"San …</span></span>
+<span><span class="va">tool_turns</span><span class="op">$</span><span class="va">tool_results</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   call_id                       name        arguments        output             </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> call_5b7vLutyQoRGmPdZTjSsHIRd get_weather <span style="color: #949494;">&lt;named list [1]&gt;</span> <span style="color: #949494;">"</span>{\"location\":\"S…</span></span></code></pre></div>
+<p>The maximum iteration count protects long jobs from unbounded tool
+loops. Set it to match the number of tool calls you are willing to
+review.</p>
 </div>
 <div class="section level2">
 <h2 id="remote-mcp-tools">Remote MCP tools<a class="anchor" aria-label="anchor" href="#remote-mcp-tools"></a>
 </h2>
 <p>Microsoft documents remote Model Context Protocol tools for the
-Responses API. foundryR does not add a separate MCP helper yet because
-<code><a href="../reference/foundry_response.html">foundry_response()</a></code> already accepts raw Responses API tool
-objects:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+Responses API. foundryR does not add a separate MCP helper because
+<code><a href="../reference/foundry_response.html">foundry_response()</a></code> accepts raw Responses API tool
+objects.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mcp_tool</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  type <span class="op">=</span> <span class="st">"mcp"</span>,</span>
-<span>  server_label <span class="op">=</span> <span class="st">"my_mcp_server"</span>,</span>
+<span>  server_label <span class="op">=</span> <span class="st">"approved_server"</span>,</span>
 <span>  server_url <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html" class="external-link">Sys.getenv</a></span><span class="op">(</span><span class="st">"MY_MCP_SERVER_URL"</span><span class="op">)</span>,</span>
 <span>  require_approval <span class="op">=</span> <span class="st">"never"</span></span>
 <span><span class="op">)</span></span>
@@ -285,26 +307,49 @@ objects:</p>
 <span>  <span class="st">"Use the MCP server if it helps answer the question."</span>,</span>
 <span>  tools <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">mcp_tool</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Only attach MCP servers you trust and whose data-handling behavior
-your organization has approved.</p>
+<p>Only attach MCP servers you trust and whose data handling your
+organization has approved. Treat the server as part of the same data
+boundary as the model call.</p>
 </div>
 <div class="section level2">
-<h2 id="web-grounded-answers-with-citations">Web-grounded answers with citations<a class="anchor" aria-label="anchor" href="#web-grounded-answers-with-citations"></a>
+<h2 id="web-grounded-answers">Web-grounded answers<a class="anchor" aria-label="anchor" href="#web-grounded-answers"></a>
 </h2>
-<p><code><a href="../reference/foundry_web_search.html">foundry_web_search()</a></code> uses the Responses API
-<code>web_search</code> tool and parses URL citations into a tidy
-list-column:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">answer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_web_search.html">foundry_web_search</a></span><span class="op">(</span></span>
-<span>  <span class="st">"What changed recently in the Microsoft Foundry Responses API?"</span>,</span>
-<span>  search_context_size <span class="op">=</span> <span class="st">"high"</span></span>
+<p>Web search sends query data to Grounding with Bing services.
+Microsoft documents that this can leave compliance or geographic
+boundaries and can incur extra cost, so avoid secrets and sensitive
+research data in web-search prompts. foundryR warns about this before
+the first web search in a session, and the option at the top of the next
+chunk acknowledges that warning.</p>
+<p><code><a href="../reference/foundry_web_search.html">foundry_web_search()</a></code> requests the Responses API
+<code>web_search</code> tool and parses citations and tool calls into
+list-columns. The printed fields show the answer, sources, and search
+query separately.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>foundryR.web_search_warning <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">web_answer</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_web_search.html">foundry_web_search</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Which version of R does the R Project website list as the latest release, and when was it released?"</span>,</span>
+<span>  search_context_size <span class="op">=</span> <span class="st">"medium"</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">answer</span><span class="op">$</span><span class="va">output_text</span></span>
-<span><span class="va">answer</span><span class="op">$</span><span class="va">citations</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="va">answer</span><span class="op">$</span><span class="va">tool_calls</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p>You can optionally provide approximate location fields:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<span><span class="va">web_answer</span><span class="op">$</span><span class="va">output_text</span></span>
+<span><span class="co">#&gt; [1] "- Latest release: R 4.6.1, nicknamed \"Happy Hop\".\n- Release date: June 24, 2026 (2026-06-24). ([r-project.org](https://www.r-project.org/?0003=))"</span></span>
+<span><span class="va">web_answer</span><span class="op">$</span><span class="va">citations</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"title"</span>, <span class="st">"url"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
+<span><span class="co">#&gt;   title                                   url                             </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                           </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> The R Project for Statistical Computing https://www.r-project.org/?0003=</span></span>
+<span><span class="va">web_answer</span><span class="op">$</span><span class="va">tool_calls</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"type"</span>, <span class="st">"status"</span>, <span class="st">"action_type"</span>, <span class="st">"query"</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 3 × 4</span></span></span>
+<span><span class="co">#&gt;   type            status    action_type query                   </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> web_search_call completed search      R latest release version</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> web_search_call completed open_page   <span style="color: #BB0000;">NA</span>                      </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> web_search_call completed open_page   <span style="color: #BB0000;">NA</span></span></span></code></pre></div>
+<p>You can pass approximate location fields when the answer depends on
+place. Keep location values coarse unless the task needs more
+detail.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_web_search.html">foundry_web_search</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Find a recent AI research event near me."</span>,</span>
 <span>  country <span class="op">=</span> <span class="st">"US"</span>,</span>
@@ -314,52 +359,40 @@ list-column:</p>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="responsible-use-of-web-search">Responsible use of web search<a class="anchor" aria-label="anchor" href="#responsible-use-of-web-search"></a>
+<h2 id="reasoning-token-accounting">Reasoning token accounting<a class="anchor" aria-label="anchor" href="#reasoning-token-accounting"></a>
 </h2>
-<p>Microsoft documents that web search uses Grounding with Bing Search
-and/or Grounding with Bing Custom Search. The Data Protection Addendum
-does not apply to data sent to these services, data can leave compliance
-and geographic boundaries, and tool usage can incur additional costs.
-Avoid sending secrets or sensitive research data in web-search
-prompts.</p>
-</div>
-<div class="section level2">
-<h2 id="reasoning-models-and-token-accounting">Reasoning models and token accounting<a class="anchor" aria-label="anchor" href="#reasoning-models-and-token-accounting"></a>
-</h2>
-<p><code><a href="../reference/foundry_response.html">foundry_response()</a></code> accepts <code>reasoning_effort</code>
-and sends it as <code>reasoning = list(effort = ...)</code>, the
-Responses API shape documented by Microsoft for reasoning models.
-<code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> accepts the chat-completions shape,
-<code>reasoning_effort = "medium"</code>.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
-<span>  <span class="st">"Compare the two arguments and identify the weaker premise."</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"my-reasoning-deployment"</span>,</span>
+<p><code>reasoning_effort</code> is sent as the Responses API
+<code>reasoning</code> object. The returned usage columns show whether
+hidden reasoning tokens contributed to cost.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">reasoned</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_response.html">foundry_response</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Compare the two arguments and identify the weaker premise: A says the survey item is valid because it is short. B says it is valid because respondents interpret it consistently."</span>,</span>
 <span>  reasoning_effort <span class="op">=</span> <span class="st">"medium"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>The returned tibble includes <code>reasoning_tokens</code> and
-<code>cached_input_tokens</code> when the API reports them. These fields
-matter for cost review because reasoning tokens may be billed even when
-they are not visible in <code>output_text</code>.</p>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">reasoned</span><span class="op">$</span><span class="va">output_text</span></span>
+<span><span class="co">#&gt; [1] "- Premise A: “The item is valid because it is short.”\n- Premise B: “The item is valid because respondents interpret it consistently.”\n\nWeaker premise: A.\n\nWhy:\n- Length alone does not determine validity. An item being short is a form/quality issue and may even reduce content validity if it omits important aspects. It does not logically establish that the item measures the intended construct.\n\nWhy B is stronger (though still not sufficient):\n- If respondents interpret the item consistently, that reduces measurement error and confusion, which supports reliability and, to some extent, construct validity. It is a more meaningful basis for validity than shortness.\n\nCaveats:\n- Even B does not guarantee validity. An item could be interpreted consistently but still measure the wrong construct. Validity evidence would require additional checks (content validity, convergent/divergent validity, test-retest reliability, etc.)."</span></span>
+<span><span class="va">reasoned</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="st">"input_tokens"</span>, <span class="st">"output_tokens"</span>, <span class="st">"reasoning_tokens"</span>,</span>
+<span>  <span class="st">"cached_input_tokens"</span>, <span class="st">"total_tokens"</span></span>
+<span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
+<span><span class="co">#&gt;   input_tokens output_tokens reasoning_tokens cached_input_tokens total_tokens</span></span>
+<span><span class="co">#&gt;          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>           39          <span style="text-decoration: underline;">1</span>822             <span style="text-decoration: underline;">1</span>600                   0         <span style="text-decoration: underline;">1</span>861</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="streaming">Streaming<a class="anchor" aria-label="anchor" href="#streaming"></a>
+<h2 id="streaming-and-chat-completions">Streaming and chat completions<a class="anchor" aria-label="anchor" href="#streaming-and-chat-completions"></a>
 </h2>
 <p>The Azure OpenAI Responses API supports Server-Sent Events streaming,
 but foundryR does not implement streaming. The package focuses on
 reproducible, tibble-returning analytical workflows. Use ellmer when you
 need interactive streaming chat in R.</p>
-</div>
-<div class="section level2">
-<h2 id="when-to-use-foundry_chat-vs-foundry_response">When to use <code>foundry_chat()</code> vs
-<code>foundry_response()</code><a class="anchor" aria-label="anchor" href="#when-to-use-foundry_chat-vs-foundry_response"></a>
-</h2>
-<p>Use <code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> when you want the established
-chat-completions interface and simple assistant replies.</p>
-<p>Use <code><a href="../reference/foundry_response.html">foundry_response()</a></code> when you need newer v1
-capabilities: stateful response IDs, built-in tools, structured output
-formats, richer output items, or a forward-looking API surface for new
-Microsoft Foundry model capabilities.</p>
+<p>Use <code><a href="../reference/foundry_chat.html">foundry_chat()</a></code> for the established chat-completions
+interface and simple assistant replies. Use
+<code><a href="../reference/foundry_response.html">foundry_response()</a></code> for response IDs, built-in tools,
+structured output formats, richer output items, and token
+accounting.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

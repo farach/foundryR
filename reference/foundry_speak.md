@@ -35,7 +35,7 @@ foundry_speak(
 
 - model:
 
-  Character. Speech model deployment name.
+  Character. Required speech model deployment name.
 
 - voice:
 
@@ -89,6 +89,14 @@ foundry_speak(
 ## Value
 
 A tibble with the output path, byte count, model, voice, and format.
+
+## Details
+
+Pass the speech deployment name explicitly in `model`; audio routes do
+not fall back to `AZURE_FOUNDRY_MODEL` because that environment variable
+commonly names a chat deployment. Azure `whisper` version `001` retires
+on 2026-12-15. The `gpt-4o-mini-transcribe` version `2025-12-15` is
+generally available until 2027-06-15.
 
 ## Examples
 

@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">foundryR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,32 +38,34 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../articles/getting-started.html">Get Started</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/getting-started.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
-    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
-    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
+<li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Get started with foundryR</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Measure text</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">From text to defensible estimates</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Annotate at scale with the Batch API</a></li>
+    <li><a class="dropdown-item" href="../articles/embeddings.html">Embeddings for research</a></li>
+    <li><a class="dropdown-item" href="../articles/tidymodels.html">Embeddings in tidymodels recipes</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Evaluate models and agents</h6></li>
+    <li><a class="dropdown-item" href="../articles/evaluations.html">Evaluate models and agents in Microsoft Foundry</a></li>
+    <li><a class="dropdown-item" href="../articles/evaluation-analysis.html">Analyze evaluation results with uncertainty</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Safety</h6></li>
+    <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety gates in a research pipeline</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Reference</h6></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
     <li><a class="dropdown-item" href="../articles/api-support.html">API support matrix</a></li>
-    <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
-    <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
-    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
-    <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
-    <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Other modalities (experimental)</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Transcribe and translate audio</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Generate images</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -103,9 +105,9 @@
     
     
 <p>foundryR separates Microsoft Foundry endpoint families because their
-paths, token audiences, and compatibility guarantees differ. The package
-is community-maintained and does not imply Microsoft support for
-undocumented behavior.</p>
+paths, token audiences, and supported authentication differ. This page
+is a reference for package behavior, not a Microsoft support
+statement.</p>
 <div class="section level2">
 <h2 id="endpoint-and-authentication-families">Endpoint and authentication families<a class="anchor" aria-label="anchor" href="#endpoint-and-authentication-families"></a>
 </h2>
@@ -118,45 +120,52 @@ undocumented behavior.</p>
 </colgroup>
 <thead><tr class="header">
 <th>Family</th>
-<th>Base path</th>
-<th>Entra audience</th>
-<th>foundryR configuration</th>
+<th>Endpoint shape</th>
+<th>Token audience</th>
+<th>API key support in foundryR</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>Resource v1</td>
-<td><code>&lt;resource&gt;/openai/v1/...</code></td>
+<td>Resource endpoint</td>
+<td><code>https://&lt;resource&gt;.openai.azure.com</code></td>
 <td><code>https://cognitiveservices.azure.com</code></td>
-<td>
-<code><a href="../reference/foundry_set_endpoint.html">foundry_set_endpoint()</a></code> plus a resource token or
-provider</td>
+<td>The resource API key works for every resource family tested.</td>
 </tr>
 <tr class="even">
-<td>Foundry project</td>
-<td><code>&lt;account&gt;/api/projects/&lt;project&gt;/...</code></td>
+<td>Project endpoint</td>
+<td><code>https://&lt;resource&gt;.services.ai.azure.com/api/projects/&lt;project&gt;</code></td>
 <td><code>https://ai.azure.com</code></td>
-<td>
-<code><a href="../reference/foundry_set_project_endpoint.html">foundry_set_project_endpoint()</a></code> plus a project token or
-provider</td>
+<td>On the default project, the resource API key worked for responses,
+agent-backed responses, conversations, files, vector stores, and agents.
+Project evaluations need a Microsoft Entra ID token.</td>
 </tr>
 <tr class="odd">
-<td>Content Safety</td>
-<td><code>&lt;resource&gt;/contentsafety/...</code></td>
-<td>
-<code>https://cognitiveservices.azure.com</code> where the formal
-operation reference documents OAuth2</td>
-<td>Content Safety endpoint plus key or supported resource token</td>
+<td>Speech endpoint</td>
+<td>Speech resource endpoint</td>
+<td>Speech token or Cognitive Services token</td>
+<td>Speech API keys are supported by
+<code><a href="../reference/foundry_set_speech_key.html">foundry_set_speech_key()</a></code>.</td>
 </tr>
 <tr class="even">
-<td>Legacy deployment</td>
-<td><code>&lt;resource&gt;/openai/deployments/&lt;deployment&gt;/...</code></td>
+<td>Content Safety endpoint</td>
+<td>Content Safety resource endpoint</td>
+<td>
+<code>https://cognitiveservices.azure.com</code> for operations
+whose reference documents OAuth2</td>
+<td>API keys are supported. Token support depends on the operation.</td>
+</tr>
+<tr class="odd">
+<td>Legacy deployment route</td>
+<td><code>https://&lt;resource&gt;.openai.azure.com/openai/deployments/&lt;deployment&gt;/...</code></td>
 <td><code>https://cognitiveservices.azure.com</code></td>
-<td>Resource endpoint and dated <code>api-version</code>
-</td>
+<td>The resource API key works. Use <code>api = "deployment"</code>
+where a classic deployment path is required.</td>
 </tr>
 </tbody>
 </table>
-<p>Register endpoint-family providers separately:</p>
+<p>Configure resource and project token providers separately when you
+use Microsoft Entra ID. The two audiences are different, so one cached
+token should not be reused for both endpoint families.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_set_token_provider.html">foundry_set_token_provider</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="../reference/foundry_token_azure_cli.html">foundry_token_azure_cli</a></span><span class="op">(</span><span class="st">"https://cognitiveservices.azure.com"</span><span class="op">)</span>,</span>
@@ -169,7 +178,7 @@ operation reference documents OAuth2</td>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="implemented-microsoft-foundry-surfaces">Implemented Microsoft Foundry surfaces<a class="anchor" aria-label="anchor" href="#implemented-microsoft-foundry-surfaces"></a>
+<h2 id="openai-compatible-and-project-surfaces">OpenAI-compatible and project surfaces<a class="anchor" aria-label="anchor" href="#openai-compatible-and-project-surfaces"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -180,110 +189,155 @@ operation reference documents OAuth2</td>
 </colgroup>
 <thead><tr class="header">
 <th>Surface</th>
-<th>Route/version</th>
-<th>Lifecycle in current Microsoft documentation</th>
-<th>foundryR status</th>
+<th>Endpoint support</th>
+<th>foundryR route behavior</th>
+<th>Notes</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>Chat Completions</td>
-<td><code>/openai/v1/chat/completions</code></td>
-<td>v1</td>
-<td>Implemented</td>
+<td>Chat completions</td>
+<td>Resource endpoint</td>
+<td>Resource route</td>
+<td>v1 chat-completions path.</td>
 </tr>
 <tr class="even">
 <td>Responses</td>
-<td><code>/openai/v1/responses</code></td>
-<td>v1; optional <code>api-version=v1</code>
-</td>
-<td>Implemented</td>
+<td>Resource and project endpoints</td>
+<td>Resource route by default; pass <code>project_endpoint =</code> or
+call <code>foundry_set_route("project")</code> for project
+responses</td>
+<td>Agent-backed responses always use the project endpoint.</td>
 </tr>
 <tr class="odd">
 <td>Embeddings</td>
-<td><code>/openai/v1/embeddings</code></td>
-<td>v1</td>
-<td>Implemented</td>
-</tr>
-<tr class="even">
-<td>Files</td>
-<td><code>/openai/v1/files</code></td>
-<td>v1</td>
-<td>Implemented</td>
-</tr>
-<tr class="odd">
-<td>Batches</td>
-<td><code>/openai/v1/batches</code></td>
-<td>v1</td>
-<td>Implemented</td>
+<td>Resource endpoint</td>
+<td>Resource route</td>
+<td>
+<code>model =</code> is a deployment name.</td>
 </tr>
 <tr class="even">
 <td>Models</td>
-<td><code>/openai/v1/models</code></td>
-<td>v1</td>
-<td>Implemented</td>
+<td>Resource endpoint</td>
+<td>Resource route</td>
+<td>Lists models available to the resource, not your deployments.</td>
 </tr>
 <tr class="odd">
-<td>Evals</td>
-<td><code>/openai/v1/evals</code></td>
-<td>v1 reference track</td>
-<td>Implemented</td>
+<td>Files</td>
+<td>Resource and project endpoints</td>
+<td>Resource route by default; project route when requested</td>
+<td>Server-side agents search files and vector stores created on the
+project endpoint.</td>
 </tr>
 <tr class="even">
 <td>Vector stores</td>
-<td><code>/openai/v1/vector_stores</code></td>
-<td>v1 reference track</td>
-<td>Implemented</td>
+<td>Resource and project endpoints</td>
+<td>Resource route by default; project route when requested</td>
+<td>Use the same endpoint for store creation and project-agent file
+search.</td>
 </tr>
 <tr class="odd">
+<td>Batches</td>
+<td>Resource endpoint</td>
+<td>Resource route</td>
+<td>Batch jobs need a Global Batch or Data Zone Batch deployment
+type.</td>
+</tr>
+<tr class="even">
 <td>Conversations</td>
-<td><code>/openai/v1/conversations</code></td>
-<td>v1 reference track</td>
-<td>Implemented</td>
-</tr>
-<tr class="even">
-<td>Agent definitions and versions</td>
-<td>Project <code>/agents?api-version=v1</code>
-</td>
-<td>Agents v2; some agent subfeatures are gated separately</td>
-<td>Implemented</td>
+<td>Project endpoint only</td>
+<td>Always project route</td>
+<td>
+<code>foundry_conversation_*()</code> functions require a project
+endpoint.</td>
 </tr>
 <tr class="odd">
-<td>Agent-backed Responses</td>
-<td>Project <code>/openai/v1/responses</code>
-</td>
-<td>Project-only <code>agent_reference</code> request field</td>
-<td>Implemented; lifecycle calls require
-<code>project_endpoint</code>
-</td>
+<td>Agents</td>
+<td>Project endpoint only</td>
+<td>Always project route</td>
+<td>Includes agent definitions, versions, and agent-backed
+responses.</td>
 </tr>
 <tr class="even">
-<td>Image generation and edits</td>
-<td><code>/openai/v1/images/...?...api-version=preview</code></td>
-<td>Preview</td>
-<td>Experimental</td>
+<td>Evaluations</td>
+<td>Resource and project endpoints</td>
+<td>Resource route for OpenAI graders on existing columns; project route
+for built-in evaluators, model targets, agent targets, and stored
+responses</td>
+<td>Project evaluations need Microsoft Entra ID. foundryR stops with
+guidance before sending a key-authenticated project evaluation.</td>
 </tr>
 <tr class="odd">
-<td>Audio speech, transcription, translation</td>
-<td><code>/openai/v1/audio/...?...api-version=preview</code></td>
-<td>Preview</td>
-<td>Experimental</td>
+<td>Images</td>
+<td>Resource endpoint</td>
+<td>Image endpoint helpers, or the main resource endpoint as
+fallback</td>
+<td>Current image generation uses v1 preview image paths.</td>
 </tr>
 <tr class="even">
-<td>Video generation</td>
-<td><code>/openai/v1/video/...?...api-version=preview</code></td>
-<td>Preview</td>
-<td>Experimental</td>
+<td>Audio</td>
+<td>Speech endpoint, resource v1 audio route, or legacy deployment
+route</td>
+<td>Speech fast transcription is the default for
+<code><a href="../reference/foundry_transcribe.html">foundry_transcribe()</a></code>
+</td>
+<td>Whisper deployments use
+<code>service = "openai", api = "deployment"</code>.</td>
+</tr>
+<tr class="odd">
+<td>Video</td>
+<td>None</td>
+<td>Defunct functions</td>
+<td>Azure retires its last Sora model on 2026-10-15, so foundryR stops
+instead of wrapping the retired video job API.</td>
 </tr>
 </tbody>
 </table>
-<p>Resource-level Evals, vector stores, and conversations use the v1
-reference track without a preview query value. Microsoft does not place
-an explicit GA badge on every individual reference page, so foundryR
-does not infer a stronger status than the published route and version
-establish.</p>
 </div>
 <div class="section level2">
-<h2 id="implemented-content-safety-surfaces">Implemented Content Safety surfaces<a class="anchor" aria-label="anchor" href="#implemented-content-safety-surfaces"></a>
+<h2 id="evaluations">Evaluations<a class="anchor" aria-label="anchor" href="#evaluations"></a>
+</h2>
+<p>Resource evaluations work with API keys when the graders operate on
+existing dataset columns, such as string checks and OpenAI judge
+graders. Project evaluations are selected when the run uses built-in
+Azure AI evaluators, a model target, an agent target, or stored response
+IDs. Built-in evaluator names include values such as
+<code>builtin.coherence</code>, <code>builtin.task_adherence</code>, and
+<code>builtin.intent_resolution</code>; their judge deployment is passed
+in <code>initialization_parameters</code>, commonly as
+<code>deployment_name</code>.</p>
+<p>Project evaluations require a Microsoft Entra ID token with the
+project audience. Configure the project token provider before submitting
+those runs. <!-- CHECK-OUTPUT --> API-key requests to project
+evaluations returned 403 in live testing, so foundryR reports the
+requirement before it sends the request.</p>
+</div>
+<div class="section level2">
+<h2 id="speech-family">Speech family<a class="anchor" aria-label="anchor" href="#speech-family"></a>
+</h2>
+<p><code><a href="../reference/foundry_transcribe.html">foundry_transcribe()</a></code> defaults to Speech fast
+transcription. That default does not use a model or deployment name, and
+the returned <code>model</code> column is <code>NA</code>.</p>
+<p>MAI-Transcribe and LLM Speech enhanced mode are opt-in, preview or
+region-limited paths. Supplying <code>model = "mai-transcribe-2"</code>,
+<code>prompt =</code>, <code>transcribe_style =</code>, or
+<code>enhanced = TRUE</code> selects enhanced mode for Speech
+transcription. Speech translation also requires LLM Speech enhanced
+mode. When a region does not support enhanced mode, foundryR preserves
+the service message and adds region guidance.</p>
+<p>OpenAI-compatible audio calls use <code>service = "openai"</code>.
+Classic Azure <code>whisper</code> deployments require the legacy
+deployment route, and Azure <code>whisper</code> version 001 retires on
+2026-12-15:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_translate_audio.html">foundry_translate_audio</a></span><span class="op">(</span></span>
+<span>  <span class="st">"speech.wav"</span>,</span>
+<span>  service <span class="op">=</span> <span class="st">"openai"</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"whisper"</span>,</span>
+<span>  api <span class="op">=</span> <span class="st">"deployment"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="content-safety-surfaces">Content Safety surfaces<a class="anchor" aria-label="anchor" href="#content-safety-surfaces"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -295,7 +349,7 @@ establish.</p>
 <thead><tr class="header">
 <th>Surface</th>
 <th>API version</th>
-<th>Lifecycle</th>
+<th>Lifecycle in foundryR</th>
 <th>Authentication in foundryR</th>
 </tr></thead>
 <tbody>
@@ -303,19 +357,19 @@ establish.</p>
 <td>Text moderation</td>
 <td><code>2024-09-01</code></td>
 <td>Stable reference track</td>
-<td>API key or resource token</td>
+<td>API key or supported resource token</td>
 </tr>
 <tr class="even">
 <td>Image moderation</td>
 <td><code>2024-09-01</code></td>
 <td>Stable reference track</td>
-<td>API key or resource token</td>
+<td>API key or supported resource token</td>
 </tr>
 <tr class="odd">
 <td>Protected material in text</td>
 <td><code>2024-09-01</code></td>
 <td>Stable reference track</td>
-<td>API key or resource token</td>
+<td>API key or supported resource token</td>
 </tr>
 <tr class="even">
 <td>Prompt Shields</td>
@@ -355,37 +409,30 @@ establish.</p>
 </tr>
 </tbody>
 </table>
-<p>Prompt Shields and blocklist documentation reviewed for this release
-did not include a formal OAuth2 security block. foundryR therefore does
-not claim Entra support for those operations.</p>
 </div>
 <div class="section level2">
 <h2 id="current-omissions">Current omissions<a class="anchor" aria-label="anchor" href="#current-omissions"></a>
 </h2>
-<p>The current Microsoft Foundry project reference also exposes
-connections, datasets, deployments, evaluation taxonomies and rules,
-evaluators, indexes, insights, red-team schedules and runs, and
-schedules. Those resource families are not implemented in foundryR
-0.1.0.</p>
-<p>Memory stores and agent containers are also not implemented.
-Microsoft gates those preview features with
-<code>Foundry-Features</code> headers such as
-<code>MemoryStores=V1Preview</code> and
-<code>ContainerAgents=V1Preview</code>; <code>api-version=v1</code>
-alone does not establish that a project operation is GA.</p>
+<p>The Microsoft Foundry project reference also exposes connections,
+datasets, deployments, evaluation taxonomies and rules, evaluator
+catalogs, indexes, insights, red-team schedules and runs, schedules,
+memory stores, and agent containers. foundryR does not wrap those
+surfaces in this release.</p>
 </div>
 <div class="section level2">
 <h2 id="compatibility-policy">Compatibility policy<a class="anchor" aria-label="anchor" href="#compatibility-policy"></a>
 </h2>
 <ol style="list-style-type: decimal">
-<li>Resource v1 is the default for OpenAI-compatible operations.</li>
-<li>Project APIs are selected explicitly through a project
-endpoint.</li>
-<li>Preview operations remain exported but carry experimental
-documentation and may change in a minor release when Microsoft changes
-their contract.</li>
-<li>Legacy deployment routes are compatibility fallbacks, not the
-default.</li>
+<li>Resource v1 is the default for OpenAI-compatible operations that can
+run on a resource.</li>
+<li>Project APIs are selected explicitly, except for conversations,
+agents, agent-backed responses, and project-only evaluation
+scenarios.</li>
+<li>Preview operations remain experimental and may change in a minor
+release when Microsoft changes their contract.</li>
+<li>Legacy deployment routes are compatibility fallbacks. Use
+<code>api = "deployment"</code> for classic deployments such as Azure
+<code>whisper</code>.</li>
 <li>Recorded fixtures test known contracts without network access.
 Maintainers should run credentialed contract tests separately before
 each release.</li>

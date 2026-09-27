@@ -5,7 +5,12 @@ Internal function to parse the Shield API response into a tidy tibble.
 ## Usage
 
 ``` r
-parse_shield_response(result, user_prompt, documents)
+parse_shield_response(
+  result,
+  user_prompt,
+  documents,
+  document_indices = seq_along(documents)
+)
 ```
 
 ## Arguments
@@ -21,6 +26,10 @@ parse_shield_response(result, user_prompt, documents)
 - documents:
 
   Character vector. The original documents (or NULL).
+
+- document_indices:
+
+  Integer vector. Original indices for `documents`.
 
 ## Value
 

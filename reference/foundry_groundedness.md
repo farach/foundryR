@@ -59,22 +59,25 @@ foundry_groundedness(
 - reasoning:
 
   Logical. If `TRUE`, includes reasoning for ungrounded segments in the
-  response. Default: `FALSE`.
+  response. Default: `FALSE`. This bring-your-own-LLM option is
+  deprecated and requires an Azure OpenAI GPT-4o deployment.
 
 - correction:
 
   Logical. If `TRUE`, requests corrected text that is consistent with
-  the grounding sources (the Content Safety "mitigating" feature).
-  Requires `llm_resource` and `api_version >= "2024-09-15-preview"`. The
-  corrected text is returned in the `correction_text` column. Default:
-  `FALSE`.
+  the grounding sources. Requires `llm_resource` and
+  `api_version >= "2024-09-15-preview"`. The corrected text is returned
+  in the `correction_text` column. Default: `FALSE`. This
+  bring-your-own-LLM option is deprecated and requires an Azure OpenAI
+  GPT-4o deployment.
 
 - llm_resource:
 
   List or `NULL`. Connection details for a bring-your-own Azure OpenAI
   deployment, used when `correction = TRUE`. Build it with
   [`foundry_llm_resource()`](https://farach.github.io/foundryR/reference/foundry_llm_resource.md).
-  Default: `NULL`.
+  Default: `NULL`. This option is deprecated; the service currently
+  accepts only GPT-4o versions 0513 and 0806.
 
 - endpoint:
 
@@ -162,7 +165,8 @@ Or pass `endpoint` and `api_key` directly to the function.
 ``` r
 if (FALSE) { # \dontrun{
 # Requires a configured Azure Content Safety endpoint and credentials.
-# Reasoning and correction also need an authorized Azure OpenAI deployment.
+# Deprecated reasoning and correction also need an authorized Azure OpenAI
+# GPT-4o deployment.
 # Check groundedness of a QnA response
 result <- foundry_groundedness(
   text = "The capital of France is Paris. It has a population of 12 million.",

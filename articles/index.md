@@ -1,40 +1,45 @@
 # Articles
 
-### Core
+### Get started
 
-- [Getting started with
+- [Get started with
   foundryR](https://farach.github.io/foundryR/articles/getting-started.md):
-- [foundryR vs
-  ellmer](https://farach.github.io/foundryR/articles/foundryr-vs-ellmer.md):
-- [Responses API, Structured Extraction, and Web
-  Search](https://farach.github.io/foundryR/articles/responses-api.md):
+
+### Measure text
+
+- [From text to defensible
+  estimates](https://farach.github.io/foundryR/articles/annotation-workflow.md):
+- [Annotate at scale with the Batch
+  API](https://farach.github.io/foundryR/articles/files-batches.md):
+- [Embeddings for
+  research](https://farach.github.io/foundryR/articles/embeddings.md):
+- [Match job descriptions to O\*NET
+  occupations](https://farach.github.io/foundryR/articles/onet2r-integration.md):
+- [Embeddings in tidymodels
+  recipes](https://farach.github.io/foundryR/articles/tidymodels.md):
+
+### Evaluate models and agents
+
+- [Evaluate models and agents in Microsoft
+  Foundry](https://farach.github.io/foundryR/articles/evaluations.md):
+- [Analyze evaluation results with
+  uncertainty](https://farach.github.io/foundryR/articles/evaluation-analysis.md):
+
+### Safety
+
+- [Content Safety gates in a research
+  pipeline](https://farach.github.io/foundryR/articles/content-safety.md):
+
+### Reference
+
+- [Responses API, structured extraction, and web
+  search](https://farach.github.io/foundryR/articles/responses-api.md):
 - [API support
   matrix](https://farach.github.io/foundryR/articles/api-support.md):
-- [Working with
-  Embeddings](https://farach.github.io/foundryR/articles/embeddings.md):
 
-### Responsible AI
+### Other modalities (experimental)
 
-- [Content Safety and Responsible
-  AI](https://farach.github.io/foundryR/articles/content-safety.md):
-
-### Research Workflows
-
-- [Annotating open-ended survey responses end to
-  end](https://farach.github.io/foundryR/articles/annotation-workflow.md):
-- [Files and Batch API
-  Workflows](https://farach.github.io/foundryR/articles/files-batches.md):
-- [tidymodels
-  Integration](https://farach.github.io/foundryR/articles/tidymodels.md):
-
-### Advanced Topics
-
-- [Audio Workflows with Microsoft
-  Foundry](https://farach.github.io/foundryR/articles/audio.md):
-- [Image and Video
-  Generation](https://farach.github.io/foundryR/articles/media-generation.md):
-
-### Integrations
-
-- [Integrating foundryR with
-  onet2r](https://farach.github.io/foundryR/articles/onet2r-integration.md):
+- [Transcribe and translate
+  audio](https://farach.github.io/foundryR/articles/audio.md):
+- [Generate
+  images](https://farach.github.io/foundryR/articles/media-generation.md):

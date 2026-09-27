@@ -16,7 +16,7 @@ foundry_embed_batch(
   dimensions = NULL,
   batch_size = 100L,
   max_active = 2L,
-  progress = TRUE,
+  progress = getOption("foundryR.progress", interactive()),
   api = c("v1", "deployment"),
   api_key = NULL,
   api_version = NULL
@@ -50,7 +50,8 @@ foundry_embed_batch(
 
 - progress:
 
-  Logical. Whether to show a progress bar. Default: TRUE.
+  Logical. Whether to show a progress bar. Defaults to
+  `getOption("foundryR.progress", interactive())`.
 
 - api:
 

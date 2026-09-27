@@ -1,43 +1,21 @@
-# Getting started with foundryR
+# Get started with foundryR
 
-## What you need from Azure
+Work through this article once before the task-specific ones. It sets up
+credentials, gets one response, extracts two fields from course
+comments, and compares three short texts by embedding. Calls to Azure
+show output recorded from a live run, and setup code is shown but not
+run.
 
-foundryR talks to deployed Azure OpenAI resources and Microsoft Foundry
-(formerly Azure AI Foundry) projects. Before writing R code, create or
-identify:
+## Install
 
-1.  An Azure OpenAI resource or Microsoft Foundry project with an OpenAI
-    endpoint.
-2.  At least one chat or Responses API deployment, for example
-    `gpt-5-nano`.
-3.  An embedding deployment, for example `text-embedding-3-small`, if
-    you plan to use embeddings.
-4.  A Content Safety resource if you plan to use moderation,
-    groundedness, or prompt-shield checks.
-5.  Either API keys or a Microsoft Entra ID token.
-
-In the Azure portal, open your Azure OpenAI resource, then use **Keys
-and Endpoint** to copy the endpoint URL and an API key. In the Foundry
-portal, use the deployments page to create model deployments and record
-their deployment names.
-
-> **Deployment name vs base model name**
->
-> The value you pass to `model =` is the deployment name you chose in
-> Azure, not necessarily the base model name. If you deploy base model
-> `gpt-5-nano` with deployment name `my-gpt4`, use `model = "my-gpt4"`
-> in foundryR. The same rule applies to embedding deployments.
-
-## Install foundryR
-
-Install the released version from CRAN:
+Install the released package from CRAN:
 
 ``` r
 
 install.packages("foundryR")
 ```
 
-To try unreleased changes, install the development version from GitHub:
+The development version on GitHub has the newest fixes.
 
 ``` r
 
@@ -47,97 +25,87 @@ pak::pak("farach/foundryR")
 
 ## Configure credentials
 
-Set credentials for the current R session. Credential setup is shown but
-not run when building this vignette:
+For API-key authentication, store the resource endpoint and key once:
 
 ``` r
 
 library(foundryR)
-
-foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"))
-foundry_set_key("your-api-key")
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), store = TRUE)
+foundry_set_key("your-api-key", store = TRUE)
 ```
 
-For persistent local configuration in your own workflow, `store = TRUE`
-uses the package configuration file under
-`tools::R_user_dir("foundryR", "config")` unless you set the
-`foundryR.config_file` option. It does not modify `.Renviron`. The file
-is plain text, so prefer session-only credentials or refreshable token
-providers for production use.
+`store = TRUE` writes package settings under
+`tools::R_user_dir("foundryR", "config")`; the file is plain text, so
+use session-only credentials or a refreshable token provider when that
+fits your security policy.
 
-This demonstration instead uses a temporary file and placeholder values,
-then removes the file and restores the previous options and environment
-variables:
+Microsoft Entra ID uses a token provider instead of a static key.
 
 ``` r
 
-local({
-  config_file <- tempfile("foundryR-config-", fileext = ".json")
-  old_options <- options(foundryR.config_file = config_file)
-  old_env <- Sys.getenv(
-    c("AZURE_FOUNDRY_ENDPOINT", "AZURE_FOUNDRY_KEY"),
-    unset = NA_character_
-  )
-  on.exit({
-    options(old_options)
-    Sys.unsetenv(names(old_env)[is.na(old_env)])
-    keep <- !is.na(old_env)
-    if (any(keep)) {
-      do.call(Sys.setenv, as.list(old_env[keep]))
-    }
-    unlink(config_file)
-  }, add = TRUE)
-
-  foundry_set_endpoint("https://example.openai.azure.com", store = TRUE)
-  foundry_set_key("example-key-not-a-secret", store = TRUE)
-})
+foundry_set_endpoint(Sys.getenv("AZURE_FOUNDRY_ENDPOINT"), store = TRUE)
+foundry_set_token_provider(foundry_token_azure_cli(), scope = "resource")
+foundry_set_token_provider(foundry_token_azure_cli("https://ai.azure.com"), scope = "project")
 ```
 
-You can also edit your chosen `.Renviron` file manually with a text
-editor. The vignette does not open an editor or write this file. Add
-values like these, then restart R:
+The resource token uses the Cognitive Services audience. The project
+token uses the `https://ai.azure.com` audience. A provider is a function
+that asks the Azure CLI for a fresh token when the cached one is about
+to expire, so it lasts for the R session rather than being stored; put
+the two provider lines in your project’s `.Rprofile` if you want them
+every session.
 
-``` text
-AZURE_FOUNDRY_ENDPOINT=https://<resource-name>.openai.azure.com
-AZURE_FOUNDRY_KEY=your-api-key
-AZURE_FOUNDRY_MODEL=my-gpt4
-AZURE_FOUNDRY_EMBED_MODEL=my-embedding-deployment
-```
-
-## Keyless authentication with Microsoft Entra ID
-
-API keys are convenient for local testing. For enterprise environments
-that already use service principals, managed identity, or Azure
-role-based access control, use a Microsoft Entra ID bearer token:
-
-``` r
-
-foundry_set_token("your-entra-token")
-```
-
-foundryR sends the token in the `Authorization` header. If both a token
-and an API key are configured, the token takes precedence for supported
-calls.
-
-## Validate setup
-
-These checks contact your configured Azure resource and are not run
-during rendering.
+[`foundry_check_setup()`](https://farach.github.io/foundryR/reference/foundry_check_setup.md)
+confirms that the resource endpoint, credentials, and default deployment
+work.
 
 ``` r
 
 foundry_check_setup()
 ```
 
-Test a specific deployment:
+## Understand endpoints and routes
+
+Microsoft Foundry exposes two endpoint shapes. A resource endpoint looks
+like `https://<resource>.openai.azure.com`. It is the default route for
+Responses API calls, files, vector stores, and most evaluation workflows
+that use OpenAI graders on existing columns. A project endpoint looks
+like `https://<resource>.services.ai.azure.com/api/projects/<project>`.
+You need it for conversations, server-side agents, agent-backed
+responses, Foundry built-in evaluators, model-target evaluations, agent
+evaluations, and stored-response evaluations.
+
+Set a project endpoint when your workflow needs project objects:
 
 ``` r
 
-foundry_check_setup(model = "gpt-5-nano")
+foundry_set_project_endpoint(Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT"), store = TRUE)
 ```
 
-If you need to see deployments exposed by the v1 model metadata
-endpoint, use:
+Conversations, agents, and the evaluations that need the project use it
+automatically. Responses, files, vector stores, and other evaluations
+stay on the resource endpoint unless you pass `project_endpoint =` on a
+call, or call `foundry_set_route("project")` to send them to the project
+for the rest of the R session.
+
+Project evaluations need a Microsoft Entra ID token. In live tests on
+the default project, responses, conversations, files, vector stores, and
+agents all accepted the resource API key.
+
+## Know deployment names
+
+The `model =` argument takes a deployment name, not a base model name.
+For example, if you deploy base model `gpt-5-nano` with deployment name
+`course-coder`, call:
+
+``` r
+
+foundry_response("Code this comment.", model = "course-coder")
+```
+
+[`foundry_models()`](https://farach.github.io/foundryR/reference/foundry_models.md)
+lists models available to the resource. It does not list the deployments
+you created in the Foundry portal.
 
 ``` r
 
@@ -145,165 +113,125 @@ models <- foundry_models()
 models[, c("id", "owned_by")]
 ```
 
-## First Responses API call
+## Get a first response
 
-The Responses API is the newer v1 surface for stateful turns, strict
-structured outputs, tools, and richer token metadata. The examples below
-omit `model =`, so foundryR reads the deployment from
-`AZURE_FOUNDRY_MODEL`; pass `model =` to target a specific deployment.
+The Responses API returns a tibble. Print the answer column when you
+want the text a reader or analyst will see:
 
 ``` r
-
-library(foundryR)
 
 response <- foundry_response("Answer in one sentence: what is R?")
 
 response$output_text
-#> [1] "R is a free, open-source programming language and environment for statistical computing and graphics, widely used for data analysis and visualization."
+#> [1] "R is a free, open-source programming language and environment for statistical computing and graphics."
 ```
 
-Chain a follow-up turn with `previous_response_id`:
+Token columns support cost checks and audit logs.
 
 ``` r
 
-follow_up <- foundry_response(
-  "Explain why that matters for data analysis in one sentence.",
-  previous_response_id = response$response_id
-)
-
-follow_up$output_text
-#> [1] "Because R<U+2019>s free, open-source nature plus its extensive ecosystem of packages for data manipulation, statistics, modeling, and high-quality graphics enables powerful, reproducible data analysis and visualization without licensing constraints."
+response[, c(
+  "input_tokens",
+  "output_tokens",
+  "reasoning_tokens",
+  "cached_input_tokens",
+  "total_tokens"
+)]
+#> # A tibble: 1 × 5
+#>   input_tokens output_tokens reasoning_tokens cached_input_tokens total_tokens
+#>          <int>         <int>            <int>               <int>        <int>
+#> 1           15           205              128                   0          220
 ```
 
-## First strict extraction
+`gpt-5-nano` is a reasoning model. Hidden reasoning tokens are included
+in `output_tokens`, so they are part of the output-token cost even
+though they are not visible in `output_text`.
 
-Use JSON Schema when you need model output to become analyzable columns:
+## Extract structured fields
+
+Use structured extraction when free text needs to become analysis
+columns. This small schema codes course comments into sentiment and one
+short issue label:
 
 ``` r
 
-schema <- list(
-  type = "object",
-  properties = list(
-    sentiment = list(type = "string", enum = c("positive", "negative", "neutral")),
-    topic = list(type = "string")
-  ),
-  required = c("sentiment", "topic"),
-  additionalProperties = FALSE
+schema <- foundry_schema(
+  sentiment = schema_enum(c("positive", "negative", "mixed")),
+  issue = schema_string("A short label for what the comment is about.")
 )
 
-foundry_extract(
-  c("The tutorial was clear.", "I needed more examples."),
-  schema = schema
+comments <- c(
+  "The lecture made regression much clearer.",
+  "The homework instructions were hard to follow.",
+  "The examples helped, but I wanted more time for practice."
 )
-#> # A tibble: 2 × 10
-#>   .input_idx .input_text     .response_id .status .output_text .error .error_msg
-#>        <int> <chr>           <chr>        <chr>   <chr>        <lgl>  <chr>     
-#> 1          1 The tutorial w… resp_0e928a… comple… "{\"sentime… FALSE  NA        
-#> 2          2 I needed more … resp_01f233… comple… "{\"sentime… FALSE  NA        
-#> # ℹ 3 more variables: raw_response <list>, sentiment <chr>, topic <chr>
+
+coded <- foundry_extract(comments, schema = schema)
+coded[, c("sentiment", "issue")]
+#> # A tibble: 3 × 2
+#>   sentiment issue                        
+#>   <chr>     <chr>                        
+#> 1 positive  regression                   
+#> 2 negative  homework instructions clarity
+#> 3 mixed     Need more time for practice
 ```
 
-[`foundry_extract()`](https://farach.github.io/foundryR/reference/foundry_extract.md)
-uses strict JSON Schema mode by default for supported models.
+The enum keeps `sentiment` to three values you can count. The free-text
+`issue` field comes back in whatever form the model chooses, so two
+runs, or two similar comments, can produce labels that do not match.
+When a field needs to be counted, give it an enum and a codebook, as in
+[`vignette("annotation-workflow")`](https://farach.github.io/foundryR/articles/annotation-workflow.md).
 
-## First embedding
+The returned tibble also contains dot-prefixed metadata such as response
+IDs, status, and raw response payloads. Keep those columns when you need
+provenance. Check `.error` before you analyze the fields. A failed row
+has missing fields, and `.error_msg` says why it failed.
 
-Embeddings convert text to numeric vectors for clustering, semantic
-search, near-duplicate detection, and downstream models:
+## Embed and compare text
+
+Embeddings turn text into numeric vectors. For a first check, inspect
+the dimensions and ask which pair is most similar:
 
 ``` r
 
 texts <- c(
-  "The tutorial was clear.",
-  "The lecture needed more examples.",
-  "The assignment instructions were easy to follow."
+  "The lecture made regression much clearer.",
+  "Regression finally made sense after this class.",
+  "The homework instructions were hard to follow."
 )
 
 embeddings <- foundry_embed(texts, model = "text-embedding-3-small")
-foundry_similarity(embeddings)
-#> # A tibble: 3 × 3
-#>   text_1                            text_2                            similarity
-#>   <chr>                             <chr>                                  <dbl>
-#> 1 The tutorial was clear.           The assignment instructions were…      0.580
-#> 2 The tutorial was clear.           The lecture needed more examples.      0.337
-#> 3 The lecture needed more examples. The assignment instructions were…      0.290
-```
+embeddings[, c("text", "n_dims")]
+#> # A tibble: 3 × 2
+#>   text                                            n_dims
+#>   <chr>                                            <int>
+#> 1 The lecture made regression much clearer.         1536
+#> 2 Regression finally made sense after this class.   1536
+#> 3 The homework instructions were hard to follow.    1536
 
-## Configure Content Safety
-
-Content Safety uses a separate Azure AI Content Safety resource. In the
-Azure portal, create an Azure AI Content Safety resource, open **Keys
-and Endpoint**, then configure foundryR:
-
-``` r
-
-foundry_set_content_safety_endpoint(Sys.getenv("AZURE_CONTENT_SAFETY_ENDPOINT"))
-foundry_set_content_safety_key("your-content-safety-key")
-```
-
-Use groundedness and shields as auditable safety gates:
-
-``` r
-
-source <- "The program enrolled 82 students in 2026."
-answer <- "The program enrolled 82 students in 2026."
-
-grounded <- foundry_groundedness(
-  text = answer,
-  grounding_sources = source,
-  query = "How many students enrolled?",
-  task = "QnA"
-)
-
-shield <- foundry_shield(user_prompt = "Summarize this document.")
-
-grounded
-#> # A tibble: 1 × 6
-#>   grounded grounded_pct ungrounded_pct ungrounded_segments ungrounded_reasons
-#>   <lgl>           <dbl>          <int> <list>              <list>            
-#> 1 TRUE                1              0 <chr [0]>           <chr [0]>         
-#> # ℹ 1 more variable: correction_text <chr>
-shield
+foundry_similarity(embeddings, top_k = 1)
 #> # A tibble: 1 × 3
-#>   source      content                  attack_detected
-#>   <chr>       <chr>                    <lgl>          
-#> 1 user_prompt Summarize this document. FALSE
+#>   text_1                                    text_2                    similarity
+#>   <chr>                                     <chr>                          <dbl>
+#> 1 The lecture made regression much clearer. Regression finally made …      0.560
 ```
 
-Most foundryR calls stay within your Azure OpenAI or Content Safety
-resources. Web search is different. Microsoft documents that Grounding
-with Bing can send data outside the compliance and geographic boundary
-and can incur separate costs. Do not send secrets or regulated data to
-web-search prompts.
+`text-embedding-3-small` returns 1536 dimensions.
+[`foundry_similarity()`](https://farach.github.io/foundryR/reference/foundry_similarity.md)
+computes cosine similarity from the embedding list-column.
 
-## Chat completions
+## Choose the next article
 
-Chat completions are still available for simple assistant replies:
-
-``` r
-
-foundry_chat("Answer in one sentence: what is the tidyverse?")
-#> # A tibble: 1 × 9
-#>   role      content          model finish_reason prompt_tokens completion_tokens
-#>   <chr>     <chr>            <chr> <chr>                 <int>             <int>
-#> 1 assistant The tidyverse i… gpt-… stop                     17               312
-#> # ℹ 3 more variables: reasoning_tokens <int>, cached_input_tokens <int>,
-#> #   total_tokens <int>
-```
-
-For interactive streaming chat and chat-first agent workflows, use
-ellmer.
-
-## Next steps
-
-- [`vignette("foundryr-vs-ellmer")`](https://farach.github.io/foundryR/articles/foundryr-vs-ellmer.md)
-  compares foundryR with ellmer.
-- [`vignette("annotation-workflow")`](https://farach.github.io/foundryR/articles/annotation-workflow.md)
-  shows extract, batch, embed, and validate.
-- [`vignette("responses-api")`](https://farach.github.io/foundryR/articles/responses-api.md)
-  covers Responses API tools and web search.
-- [`vignette("content-safety")`](https://farach.github.io/foundryR/articles/content-safety.md)
-  covers moderation, groundedness, and shields.
-- [`vignette("tidymodels")`](https://farach.github.io/foundryR/articles/tidymodels.md)
-  covers
-  [`step_foundry_embed()`](https://farach.github.io/foundryR/reference/step_foundry_embed.md).
+| Task | Read next |
+|----|----|
+| Learn the main workflow | [From text to defensible estimates](https://farach.github.io/foundryR/articles/annotation-workflow.md) |
+| Annotate many rows | [Annotate at scale with the Batch API](https://farach.github.io/foundryR/articles/files-batches.md) |
+| Search, cluster, or compare text | [Embeddings for research](https://farach.github.io/foundryR/articles/embeddings.md) |
+| Put embeddings in a model recipe | [Embeddings in tidymodels recipes](https://farach.github.io/foundryR/articles/tidymodels.md) |
+| Evaluate models or agents in Foundry | [Evaluate models and agents in Microsoft Foundry](https://farach.github.io/foundryR/articles/evaluations.md) |
+| Analyze evaluation results | [Analyze evaluation results with uncertainty](https://farach.github.io/foundryR/articles/evaluation-analysis.md) |
+| Gate outputs for safety | [Content Safety gates in a research pipeline](https://farach.github.io/foundryR/articles/content-safety.md) |
+| Use tools, web search, or stateful turns | [Responses API](https://farach.github.io/foundryR/articles/responses-api.md) |
+| Check endpoint and authentication coverage | [API support matrix](https://farach.github.io/foundryR/articles/api-support.md) |
+| Transcribe or translate audio | [Transcribe and translate audio](https://farach.github.io/foundryR/articles/audio.md) |
+| Generate images | [Generate images](https://farach.github.io/foundryR/articles/media-generation.md) |

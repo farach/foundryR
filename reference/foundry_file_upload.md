@@ -9,11 +9,12 @@ fine-tuning, evals, or assistants/file-search workflows.
 foundry_file_upload(
   path,
   purpose = c("assistants", "batch", "fine-tune", "evals"),
-  expires_after_seconds = 30 * 24 * 60 * 60,
+  expires_after_seconds = NULL,
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  project_endpoint = NULL
 )
 ```
 
@@ -31,8 +32,8 @@ foundry_file_upload(
 - expires_after_seconds:
 
   Integer. Optional number of seconds after creation when the file
-  should expire. Azure's v1 Files API accepts this as an `expires_after`
-  object.
+  should expire, sent as an `expires_after` object. Default `NULL` sends
+  no expiry. The service rejects an expiry for `purpose = "assistants"`.
 
 - api_key:
 
@@ -50,9 +51,21 @@ foundry_file_upload(
 
   Character. Optional API version query value.
 
+- project_endpoint:
+
+  Character. Optional project endpoint. When supplied, the call uses the
+  project endpoint instead of the resource endpoint.
+
 ## Value
 
 A one-row tibble with file metadata.
+
+## Details
+
+Files live on the endpoint where you upload them. Server-side agents
+search files on the project endpoint, so upload files for an agent's
+vector store with `project_endpoint` (or after
+`foundry_set_route("project")`).
 
 ## Examples
 

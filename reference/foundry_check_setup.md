@@ -45,6 +45,11 @@ Invisibly returns a list with configuration status:
   Logical. TRUE if a resource-scoped bearer token provider is
   configured.
 
+- project_auth_set:
+
+  Logical. TRUE if a project-scoped Microsoft Entra ID token or provider
+  is configured, NA if no project endpoint is set.
+
 - model_tested:
 
   The deployment name tested, or NA if none.

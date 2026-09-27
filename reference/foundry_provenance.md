@@ -1,7 +1,10 @@
 # Capture model and schema provenance
 
 Create a one-row tibble that records the model, schema hash, package
-version, and timestamp for a reproducible annotation run.
+version, and UTC timestamp for a reproducible annotation run. The schema
+hash is a SHA-256 digest of the same canonical JSON serialization used
+by
+[`foundry_codebook()`](https://farach.github.io/foundryR/reference/foundry_codebook.md).
 
 ## Usage
 
@@ -39,5 +42,5 @@ foundry_provenance(
 #> # A tibble: 1 × 5
 #>   model      schema_hash        package_version captured_at         metadata    
 #>   <chr>      <chr>              <chr>           <dttm>              <list>      
-#> 1 gpt-5-nano b633f54253aaf4d37… 0.1.0           2026-09-25 20:33:42 <named list>
+#> 1 gpt-5-nano 931e4a749545c6ad5… 0.1.0.9000      2026-09-27 22:59:43 <named list>
 ```

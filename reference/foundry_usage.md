@@ -18,8 +18,10 @@ foundry_usage(x, rates = NULL)
 
 - rates:
 
-  Optional named numeric vector with any of `input`, `cached_input`, and
-  `output` rates per token.
+  Optional named numeric vector or list with any of `input`,
+  `cached_input`, and `output` rates per token. Service-reported
+  `input_tokens` include cached tokens; cached tokens are billed at
+  `cached_input` when supplied, otherwise at the `input` rate.
 
 ## Value
 
@@ -45,5 +47,5 @@ foundry_usage(
 #> # A tibble: 1 × 5
 #>   input_tokens cached_input_tokens output_tokens total_tokens      cost
 #>          <dbl>               <dbl>         <dbl>        <dbl>     <dbl>
-#> 1           30                   5            10           40 0.0000705
+#> 1           30                   5            10           40 0.0000655
 ```

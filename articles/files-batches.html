@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Files and Batch API Workflows • foundryR</title>
+<title>Annotate at scale with the Batch API • foundryR</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -16,7 +16,7 @@
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
-<meta property="og:title" content="Files and Batch API Workflows">
+<meta property="og:title" content="Annotate at scale with the Batch API">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
@@ -29,7 +29,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">foundryR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,32 +38,34 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../articles/getting-started.html">Get Started</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/getting-started.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><h6 class="dropdown-header" data-toc-skip>Core</h6></li>
-    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started</a></li>
-    <li><a class="dropdown-item" href="../articles/foundryr-vs-ellmer.html">foundryR vs ellmer</a></li>
+<li><h6 class="dropdown-header" data-toc-skip>Get started</h6></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Get started with foundryR</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Measure text</h6></li>
+    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">From text to defensible estimates</a></li>
+    <li><a class="dropdown-item" href="../articles/files-batches.html">Annotate at scale with the Batch API</a></li>
+    <li><a class="dropdown-item" href="../articles/embeddings.html">Embeddings for research</a></li>
+    <li><a class="dropdown-item" href="../articles/tidymodels.html">Embeddings in tidymodels recipes</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Evaluate models and agents</h6></li>
+    <li><a class="dropdown-item" href="../articles/evaluations.html">Evaluate models and agents in Microsoft Foundry</a></li>
+    <li><a class="dropdown-item" href="../articles/evaluation-analysis.html">Analyze evaluation results with uncertainty</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Safety</h6></li>
+    <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety gates in a research pipeline</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Reference</h6></li>
     <li><a class="dropdown-item" href="../articles/responses-api.html">Responses API</a></li>
     <li><a class="dropdown-item" href="../articles/api-support.html">API support matrix</a></li>
-    <li><a class="dropdown-item" href="../articles/embeddings.html">Text Embeddings</a></li>
     <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Responsible AI</h6></li>
-    <li><a class="dropdown-item" href="../articles/content-safety.html">Content Safety</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Research Workflows</h6></li>
-    <li><a class="dropdown-item" href="../articles/annotation-workflow.html">Annotation Workflow</a></li>
-    <li><a class="dropdown-item" href="../articles/files-batches.html">Files and Batch API</a></li>
-    <li><a class="dropdown-item" href="../articles/tidymodels.html">tidymodels Integration</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Advanced Topics</h6></li>
-    <li><a class="dropdown-item" href="../articles/audio.html">Audio Workflows</a></li>
-    <li><a class="dropdown-item" href="../articles/media-generation.html">Image and Video Generation</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Integrations</h6></li>
-    <li><a class="dropdown-item" href="../articles/onet2r-integration.html">onet2r Integration</a></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Other modalities (experimental)</h6></li>
+    <li><a class="dropdown-item" href="../articles/audio.html">Transcribe and translate audio</a></li>
+    <li><a class="dropdown-item" href="../articles/media-generation.html">Generate images</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -93,7 +95,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>Files and Batch API Workflows</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Annotate at scale with the Batch API</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/farach/foundryR/blob/main/vignettes/files-batches.Rmd" class="external-link"><code>vignettes/files-batches.Rmd</code></a></small>
@@ -102,100 +104,296 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span></code></pre></div>
-<p>The Batch API is useful when your research task has hundreds or
-thousands of independent rows: survey coding, abstract screening, entity
-extraction, document classification, or large-scale summarization.</p>
+<p>Calls to Azure show output recorded from a live run, and setup code
+is shown but not run.</p>
+<p>Batch is worth the extra setup when you have thousands of independent
+texts, can wait for the 24-hour processing window, and want the lower
+batch price instead of immediate responses. It is a production path for
+stable annotation jobs, not the first place to debug a new prompt.</p>
+<p>Batch jobs need a deployment made for batch inference. Microsoft
+Learn states that the Foundry portal shows batch deployment types as
+<code>Global-Batch</code> and <code>Data Zone Batch</code>, and that the
+<code>model</code> field in each request line must match the Global
+Batch deployment name. This article uses
+<code>gpt-4.1-nano-batch</code>, a Global Batch deployment of
+<code>gpt-4.1-nano</code>. See Microsoft’s <a href="https://learn.microsoft.com/azure/ai-foundry/openai/how-to/batch" class="external-link">Azure
+OpenAI batch deployments guide</a>.</p>
 <div class="section level2">
-<h2 id="prepare-jsonl-locally">Prepare JSONL locally<a class="anchor" aria-label="anchor" href="#prepare-jsonl-locally"></a>
+<h2 id="prepare-requests">Prepare requests<a class="anchor" aria-label="anchor" href="#prepare-requests"></a>
 </h2>
-<p><code><a href="../reference/foundry_batch_requests.html">foundry_batch_requests()</a></code> runs locally. It converts a
-data frame into the JSON Lines shape expected by the Batch API.</p>
+<p><code><a href="../reference/foundry_batch_requests.html">foundry_batch_requests()</a></code> writes the JSONL file that the
+service reads. The call is local, so it can run before credentials are
+configured.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/farach/foundryR" class="external-link">foundryR</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">survey</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
-<span>  id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"resp-001"</span>, <span class="st">"resp-002"</span>, <span class="st">"resp-003"</span><span class="op">)</span>,</span>
-<span>  response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"The workshop was clear and practical."</span>,</span>
-<span>    <span class="st">"I liked the examples but wanted more time."</span>,</span>
-<span>    <span class="st">"The setup instructions were confusing."</span></span>
+<code class="sourceCode R"><span><span class="va">comments</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  comment_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"c%02d"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span>,</span>
+<span>  comment <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"The lectures were clear and the examples made regression feel concrete."</span>,</span>
+<span>    <span class="st">"The weekly quizzes felt rushed and did not match the homework."</span>,</span>
+<span>    <span class="st">"Office hours helped me catch up after I missed the first lab."</span>,</span>
+<span>    <span class="st">"The slides were hard to follow because notation changed between weeks."</span>,</span>
+<span>    <span class="st">"The final project connected the material to real policy questions."</span>,</span>
+<span>    <span class="st">"I needed more feedback before the midterm."</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">jsonl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".jsonl"</span><span class="op">)</span></span>
+<span><span class="va">course_schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_schema.html">foundry_schema</a></span><span class="op">(</span></span>
+<span>  theme <span class="op">=</span> <span class="fu"><a href="../reference/schema_constructors.html">schema_enum</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"instruction"</span>, <span class="st">"assessment"</span>, <span class="st">"support"</span>, <span class="st">"materials"</span><span class="op">)</span>,</span>
+<span>    description <span class="op">=</span> <span class="st">"Primary course evaluation theme."</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  sentiment <span class="op">=</span> <span class="fu"><a href="../reference/schema_constructors.html">schema_enum</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"positive"</span>, <span class="st">"negative"</span>, <span class="st">"mixed"</span><span class="op">)</span>,</span>
+<span>    description <span class="op">=</span> <span class="st">"Overall sentiment toward the course element."</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">request_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_batch_requests.html">foundry_batch_requests</a></span><span class="op">(</span></span>
-<span>  <span class="va">survey</span>,</span>
-<span>  input <span class="op">=</span> <span class="st">"response"</span>,</span>
+<span><span class="va">course_instructions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span></span>
+<span>  <span class="st">"Code one course evaluation comment."</span>,</span>
+<span>  <span class="st">"Choose exactly one primary theme and one sentiment."</span>,</span>
+<span>  <span class="st">"Return only fields that conform to the schema."</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">jsonl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".jsonl"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">request_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_batch_requests.html">foundry_batch_requests</a></span><span class="op">(</span></span>
+<span>  <span class="va">comments</span>,</span>
+<span>  input <span class="op">=</span> <span class="st">"comment"</span>,</span>
 <span>  path <span class="op">=</span> <span class="va">jsonl</span>,</span>
-<span>  model <span class="op">=</span> <span class="st">"gpt-5-nano"</span>,</span>
-<span>  custom_id <span class="op">=</span> <span class="st">"id"</span>,</span>
-<span>  body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    instructions <span class="op">=</span> <span class="st">"Classify the response sentiment as positive, neutral, or negative."</span></span>
-<span>  <span class="op">)</span></span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-4.1-nano-batch"</span>,</span>
+<span>  custom_id <span class="op">=</span> <span class="st">"comment_id"</span>,</span>
+<span>  schema <span class="op">=</span> <span class="va">course_schema</span>,</span>
+<span>  schema_name <span class="op">=</span> <span class="st">"CourseEvaluationCodes"</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="va">course_instructions</span>,</span>
+<span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">request_file</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
-<span><span class="co">#&gt;   path                                   requests endpoint     </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                     <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> /tmp/RtmpxvEtGz/file2563644e7370.jsonl        3 /v1/responses</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">jsonl</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "{\"custom_id\":\"resp-001\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-5-nano\",\"input\":\"The workshop was clear and practical.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"     </span></span>
-<span><span class="co">#&gt; [2] "{\"custom_id\":\"resp-002\",\"method\":\"POST\",\"url\":\"/v1/responses\",\"body\":{\"model\":\"gpt-5-nano\",\"input\":\"I liked the examples but wanted more time.\",\"instructions\":\"Classify the response sentiment as positive, neutral, or negative.\"}}"</span></span></code></pre></div>
-<p>The example files use R’s temporary directory and are removed after
-use. For results you want to keep, choose an explicit output path in
-your own workflow.</p>
+<span><span class="va">request_info</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">requests</span>, <span class="va">endpoint</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 2</span></span></span>
+<span><span class="co">#&gt;   requests endpoint     </span></span>
+<span><span class="co">#&gt;      <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>        6 /v1/responses</span></span></code></pre></div>
+<p>Print one request line, formatted for inspection, rather than
+printing the temporary path. The request line is the object you need to
+review.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/prettify.html" class="external-link">prettify</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">jsonl</span>, n <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt;     "custom_id": "c01",</span></span>
+<span><span class="co">#&gt;     "method": "POST",</span></span>
+<span><span class="co">#&gt;     "url": "/v1/responses",</span></span>
+<span><span class="co">#&gt;     "body": {</span></span>
+<span><span class="co">#&gt;         "model": "gpt-4.1-nano-batch",</span></span>
+<span><span class="co">#&gt;         "input": "The lectures were clear and the examples made regression feel concrete.",</span></span>
+<span><span class="co">#&gt;         "instructions": "Code one course evaluation comment. Choose exactly one primary theme and one sentiment. Return only fields that conform to the schema.",</span></span>
+<span><span class="co">#&gt;         "text": {</span></span>
+<span><span class="co">#&gt;             "format": {</span></span>
+<span><span class="co">#&gt;                 "type": "json_schema",</span></span>
+<span><span class="co">#&gt;                 "name": "CourseEvaluationCodes",</span></span>
+<span><span class="co">#&gt;                 "schema": {</span></span>
+<span><span class="co">#&gt;                     "type": "object",</span></span>
+<span><span class="co">#&gt;                     "properties": {</span></span>
+<span><span class="co">#&gt;                         "theme": {</span></span>
+<span><span class="co">#&gt;                             "type": "string",</span></span>
+<span><span class="co">#&gt;                             "description": "Primary course evaluation theme.",</span></span>
+<span><span class="co">#&gt;                             "enum": [</span></span>
+<span><span class="co">#&gt;                                 "instruction",</span></span>
+<span><span class="co">#&gt;                                 "assessment",</span></span>
+<span><span class="co">#&gt;                                 "support",</span></span>
+<span><span class="co">#&gt;                                 "materials"</span></span>
+<span><span class="co">#&gt;                             ]</span></span>
+<span><span class="co">#&gt;                         },</span></span>
+<span><span class="co">#&gt;                         "sentiment": {</span></span>
+<span><span class="co">#&gt;                             "type": "string",</span></span>
+<span><span class="co">#&gt;                             "description": "Overall sentiment toward the course element.",</span></span>
+<span><span class="co">#&gt;                             "enum": [</span></span>
+<span><span class="co">#&gt;                                 "positive",</span></span>
+<span><span class="co">#&gt;                                 "negative",</span></span>
+<span><span class="co">#&gt;                                 "mixed"</span></span>
+<span><span class="co">#&gt;                             ]</span></span>
+<span><span class="co">#&gt;                         }</span></span>
+<span><span class="co">#&gt;                     },</span></span>
+<span><span class="co">#&gt;                     "required": [</span></span>
+<span><span class="co">#&gt;                         "theme",</span></span>
+<span><span class="co">#&gt;                         "sentiment"</span></span>
+<span><span class="co">#&gt;                     ],</span></span>
+<span><span class="co">#&gt;                     "additionalProperties": false</span></span>
+<span><span class="co">#&gt;                 },</span></span>
+<span><span class="co">#&gt;                 "strict": true</span></span>
+<span><span class="co">#&gt;             }</span></span>
+<span><span class="co">#&gt;         }</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
+<p>The <code>custom_id</code> is the join key. Use a stable ID from your
+data instead of relying on file order.</p>
 </div>
 <div class="section level2">
-<h2 id="upload-and-create-a-batch">Upload and create a batch<a class="anchor" aria-label="anchor" href="#upload-and-create-a-batch"></a>
+<h2 id="submit-and-wait-with-the-low-level-api">Submit and wait with the low-level API<a class="anchor" aria-label="anchor" href="#submit-and-wait-with-the-low-level-api"></a>
 </h2>
-<p>Uploading and batch creation call the Foundry service, so these
-chunks are not run while building the vignette.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_file_upload.html">foundry_file_upload</a></span><span class="op">(</span><span class="va">jsonl</span>, purpose <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">jsonl</span><span class="op">)</span></span>
+<p>The low-level path makes each service object visible: uploaded file,
+batch job, final status, parsed results and usage.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">uploaded_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_file_upload.html">foundry_file_upload</a></span><span class="op">(</span><span class="va">jsonl</span>, purpose <span class="op">=</span> <span class="st">"batch"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_batch_create.html">foundry_batch_create</a></span><span class="op">(</span></span>
-<span>  input_file_id <span class="op">=</span> <span class="va">file</span><span class="op">$</span><span class="va">file_id</span>,</span>
-<span>  endpoint <span class="op">=</span> <span class="st">"/v1/responses"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>The returned objects include service identifiers, status fields, file
-sizes, completion windows, and request counts.</p>
-</div>
-<div class="section level2">
-<h2 id="poll-and-download-results">Poll and download results<a class="anchor" aria-label="anchor" href="#poll-and-download-results"></a>
-</h2>
-<p>These service calls are not run during rendering. Poll until the
-batch status is <code>"completed"</code> before downloading its
-output.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_batch_get.html">foundry_batch_get</a></span><span class="op">(</span><span class="va">batch</span><span class="op">$</span><span class="va">batch_id</span><span class="op">)</span></span>
-<span><span class="va">output_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".jsonl"</span><span class="op">)</span></span>
+<span>  input_file_id <span class="op">=</span> <span class="va">uploaded_file</span><span class="op">$</span><span class="va">file_id</span>,</span>
+<span>  endpoint <span class="op">=</span> <span class="va">request_info</span><span class="op">$</span><span class="va">endpoint</span></span>
+<span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/foundry_file_download.html">foundry_file_download</a></span><span class="op">(</span></span>
-<span>  file_id <span class="op">=</span> <span class="va">batch</span><span class="op">$</span><span class="va">output_file_id</span>,</span>
-<span>  path <span class="op">=</span> <span class="va">output_path</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p>Output files are JSONL too. Read a few lines first before parsing a
-large job:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">output_lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">output_path</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">output_lines</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/unlink.html" class="external-link">unlink</a></span><span class="op">(</span><span class="va">output_path</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">batch</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">status</span>, <span class="va">completion_window</span>, <span class="va">batch_id</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   status     completion_window batch_id                                  </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> validating 24h               batch_4c084697-726e-4b46-b252-54c5df527796</span></span></code></pre></div>
+<p><code><a href="../reference/foundry_batch_wait.html">foundry_batch_wait()</a></code> polls until the batch reaches a
+terminal state. Batch jobs target completion within 24 hours, so use a
+longer polling interval in a large live workflow.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">completed_batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_batch_wait.html">foundry_batch_wait</a></span><span class="op">(</span></span>
+<span>  <span class="va">batch</span><span class="op">$</span><span class="va">batch_id</span>,</span>
+<span>  interval <span class="op">=</span> <span class="fl">60</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">completed_batch</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span></span>
+<span>    <span class="va">status</span>,</span>
+<span>    <span class="va">request_counts_total</span>,</span>
+<span>    <span class="va">request_counts_completed</span>,</span>
+<span>    <span class="va">request_counts_failed</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 4</span></span></span>
+<span><span class="co">#&gt;   status    request_counts_total request_counts_completed request_counts_failed</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> completed                    6                        6                     0</span></span></code></pre></div>
+<p><code><a href="../reference/foundry_batch_results.html">foundry_batch_results()</a></code> downloads and parses the output
+file and, when present, the error file. Failed request rows have
+<code>.error = TRUE</code> and an <code>.error_msg</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">batch_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_batch_results.html">foundry_batch_results</a></span><span class="op">(</span><span class="va">completed_batch</span><span class="op">$</span><span class="va">batch_id</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">batch_results</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">custom_id</span>, <span class="va">output_text</span>, <span class="va">.error</span>, <span class="va">input_tokens</span>, <span class="va">output_tokens</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 5</span></span></span>
+<span><span class="co">#&gt;   custom_id output_text                        .error input_tokens output_tokens</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                              <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> c02       <span style="color: #949494;">"</span>{\"theme\":\"assessment\",\"sent… FALSE           114            11</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> c04       <span style="color: #949494;">"</span>{\"theme\":\"materials\",\"senti… FALSE           114            11</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> c03       <span style="color: #949494;">"</span>{\"theme\":\"support\",\"sentime… FALSE           115            11</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> c06       <span style="color: #949494;">"</span>{\"theme\":\"assessment\",\"sent… FALSE           111            11</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> c05       <span style="color: #949494;">"</span>{\"theme\":\"assessment\",\"sent… FALSE           113            11</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> c01       <span style="color: #949494;">"</span>{\"theme\":\"instruction\",\"sen… FALSE           114            11</span></span></code></pre></div>
+<p>The results came back in the order c02, c04, c03, c06, c05, c01, not
+in the order the requests were written. Join on <code>custom_id</code>,
+never on row position.</p>
+<p>The coded fields arrive as JSON text in <code>output_text</code> and,
+parsed, in the <code>structured</code> list-column. The extraction path
+below turns them into ordinary columns joined to your rows.</p>
+<p>When the service writes an error file,
+<code>completed_batch$error_file_id</code> names it. Those rows are
+included in <code><a href="../reference/foundry_batch_results.html">foundry_batch_results()</a></code> with
+<code>.error</code> columns so you can separate successful labels from
+failed requests before joining.</p>
+<p>Usage is reported in tokens. Pass your own per-token rates because
+Azure prices change and differ by deployment. The rates below are
+illustrative, not current prices.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_usage.html">foundry_usage</a></span><span class="op">(</span></span>
+<span>  <span class="va">batch_results</span>,</span>
+<span>  rates <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    input <span class="op">=</span> <span class="fl">0.00000010</span>,</span>
+<span>    cached_input <span class="op">=</span> <span class="fl">0.000000025</span>,</span>
+<span>    output <span class="op">=</span> <span class="fl">0.00000040</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 5</span></span></span>
+<span><span class="co">#&gt;   input_tokens cached_input_tokens output_tokens total_tokens      cost</span></span>
+<span><span class="co">#&gt;          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span>          681                   0            66          747 0.000<span style="text-decoration: underline;">094</span>5</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="practical-advice">Practical advice<a class="anchor" aria-label="anchor" href="#practical-advice"></a>
+<h2 id="submit-now-and-collect-later">Submit now and collect later<a class="anchor" aria-label="anchor" href="#submit-now-and-collect-later"></a>
 </h2>
-<ul>
-<li>Start with 10 to 20 rows and inspect the output before scaling
-up.</li>
-<li>Use stable <code>custom_id</code> values so results join back to
-your data frame.</li>
-<li>Store prompts and schema versions with your analysis code for
-reproducibility.</li>
-<li>Download both output and error files when a batch finishes.</li>
-</ul>
+<p>Most annotation projects do not need the low-level objects in
+analysis code. <code>foundry_extract_batch(wait = FALSE)</code> writes
+the request file, uploads it and creates the batch. It returns the batch
+immediately.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">extract_batch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_extract_batch.html">foundry_extract_batch</a></span><span class="op">(</span></span>
+<span>  <span class="va">comments</span>,</span>
+<span>  text_col <span class="op">=</span> <span class="st">"comment"</span>,</span>
+<span>  schema <span class="op">=</span> <span class="va">course_schema</span>,</span>
+<span>  model <span class="op">=</span> <span class="st">"gpt-4.1-nano-batch"</span>,</span>
+<span>  wait <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  instructions <span class="op">=</span> <span class="va">course_instructions</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">extract_batch</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">status</span>, <span class="va">completion_window</span>, <span class="va">batch_id</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   status     completion_window batch_id                                  </span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                     </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> validating 24h               batch_5dfcd819-e17a-4b4c-951a-fbbb6c6d0dc1</span></span></code></pre></div>
+<p>Save <code>extract_batch$batch_id</code> with the data and schema.
+Later, even in a new R session, check that the batch has finished, then
+call <code><a href="../reference/foundry_extract_batch_results.html">foundry_extract_batch_results()</a></code> with the batch ID,
+original rows and the same schema. foundryR joins results back to the
+original rows using the <code>row-N</code> IDs written by
+<code><a href="../reference/foundry_extract_batch.html">foundry_extract_batch()</a></code>, and warns about any row that has
+no result.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/foundry_batch_wait.html">foundry_batch_wait</a></span><span class="op">(</span><span class="va">extract_batch</span><span class="op">$</span><span class="va">batch_id</span>, interval <span class="op">=</span> <span class="fl">60</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">status</span>, <span class="va">request_counts_completed</span>, <span class="va">request_counts_failed</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 1 × 3</span></span></span>
+<span><span class="co">#&gt;   status    request_counts_completed request_counts_failed</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                        <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>                 <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> completed                        6                     0</span></span>
+<span></span>
+<span><span class="va">extract_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/foundry_extract_batch_results.html">foundry_extract_batch_results</a></span><span class="op">(</span></span>
+<span>  <span class="va">extract_batch</span><span class="op">$</span><span class="va">batch_id</span>,</span>
+<span>  data <span class="op">=</span> <span class="va">comments</span>,</span>
+<span>  schema <span class="op">=</span> <span class="va">course_schema</span>,</span>
+<span>  text_col <span class="op">=</span> <span class="st">"comment"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">extract_results</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">comment_id</span>, <span class="va">theme</span>, <span class="va">sentiment</span>, <span class="va">.error</span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
+<span><span class="co">#&gt;   comment_id theme       sentiment .error</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> c01        instruction positive  FALSE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> c02        assessment  negative  FALSE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> c03        support     positive  FALSE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> c04        materials   negative  FALSE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> c05        assessment  positive  FALSE </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> c06        assessment  mixed     FALSE</span></span></code></pre></div>
+<p>This path is the one to use in a reproducible analysis. The original
+tibble stays in your project, and the service result is collected into
+the same row structure after the batch finishes.</p>
+</div>
+<div class="section level2">
+<h2 id="clean-up-files">Clean up files<a class="anchor" aria-label="anchor" href="#clean-up-files"></a>
+</h2>
+<p>Delete service files that are no longer needed. Keep the batch IDs,
+codebook version and schema with your analysis so the results can be
+traced.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">file_deletes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/foundry_file_delete.html">foundry_file_delete</a></span><span class="op">(</span><span class="va">uploaded_file</span><span class="op">$</span><span class="va">file_id</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/foundry_file_delete.html">foundry_file_delete</a></span><span class="op">(</span><span class="va">extract_batch</span><span class="op">$</span><span class="va">input_file_id</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">file_deletes</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 2</span></span></span>
+<span><span class="co">#&gt;   file_id                               deleted</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                                 <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> file-f2656a86733b4d059fe8727280d62316 TRUE   </span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> file-deb5fab3618f49938d085614badbf0cd TRUE</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

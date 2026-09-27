@@ -1,8 +1,8 @@
 # Transcribe an audio file with Microsoft Foundry
 
-Transcribe audio through the Speech in Foundry Tools LLM Speech API,
-including MAI-Transcribe models, or through the Azure OpenAI v1 preview
-audio endpoint.
+Transcribe audio through standard Speech fast transcription, the Speech
+in Foundry Tools enhanced LLM Speech/MAI-Transcribe API, or the Azure
+OpenAI v1 preview audio endpoint.
 
 ## Usage
 
@@ -24,7 +24,8 @@ foundry_transcribe(
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  enhanced = NULL
 )
 ```
 
@@ -36,13 +37,15 @@ foundry_transcribe(
 
 - model:
 
-  Character. Model or deployment name. Defaults to
-  `"mai-transcribe-1.5"` for `service = "speech"` and to
-  `AZURE_FOUNDRY_MODEL` for `service = "openai"`.
+  Character. Optional Speech enhanced-mode model, or required Azure
+  OpenAI audio deployment name when `service = "openai"`. Leave `NULL`
+  with `service = "speech"` to use standard fast transcription; the
+  returned `model` column is `NA` for this path.
 
 - service:
 
-  Character. `"speech"` for LLM Speech/MAI-Transcribe or `"openai"` for
+  Character. `"speech"` for standard Speech fast transcription or
+  enhanced LLM Speech/MAI-Transcribe; `"openai"` for
   `/openai/v1/audio/transcriptions`.
 
 - api:
@@ -108,19 +111,45 @@ foundry_transcribe(
   Character. Optional API version. Defaults to `"2025-10-15"` for Speech
   and `"preview"` for OpenAI audio.
 
+- enhanced:
+
+  Logical or `NULL`. For `service = "speech"`, `NULL` uses standard fast
+  transcription unless a model, prompt, or `transcribe_style` requires
+  enhanced mode. `TRUE` forces LLM Speech enhanced mode. `FALSE` forbids
+  enhanced mode and errors if enhanced-only options are supplied.
+
 ## Value
 
-A one-row tibble with transcript text, phrase-level detail, and the raw
+A one-row tibble with transcript text, phrase-level detail, the model
+that ran (`NA` for standard Speech fast transcription), and the raw
 response in list-columns.
+
+## Details
+
+Standard Speech fast transcription is the default for
+`service = "speech"`; it works in regular Speech regions and does not
+require a model deployment. Enhanced LLM Speech and MAI-Transcribe modes
+are opt-in, preview or region-limited, and are used when
+`enhanced = TRUE`, `model` is supplied, or enhanced-only options such as
+`prompt` or `transcribe_style` are supplied.
+
+For Azure OpenAI audio, pass the deployment name explicitly in `model`.
+Azure `whisper` version `001` retires on 2026-12-15. The
+`gpt-4o-mini-transcribe` version `2025-12-15` is generally available
+until 2027-06-15.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Requires configured Azure Speech/OpenAI endpoints and credentials,
-# the corresponding models, and your own local audio input files.
-foundry_transcribe("interview.mp3", model = "mai-transcribe-1.5")
-foundry_transcribe("interview.mp3", service = "openai", model = "gpt-4o-transcribe")
+# Requires configured Azure Speech/OpenAI endpoints and credentials
+# and your own local audio input files.
+foundry_transcribe("interview.mp3")
+foundry_transcribe("interview.mp3", model = "mai-transcribe-2")
+foundry_transcribe("interview.mp3", enhanced = TRUE, prompt = "Use names exactly.")
+foundry_transcribe(
+  "interview.mp3", service = "openai", model = "gpt-4o-transcribe"
+)
 foundry_transcribe(
   "speech.wav", service = "openai", model = "whisper", api = "deployment"
 )

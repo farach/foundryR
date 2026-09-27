@@ -1,7 +1,9 @@
 # Parse API Error Response
 
-Internal function to extract user-friendly error messages from API
-responses.
+Internal function that turns a failed response into the lines shown
+under httr2's `HTTP <status>` error. The HTTP status picks the category,
+the service's own message is always kept, and a hint depends on the
+status and the endpoint that was called.
 
 ## Usage
 
@@ -17,4 +19,4 @@ foundry_error_body(resp)
 
 ## Value
 
-Character string with error message.
+A named character vector of message lines.

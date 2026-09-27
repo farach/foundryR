@@ -10,7 +10,8 @@ foundry_file_get(
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  project_endpoint = NULL
 )
 ```
 
@@ -35,6 +36,11 @@ foundry_file_get(
 - api_version:
 
   Character. Optional API version query value.
+
+- project_endpoint:
+
+  Character. Optional project endpoint. When supplied, the call uses the
+  project endpoint instead of the resource endpoint.
 
 ## Value
 

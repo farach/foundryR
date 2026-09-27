@@ -34,6 +34,18 @@ foundry_consistency(text, schema, n = 3L, ...)
 
 A tibble with one row per input.
 
+## Details
+
+The comparison covers the whole structured record after canonical JSON
+serialization: object names are sorted recursively, arrays keep their
+order, and numbers are serialized with `digits = NA`. Only successful
+runs count toward `modal_share` and entropy; failed runs are reported
+separately. With `n` runs, `modal_share` can only take values `k / n`.
+Entropy is the plug-in estimate in bits, has maximum `log2(n)`, and is
+biased low for small `n`. Sampling settings passed through `...` define
+what a repeat means. Stability is not accuracy: a model can be
+consistently wrong.
+
 ## Examples
 
 ``` r

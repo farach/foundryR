@@ -1,10 +1,12 @@
-# List or retrieve available model deployments
+# List or retrieve models available to a Foundry resource
 
-List model deployments available through the Microsoft Foundry v1
-data-plane API, or retrieve metadata for one deployment by name. Use the
-deployment name shown in the Foundry portal as the `model` value in
+List the models that the Microsoft Foundry v1 data-plane API reports for
+your resource, or retrieve metadata for one model. The list covers
+models the resource can use, including models you have not deployed, so
+it is not a list of your deployments. The `model` argument of
 [`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
-and other v1 helpers.
+and other v1 helpers takes a deployment name, which you choose when you
+deploy a model; see your deployments in the Foundry portal.
 
 ## Usage
 
@@ -22,7 +24,7 @@ foundry_models(
 
 - model:
 
-  Character. Optional deployment name to retrieve.
+  Character. Optional model name to retrieve.
 
 - api_key:
 
@@ -42,15 +44,13 @@ foundry_models(
 
 ## Value
 
-A tibble with model or deployment metadata and the raw model object in a
-list-column.
+A tibble with model metadata and the raw model object in a list-column.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
 # Requires a configured Azure endpoint and credentials.
-# Replace gpt-5-nano with an existing deployment name.
 foundry_models()
 foundry_models("gpt-5-nano")
 } # }

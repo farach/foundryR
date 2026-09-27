@@ -1,9 +1,9 @@
 # Translate an audio file with Microsoft Foundry
 
-Translate audio through LLM Speech enhanced mode or the
-OpenAI-compatible v1 audio translations endpoint. LLM Speech supports
-multiple target languages; the OpenAI-compatible translations endpoint
-translates to English.
+Translate audio through Speech enhanced LLM Speech mode or the
+OpenAI-compatible v1 audio translations endpoint. Speech translation
+requires enhanced mode and a region where LLM Speech is available. The
+OpenAI-compatible translations endpoint translates to English.
 
 ## Usage
 
@@ -39,14 +39,15 @@ foundry_translate_audio(
 
 - model:
 
-  Character. Optional model or deployment name. For Speech translation
-  this is omitted by default because MAI-Transcribe models do not
-  translate. For `service = "openai"`, defaults to
-  `AZURE_FOUNDRY_MODEL`.
+  Character. Optional Speech enhanced-mode model, or required Azure
+  OpenAI audio deployment name when `service = "openai"`. For Speech
+  translation this is omitted by default because MAI-Transcribe models
+  do not translate.
 
 - service:
 
-  Character. `"speech"` for LLM Speech/MAI-Transcribe or `"openai"` for
+  Character. `"speech"` for standard Speech fast transcription or
+  enhanced LLM Speech/MAI-Transcribe; `"openai"` for
   `/openai/v1/audio/transcriptions`.
 
 - api:
@@ -100,12 +101,32 @@ foundry_translate_audio(
 A one-row tibble with translated text, phrase-level detail, and the raw
 response in list-columns.
 
+## Details
+
+Speech translation uses LLM Speech enhanced mode because standard Speech
+fast transcription and MAI-Transcribe do not translate. For Azure OpenAI
+audio, pass the deployment name explicitly in `model`. Azure `whisper`
+version `001` retires on 2026-12-15. The `gpt-4o-mini-transcribe`
+version `2025-12-15` is generally available until 2027-06-15.
+
+In live testing, an Azure `whisper` version `001` deployment returned
+Spanish speech as Spanish text through the translations route in two of
+three attempts, so check the language of the output before you rely on
+it. Transcribing in the source language with
+[`foundry_transcribe()`](https://farach.github.io/foundryR/reference/foundry_transcribe.md)
+and translating the text with
+[`foundry_response()`](https://farach.github.io/foundryR/reference/foundry_response.md)
+is an alternative.
+
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Requires a configured Azure Speech endpoint and credentials,
-# and your own local audio input file.
+# Requires a configured Azure Speech endpoint in an LLM Speech region,
+# credentials, and your own local audio input file.
 foundry_translate_audio("interview-es.mp3", target_language = "en")
+foundry_translate_audio(
+  "interview-es.mp3", service = "openai", model = "whisper", api = "deployment"
+)
 } # }
 ```

@@ -25,6 +25,8 @@ setup. Microsoft Entra token audiences are endpoint-family-specific.
   : Set Microsoft Foundry project endpoint
 - [`foundry_get_project_endpoint()`](https://farach.github.io/foundryR/reference/foundry_get_project_endpoint.md)
   : Get Microsoft Foundry project endpoint
+- [`foundry_set_route()`](https://farach.github.io/foundryR/reference/foundry_set_route.md)
+  : Choose the endpoint for APIs that run on a resource or a project
 - [`foundry_set_speech_endpoint()`](https://farach.github.io/foundryR/reference/foundry_set_speech_endpoint.md)
   : Set Microsoft Foundry Speech endpoint
 - [`foundry_set_speech_key()`](https://farach.github.io/foundryR/reference/foundry_set_speech_key.md)
@@ -56,7 +58,8 @@ content, detect hallucinations, and protect against prompt injection.
 - [`foundry_groundedness()`](https://farach.github.io/foundryR/reference/foundry_groundedness.md)
   : Detect Groundedness of LLM Responses
 - [`foundry_llm_resource()`](https://farach.github.io/foundryR/reference/foundry_llm_resource.md)
-  : Describe a bring-your-own Azure OpenAI resource for groundedness
+  **\[deprecated\]** : Describe a bring-your-own Azure OpenAI resource
+  for groundedness
 - [`foundry_shield()`](https://farach.github.io/foundryR/reference/foundry_shield.md)
   : Shield Prompt from Injection Attacks
 - [`foundry_task_adherence()`](https://farach.github.io/foundryR/reference/foundry_task_adherence.md)
@@ -106,11 +109,6 @@ answers.
   [`schema_array()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
   [`schema_object()`](https://farach.github.io/foundryR/reference/schema_constructors.md)
   : Schema constructors for structured outputs
-- [`type_boolean()`](https://farach.github.io/foundryR/reference/codebook_schema_helpers.md)
-  [`type_enum()`](https://farach.github.io/foundryR/reference/codebook_schema_helpers.md)
-  [`type_number()`](https://farach.github.io/foundryR/reference/codebook_schema_helpers.md)
-  [`type_string()`](https://farach.github.io/foundryR/reference/codebook_schema_helpers.md)
-  : Codebook schema helpers
 - [`as_foundry_schema()`](https://farach.github.io/foundryR/reference/as_foundry_schema.md)
   : Convert an object to a foundryR JSON Schema
 
@@ -203,16 +201,27 @@ jobs for large-scale annotation, extraction, and classification.
   : Parse completed Microsoft Foundry batch results
 - [`foundry_extract_batch()`](https://farach.github.io/foundryR/reference/foundry_extract_batch.md)
   : Extract structured data with the Batch API
+- [`foundry_extract_batch_results()`](https://farach.github.io/foundryR/reference/foundry_extract_batch_results.md)
+  : Collect completed structured extraction batch results
 - [`foundry_usage()`](https://farach.github.io/foundryR/reference/foundry_usage.md)
   : Summarise token usage for foundryR results
 
 ## Evaluations
 
-Run Microsoft Foundry cloud evaluations. Define graders (string check,
-text similarity, model-graded labels and scores, and Azure built-in
-evaluators), create evaluations, and inspect per-row grader results as
-tibbles.
+Run Microsoft Foundry cloud evaluations from data frames. Grade existing
+columns or have a model deployment or agent generate responses first,
+then get grader results joined to your rows. Lower-level functions build
+graders (string check, text similarity, model-graded labels and scores,
+and Azure built-in evaluators), data sources, evaluations, and runs.
 
+- [`foundry_evaluate()`](https://farach.github.io/foundryR/reference/foundry_evaluate.md)
+  **\[experimental\]** : Evaluate a data frame with Microsoft Foundry
+  cloud evaluation
+- [`foundry_eval_run_wait()`](https://farach.github.io/foundryR/reference/foundry_eval_run_wait.md)
+  **\[experimental\]** : Wait for an evaluation run to finish
+- [`foundry_eval_run_results()`](https://farach.github.io/foundryR/reference/foundry_eval_run_results.md)
+  **\[experimental\]** : Collect evaluation results joined to the
+  evaluated rows
 - [`foundry_grader_string_check()`](https://farach.github.io/foundryR/reference/foundry_grader_string_check.md)
   : String-check grader
 - [`foundry_grader_text_similarity()`](https://farach.github.io/foundryR/reference/foundry_grader_text_similarity.md)
@@ -307,7 +316,7 @@ through LLM Speech, and synthesize text-to-speech audio files.
 ## Experimental media
 
 Generate and edit images with GPT-image models through the v1 image
-APIs, and manage preview video generation jobs.
+APIs.
 
 - [`foundry_image()`](https://farach.github.io/foundryR/reference/foundry_image.md)
   : Generate Images with Microsoft Foundry
@@ -319,25 +328,12 @@ APIs, and manage preview video generation jobs.
   : Set Image Generation Endpoint
 - [`foundry_set_image_key()`](https://farach.github.io/foundryR/reference/foundry_set_image_key.md)
   : Set Image Generation API Key
-- [`foundry_video_job_create()`](https://farach.github.io/foundryR/reference/foundry_video_job_create.md)
-  **\[experimental\]** : Create a Microsoft Foundry video generation job
-- [`foundry_video_jobs()`](https://farach.github.io/foundryR/reference/foundry_video_jobs.md)
-  **\[experimental\]** : List Microsoft Foundry video generation jobs
-- [`foundry_video_job_get()`](https://farach.github.io/foundryR/reference/foundry_video_job_get.md)
-  **\[experimental\]** : Retrieve a Microsoft Foundry video generation
-  job
-- [`foundry_video_job_delete()`](https://farach.github.io/foundryR/reference/foundry_video_job_delete.md)
-  **\[experimental\]** : Delete a Microsoft Foundry video generation job
-- [`foundry_video_get()`](https://farach.github.io/foundryR/reference/foundry_video_get.md)
-  **\[experimental\]** : Retrieve a Microsoft Foundry video generation
-- [`foundry_video_download()`](https://farach.github.io/foundryR/reference/foundry_video_download.md)
-  **\[experimental\]** : Download Microsoft Foundry generated video
-  content
 
 ## Model discovery
 
-Explore the model deployments available in your Microsoft Foundry or
-Azure OpenAI resource.
+List the models available to your Microsoft Foundry or Azure OpenAI
+resource. Deployments, which you name when you deploy a model, are
+listed in the Foundry portal.
 
 - [`foundry_models()`](https://farach.github.io/foundryR/reference/foundry_models.md)
-  : List or retrieve available model deployments
+  : List or retrieve models available to a Foundry resource

@@ -67,7 +67,12 @@ A tibble with columns:
 
 - text:
 
-  Character. The input text (truncated to 50 chars if longer).
+  Character. The full input text.
+
+- .input_idx:
+
+  Integer. Position of the input in `text`, useful for joining results
+  back to caller data.
 
 - category:
 
@@ -89,6 +94,11 @@ A tibble with columns:
 
   List. Blocklist matches returned by the service for the analyzed text.
 
+- blocklist_hit:
+
+  Logical. `TRUE` when the service returned any blocklist match for the
+  input text.
+
 - raw_response:
 
   List. Raw Content Safety response for the analyzed text.
@@ -109,13 +119,15 @@ content:
 
 **Severity Labels:**
 
-- **safe** (0): No harmful content detected.
+- **safe** (0-1): No harmful content detected.
 
-- **low** (1-2): Mildly concerning content.
+- **low** (2-3): Mildly concerning content.
 
-- **medium** (3-4): Moderately harmful content.
+- **medium** (4-5): Moderately harmful content.
 
-- **high** (5+): Severely harmful content.
+- **high** (6-7): Severely harmful content.
+
+The four-level scale uses the same labels at severities 0, 2, 4, and 6.
 
 ## Authentication
 

@@ -36,6 +36,7 @@ foundry_response(
   project_endpoint = NULL,
   agent = NULL,
   agent_version = NULL,
+  token = NULL,
   ...
 )
 ```
@@ -156,7 +157,9 @@ foundry_response(
 
   Character. Optional project endpoint override. When supplied, the
   request uses the project-scoped Responses API. Agent-backed responses
-  always use this endpoint family.
+  always use a project endpoint, and
+  [`foundry_set_route()`](https://farach.github.io/foundryR/reference/foundry_set_route.md)
+  can make it the session default.
 
 - agent:
 
@@ -172,6 +175,10 @@ foundry_response(
 
   Character. Optional agent version to pin when `agent` is a bare name.
   Omit to use the latest version.
+
+- token:
+
+  Character. Optional bearer token override for this call.
 
 - ...:
 

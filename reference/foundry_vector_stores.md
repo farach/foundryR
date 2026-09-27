@@ -11,17 +11,27 @@ foundry_vector_store_create(
   expires_after_days = NULL,
   metadata = NULL,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
 foundry_vector_stores(
   limit = NULL,
   after = NULL,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
-foundry_vector_store_get(vector_store_id, api_key = NULL, endpoint = NULL)
+foundry_vector_store_get(
+  vector_store_id,
+  api_key = NULL,
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
+)
 
 foundry_vector_store_modify(
   vector_store_id,
@@ -29,38 +39,54 @@ foundry_vector_store_modify(
   metadata = NULL,
   expires_after_days = NULL,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
-foundry_vector_store_delete(vector_store_id, api_key = NULL, endpoint = NULL)
+foundry_vector_store_delete(
+  vector_store_id,
+  api_key = NULL,
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
+)
 
 foundry_vector_store_files(
   vector_store_id,
   limit = NULL,
   after = NULL,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
 foundry_vector_store_file_add(
   vector_store_id,
   file_id,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
 foundry_vector_store_file_remove(
   vector_store_id,
   file_id,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
 foundry_vector_store_file_batch(
   vector_store_id,
   file_ids,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
 foundry_vector_search(
@@ -70,7 +96,9 @@ foundry_vector_search(
   filters = NULL,
   rewrite_query = FALSE,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 ```
 
@@ -99,6 +127,15 @@ foundry_vector_search(
 - endpoint:
 
   Character. Optional endpoint override.
+
+- token:
+
+  Character. Optional bearer token override.
+
+- project_endpoint:
+
+  Character. Optional project endpoint. When supplied, the call uses the
+  project endpoint instead of the resource endpoint.
 
 - limit:
 
@@ -135,6 +172,15 @@ foundry_vector_search(
 ## Value
 
 A tibble with vector store, file, or search-result metadata.
+
+## Details
+
+Vector stores live on the endpoint where you create them. A server-side
+agent's `file_search` tool searches vector stores on the project
+endpoint, so create those stores (and upload their files) with
+`project_endpoint`, or after `foundry_set_route("project")`. Direct
+search with `foundry_vector_search()` currently rejects Microsoft Entra
+ID tokens; call it on the resource endpoint with an API key.
 
 ## Examples
 

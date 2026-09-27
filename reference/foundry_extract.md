@@ -19,9 +19,10 @@ foundry_extract(
   flatten = TRUE,
   store = FALSE,
   max_active = 2L,
-  progress = TRUE,
+  progress = getOption("foundryR.progress", interactive()),
   api_key = NULL,
   endpoint = NULL,
+  token = NULL,
   ...
 )
 ```
@@ -77,6 +78,7 @@ foundry_extract(
 - progress:
 
   Logical. Whether to show a progress bar for parallel extraction.
+  Defaults to `getOption("foundryR.progress", interactive())`.
 
 - api_key:
 
@@ -85,6 +87,10 @@ foundry_extract(
 - endpoint:
 
   Character. Optional endpoint override.
+
+- token:
+
+  Character. Optional bearer token override for these calls.
 
 - ...:
 

@@ -24,7 +24,9 @@ foundry_protected_code(
 
 - code:
 
-  Character vector. One or more code snippets to check.
+  Character vector. One or more code snippets to check. Each non-missing
+  snippet must contain more than 110 characters; the preview API rejects
+  shorter code.
 
 - endpoint:
 

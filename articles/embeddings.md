@@ -1,34 +1,37 @@
-# Working with Embeddings
+# Embeddings for research
+
+Calls to Azure show output recorded from a live run, and setup code is
+shown but not run.
 
 ## What embeddings are for
 
-Embeddings are numerical representations of text that capture semantic
-meaning. When you convert text to an embedding, you get a vector of
-numbers (often 1,536 or 3,072 dimensions depending on the model). Texts
-with similar meanings tend to have similar vectors.
+Embeddings are numeric vectors that represent text. Texts with similar
+meanings tend to have vectors that point in similar directions, so
+cosine similarity becomes a useful way to compare responses, documents,
+or queries.
 
-Use embeddings when you need to:
+Use embeddings when you need to find related documents by meaning,
+measure similarity between texts, cluster open-ended responses, detect
+near duplicates, or turn text into numeric predictors for a model.
+Keyword matching still has value when exact terms matter. Embeddings
+help when two texts use different wording for a similar idea, such as
+“automobile” and “car”.
 
-- Find documents related to a query by meaning, not only keywords.
-- Measure how similar two pieces of text are.
-- Cluster open-ended responses into themes.
-- Find near-duplicate responses or records.
-- Feed text-derived numeric predictors into downstream models.
+## Generate embeddings
 
-Unlike keyword matching, embeddings understand that “automobile” and
-“car” are semantically similar, even though they share no letters.
-
-## Generating embeddings with foundry_embed()
-
-The examples below embed real sentences from Jane Austen’s *Pride and
-Prejudice*, available in the `janeaustenr` package. Using a well-known
-public-domain text makes the output easy to reason about: the opening
-lines share vocabulary and sentiment, so their embeddings should sit
-close together.
+[`foundry_embed()`](https://farach.github.io/foundryR/reference/foundry_embed.md)
+returns one row per input text. The `embedding` column is a list-column
+of numeric vectors, and `n_dims` reports the length of each vector.
+Metadata columns keep the original input index, row-level errors, error
+messages, and per-row response metadata.
 
 ``` r
 
 library(foundryR)
+library(dplyr)
+```
+
+``` r
 
 austen_lines <- c(
   "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
@@ -37,40 +40,29 @@ austen_lines <- c(
 )
 
 embedding <- foundry_embed(austen_lines[1], model = "text-embedding-3-small")
-embedding
-#> # A tibble: 1 × 7
-#>   .input_idx text                embedding n_dims .error .error_msg raw_response
-#>        <int> <chr>               <list>     <int> <lgl>  <chr>      <list>      
-#> 1          1 It is a truth univ… <dbl>       1536 FALSE  NA         <named list>
+embedding[, c("text", "n_dims", ".input_idx", ".error", ".error_msg")]
+#> # A tibble: 1 × 5
+#>   text                                       n_dims .input_idx .error .error_msg
+#>   <chr>                                       <int>      <int> <lgl>  <chr>     
+#> 1 It is a truth universally acknowledged, t…   1536          1 FALSE  NA
 ```
 
-The result is a tibble with:
-
-- `text`: the original input text.
-- `embedding`: a list-column holding the numeric vector.
-- `n_dims`: the dimensionality of the embedding.
-
-### Embedding multiple texts
-
-Pass a character vector to embed several texts in one call:
+Pass a character vector to embed several texts in one request.
 
 ``` r
 
 doc_embeddings <- foundry_embed(austen_lines, model = "text-embedding-3-small")
-doc_embeddings
-#> # A tibble: 3 × 7
-#>   .input_idx text                embedding n_dims .error .error_msg raw_response
-#>        <int> <chr>               <list>     <int> <lgl>  <chr>      <list>      
-#> 1          1 It is a truth univ… <dbl>       1536 FALSE  NA         <named list>
-#> 2          2 However little kno… <dbl>       1536 FALSE  NA         <named list>
-#> 3          3 Mr. Bennet was so … <dbl>       1536 FALSE  NA         <named list>
+doc_embeddings[, c("text", "n_dims", ".input_idx", ".error")]
+#> # A tibble: 3 × 4
+#>   text                                                  n_dims .input_idx .error
+#>   <chr>                                                  <int>      <int> <lgl> 
+#> 1 It is a truth universally acknowledged, that a singl…   1536          1 FALSE 
+#> 2 However little known the feelings or views of such a…   1536          2 FALSE 
+#> 3 Mr. Bennet was so odd a mixture of quick parts, sarc…   1536          3 FALSE
 ```
 
-### Controlling dimensions
-
-The `text-embedding-3-small` and `text-embedding-3-large` models can
-return shorter vectors. Smaller dimensions mean faster similarity
-computations and less storage, with some trade-off in precision:
+Some embedding deployments can return shorter vectors. That can reduce
+storage and speed up comparisons, with some loss of detail.
 
 ``` r
 
@@ -79,18 +71,20 @@ compact <- foundry_embed(
   model = "text-embedding-3-small",
   dimensions = 256
 )
-compact$n_dims
-#> [1] 256
+compact[, c("text", "n_dims")]
+#> # A tibble: 1 × 2
+#>   text                                                                    n_dims
+#>   <chr>                                                                    <int>
+#> 1 It is a truth universally acknowledged, that a single man in possessio…    256
 ```
 
-## Computing similarity with foundry_similarity()
+## Compare same-source and cross-source pairs
 
-Cosine similarity measures how close two embeddings are, from -1
-(opposite) to 1 (identical).
 [`foundry_similarity()`](https://farach.github.io/foundryR/reference/foundry_similarity.md)
-computes every pairwise similarity in a tibble of embeddings. Here we
-contrast the Austen lines with two sentences from a different domain so
-the split is visible.
+computes pairwise cosine similarity for a tibble with an `embedding`
+list-column. The next example mixes two Austen-style lines with two
+finance sentences, so the useful check is whether same-source pairs
+score above cross-source pairs.
 
 ``` r
 
@@ -115,33 +109,27 @@ similarities
 #> 6 It is a truth universally acknowledged, that a single man i… Analy…     0.0146
 ```
 
-Results are sorted by similarity. The two Austen lines pair together and
-the two finance lines pair together, while cross-domain pairs score
-lower. The plots in this vignette are shown when the suggested `ggplot2`
-package is installed.
+In this recording the two finance sentences score 0.62 and the two
+Austen lines 0.32, while no cross-source pair scores above 0.07. The
+Austen lines have no content words in common, so their score comes from
+meaning and style rather than shared vocabulary.
 
-![Same-source pairs outscore every cross-source pair. Horizontal bar
+![Same-source pairs score above all cross-source pairs. Horizontal bar
 chart of cosine similarity for six sentence pairs: Finance 1 and Finance
 2 0.62; Austen 1 and Austen 2 0.32; Austen 2 and Finance 1 0.07; Austen
 2 and Finance 2 0.07; Austen 1 and Finance 1 0.04; Austen 1 and Finance
 2 0.01.](embeddings_files/figure-html/similarity-pairs-1.png)
 
-## Use case: finding similar documents
+## Rank documents for a query
 
-A common application is ranking documents by relevance to a query. Embed
-the documents and the query, then sort by cosine similarity:
+For a query-versus-corpus comparison, combine the query and documents in
+one embedding tibble, compute pairwise similarities, and keep the rows
+that include the query label. This uses
+[`foundry_similarity()`](https://farach.github.io/foundryR/reference/foundry_similarity.md)
+for the cosine calculation and only a small amount of reshaping to
+return document text.
 
 ``` r
-
-library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
 
 documents <- c(
   "How to install R packages using install.packages()",
@@ -151,21 +139,27 @@ documents <- c(
   "Building web applications with Shiny",
   "Deep learning with TensorFlow and Keras"
 )
+query <- "How do I create charts and graphs in R?"
 
-doc_embeddings <- foundry_embed(documents, model = "text-embedding-3-small")
-query_embedding <- foundry_embed(
-  "How do I create charts and graphs in R?",
-  model = "text-embedding-3-small"
-)
+search_embeddings <- foundry_embed_batch(
+  c(query, documents),
+  model = "text-embedding-3-small",
+  batch_size = 4,
+  max_active = 2
+) |>
+  mutate(label = c("query", paste0("doc_", seq_along(documents))))
 
-cosine <- function(a, b) sum(a * b) / (sqrt(sum(a^2)) * sqrt(sum(b^2)))
-query_vec <- query_embedding$embedding[[1]]
+search_pairs <- foundry_similarity(search_embeddings, text_col = "label")
 
-doc_embeddings |>
-  mutate(similarity = vapply(embedding, cosine, numeric(1), b = query_vec)) |>
-  arrange(desc(similarity)) |>
+search_pairs |>
+  filter(text_1 == "query" | text_2 == "query") |>
+  mutate(
+    label = if_else(text_1 == "query", text_2, text_1),
+    text = documents[match(label, paste0("doc_", seq_along(documents)))]
+  ) |>
   select(text, similarity) |>
-  head(3)
+  arrange(desc(similarity)) |>
+  slice_head(n = 3)
 #> # A tibble: 3 × 2
 #>   text                                               similarity
 #>   <chr>                                                   <dbl>
@@ -174,11 +168,12 @@ doc_embeddings |>
 #> 3 Building web applications with Shiny                    0.377
 ```
 
-## Use case: clustering text
+## Cluster text responses
 
-Embeddings work well as features for clustering. Here
-[`stats::kmeans()`](https://rdrr.io/r/stats/kmeans.html) groups a mix of
-programming, food, and sports sentences without any labels:
+Embeddings also work as features for local methods such as
+[`stats::kmeans()`](https://rdrr.io/r/stats/kmeans.html). The example
+groups a mix of programming, food, and sports sentences without using
+the topic labels.
 
 ``` r
 
@@ -202,8 +197,8 @@ clusters <- kmeans(embedding_matrix, centers = 3, nstart = 10)
 
 cluster_embeddings |>
   mutate(cluster = clusters$cluster) |>
-  arrange(cluster) |>
-  select(text, cluster)
+  select(text, cluster) |>
+  arrange(cluster)
 #> # A tibble: 9 × 2
 #>   text                                      cluster
 #>   <chr>                                       <int>
@@ -218,54 +213,55 @@ cluster_embeddings |>
 #> 9 Tennis matches can last for hours               3
 ```
 
-![k-means recovers the three topics from the embeddings alone. Scatter
-plot of nine sentence embeddings on their first two principal
-components; cluster 1 holds 3 of 3 programming sentences; cluster 2
-holds 3 of 3 food sentences; cluster 3 holds 3 of 3 sports
+![k-means separates the three topics in embedding space. Scatter plot of
+nine sentence embeddings on their first two principal components;
+cluster 1 holds 3 of 3 programming sentences; cluster 2 holds 3 of 3
+food sentences; cluster 3 holds 3 of 3 sports
 sentences.](embeddings_files/figure-html/projection-1.png)
 
-The clusters recover the three topics from the raw text alone.
+The cluster assignments are an inspection tool, not proof that the
+labels are correct. Review the text in each cluster before using the
+groups as measurements.
 
-## Tips for working with embeddings
+## Work with larger collections
 
-### Choosing a model
-
-| Model | Dimensions | Notes |
-|----|----|----|
-| text-embedding-ada-002 | 1,536 | Previous generation, widely used |
-| text-embedding-3-small | 1,536 (configurable) | Newer, supports dimension reduction |
-| text-embedding-3-large | 3,072 (configurable) | Highest quality, more expensive |
-
-For most use cases, `text-embedding-3-small` balances quality and cost.
-
-### Dimension trade-offs
-
-Higher dimensions capture more nuance but need more storage, take longer
-to compare, and may not improve simple tasks. Consider reduced
-dimensions (256-512) for large-scale applications where speed matters
-more than precision.
-
-### Handling large collections
-
-1.  **Batch processing**: embed documents in batches to respect rate
-    limits.
-2.  **Caching**: store embeddings in a database rather than regenerating
-    them.
-3.  **Approximate nearest neighbors**: use libraries like `RcppAnnoy`
-    for fast similarity search on large datasets.
+Use
+[`foundry_embed_batch()`](https://farach.github.io/foundryR/reference/foundry_embed_batch.md)
+when you have many texts. It accepts `batch_size` and `max_active`,
+returns the same embedding list-column shape, and records row-level
+errors instead of stopping the whole job for one failed text.
 
 ``` r
 
-# Defining this helper is local; calling it requires Azure credentials.
-batch_embed <- function(texts, model, batch_size = 100) {
-  n_batches <- ceiling(length(texts) / batch_size)
-  results <- vector("list", n_batches)
-  for (i in seq_len(n_batches)) {
-    start_idx <- (i - 1) * batch_size + 1
-    end_idx <- min(i * batch_size, length(texts))
-    results[[i]] <- foundry_embed(texts[start_idx:end_idx], model = model)
-    Sys.sleep(0.5)
-  }
-  dplyr::bind_rows(results)
-}
+many_texts <- c(
+  "The login page rejects my password reset link.",
+  "The invoice total does not match the purchase order.",
+  "The chart export button is missing from the report.",
+  "The password reset email arrived after it expired.",
+  "The billing address changed but the invoice did not update.",
+  "The dashboard chart uses the wrong date range."
+)
+
+many_embeddings <- foundry_embed_batch(
+  many_texts,
+  model = "text-embedding-3-small",
+  batch_size = 3,
+  max_active = 2
+)
+
+many_embeddings[, c("text", "n_dims", ".error", ".error_msg")]
+#> # A tibble: 6 × 4
+#>   text                                                  n_dims .error .error_msg
+#>   <chr>                                                  <int> <lgl>  <chr>     
+#> 1 The login page rejects my password reset link.          1536 FALSE  NA        
+#> 2 The invoice total does not match the purchase order.    1536 FALSE  NA        
+#> 3 The chart export button is missing from the report.     1536 FALSE  NA        
+#> 4 The password reset email arrived after it expired.      1536 FALSE  NA        
+#> 5 The billing address changed but the invoice did not …   1536 FALSE  NA        
+#> 6 The dashboard chart uses the wrong date range.          1536 FALSE  NA
 ```
+
+For production use, store embeddings instead of regenerating them, keep
+the model and dimension settings with the stored data, and use
+approximate-nearest-neighbor indexes when a full pairwise comparison is
+too slow.
