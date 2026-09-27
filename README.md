@@ -323,6 +323,7 @@ Both packages are useful. They solve different problems.
 | Multi-provider chat across OpenAI, Anthropic, Google, and others | No | Yes |
 | Interactive streaming chat | No | Yes |
 | Chat-first tool-calling agents | Basic Responses API tool loop | Yes |
+| Cloud evaluation of Foundry models and agents | Yes | No; see vitals for local evals |
 
 Use foundryR when your organization is committed to Azure and you need
 the Foundry platform surface in analytical R workflows. Use ellmer when
@@ -344,6 +345,10 @@ to share type definitions between the two with `as_foundry_schema()`.
 - [Embeddings](https://farach.github.io/foundryR/articles/embeddings.html)
 - [tidymodels
   integration](https://farach.github.io/foundryR/articles/tidymodels.html)
+- [Evaluate models and
+  agents](https://farach.github.io/foundryR/articles/evaluations.html)
+- [Analyze evaluation
+  results](https://farach.github.io/foundryR/articles/evaluation-analysis.html)
 - [Function
   reference](https://farach.github.io/foundryR/reference/index.html)
 

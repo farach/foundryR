@@ -1,3 +1,21 @@
+# foundryR (development version)
+
+## New features
+
+- `foundry_evaluate()` runs a Microsoft Foundry cloud evaluation from a data frame. It creates the evaluation and run, waits for the run, and returns one row per input row and grader with the input columns kept. It grades existing columns, or has Foundry generate responses with a model deployment or agent first (`target`), and `eval_id` adds a run to an existing evaluation so runs can be compared. Rows are matched to results through a reserved `foundryr_row_id` field echoed by the service and checked against the data, never by position.
+- `foundry_eval_run_wait()` polls an evaluation run until it finishes, and `foundry_eval_run_results()` joins a completed run's grader results to the evaluated data frame.
+- `foundry_eval_run_data()` builds target runs for model deployments and agents (`target`, `input_messages`) and stored-response runs (`response_ids`). `foundry_eval_data_config()` gains `type = "azure_ai_source"` with a `scenario` argument.
+- Evaluation run tibbles now include `per_testing_criteria_results`, target latency (`target_latency_p50_ms`, `target_latency_p95_ms`, `target_latency_samples`), and estimated target cost (`target_cost`, `target_cost_currency`, `target_cost_completeness`). Output-item tibbles include the echoed `datasource_item` and the generated `sample_output_text` and `sample_output_items`.
+- New vignettes: `vignette("evaluations")` walks through model and agent evaluations, and `vignette("evaluation-analysis")` covers uncertainty, paired comparisons, and judge validation for evaluation results.
+
+## Bug fixes
+
+- `foundry_eval_run_output_items()` now follows the service's pagination and returns every output item. It previously returned only the first page, which silently truncated larger runs. `limit` still caps the number of output items returned.
+
+## Behavior changes
+
+- Evaluation functions gain a `project_endpoint` argument. When neither `endpoint` nor `project_endpoint` is supplied, a project endpoint configured with `foundry_set_project_endpoint()` is now used, with project authentication; otherwise calls use the resource endpoint as before. If you configured a project endpoint but manage evaluations on the resource route, pass `endpoint` explicitly.
+
 # foundryR 0.1.0
 
 Initial CRAN release of foundryR, a tidy interface to Microsoft Foundry (formerly Azure AI Foundry).

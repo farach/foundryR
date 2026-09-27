@@ -89,6 +89,21 @@ local({
     map
   })
 
+  # Project endpoints carry the project name in the path
+  # (<host>/api/projects/<name>), so the host map alone would leave it in fixture
+  # paths and make replay against the placeholder project miss. Rewrite the whole
+  # project base before the host map runs.
+  .foundry_doc_project_map <- local({
+    real <- sub("/+$", "", sub("^https?://", "", Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT")))
+    placeholder <- "example.services.ai.azure.com/api/projects/demo"
+    map <- list()
+    if (nzchar(real) && !identical(real, placeholder)) {
+      map[[real]] <- placeholder
+    }
+    map
+  })
+  .foundry_doc_url_map <- c(.foundry_doc_project_map, .foundry_doc_host_map)
+
   # Secret values to scrub from recorded bodies, gathered from the environment at
   # source time. Empty during replay, so nothing is scrubbed then.
   .foundry_doc_secrets <- local({
@@ -110,12 +125,12 @@ local({
       c("api-key", "Authorization", "Ocp-Apim-Subscription-Key", "X-API-Key")
     )
 
-    # Always rewrite the real host in the request URL echoed on the response
-    # object, for every content type.
-    for (real_host in names(.foundry_doc_host_map)) {
+    # Always rewrite the real project base and hosts in the request URL echoed on
+    # the response object, for every content type.
+    for (real_url in names(.foundry_doc_url_map)) {
       response$url <- gsub(
-        real_host,
-        .foundry_doc_host_map[[real_host]],
+        real_url,
+        .foundry_doc_url_map[[real_url]],
         response$url,
         fixed = TRUE
       )
@@ -136,14 +151,21 @@ local({
         ignore.case = TRUE
       )
     if (is_text) {
-      for (real_host in names(.foundry_doc_host_map)) {
+      for (real_url in names(.foundry_doc_url_map)) {
         response <- httptest2::gsub_response(
           response,
-          real_host,
-          .foundry_doc_host_map[[real_host]],
+          real_url,
+          .foundry_doc_url_map[[real_url]],
           fixed = TRUE
         )
       }
+      # Evaluation run report links embed subscription, resource group, and
+      # tenant identifiers. They are never sent back in requests, so replace them.
+      response <- httptest2::gsub_response(
+        response,
+        "\"report_url\"\\s*:\\s*\"[^\"]*\"",
+        "\"report_url\":\"https://ai.azure.com/\""
+      )
       for (secret in .foundry_doc_secrets) {
         response <- httptest2::gsub_response(
           response,

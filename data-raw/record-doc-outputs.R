@@ -81,6 +81,7 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
     list(name = "files-batches",       path = "vignettes/files-batches.Rmd",       dir = "vignettes/files-batches",       services = character()),
     list(name = "tidymodels",          path = "vignettes/tidymodels.Rmd",          dir = "vignettes/tidymodels",          services = character()),
     list(name = "foundryr-vs-ellmer",  path = "vignettes/foundryr-vs-ellmer.Rmd",  dir = "vignettes/foundryr-vs-ellmer",  services = character()),
+    list(name = "evaluations",         path = "vignettes/evaluations.Rmd",         dir = "vignettes/evaluations",         services = c("project")),
     list(name = "onet2r-integration",  path = "vignettes/articles/onet2r-integration.Rmd", dir = "vignettes/articles/onet2r-integration", services = c("onet"))
   )
 
@@ -116,6 +117,16 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
     recorded <- c(recorded, doc$name)
   }
 
+  leaks <- find_fixture_leaks(vapply(Filter(function(d) d$name %in% recorded, docs), `[[`, "", "dir"))
+  if (length(leaks)) {
+    stop(
+      "Recorded fixtures still contain resource identifiers:\n  ",
+      paste(leaks, collapse = "\n  "),
+      "\nFix the redactor in inst/httptest2/start-vignette.R and record again.",
+      call. = FALSE
+    )
+  }
+
   message("\nRecorded: ", if (length(recorded)) paste(recorded, collapse = ", ") else "(none)")
   if (length(skipped)) {
     message("Skipped:  ", paste(skipped, collapse = ", "))
@@ -125,6 +136,38 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
     "the fixture directories."
   )
   invisible(list(recorded = recorded, skipped = skipped))
+}
+
+# Scan fixture files for real hosts, the real project path, and subscription
+# paths that the redactor should have removed. Returns "file: pattern" strings.
+find_fixture_leaks <- function(dirs) {
+  host_of <- function(url) sub("/.*$", "", sub("^https?://", "", url))
+  endpoints <- Sys.getenv(c(
+    "AZURE_FOUNDRY_ENDPOINT",
+    "AZURE_FOUNDRY_IMAGE_ENDPOINT",
+    "AZURE_FOUNDRY_SPEECH_ENDPOINT",
+    "AZURE_CONTENT_SAFETY_ENDPOINT",
+    "AZURE_FOUNDRY_PROJECT_ENDPOINT"
+  ))
+  hosts <- unique(host_of(endpoints[nzchar(endpoints)]))
+  hosts <- hosts[!grepl("^example\\.", hosts)]
+  project <- sub("/+$", "", sub("^https?://", "", Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT")))
+  project_name <- if (grepl("/api/projects/", project)) sub("^.*/api/projects/", "", project) else ""
+  literals <- unique(c(hosts, if (nzchar(project_name) && project_name != "demo") paste0("projects/", project_name)))
+
+  files <- unlist(lapply(dirs[dir.exists(dirs)], list.files, recursive = TRUE, full.names = TRUE))
+  leaks <- character()
+  for (file in files) {
+    text <- paste(readLines(file, warn = FALSE), collapse = "\n")
+    found <- literals[vapply(literals, grepl, logical(1), x = text, fixed = TRUE)]
+    if (grepl("/subscriptions/[0-9a-fA-F-]{8,}", text)) {
+      found <- c(found, "/subscriptions/<id>")
+    }
+    if (length(found)) {
+      leaks <- c(leaks, paste0(file, ": ", paste(found, collapse = ", ")))
+    }
+  }
+  leaks
 }
 
 if (identical(environment(), globalenv()) && !interactive()) {

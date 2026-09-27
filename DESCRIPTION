@@ -1,6 +1,6 @@
 Package: foundryR
 Title: Data Frame Workflows for 'Microsoft Foundry'
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R:
     person("Alex", "Farach", , "alexfarach@microsoft.com", role = c("aut", "cre", "cph"))
 Description: Work with 'Microsoft Foundry' from data-frame-oriented

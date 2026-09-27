@@ -141,6 +141,50 @@ run_contract_checks <- function() {
     check_agent_response_lifecycle() |>
       print()
   }
+
+  if (nzchar(Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT"))) {
+    check_eval_row_echo() |>
+      print()
+  }
+}
+
+
+# foundry_evaluate() joins results to rows only through the foundryr_row_id
+# field echoed in each output item's datasource_item. Confirm the echo for
+# dataset and model-target runs before each release. Creates two small
+# evaluations in the project.
+check_eval_row_echo <- function() {
+  required_env(c("AZURE_FOUNDRY_PROJECT_ENDPOINT", "AZURE_FOUNDRY_MODEL"))
+  endpoint <- foundry_get_project_endpoint(required = TRUE)
+  cases <- data.frame(
+    question = c("What is 2 + 2? Reply with the number only.", "What is the capital of France? Reply with one word."),
+    answer = c("4", "Paris")
+  )
+
+  dataset <- foundry_evaluate(
+    cases,
+    graders = foundry_grader_string_check("echo", "{{item.answer}}", "{{item.answer}}", "eq"),
+    name = "foundryR contract: dataset echo",
+    project_endpoint = endpoint
+  )
+  target <- foundry_evaluate(
+    cases,
+    graders = foundry_grader_string_check(
+      "contains-answer", "{{sample.output_text}}", "%{{item.answer}}%", "ilike"
+    ),
+    target = Sys.getenv("AZURE_FOUNDRY_MODEL"),
+    input = "question",
+    name = "foundryR contract: target echo",
+    project_endpoint = endpoint
+  )
+
+  data.frame(
+    mode = c("dataset", "target"),
+    rows = c(nrow(dataset), nrow(target)),
+    joined = c(!anyNA(dataset$.output_item_id), !anyNA(target$.output_item_id)),
+    output_text = c(NA, !anyNA(target$.output_text)),
+    target_latency_reported = c(NA, !is.na(attr(target, "run")$target_latency_p50_ms))
+  )
 }
 
 if (interactive()) {

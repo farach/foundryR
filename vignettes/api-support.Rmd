@@ -45,7 +45,7 @@ foundry_set_token_provider(
 | Files | `/openai/v1/files` | v1 | Implemented |
 | Batches | `/openai/v1/batches` | v1 | Implemented |
 | Models | `/openai/v1/models` | v1 | Implemented |
-| Evals | `/openai/v1/evals` | v1 reference track | Implemented |
+| Evals | Resource `/openai/v1/evals`; project `<project>/openai/v1/evals` | v1 reference track | Implemented; built-in evaluators, model and agent targets, and stored-response runs use the project route |
 | Vector stores | `/openai/v1/vector_stores` | v1 reference track | Implemented |
 | Conversations | `/openai/v1/conversations` | v1 reference track | Implemented |
 | Agent definitions and versions | Project `/agents?api-version=v1` | Agents v2; some agent subfeatures are gated separately | Implemented |
@@ -82,7 +82,12 @@ support for those operations.
 The current Microsoft Foundry project reference also exposes connections,
 datasets, deployments, evaluation taxonomies and rules, evaluators, indexes,
 insights, red-team schedules and runs, and schedules. Those resource families
-are not implemented in foundryR 0.1.0.
+are not implemented in foundryR. Within cloud evaluation, foundryR covers
+dataset rows, model and agent targets, and stored responses; it does not wrap
+trace evaluation (`azure_ai_traces`), red-team runs (`azure_ai_red_team`), the
+preview evaluator catalog, or the preview evaluation-comparison insight. Those
+operations currently require `Foundry-Features` preview headers, preview
+`api-version` values, or additional project resources.
 
 Memory stores and agent containers are also not implemented. Microsoft gates
 those preview features with `Foundry-Features` headers such as

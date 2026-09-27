@@ -9,7 +9,8 @@ foundry_eval_delete(
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  project_endpoint = NULL
 )
 }
 \arguments{
@@ -19,10 +20,24 @@ foundry_eval_delete(
 
 \item{token}{Character. Optional bearer token. Falls back to configured auth.}
 
-\item{endpoint}{Character. Optional endpoint override.}
+\item{endpoint}{Character. Optional resource endpoint. Supplying it selects
+the resource-scoped Evals route (\verb{<resource>/openai/v1/evals}). Supply at
+most one of \code{endpoint} and \code{project_endpoint}.}
 
 \item{api_version}{Character. Optional \code{api-version} query value. The Foundry
 v1 evals surface is path-versioned, so this is usually left \code{NULL}.}
+
+\item{project_endpoint}{Character. Optional Microsoft Foundry project
+endpoint, such as
+\code{"https://<account>.services.ai.azure.com/api/projects/<project>"}.
+Supplying it selects the project-scoped Evals route
+(\verb{<project>/openai/v1/evals}) with project authentication. When neither
+\code{endpoint} nor \code{project_endpoint} is supplied, a project endpoint set with
+\code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}} is used; otherwise the call falls back to
+the resource endpoint. Built-in \code{azure_ai_evaluator} graders, model and
+agent targets, and stored-response evaluations require the project route.
+Project and resource evaluations are stored separately, so use the same
+route for every call that touches an evaluation.}
 }
 \value{
 A one-row tibble with \code{eval_id}, \code{deleted}, and \code{object}.

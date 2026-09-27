@@ -38,10 +38,16 @@ setup_mock_env <- function(env = parent.frame()) {
     AZURE_FOUNDRY_KEY = "test-key-12345",
     AZURE_FOUNDRY_TOKEN = "",
     AZURE_FOUNDRY_PROJECT_TOKEN = "",
+    AZURE_FOUNDRY_PROJECT_ENDPOINT = "",
     AZURE_OPENAI_TOKEN = "",
     AZURE_FOUNDRY_ENDPOINT = "https://test-resource.openai.azure.com",
     AZURE_FOUNDRY_MODEL = "gpt-4-test",
     AZURE_FOUNDRY_EMBED_MODEL = "text-embedding-ada-002",
+    .local_envir = env
+  )
+  # Keep stored settings on the developer's machine out of routing decisions.
+  withr::local_options(
+    foundryR.config_file = withr::local_tempfile(.local_envir = env),
     .local_envir = env
   )
 }

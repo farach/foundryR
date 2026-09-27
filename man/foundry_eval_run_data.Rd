@@ -4,7 +4,13 @@
 \alias{foundry_eval_run_data}
 \title{Define an evaluation run data source}
 \usage{
-foundry_eval_run_data(file_id = NULL, content = NULL)
+foundry_eval_run_data(
+  file_id = NULL,
+  content = NULL,
+  target = NULL,
+  input_messages = NULL,
+  response_ids = NULL
+)
 }
 \arguments{
 \item{file_id}{Character. ID of a JSONL file uploaded with
@@ -12,15 +18,42 @@ foundry_eval_run_data(file_id = NULL, content = NULL)
 
 \item{content}{List. Inline rows, each a list with an \code{item} element (and an
 optional \code{sample} element).}
+
+\item{target}{Optional target that generates a response for each row: a
+model deployment name (character), an agent reference from
+\code{\link[=foundry_agent_reference]{foundry_agent_reference()}} or \code{\link[=foundry_agent_create]{foundry_agent_create()}}, or a complete
+target list such as \code{list(type = "azure_ai_model", model = "gpt-5-mini", sampling_params = list(max_completion_tokens = 2048))}.}
+
+\item{input_messages}{Required with \code{target}. Either a single template
+string sent as the user message, for example \code{"{{item.query}}"}, or a
+complete Foundry \code{input_messages} list.}
+
+\item{response_ids}{Character vector of stored response IDs (for example
+the \code{response_id} column returned by \code{\link[=foundry_response]{foundry_response()}}). Cannot be
+combined with the other arguments.}
 }
 \value{
-A named list describing a \code{jsonl} run data source, for use in
+A named list describing a run data source, for use in
 \code{\link[=foundry_eval_run_create]{foundry_eval_run_create()}}.
 }
 \description{
-Point an evaluation run at its rows: either an uploaded JSONL file (via
-\code{file_id}) or inline \code{content}. Exactly one of \code{file_id} or \code{content} must be
-supplied.
+Point an evaluation run at its rows. Three shapes are supported:
+}
+\details{
+\itemize{
+\item \strong{Dataset rows} (\code{type = "jsonl"}): supply exactly one of \code{file_id} or
+\code{content}. Graders read existing fields with \verb{\{\{item.<field>\}\}}.
+\item \strong{Target generation} (\code{type = "azure_ai_target_completions"}): also
+supply \code{target} and \code{input_messages}. Microsoft Foundry sends each row to
+a model deployment or agent and graders read the generated output with
+\code{{{sample.output_text}}} or, for agents, \code{{{sample.output_items}}}
+(structured output including tool calls).
+\item \strong{Stored responses} (\code{type = "azure_ai_responses"}): supply only
+\code{response_ids}. Foundry retrieves each stored response and graders score
+it. Pair it with \code{foundry_eval_data_config(type = "azure_ai_source", scenario = "responses")}.
+}
+
+Target and stored-response runs require the project Evals route.
 }
 \examples{
 foundry_eval_run_data(file_id = "file-abc123")
@@ -28,4 +61,12 @@ foundry_eval_run_data(file_id = "file-abc123")
 foundry_eval_run_data(content = list(
   list(item = list(question = "2+2?", answer = "4"))
 ))
+
+foundry_eval_run_data(
+  content = list(list(item = list(query = "What is R?"))),
+  target = "gpt-5-mini",
+  input_messages = "{{item.query}}"
+)
+
+foundry_eval_run_data(response_ids = c("resp_abc123", "resp_def456"))
 }

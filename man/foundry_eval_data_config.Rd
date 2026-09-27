@@ -5,14 +5,15 @@
 \title{Define an evaluation data-source configuration}
 \usage{
 foundry_eval_data_config(
-  type = c("custom", "logs"),
+  type = c("custom", "logs", "azure_ai_source"),
   item_schema = NULL,
   include_sample_schema = FALSE,
-  metadata = NULL
+  metadata = NULL,
+  scenario = NULL
 )
 }
 \arguments{
-\item{type}{Character. Either \code{"custom"} or \code{"logs"}.}
+\item{type}{Character. One of \code{"custom"}, \code{"logs"}, or \code{"azure_ai_source"}.}
 
 \item{item_schema}{List. For \code{type = "custom"}, a JSON Schema (as an R list)
 describing each row.}
@@ -23,6 +24,10 @@ Defaults to \code{FALSE}.}
 
 \item{metadata}{List. For \code{type = "logs"}, the stored-completions metadata
 filter.}
+
+\item{scenario}{Character. For \code{type = "azure_ai_source"}, the Foundry
+scenario, for example \code{"responses"} to evaluate stored responses by ID
+(see \code{\link[=foundry_eval_run_data]{foundry_eval_run_data()}}). Requires the project Evals route.}
 }
 \value{
 A named list describing a \code{data_source_config}, for use in
@@ -31,7 +36,8 @@ A named list describing a \code{data_source_config}, for use in
 \description{
 Describe the shape of the data an evaluation expects. \code{type = "custom"}
 declares an item schema you populate per run; \code{type = "logs"} sources rows
-from stored completions matching a metadata filter.
+from stored completions matching a metadata filter; \code{type = "azure_ai_source"} lets Microsoft Foundry supply the rows for a service
+scenario, such as stored responses.
 }
 \examples{
 foundry_eval_data_config(
@@ -46,4 +52,6 @@ foundry_eval_data_config(
   ),
   include_sample_schema = TRUE
 )
+
+foundry_eval_data_config(type = "azure_ai_source", scenario = "responses")
 }

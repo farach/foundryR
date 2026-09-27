@@ -31,6 +31,7 @@
 ^vignettes/getting-started$
 ^vignettes/responses-api$
 ^vignettes/tidymodels$
+^vignettes/evaluations$
 ^\.mailmap$
 ^CRAN-SUBMISSION\.md$
 ^tests/manual$

@@ -68,6 +68,12 @@ navbar:
         - text: tidymodels Integration
           href: articles/tidymodels.html
         - text: "---"
+        - text: "Evaluation"
+        - text: Evaluate Models and Agents
+          href: articles/evaluations.html
+        - text: Analyze Evaluation Results
+          href: articles/evaluation-analysis.html
+        - text: "---"
         - text: "Advanced Topics"
         - text: Audio Workflows
           href: articles/audio.html
@@ -226,11 +232,15 @@ reference:
 
   - title: Evaluations
     desc: >
-      Run Microsoft Foundry cloud evaluations. Define graders (string check,
-      text similarity, model-graded labels and scores, and Azure built-in
-      evaluators), create evaluations, and inspect per-row grader results as
-      tibbles.
+      Run Microsoft Foundry cloud evaluations from data frames. Grade existing
+      columns or have a model deployment or agent generate responses first,
+      then get grader results joined to your rows. Lower-level functions build
+      graders (string check, text similarity, model-graded labels and scores,
+      and Azure built-in evaluators), data sources, evaluations, and runs.
     contents:
+      - foundry_evaluate
+      - foundry_eval_run_wait
+      - foundry_eval_run_results
       - foundry_grader_string_check
       - foundry_grader_text_similarity
       - foundry_grader_label_model
@@ -332,6 +342,12 @@ articles:
       - annotation-workflow
       - files-batches
       - tidymodels
+
+  - title: Evaluation
+    navbar: ~
+    contents:
+      - evaluations
+      - evaluation-analysis
 
   - title: Advanced Topics
     navbar: ~
