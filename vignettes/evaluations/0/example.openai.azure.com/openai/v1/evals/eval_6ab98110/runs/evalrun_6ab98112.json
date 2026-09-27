@@ -1,0 +1,156 @@
+{
+    "id": "evalrun_6ab98112",
+    "object": "eval.run",
+    "created_at": 1790542099,
+    "status": "completed",
+    "data_source": {
+        "type": "jsonl",
+        "source": {
+            "type": "file_content",
+            "content": [
+                {
+                    "item": {
+                        "id": 1,
+                        "comment": "The lectures were clear and the slides matched what was said.",
+                        "theme": "instruction",
+                        "draft_theme": "instruction",
+                        "foundryr_row_id": "row-1"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 2,
+                        "comment": "Weekly quizzes were too long for the time we had.",
+                        "theme": "assessment",
+                        "draft_theme": "assessment",
+                        "foundryr_row_id": "row-2"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 3,
+                        "comment": "Office hours were always full, so I never got help.",
+                        "theme": "support",
+                        "draft_theme": "support",
+                        "foundryr_row_id": "row-3"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 4,
+                        "comment": "The textbook chapters were out of date.",
+                        "theme": "materials",
+                        "draft_theme": "materials",
+                        "foundryr_row_id": "row-4"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 5,
+                        "comment": "Feedback on the midterm came back after the final.",
+                        "theme": "assessment",
+                        "draft_theme": "assessment",
+                        "foundryr_row_id": "row-5"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 6,
+                        "comment": "The instructor explained regression with great examples.",
+                        "theme": "instruction",
+                        "draft_theme": "instruction",
+                        "foundryr_row_id": "row-6"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 7,
+                        "comment": "I could not find the practice datasets on the course site.",
+                        "theme": "materials",
+                        "draft_theme": "support",
+                        "foundryr_row_id": "row-7"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 8,
+                        "comment": "The TA answered forum questions within a day.",
+                        "theme": "support",
+                        "draft_theme": "support",
+                        "foundryr_row_id": "row-8"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 9,
+                        "comment": "Grading rubrics were never posted before assignments were due.",
+                        "theme": "assessment",
+                        "draft_theme": "assessment",
+                        "foundryr_row_id": "row-9"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 10,
+                        "comment": "Recorded lectures had no captions.",
+                        "theme": "materials",
+                        "draft_theme": "materials",
+                        "foundryr_row_id": "row-10"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 11,
+                        "comment": "The pace was fine, but the instructor skipped the hard proofs.",
+                        "theme": "instruction",
+                        "draft_theme": "instruction",
+                        "foundryr_row_id": "row-11"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 12,
+                        "comment": "Tutoring sessions helped me catch up after I was sick.",
+                        "theme": "support",
+                        "draft_theme": "support",
+                        "foundryr_row_id": "row-12"
+                    }
+                }
+            ]
+        }
+    },
+    "error": null,
+    "eval_id": "eval_6ab98110",
+    "model": null,
+    "name": "course-feedback-existing-labels",
+    "per_model_usage": [
+        {
+            "model_name": "gpt-5-mini-2025-08-07",
+            "invocation_count": 12,
+            "prompt_tokens": 1596,
+            "completion_tokens": 1962,
+            "total_tokens": 3558,
+            "cached_tokens": 0,
+            "deployment_name": "gpt-5-mini"
+        }
+    ],
+    "per_testing_criteria_results": [
+        {
+            "failed": 1,
+            "passed": 11,
+            "testing_criteria": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+            "testing_criteria_id": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625"
+        }
+    ],
+    "report_url": "https://ai.azure.com/",
+    "result_counts": {
+        "errored": 0,
+        "failed": 1,
+        "passed": 11,
+        "total": 12
+    },
+    "shared_with_openai": false,
+    "metadata": {
+
+    }
+}

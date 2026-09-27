@@ -1,0 +1,208 @@
+{
+    "id": "resp_0b5ed0db547f215f016ab974fbff4481979a03421028fc764a",
+    "object": "response",
+    "created_at": 1790539004,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1790539006,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1454,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1758,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": "Extract the requested structured data from the input text. Return values that conform exactly to the supplied JSON Schema.",
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_0b5ed0db547f215f016ab974fcc9f08197b313baef3b5e9b9a",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "encrypted_content": "gAAAAABquXT-cu4yA3SoG8u166LxwcvBjzSba-SVZ4Xx2ZkT4gdnXPgAt3V-N-cKrA-CgAnihXgd7MaZlpFKzkdp2uPB6UAU9-MWLxBnJf-26N-sBckq9FNnWS1N9XajzmA2SWOJqbyWtdwT5PiIy18SSoGmpaCc9ZmN2WP4BMXcFsCEZShYW87JGXigXyZyfxKZdzc-IQUbLGo04QTpKlRwelYV4ja9xNW2aebG_a4Q4ZgY7_ObkrHH3DHxJI5J3yLmJHT8zu9_05b1jLS9A-Km9SXadBM3fZ5G1gWKGuLW-TGmxPd8C70VPUzTF8NNfpmd_kobEfmn5gKeqS5LADMwen2u_-nM23ZIU_HKn9SfEbvB5oh9uctRnzQYy0rcgIAed-Aoj94XcTuIOhwffCm-5QrRV-cjswhMVEOASodR_3W-6rVLnF2cYiIsYv-V5olu4PwOvee776AOP7LQgzX1tE1FdXzQZ37IaChxLyhuxETWFm8pJnOcIdUT1Oof01YJyycZsnS1CEdyM4pdfSS7nDsWDpfrmKujNUXxvHmVEh8sxIyI-6YoAsjTa4-m_RHUgtmqhSu5YUQFxj-3uoPl9FP1227g-oJiYp9bjRsfA1Bs51mb-I6BX8Z7YyTzsth3ITrcr-TJ_Cd4b3Om6Pae28mGYcxb__9b4iZaI8PoIRGQm3OotaoBnoNBnrHsC_NK4a6oKJi8Qv2feuZLvN55tt4565B_BrIXY5BvkuyHY9GxzmOD_yl43IslgTQo1QXLcZNqjC9dxx1yblCMX9HnVavDEelHJnD2ULEDJcItdcklbX93owZpeJtFCCyavuG7vsSrfcTqFzAHzGXJCOx7qQfHN3Bfyhq2i5kW9drttubmpA7WQEXRxGhtUvYkuzGDd9QBuMcMlpKTvse2uOWPQuSwkGT8ZEnlQwZFP79HTtFFy9Z1KM7_B544e5vODSfB2X1vol6yNFIsXXx_gm7u3BJN1bgQP7BQta91g8c6akkYV3_7qLx_YBy5fLeKKDmnGmlzBQK_ZJi5W53c9IP3OiIMGYv4CxFnjRR-Xd341dofEFiBw537B2tXFMwuZ83wjiiDUCgfKeHPGkvxIo22Dgd5JnsL7K_17mtUPQfaQgcbYglA-cKxGo1fYMq-cX_ghxJtBRsQjHP3mV5OHSAieL1WvQ0dmkd-Fi1gHTO1iKFQfYiMOwugROJbpu3Uohy17fWNtq_DsUX-xJQEcB3Qv1fEP3lztfrcEAd6KpV8RzhpgJu5AirntRZaaZLSu77uWeO3H2cpQwufQhtekifmfLHMU-aSkdf8ni19eLaoaDF2rIeiHV_93W5c_5EE1zMHL48KFDIJFrCIKizsyP_cwCQ8pROzPMpzAG2buFcrqI_avBaW19OojnbjT1LTXWsdg2gw6LPesTUQnXsXYwGOI2DHqHp3HTBZozPy8ggLJqass3wX0GBrURTLxySxZyXaLGSjWL2GuFIjdAye_pJWt4Gk61aozK5RmYyN-6-NACO1Zb4f1Si3S0Nn4fBxm_AXB9obSVXEGeCSRCqrbu9WzTCdL6yV_IraS9vhIaB0iGrl8XcQW0nxYy46Fy0BZbbStYOKmakFO3CeD46frBBmBEdpLs9y2qNqCPD04xJqXwpr27InV5siXO-6R437CGhThlsE9KQ5v_oUZ21XUb6AxVL0Zz2pEXG15CgE3OBsxmGQi_8-rSGgg8C15bZ9Of2Esei74Hzg_psGb7xvGiDDDiCBe9WnPBJMFoxi_kw8Qj45V735pvf9mMttEQc10X54i1CWOT7ARmF970ql0yEg9D2-mNrleRW6ZhRmMJw805m2RiEe2siNCHYDywEYHZdWPRT3uSMIxnc8QwOAsB-llhnFjRiAlLH-b280uYC7jX2eEwsleXGcq5MQ9gPzx-h9t-Wt2Vb2Txz5kvy1roxj-zFaUPCQtFzPrHzBa2_6wsZ0WjT9JuWgce2jWnnP6Vi_eBIRuB_jS-BalhKLdNtVJ-DzXEJHs24nuVOxubBQxzvadl_Luz9yRNH3O4x1jluGSFuXxfG0Snz03ppJ-h9NGqY5pl9KQzbaQFFl7bNWxuioekE30uJ_Q095U8UmEo5kHS5KcI5M8-LrYJaHRMnjP4dVfBg7ieHyQ4nnZOCwxq7V3AESw_GfpX12oq3iBTtG2GBeFFkYHpi2mVUYQdHRtlSKj3AS1Tjq5HjSZ9ZPJ4M47lsBgUKSSkCacNpnzwxTzZvpo02gP_eF_I2hnoNbY9qGajwcpcQ2o7R3xKuBjV_zukEdeUgIe7pL7W-__glDsiTi4OH7Vsnohxo5yphy9NY10lR_7j9ycZvi33qwW4aaEE5V9PH3Bu_GfjuTEArAi3WBi5Oss9VdYIfJqyrx-xFGKoN_1skhSPDiZ56N9CptjKxzt4qHXYhC7jveWPdEt8xM5bR58KFFFyrZJ-Fo-TxzWagbFXORQiO2D6PIhO-Y9mjuM8r_Ig792zE8wfrH-8dSOV5bvF2TuOEx5O_bWDRRdtBdsQa5C6PA64J_ajPFcImtr_z65rchO5n0JibWdWChiqMg5oe5oZ3UnKcyYMrc8V6XWQKUHLjJYf778L6nObI7WsBuIsMm4-m6MPoa3TFZPBlekBhZBc8tfLVPw77BFPGbdgyhW9NXjR--1JCA8FYbiBst3fEJsi2FDiZSam3bdE879EgTpgBiNklW8fuyP50hvvQjzhn9SziZDGS4inv3T1y6H6mEg-jqPsKiQyiTRcgPK7ZSTziseK8O9kVMvfdOIBeNfhxuwVaBGyRc3SkLbew0Wd3aUWLzE8YwCXHr07sQUvPNsr8RdToBDy5x_iCPMGbUpJX7uLdfuKCl6DUPupA85Pk8Vcn7sJlFI1Id91M_QraFmzRugro4i3Otupbo0dl2WTHQIgIsSJCNRYP1XFdVu8uRzMsjtf8Ww3zEyvpdOFgRqBOUJMqBcZ3tnT_jtZ0CRldg0mpT8dJSUFnZHKYRVktoDzfu8RCCLLiULoL2aeuJqN5OBl_aImN4AZqiZuy7rB9E7aDJykWA6owhAoIaBp7ip1Tzq-JI_tsiTAtXgeDVljoqGQYX-aThlbLEqCvT_nf_Wwgs10NXi2cqVMVFBqG14fiDnI4OxCxuRFcs8s1QueTh72jCy9Mf-JXhB8EHD7eupDCfbEQaYT_bUcvhujyKkwvQA-neWNOvGjz4KmmxDqyuWgMIii-fLw6CGafsNBMfOO0HxKxrjOlpeeKKkSMwG6d84Mqe8wscXBRNUSpNYUTmCVOmv6-mgc0Lan67jX4HMOpYEQbCrvWLHd01oKaNOOWk8Jj_95muRfrJaKpQsaagdyIT1TdHl5P1rNHzx4pJkaqpZ0qhtxYif5H_0WdrqMcE2qRNKrSDVBs0VrP6k6Pdk4ff98mbo1fh5u6cZmFBQUy_dg1nhb4VJcsyC3bw3t-u39Nn01qXXRo5p-MBggAUVREMsLWmV76VqvowJ0gw0wDswnLEkUgDMY8=",
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "msg_0b5ed0db547f215f016ab974fe207c81978e48ddad1571b381",
+            "type": "message",
+            "status": "completed",
+            "content": [
+                {
+                    "type": "output_text",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ],
+                    "text": "{\"sentiment\":\"mixed\",\"issue\":\"Need more time for practice\"}"
+                }
+            ],
+            "role": "assistant"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "mode": "standard",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "json_schema",
+            "description": null,
+            "name": "ExtractedData",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "sentiment": {
+                        "type": "string",
+                        "enum": [
+                            "positive",
+                            "negative",
+                            "mixed"
+                        ]
+                    },
+                    "issue": {
+                        "type": "string",
+                        "description": "A short label for what the comment is about."
+                    }
+                },
+                "required": [
+                    "sentiment",
+                    "issue"
+                ],
+                "additionalProperties": false
+            },
+            "strict": true
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
+    "tools": [
+
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 95,
+        "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+        },
+        "output_tokens": 377,
+        "output_tokens_details": {
+            "reasoning_tokens": 320
+        },
+        "total_tokens": 472
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

@@ -1,0 +1,214 @@
+{
+    "id": "resp_01a1e1c855fd6c8c016ab97c401a1c8193878451ffbe77b2fc",
+    "object": "response",
+    "created_at": 1790540864,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1790540868,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1457,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 3333,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": "Extract the requested structured data from the input text. Return values that conform exactly to the supplied JSON Schema.",
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_01a1e1c855fd6c8c016ab97c407e608193be763ecd8318cafb",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "encrypted_content": "gAAAAABquXxEO3PJd7vmIylct6D2xpH7rJ4KoxdAgnTvh8rClcd8HVpPfORaztkrbtR_4L93hqSBsNfzdZcuIAEFUdrb5gd0V7Vra9qvoOHVSm2-mITvM9oNObGdCcDXR9pBJ061xE2BoL8UcTYT6ieEIzohJyXwpaDkUCgiZimtVlZ0O8gzVV8LoCnXeBZpejeqvJsKnWJW_17DSiww1rE2hVxuCXWCel5ode8e8aEqnf7E-13PxkwGTpe8QNx-It9NqMMaxcNTMnbh_p0lkr4L9sN3yxMPnHKTL4zj76tprCXwqBlGz2o42N1ChrAokSjmIBsNCHm-uk8BwpMd_-EH1Qk3KKRZs5kYSTU_27Hbi-8H3D2DAC0G9vMmeigkM2Vrwc8-yhQLKQ4ppxtOW1RGLtin92Uv19j9rN4M0hUF_HL9tdCGDU1NbGk9TGnVPwIjqlF-Tqwdi5iAWrFKdezVOi1Q_q1I07suh9G0YN0WiA6Ms_yMyjH_GhR6d5fw5Fth2dK5OHA2wPzeTzncblhf03Zh3JgezeP61GAq_greXxCFfgFNlt6AIfpz_Gzjn8xVAWyzG1sa2PuUlxVSMjZnhRuZDiARd1dxIJtrkZmchAsJxW2WrgEOoW6Hpr0GHzivMn6v1RSG1IKNCZA5cDBJawg0wFA58TTPOG55hL8eCCs_fGoTo5lsM7lDOzQdL0giEIgATSb76Gf6YBAEw1-alSHNEVda4qTG2gYx3HIJBNbqBPHkchkq45KjXTBrnij4mWDS_jSugY6KQD7uI8Fgjm7PjxYghf8ARLtKnXCSRmkmBPmHIvrTBaPAFSRn1q9zx_-zJGkH5QZ_VeXaoQYvbv-lcKoeHMvCd12tPrZMt-By0gteCu5WzslwWwQ8FmeYIPbCPTLR_uKL4L-1-spkr9-TNFhY7JwuRPJOZI71Yg7PCX0YYlyEffvpP1nl0l5ystphsShcxplVrCnK0BM2E9D2P8o3WnZ3xmsueu0euyhAyewgCVuPgAiE9oBLiN12x9AeaFjgMckxLExf6wfWGa7URs32WTEeB7HXAJMtKiwJr-dT_akY5VPDI5VGijJpW9bB2MAjCXGQ8PRF8OK49BKgft_i3dTdhiJfPXG87p-dYXn5OlM5VUVqOd-5exLiW8d9LKWcEnnHFEbpqUbQjt7GaDrhtjGaZhdYAREnO_lOmrnGaoHKiKUQUDzw5vhf6fhL_1we7TKmR7Xls0rXneLCiE4bXc2sodBFMdBABvPx6nLU32altWZtfoMjqOgpobPBvREi2R0-FfZJiAazu2zkNFjmuZwzAbAB1hStHxX1EYLTdi-M5gclfl0CbEbWBnXdFAqvNdNJ8c3jCbY52WS2XnbnosdOggJS-1ZIewYyEqzN5w7hB5Hqazmju3Y3_TdDVmFFXksCtQxukQZeDjZIdrWNwNP5LtZ7N2c0lzZ-XzU7uPNYdLgbe1AfcBFTdtMMkE-SIVSasL94VqbVwGmer7TfK0Prgmk1Rz7XE_FJ0MVJodNjB8sRJO0i77l-34fDSnn_ym_Lfiq8K7TVHjBcsC-_Sw920ouUuXRjDXIkTXH-V_NSPqg87zV7PHdAAoav4DprHfv1EeCUpQ_CQ-SaoDiJlrPmgYG-B17Eie3HV3TwgAnEOw2JzeltpKh7z24kcnf0qzK_EUhCnnAnzyltq38azj6fbwOczV0QJcdIWw_h23tXwP_ybCp-Vy5IzRyuEjDD0t1pHZMevMfapy1DRHn-Bqn1x2XbRHCyJpewmilAQ8ye-FTYjxu1okidrK-2Viyy4D403HldQbzEy_slHTS4xv8AFjKPjTQhr7-ASDSbvf-4MxVdRr11X6_qBf6W6BSUqvVThrPnq44PzD3_wBO-9Y0QmyPkGSHPRe7Qh_a4h7vGwP8w67GDXbi8We03fUX8319BgdiAirjhX_zDFdeNrFV_i-newuFOgh0FsCre_UtQueOUlrtVeG18WyVChIFbLZ1GidR3UucgL2kOQsHahfDtZfrqk-Mi28vdcmllPX0lEv7jrmd-YvgVRvt-VGSuPo8Qu_2YmpwhoEEm52xJna_5v3clb65NoNFb0_lH_v2L9dSn82GIU3S2H1ZQiCjUXL9fAPn3lNdTTLb_BfIbCdCbFxCVBquytwII0V0WXwg7uqUsciM4ISxcZvhqnrBS_xaojKaxh8QDTCQckYEC1EjItgUYYOeKK9532ya8VeQ2xHIOXHuhfqnlWwLM9MO8Vpv_AQgHkadNUJ1fqMY6pdvL2ErXUNAgy7BTEBcV7DvgGiRT6XTblIXcpuMemeBMFEIHGqsSQoOb7nK_hN5F5NycKbRBpr1SEI18oFQNREJYNjg28x0Jb3Wxf0IT2ncxjW76v3nvgKhKi3rTP4TMMgMbbIIeqV4G_4DQFZfzXAtUZFzASzPokTwZnEl84kMJ71zOZ7OVYkhmdngWoFcXQoQ_QXSlyUwJJLsSUEpSCzH8h1VEFPlL1v8p1keY0iKQIPh8kXZnzZOWS-rJ8YJ5rL3kqd72XCi24a4__g57xZCSizcSGUVV__YPYumIWbh9HbLtceDBabE9GflYhSgG-TQ5hbeHmqtZfVZ2TNDVIkFqtSa8XrMACNnWkCleYlIUdvEAHnyrW5T7ubuB5Bq0u9yjmyTyl2IMU7qJZsiqzIUGbEYW_-3kZsF2ostgNko6QjDDOALfWDsxxhKYcRIS_1UcboBFcKqEAn7iV0anmyTu6AyhfXeU6dR3LOipshkIXR8WEc-QYi8YbgJlrqONMypDLD5JaOTW9yGa5yF4OOzkppIjcO_EUzARps-c6y461bWFuC711nfgZ1uFHPa9fjsg40pV80dosEHQtHJRO9oJwi-GBMEzGUdDQTD2FfEp_W1bytTINQBVAHrTjFW6Z3iGu81exyACgDVhr2pt1wvbqWmuEXGsR-wBNPi08xY2ZEsj5k2BwWi8NoFXkSSQJxA8Jo0KJwUwXn_oYligQybladTOV2hevsY2rhtkQAs4IqIT32ESSGT7SOhEZ_4CFSd-MivRnnXHplXYcz8Q8_abyETxaz8XWoN7Ll8Q08Uxr436a_cJ9VCVNwf4bRw4-Xrv9fxlndlelaP3h3WijEcsInhhjxi2KSJAGc7FPZwWsdHR94mpcWTyVn5H05sSQc2ymzfRnns9UFMZajDyZ2kWOLITd0S_snldqfUoWc97DveezZLo4cI9BzDG_v1ZLpOxokRaSl2Drr7Sz_a0OOQ6BAZbHphQimDIbiJg_kha9FwhE6E68lEy15ONT9BC6fZBtRN5lfjZxkRDFnLesCUJ2jJZM8nQmCfhNzHC0ifBhKUaEE71CrFjzxMqWX6Bqt9zyR56q5m3cwd6e_8sZqajSkDHwFO1EJfmP6FlIDOBJi_KrNZ-ZFngsFycJ-TetM_mU0ZJIZFxI8PJ419bHdHgkh8rPczB4M9RwAzmowszaGIv3TwkTjcX0s8kfrce8Znwx_rjnJ3tTLrP-iOCYRND2SSziaSFD3MVGgClYB84a3ff5yOko2m4WvmAT0ebLo6APoiYScSK7RgyRUcFKR_sSN-CB1ucAJYB6TR1yM16v8Rkmr_NkeNcTQYHiVaVSbw8cgETi7e01zo-EAATE5ZmGxuhZ4WaTuf01EmLeNsFZ6O1pZuw3kkDOmo7CbHp7qG8uFZ2Zx5z68jMT6xtt_XmYYjgtt2gjyH5wbEBuj2dTNUdq2pRGrO5dua1I-pVmcaAuLV1VYHTXEils-LQMjvp1_KmmnFUWqbeFRYVSUzI39uLy8oj2qnwDp1t7lnNRibMgqnXL7L1FCrDoqCS_oKSU7tCsMZUMCD1KTwK9uP7XaFMvlWs1JU8pZHWZDbkFQLv5K6n3QfnGkJXubRGAjTvxZjFLxEb_YBefdlvO-uZUx-B_M7fmunq1uNNisYVRjmUECct0n6lOcSRNSq5xd7ZUgWvRKr36omRGd9eL3hYFNBMV9mcg8XpX9Nr_QWB7mkLiDBLQjmq-P2IGrWoSbvHE4hEhWTbesTtfGgtfcXBLBif7jOH8H_Q2YHDOBRJsxO6CjJoCgwAaMjkoHq06l7VAI673xkNMs2MSUiyMnxXoqcQbyIQbpLEHMCrKJ5zBu0_GJOaaxAsAAkY-dlGyDQNuXHYWjwqHpChK2vpAV1cuVR4gG9bzapHATrsdG36Odrp5duO00yGitZECyvPJty7vOjJZC_Ah1LcgfKpf3gzhkaxipyX8vNorZpMvozXoiYx8XwdrbTh4UKixD8Y2wpNyW4arrAXEcMr2ijaA4QlB5jIaBboktRFsRbV5lX2lMTVxNhKheUBeu2qmAsnAzfO9CS25dEwJz3ZsNOU7LpBqfL_U90K2FcQvPPtLv-yS-52VObZqcXlSGW7Qk7tLpx9c-sppNRwoiIQfdSXYUjhHgjtVB6qPbx_3Gax_chi-P1z5YmwM-rCfoH4ZynLOfZv-L2fOelfdJ1uVYFe-jl-DQk-EOUcYeG4bWfgZBq-rvg6DIUigUFfBOMIPmDpYl3AUTC52svzp_6PADBBEouB_G1PT3T7elM-0DmWAZOpViU9cvK0qx_zYGVkGl6qyjT7RKMlpEW0Yoilig937SUQXWuilL-bvV2NLrrYpq3WEMSuZKeXkkCl5EGjDZmRPMuQv2ulU2cHsz-YZ2WpVTLjbXjav2TV3dyrNZIxl7-mAuX7Y2J73qp156UGXZ_Z7DE7yzEtvqW1DpUkB8D3yCN1LkYC-ySvigIbkBgj7TS1ZcuaLy5KPePg0jyTDVoL1WQ1QMYUDcQ-FICF5e-BlnFKNU1E1-cMzvID86StzBIMqpgZv8jkRxw7FXRB-c7cYgSTdolx1zXWmRcPnRAhNU4mkQEixLPhQShFaNenLqnx8uR4MBhUxPx3kf5PSIDADsIZIhpQkhCWl2uBSKa5ruaGAnCcq5EFh5VZkuyEIgX21ZzzWcqIIskS90lch_bNHHFO1TIPpOwhPtwe4viF1PXp2VPYasuRlKbL_8JHEDU_PrmE6uqSIUGbZIqSRYALr_L0cwBvhyqY9ilwAxOSghAPIiqJ5ry6mjiz6e7TAAolYq96zRyPo9J_-c8PGbTJ0_Vdac78wfC5IHoaqOO5zEJA2qT_wJbBeFsAwwSJlGudYTr16QW87ac4aBKAig0M8bjejRQFOqFpv3b-VL5VJ7s_JLrsfsm7nWsm1cuHLM9cryke7aAKMUTD-V-UJlcqgZf2jfkEgNETVYHdjJfWaufxEAlPLzXOrXvkEsCVW3UhtUp7xotHxHLeh1nEOv44xL1RP4Q9ONybpoGkaCyyXpqqxjjbjkHkrhpL1CF76nOz1CKVNPFZjdIWdJqBmlmJMyl6XLPINb7tRkOUStV1ktoKMxHDOHGT6PZkzkBaYhwv621cRiLqgCqGcJZ2hGsWEvVxdd1v43WeIkzD52ppiI2ZmAtrLaKDpOFSfCob0rLgq3mL5M3svwnM1mIKeL2Z9QCRBZ062bBbOQ4DNUEH_5K438hG2E6pMRkExJ3UU4QZ3h8UK4P2kCtxSKBf1e-86xJ5mzMCG2aGy9tUgveN_8CXzoRhR0GHVmt3u4zIjkD0HuSnYo53G0gT2jWNHiTxzXg=",
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "msg_01a1e1c855fd6c8c016ab97c438a1481938120e99ab6cdb0ea",
+            "type": "message",
+            "status": "completed",
+            "content": [
+                {
+                    "type": "output_text",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ],
+                    "text": "{\"sentiment\":\"positive\",\"entities\":[\"data pipeline\",\"manual coding time\"],\"summary\":\"The new data pipeline reduced manual coding time by half.\"}"
+                }
+            ],
+            "role": "assistant"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "mode": "standard",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "json_schema",
+            "description": null,
+            "name": "CommentCode",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "sentiment": {
+                        "type": "string",
+                        "enum": [
+                            "positive",
+                            "negative",
+                            "neutral"
+                        ]
+                    },
+                    "entities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "summary": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "sentiment",
+                    "entities",
+                    "summary"
+                ],
+                "additionalProperties": false
+            },
+            "strict": true
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
+    "tools": [
+
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 93,
+        "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+        },
+        "output_tokens": 715,
+        "output_tokens_details": {
+            "reasoning_tokens": 640
+        },
+        "total_tokens": 808
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

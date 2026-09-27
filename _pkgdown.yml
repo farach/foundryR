@@ -18,9 +18,9 @@ template:
 home:
   title: foundryR - Tidy Microsoft Foundry workflows
   description: >
-    A tibble-native R interface to Microsoft Foundry for Content
-    Safety, Responses API workflows, strict extraction, embeddings, batch jobs,
-    files, audio, media helpers, and chat completions.
+    A tibble-native R interface to Microsoft Foundry for research and
+    measurement work: structured extraction, agreement checks, batch
+    annotation, embeddings, cloud evaluations, and Content Safety.
   sidebar:
     structure: [links, microsoft, license, community, citation, authors, dev]
     components:
@@ -39,50 +39,46 @@ navbar:
     right: [search, lightswitch, github]
   components:
     intro:
-      text: Get Started
+      text: Get started
       href: articles/getting-started.html
     articles:
       text: Articles
       menu:
-        - text: "Core"
-        - text: Getting Started
+        - text: "Get started"
+        - text: Get started with foundryR
           href: articles/getting-started.html
-        - text: foundryR vs ellmer
-          href: articles/foundryr-vs-ellmer.html
+        - text: "---"
+        - text: "Measure text"
+        - text: From text to defensible estimates
+          href: articles/annotation-workflow.html
+        - text: Annotate at scale with the Batch API
+          href: articles/files-batches.html
+        - text: Embeddings for research
+          href: articles/embeddings.html
+        - text: Embeddings in tidymodels recipes
+          href: articles/tidymodels.html
+        - text: "---"
+        - text: "Evaluate models and agents"
+        - text: Evaluate models and agents in Microsoft Foundry
+          href: articles/evaluations.html
+        - text: Analyze evaluation results with uncertainty
+          href: articles/evaluation-analysis.html
+        - text: "---"
+        - text: "Safety"
+        - text: Content Safety gates in a research pipeline
+          href: articles/content-safety.html
+        - text: "---"
+        - text: "Reference"
         - text: Responses API
           href: articles/responses-api.html
         - text: API support matrix
           href: articles/api-support.html
-        - text: Text Embeddings
-          href: articles/embeddings.html
         - text: "---"
-        - text: "Responsible AI"
-        - text: Content Safety
-          href: articles/content-safety.html
-        - text: "---"
-        - text: "Research Workflows"
-        - text: Annotation Workflow
-          href: articles/annotation-workflow.html
-        - text: Files and Batch API
-          href: articles/files-batches.html
-        - text: tidymodels Integration
-          href: articles/tidymodels.html
-        - text: "---"
-        - text: "Evaluation"
-        - text: Evaluate Models and Agents
-          href: articles/evaluations.html
-        - text: Analyze Evaluation Results
-          href: articles/evaluation-analysis.html
-        - text: "---"
-        - text: "Advanced Topics"
-        - text: Audio Workflows
+        - text: "Other modalities (experimental)"
+        - text: Transcribe and translate audio
           href: articles/audio.html
-        - text: Image and Video Generation
+        - text: Generate images
           href: articles/media-generation.html
-        - text: "---"
-        - text: "Integrations"
-        - text: onet2r Integration
-          href: articles/onet2r-integration.html
     github:
       icon: fa-github
       href: https://github.com/farach/foundryR
@@ -314,43 +310,45 @@ reference:
       - foundry_models
 
 articles:
-  - title: Core
+  - title: Get started
     navbar: ~
     contents:
       - getting-started
-      - foundryr-vs-ellmer
-      - responses-api
-      - api-support
-      - embeddings
 
-  - title: Responsible AI
-    navbar: ~
-    contents:
-      - content-safety
-
-  - title: Research Workflows
+  - title: Measure text
     navbar: ~
     contents:
       - annotation-workflow
       - files-batches
+      - embeddings
       - tidymodels
 
-  - title: Evaluation
+  - title: Evaluate models and agents
     navbar: ~
     contents:
       - evaluations
       - evaluation-analysis
 
-  - title: Advanced Topics
+  - title: Safety
+    navbar: ~
+    contents:
+      - content-safety
+
+  - title: Reference
+    navbar: ~
+    contents:
+      - responses-api
+      - api-support
+
+  - title: Other modalities (experimental)
     navbar: ~
     contents:
       - audio
       - media-generation
 
-  - title: Integrations
-    navbar: ~
-    contents:
-      - articles/onet2r-integration
+redirects:
+  - ["articles/foundryr-vs-ellmer.html", "index.html"]
+  - ["articles/onet2r-integration.html", "index.html"]
 
 footer:
   structure:

@@ -22,14 +22,15 @@ An evaluation run reports a pass rate, and a pass rate computed from a hundred
 test cases carries sampling error. Two prompts that score 71% and 78% on the
 same test set may or may not differ in a way that holds up on new inputs. This
 article works through four checks that help separate a real difference from
-noise: intervals for pass rates, a paired comparison of two targets on the same
-cases, a sample-size calculation, and a test of the LLM judge against human
-labels.
+sampling noise and grader error: intervals for pass rates, a paired comparison
+of two targets on the same cases, a sample-size calculation, and a test of the
+LLM judge against human labels.
 
 The examples use simulated results shaped like the output of
-`foundry_evaluate()`, so the article runs without credentials. None of the
-numbers below come from a model. `vignette("evaluations")` shows how to produce
-real results.
+`foundry_evaluate()`, so the article runs without credentials. Every number on
+this page comes from the simulation in the next section, with a fixed seed, so
+the true pass rates are known. No model or judge was called.
+`vignette("evaluations")` shows how to produce real results.
 
 ## Simulated results
 
@@ -73,12 +74,17 @@ results
 With real runs, `results_a` and `results_b` would come from two
 `foundry_evaluate()` calls on the same data frame, and
 `bind_rows("model-a" = results_a, "model-b" = results_b, .id = "target")` would
-stack them the same way.
+stack them the same way. `foundry_evaluate()` returns one row per case and
+grader. Filter to one grader, or define a per-case outcome such as "passed
+every grader", before pairing. Count missing `.passed` values and decide
+whether to exclude them or count them as failures; dropping difficult timeouts
+can bias pass rates upward.
 
 ## Pass rates with intervals
 
-The Wilson score interval stays inside 0 and 1 and behaves well near the edges,
-where the textbook normal interval does not.
+The Wilson score interval stays inside 0 and 1 and keeps close to its nominal
+coverage at most pass rates, while the textbook normal interval can fail near
+0 and 1.
 
 ```{r pass-rates}
 wilson_interval <- function(passed, n, level = 0.95) {
@@ -97,10 +103,22 @@ pass_rates <- results |>
 pass_rates
 ```
 
+```{r pass-rate-widths, include = FALSE}
+independent_half_width <- {
+  p <- mean(pass_rates$pass_rate)
+  qnorm(0.975) * sqrt(2 * p * (1 - p) / n_cases)
+}
+```
+
 With `r n_cases` cases, each interval reaches about
-`r points(mean(pass_rates$upper - pass_rates$lower) / 2)` percentage points on
-either side of its estimate. Differences smaller than that deserve the checks
-below before anyone acts on them.
+`r points(mean(pass_rates$upper - pass_rates$lower) / 2)` percentage points
+either side of its estimate, a little less above and more below. A difference
+between two pass rates is less certain than either rate: for two independent
+runs of this size, its interval is about
+`r points(independent_half_width)` points either side. Checking whether two
+intervals overlap is not a test of the difference, because intervals can
+overlap when a real difference exists. Compare targets with the paired
+analysis below.
 
 ## Compare the targets case by case
 
@@ -126,11 +144,16 @@ mcnemar$p.value
 `r sum(paired$a)`. Of the `r only_a + only_b` discordant tickets, `model-b`
 passed `r only_b` that `model-a` failed, and `model-a` passed `r only_a` that
 `model-b` failed. McNemar's exact test on those tickets gives
-p = `r format.pval(mcnemar$p.value, digits = 2)`.
+p = `r format.pval(mcnemar$p.value, digits = 2)`. That p-value means the data
+are compatible with no difference; it is not evidence that the targets are
+equal. The exact test is conservative, so a mid-p McNemar test can be useful as
+a sensitivity check.
 
 A bootstrap that resamples tickets, not rows, gives an interval for the
 difference in pass rates. Resample at the level where the test cases were
 drawn. If one conversation contributes several items, resample conversations.
+If a target answers each case several times, average within the case first,
+then resample cases.
 
 ```{r paired-interval}
 difference <- mean(paired$b) - mean(paired$a)
@@ -144,12 +167,18 @@ unpaired_ci <- prop.test(
   c(nrow(paired), nrow(paired)),
   correct = FALSE
 )$conf.int
+paired_wald_ci <- difference + c(-1, 1) * qnorm(0.975) *
+  sqrt((only_a + only_b - (only_b - only_a)^2 / nrow(paired)) / nrow(paired)^2)
 
 tibble(
-  method = c("paired bootstrap over tickets", "unpaired two-sample interval"),
+  method = c(
+    "paired bootstrap over tickets",
+    "paired Wald interval",
+    "unpaired two-sample interval"
+  ),
   difference = difference,
-  lower = c(paired_ci[[1]], unpaired_ci[[1]]),
-  upper = c(paired_ci[[2]], unpaired_ci[[2]])
+  lower = c(paired_ci[[1]], paired_wald_ci[[1]], unpaired_ci[[1]]),
+  upper = c(paired_ci[[2]], paired_wald_ci[[2]], unpaired_ci[[2]])
 )
 ```
 
@@ -162,20 +191,23 @@ true_difference <- diff(expected_overall$expected_pass_rate[match(c("model-a", "
 
 The two results for a ticket are correlated
 (r = `r sprintf("%.2f", cor(paired$a, paired$b))`), so the paired interval is
-`r if (diff(paired_ci) < diff(unpaired_ci)) "narrower" else "no narrower"` than
-the unpaired one, which treats the runs as independent samples. The observed
-difference of `r points(difference)` points has a paired 95% interval from
+`r if (diff(paired_wald_ci) < diff(unpaired_ci)) "narrower" else "no narrower"` than
+the same-method unpaired interval, which treats the runs as independent
+samples. The observed difference of `r points(difference)` points has a paired
+bootstrap 95% interval from
 `r points(paired_ci[[1]])` to `r points(paired_ci[[2]])` points, which
 `r if (paired_ci[[1]] <= 0 && paired_ci[[2]] >= 0) "includes zero" else "excludes zero"`.
 The simulation's expected pass rates differ by `r points(true_difference)`
 points, so `model-b` really is better here. A test set of `r n_cases` tickets is
-too small to show it reliably.
+too small to show it reliably; at this size, a 5% test would detect a
+difference of this size only about a quarter to a third of the time.
 
 The quantity being estimated is the difference in pass rate between these two
 targets on tickets like these, with these prompts, sampling settings, and
-grader. It says little about inputs unlike the test set, and a test set you
-have tuned prompts against will overstate how well the winning prompt
-generalizes. Keep a held-out set for the final comparison.
+grader. When the grader is a model, report the judge deployment and version too.
+It says little about inputs unlike the test set, and a test set you have tuned
+prompts against will overstate how well the winning prompt generalizes. Keep a
+held-out set for the final comparison.
 
 ## Where the targets fail
 
@@ -247,15 +279,12 @@ seg_wide <- inner_join(
 separated <- seg_wide$segment[seg_wide$b_lower > seg_wide$a_upper | seg_wide$a_lower > seg_wide$b_upper]
 gap_cases <- sum(paired$b) - sum(paired$a)
 chart_title <- sprintf(
-  "On %d tickets, model-b passed %d %s than model-a; %s",
+  "On %d tickets, model-b passed %d %s than model-a (paired 95%% interval %s to %s points)",
   n_cases,
   abs(gap_cases),
   if (gap_cases >= 0) "more" else "fewer",
-  if (length(separated) == 0L) {
-    "every segment's intervals overlap"
-  } else {
-    paste("the intervals separate only for", paste(separated, collapse = " and "))
-  }
+  points(paired_ci[[1]]),
+  points(paired_ci[[2]])
 )
 describe_row <- function(label) {
   rows <- chart_data[chart_data$segment == label, ]
@@ -312,7 +341,7 @@ ggplot2::ggplot(chart_data, ggplot2::aes(y = y, colour = target)) +
     caption = wrap_title(
       paste(
         "Simulated results for 120 tickets. Segment intervals use only that segment's tickets;",
-        "comparing many segments invites false positives."
+        "comparing many segments invites false positives. Overlap between two intervals is not a test of their difference."
       ),
       105
     )
@@ -333,8 +362,8 @@ ggplot2::ggplot(chart_data, ggplot2::aes(y = y, colour = target)) +
 
 ## How many test cases a comparison needs
 
-The interval half-width for a single pass rate shrinks with the square root of
-the number of cases. Near a pass rate of 80%:
+The normal-approximation interval half-width for a single pass rate shrinks
+with the square root of the number of cases. Near a pass rate of 80%:
 
 ```{r margins}
 margin_of_error <- function(p, n) qnorm(0.975) * sqrt(p * (1 - p) / n)
@@ -356,6 +385,7 @@ paired_cases_needed <- function(d, psi, alpha = 0.05, power = 0.8) {
 }
 
 observed_psi <- (only_a + only_b) / nrow(paired)
+psi_ci <- wilson_interval(only_a + only_b, nrow(paired))
 tibble(d = c(0.03, 0.05, 0.10)) |>
   filter(d <= observed_psi) |>
   mutate(cases_needed = paired_cases_needed(d, psi = observed_psi))
@@ -364,15 +394,23 @@ tibble(d = c(0.03, 0.05, 0.10)) |>
 At the discordance observed here (`r points(observed_psi)`% of tickets),
 detecting a 5-point improvement with 80% power takes about
 `r format(paired_cases_needed(0.05, observed_psi), big.mark = ",")` tickets,
-well beyond the `r n_cases` in this test set.
+well beyond the `r n_cases` in this test set. The discordance is itself
+estimated from 120 tickets, with a 95% Wilson interval from
+`r points(psi_ci$lower)` to `r points(psi_ci$upper)`. Across that range, the
+sample-size answer runs from about
+`r format(paired_cases_needed(0.05, psi_ci$lower), big.mark = ",")` to
+`r format(paired_cases_needed(0.05, psi_ci$upper), big.mark = ",")` tickets, so
+plan with a range and a discordance you expect in the new test set. The formula
+approximates the asymptotic McNemar test; the exact test used above is more
+conservative and can need more cases.
 
 ## Check the judge before trusting it
 
 When the grader is a model, its errors flow into every pass rate it reports.
 Before comparing targets with an LLM judge, have people label a random sample
-of graded responses without seeing the judge's verdict, then measure agreement.
-In the simulated validation sample of 80 responses below, the judge passes 92%
-of the responses people pass and 30% of the responses people fail.
+of graded responses from each target and scenario without seeing the judge's
+verdict, then measure agreement. A second person should label part of the
+sample, so the judge can be compared with the level of human agreement.
 
 ```{r judge-validation}
 validation <- tibble(human_pass = runif(80) < 0.7) |>
@@ -389,6 +427,15 @@ count(validation, human, judge)
 ```{r judge-counts, include = FALSE}
 false_pass <- sum(validation$judge == "pass" & validation$human == "fail")
 false_fail <- sum(validation$judge == "fail" & validation$human == "pass")
+human_passes <- sum(validation$human == "pass")
+human_fails <- sum(validation$human == "fail")
+judge_hits <- sum(validation$judge == "pass" & validation$human == "pass")
+judge_correct_fails <- sum(validation$judge == "fail" & validation$human == "fail")
+sensitivity <- judge_hits / human_passes
+specificity <- judge_correct_fails / human_fails
+sensitivity_ci <- wilson_interval(judge_hits, human_passes)
+specificity_ci <- wilson_interval(judge_correct_fails, human_fails)
+attenuation <- sensitivity + specificity - 1
 judge_rate <- points(mean(validation$judge == "pass"))
 human_rate <- points(mean(validation$human == "pass"))
 judge_bias <- if (false_pass == false_fail) {
@@ -412,17 +459,42 @@ judge_bias <- if (false_pass == false_fail) {
 }
 ```
 
-Cohen's kappa discounts the agreement two raters would reach by chance, so it
-is lower than raw accuracy. The judge disagrees with people on
-`r false_pass + false_fail` of 80 responses: `r false_pass` it passed and people
-failed, and `r false_fail` it failed and people passed. `r judge_bias`
+The simulation gives the judge a 92% chance of passing a response people pass
+and a 30% chance of passing one they fail. In this sample, it passed
+`r judge_hits` of the `r human_passes` responses people passed
+(`r points(sensitivity)`%, 95% interval `r points(sensitivity_ci$lower)` to
+`r points(sensitivity_ci$upper)`) and correctly failed `r judge_correct_fails`
+of the `r human_fails` responses people failed
+(`r points(specificity)`%, 95% interval `r points(specificity_ci$lower)` to
+`r points(specificity_ci$upper)`).
 
-If agreement is low, fix the evaluator before comparing runs: tighten the rubric
-of a label or score grader, adjust its threshold, or use a stronger judge
-model. To estimate a pass rate that accounts for judge error, use methods built
-for inference on predicted labels, such as those in the
-[ipd](https://CRAN.R-project.org/package=ipd) package, rather than an ad hoc
-correction.
+Cohen's kappa discounts the agreement two raters would reach by chance, so it
+is lower than raw accuracy and changes with the pass rate. It is still an
+estimate from 80 responses, so report an interval for it when the value drives
+a decision. The judge disagrees with people on `r false_pass + false_fail` of
+80 responses: `r false_pass` it passed and people failed, and `r false_fail`
+it failed and people passed. `r judge_bias`
+
+If the judge makes the same errors on both targets, a difference it reports is
+the true difference multiplied by sensitivity plus specificity minus one, here
+about `r sprintf("%.2f", attenuation)`. A real 10-point gain would show up as
+about `r points(0.10 * attenuation)` points, and a comparison would need more
+cases. If the judge's errors differ between targets, for example because it
+favors longer answers or answers from its own model family, the comparison can
+be biased in either direction. If you tune the rubric or threshold after seeing
+the validation sample, measure agreement again on labels you did not use for
+tuning.
+
+This simulated judge makes random errors at fixed rates, the same for both
+targets. Real judges make systematic errors that depend on what they are shown;
+the refusal example in `vignette("evaluations")` shows one. To estimate a pass
+rate that accounts for judge error, combine the judge's verdicts with the
+human-labeled sample using a method with valid intervals, such as
+prediction-powered inference in the
+[ipd](https://CRAN.R-project.org/package=ipd) package, or a classical
+misclassification correction with the validation sample's uncertainty carried
+through. These approaches need the labeled responses to be a random sample of
+the responses being estimated.
 
 ## Weigh quality against cost and latency
 
@@ -456,16 +528,30 @@ long. It passed `r extra_passes` more tickets, which works out to
 `r if (extra_passes > 0) sprintf("$%.4f", extra_cost / extra_passes) else "no gain"`
 per additional pass on this test set. That figure inherits the uncertainty of
 the pass-rate difference. With an interval that
-`r if (paired_ci[[1]] <= 0 && paired_ci[[2]] >= 0) "includes zero, the true cost per additional pass could be far higher, or there may be no gain at all" else "excludes zero, the direction is clear but the size is not"`.
-Foundry's cost estimate covers target inference only; judge models and
-evaluation runtime are billed separately.
+`r if (paired_ci[[1]] <= 0 && paired_ci[[2]] >= 0) "includes zero, the ratio has no finite upper bound and there may be no gain at all" else "excludes zero, the direction is clear but the size is not"`.
+Foundry's cost estimate uses list prices and covers target inference only;
+judge models and evaluation runtime are billed separately. Check the run's
+cost-completeness field before comparing costs, and compare latency from runs
+made under similar load.
 
 ## Report the method
 
-When you report an evaluation, give the number of test cases, the interval
-method, how paired runs were compared, and how the judge was validated. The
-Foundry portal's run comparison computes its own statistics, which can differ
-from the paired analysis here, so say which one a reported number comes from.
+When you report an evaluation, give:
 
-Connor, R. J. (1987). Sample size for testing differences in proportions for the
+- the test-set source and size, and the unit of analysis;
+- the target deployments or agent versions;
+- the grader type and its data mapping, and the judge deployment when the
+  grader is a model;
+- missing and errored result counts, and how you handled them;
+- each pass rate with its interval;
+- the paired difference, its interval and the test used;
+- the judge-validation sample and its confusion matrix;
+- the discordance you planned the sample size around;
+- cost and latency caveats.
+
+Mark segment results as exploratory and say how many segments you scanned. The
+Foundry portal's run comparison uses a t-test, which can differ from the paired
+analysis here, so say which one a reported number comes from.
+
+Connor, RJ (1987). Sample size for testing differences in proportions for the
 paired-sample design. *Biometrics*, 43(1), 207-211.

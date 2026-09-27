@@ -27,11 +27,11 @@
 ^vignettes/annotation-workflow$
 ^vignettes/content-safety$
 ^vignettes/embeddings$
-^vignettes/foundryr-vs-ellmer$
 ^vignettes/getting-started$
 ^vignettes/responses-api$
 ^vignettes/tidymodels$
 ^vignettes/evaluations$
+^vignettes/files-batches$
 ^\.mailmap$
 ^CRAN-SUBMISSION\.md$
 ^tests/manual$

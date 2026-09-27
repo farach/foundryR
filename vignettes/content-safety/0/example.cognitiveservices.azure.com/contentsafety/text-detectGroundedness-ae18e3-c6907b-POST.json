@@ -1,0 +1,19 @@
+{
+    "ungroundedDetected": true,
+    "ungroundedPercentage": 0.54,
+    "ungroundedDetails": [
+        {
+            "text": "The survey also showed that most people preferred weekend interviews.",
+            "offset": {
+                "utf8": 59,
+                "utf16": 59,
+                "codePoint": 59
+            },
+            "length": {
+                "utf8": 69,
+                "utf16": 69,
+                "codePoint": 69
+            }
+        }
+    ]
+}

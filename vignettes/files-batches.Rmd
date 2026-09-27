@@ -1,8 +1,8 @@
 ---
-title: "Files and Batch API Workflows"
+title: "Annotate at scale with the Batch API"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Files and Batch API Workflows}
+  %\VignetteIndexEntry{Annotate at scale with the Batch API}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,116 +13,211 @@ recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
 run_api <- requireNamespace("httptest2", quietly = TRUE) &&
   (recording || have_fixtures)
-
-# Attach foundryR before start_vignette(): httptest2 only sources the package's
-# inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
-# packages.
 library(foundryR)
-
 if (run_api) {
   httptest2::start_vignette(fixture_dir)
 }
-
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  eval = run_api
-)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = run_api,
+  fig.width = 7, fig.height = 4.5, out.width = "100%")
 ```
 
-```{r libraries, eval = TRUE}
+Calls to Azure show output recorded from a live run, and setup code is shown but not run.
+
+Batch is worth the extra setup when you have thousands of independent texts, can wait for the 24-hour processing window, and want the lower batch price instead of immediate responses. It is a production path for stable annotation jobs, not the first place to debug a new prompt.
+
+Batch jobs need a deployment made for batch inference. Microsoft Learn states that the Foundry portal shows batch deployment types as `Global-Batch` and `Data Zone Batch`, and that the `model` field in each request line must match the Global Batch deployment name. This article uses `gpt-4.1-nano-batch`, a Global Batch deployment of `gpt-4.1-nano`. See Microsoft's [Azure OpenAI batch deployments guide](https://learn.microsoft.com/azure/ai-foundry/openai/how-to/batch).
+
+## Prepare requests
+
+`foundry_batch_requests()` writes the JSONL file that the service reads. The call is local, so it can run before credentials are configured.
+
+```{r libraries, message = FALSE, eval = TRUE}
 library(foundryR)
+library(dplyr)
 ```
 
-The Batch API is useful when your research task has hundreds or thousands of
-independent rows: survey coding, abstract screening, entity extraction, document
-classification, or large-scale summarization.
-
-## Prepare JSONL locally
-
-`foundry_batch_requests()` runs locally. It converts a data frame into the JSON
-Lines shape expected by the Batch API.
-
-```{r batch-jsonl, eval = TRUE}
-survey <- data.frame(
-  id = c("resp-001", "resp-002", "resp-003"),
-  response = c(
-    "The workshop was clear and practical.",
-    "I liked the examples but wanted more time.",
-    "The setup instructions were confusing."
+```{r data-and-schema, eval = TRUE}
+comments <- tibble::tibble(
+  comment_id = sprintf("c%02d", 1:6),
+  comment = c(
+    "The lectures were clear and the examples made regression feel concrete.",
+    "The weekly quizzes felt rushed and did not match the homework.",
+    "Office hours helped me catch up after I missed the first lab.",
+    "The slides were hard to follow because notation changed between weeks.",
+    "The final project connected the material to real policy questions.",
+    "I needed more feedback before the midterm."
   )
 )
 
+course_schema <- foundry_schema(
+  theme = schema_enum(
+    c("instruction", "assessment", "support", "materials"),
+    description = "Primary course evaluation theme."
+  ),
+  sentiment = schema_enum(
+    c("positive", "negative", "mixed"),
+    description = "Overall sentiment toward the course element."
+  )
+)
+
+course_instructions <- paste(
+  "Code one course evaluation comment.",
+  "Choose exactly one primary theme and one sentiment.",
+  "Return only fields that conform to the schema."
+)
+```
+
+```{r request-file, eval = TRUE}
 jsonl <- tempfile(fileext = ".jsonl")
 
-request_file <- foundry_batch_requests(
-  survey,
-  input = "response",
+request_info <- foundry_batch_requests(
+  comments,
+  input = "comment",
   path = jsonl,
-  model = "gpt-5-nano",
-  custom_id = "id",
-  body = list(
-    instructions = "Classify the response sentiment as positive, neutral, or negative."
-  )
+  model = "gpt-4.1-nano-batch",
+  custom_id = "comment_id",
+  schema = course_schema,
+  schema_name = "CourseEvaluationCodes",
+  instructions = course_instructions,
+  overwrite = TRUE
 )
 
-request_file
-head(readLines(jsonl), 2)
+request_info |>
+  select(requests, endpoint)
 ```
 
-The example files use R's temporary directory and are removed after use. For
-results you want to keep, choose an explicit output path in your own workflow.
+Print one request line, formatted for inspection, rather than printing the temporary path. The request line is the object you need to review.
 
-## Upload and create a batch
+```{r pretty-request, eval = TRUE}
+jsonlite::prettify(readLines(jsonl, n = 1))
+```
 
-Uploading and batch creation call the Foundry service, so these chunks are not
-run while building the vignette.
+The `custom_id` is the join key. Use a stable ID from your data instead of relying on file order.
 
-```{r upload-create, eval = FALSE}
-file <- foundry_file_upload(jsonl, purpose = "batch")
-unlink(jsonl)
+## Submit and wait with the low-level API
+
+The low-level path makes each service object visible: uploaded file, batch job, final status, parsed results and usage.
+
+```{r low-level-submit}
+uploaded_file <- foundry_file_upload(jsonl, purpose = "batch")
 
 batch <- foundry_batch_create(
-  input_file_id = file$file_id,
-  endpoint = "/v1/responses"
+  input_file_id = uploaded_file$file_id,
+  endpoint = request_info$endpoint
+)
+
+batch |>
+  select(status, completion_window, batch_id)
+```
+
+`foundry_batch_wait()` polls until the batch reaches a terminal state. Batch jobs target completion within 24 hours, so use a longer polling interval in a large live workflow.
+
+```{r low-level-wait}
+completed_batch <- foundry_batch_wait(
+  batch$batch_id,
+  interval = 60
+)
+
+completed_batch |>
+  select(
+    status,
+    request_counts_total,
+    request_counts_completed,
+    request_counts_failed
+  )
+```
+
+`foundry_batch_results()` downloads and parses the output file and, when present, the error file. Failed request rows have `.error = TRUE` and an `.error_msg`.
+
+```{r low-level-results}
+batch_results <- foundry_batch_results(completed_batch$batch_id)
+
+batch_results |>
+  select(custom_id, output_text, .error, input_tokens, output_tokens)
+```
+
+```{r result-order, echo = FALSE, results = "asis"}
+if (!identical(batch_results$custom_id, comments$comment_id)) {
+  cat(sprintf(
+    "The results came back in the order %s, not in the order the requests were written. Join on `custom_id`, never on row position.\n",
+    paste(batch_results$custom_id, collapse = ", ")
+  ))
+} else {
+  cat("The results came back in request order this time, but the service does not promise an order. Join on `custom_id`, never on row position.\n")
+}
+```
+
+The coded fields arrive as JSON text in `output_text` and, parsed, in the `structured` list-column. The extraction path below turns them into ordinary columns joined to your rows.
+
+When the service writes an error file, `completed_batch$error_file_id` names it. Those rows are included in `foundry_batch_results()` with `.error` columns so you can separate successful labels from failed requests before joining.
+
+Usage is reported in tokens. Pass your own per-token rates because Azure prices change and differ by deployment. The rates below are illustrative, not current prices.
+
+```{r usage}
+foundry_usage(
+  batch_results,
+  rates = c(
+    input = 0.00000010,
+    cached_input = 0.000000025,
+    output = 0.00000040
+  )
 )
 ```
 
-The returned objects include service identifiers, status fields, file sizes,
-completion windows, and request counts.
+## Submit now and collect later
 
-## Poll and download results
+Most annotation projects do not need the low-level objects in analysis code. `foundry_extract_batch(wait = FALSE)` writes the request file, uploads it and creates the batch. It returns the batch immediately.
 
-These service calls are not run during rendering. Poll until the batch status
-is `"completed"` before downloading its output.
-
-```{r poll-download, eval = FALSE}
-batch <- foundry_batch_get(batch$batch_id)
-output_path <- tempfile(fileext = ".jsonl")
-
-foundry_file_download(
-  file_id = batch$output_file_id,
-  path = output_path
+```{r extract-batch-submit}
+extract_batch <- foundry_extract_batch(
+  comments,
+  text_col = "comment",
+  schema = course_schema,
+  model = "gpt-4.1-nano-batch",
+  wait = FALSE,
+  instructions = course_instructions
 )
+
+extract_batch |>
+  select(status, completion_window, batch_id)
 ```
 
-Output files are JSONL too. Read a few lines first before parsing a large job:
+Save `extract_batch$batch_id` with the data and schema. Later, even in a new R session, check that the batch has finished, then call `foundry_extract_batch_results()` with the batch ID, original rows and the same schema. foundryR joins results back to the original rows using the `row-N` IDs written by `foundry_extract_batch()`, and warns about any row that has no result.
 
-```{r output-shape, eval = FALSE}
-output_lines <- readLines(output_path, n = 2)
-head(output_lines)
-unlink(output_path)
+```{r extract-batch-results}
+foundry_batch_wait(extract_batch$batch_id, interval = 60) |>
+  select(status, request_counts_completed, request_counts_failed)
+
+extract_results <- foundry_extract_batch_results(
+  extract_batch$batch_id,
+  data = comments,
+  schema = course_schema,
+  text_col = "comment"
+)
+
+extract_results |>
+  select(comment_id, theme, sentiment, .error)
 ```
 
-## Practical advice
+This path is the one to use in a reproducible analysis. The original tibble stays in your project, and the service result is collected into the same row structure after the batch finishes.
 
-- Start with 10 to 20 rows and inspect the output before scaling up.
-- Use stable `custom_id` values so results join back to your data frame.
-- Store prompts and schema versions with your analysis code for reproducibility.
-- Download both output and error files when a batch finishes.
+## Clean up files
+
+Delete service files that are no longer needed. Keep the batch IDs, codebook version and schema with your analysis so the results can be traced.
+
+```{r cleanup-files}
+file_deletes <- bind_rows(
+  foundry_file_delete(uploaded_file$file_id),
+  foundry_file_delete(extract_batch$input_file_id)
+)
+
+file_deletes
+```
 
 ```{r cleanup, include = FALSE, eval = TRUE}
-unlink(jsonl)
+if (exists("jsonl")) {
+  unlink(jsonl)
+}
 if (run_api) {
   httptest2::end_vignette()
 }

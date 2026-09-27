@@ -1,0 +1,202 @@
+{
+    "id": "resp_0315ab319b274150006ab97c4b627c8196a877ee870a4174ed",
+    "object": "response",
+    "created_at": 1790540875,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1790540880,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1456,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1661,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_0315ab319b274150006ab97c4cae5c8196b55ea4afce6c1c82",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "encrypted_content": "gAAAAABquXxQxFfBaXTxyVgNW_XdoMTKGK-IE58MdzQB739u3xDeWydM1bBraZdIluqd0ZoNKnyJBylWqxv5jle7e411Kj1ik2N9ItVx4PlqdtrYTRFfebVykwb_6ccWBwr4v2Z9EfMX-wmP5g3qCgGr6SUW6kzmJ8pP1V0elGUaVIFElZK1yDgHTCWrtyc8TNICeDu2Yw7sydhnWIU-8KB6GdnZ7x0jOZX04DpCWD8VlvMhIrfRgK9gbeV6qkp0CwFlM1aKJztFUj5aJeafQ-ynuSUPEaUBCoEFZBT9oz6D-FGXhy8XOJVA8iZvvBqI8rr7zC8myPoHCvkXTlOXWFHwQymdD38TacjQFIwY83pNswrP7EeHtXJDtQq603ATqJLuBjgnBohZIS2eelGSOBuGX7mJVB-qZehdLbpp6cJE781pT3hWD0A7MoPE6m0R5WNQXwNK86B3Q6OPaMUzZ98SzBVQFddvByuAhJGhykv3pcQ4skoeh31iJMb9qVL3Hjq66-QnKsSh-0FbHIXojNyzIRFpYus0Y_miKnZ1JP-IsLlH19WGEVe4VGecBHP1Lr7ys3QXxfE_ZyM7omwO2RjqDRPNIylAWS8Q5M7LD_foJIKiStPzrnASbcg7uw-yAkyd-E1M1X_RVx09YcZXiuIxkmATODlPN8x0gFidhWy6XIT5FpaslOfvUG5bwvFQYY6by2Wvfxbiopju5Ia8XoiLP9mXh1gKjD5XygXrJcLAawCLyyVbcpRSwniikyNdO31wofrFmB3KncHb2RLlrrAMo90gTFIkNoL3u6N4Ra8EKdklwHY7AnJm7H0tNBUDUh5AvtjokVgy9X807tkUgnv8iT98_fzKth1Tapkt4J1Xgg4cX9lePMPWaDoqPKBrcKTKW0xKGdtfqoQ6aSsD1PQT7cE1oCTzBp2zCR1RTYSLOqR_orGqSMOeUNUTji2L4446P-fwJN5Ly_Tor5-HP8X5pT35I7aOLCtZ9ud3w64RuhHPeCWFbaiTkr6w-t1vO20yfS5BJ5SGCpFLuem2Z33C7AdeLzr1oRJvSF_d93bXtoM15UT_ETB-LVk3XYdPdYwgeNoCHNoow3bEWCmFOJbaVn3dy5xxd5OcotgH1idAv-y6mVwXXMioN6PFyPnAjWYCX8trFzgPXwS1otv2Uf4lDM2ERCJwiA1uLJ2qeDeXf3QIfFKdob32DPxd6xKp9o_EYUIMcYtD_ItGeAhckKZnB_5u6tma1kdj2V7c7AeYJDujoj_ZKZCVdfmZWbPIDPKmvZihZlQXtZtETuDDpO5KhS3IAQGZ_-hmlmCixrGIWIqFNbwV4F_g7fcdvHXhJ-JToejcqYkv9Q6rzWDy9N26gUHJopakRLZO2vhCCWc9nEvpOYa11ygTs9Sf41CyPcKYpIxSdnSHBdTcuFD-UntNg0hsC3cp6-5DjNfONmPxksETnhWQBZNIgD_Z8MTERKyDGrsw_g3CQ_7tf7rFBT-Xelx1q8Xa8aM1hVBLwsYtginb1NxJ0eg5NRX8-MjUflECUTMDi2V6kPNL6fi2mJHcLlKGS7nd6VNy7ONPzh3Rs3t55t3cSxdwGd6T1gUM1hu4TrbXRx7kZHyEnGxlhjAdjkrBMJxG63H8uFUcV384oYZa1nVhOea0T759rzOpxgbCk30j7n0eGzwFtLt4NLHr15vh66ZPa649_SQ2Ymdc7jDDTfODVWLc2Ik8j_ngkaQ14t0vWB-azrCx6IDnBjl7s-iaJK1VGo31xhqwBi9rh3vZHRS1m0FTaZAmMp6l9n-8jijNl-Y7nt9B4R8xWnCSitIrOSFn_3HMmeGgEjtrcKj97WWJDe2gkbkXRJ4uvlKFuLQyGtBf-LVEQPomQNN7PqyMXZKtmIa1LepMoztuvcR78G3nShiV8hBhzSh5zk0yp2y3o0FRvvZPvvrfMlAWbjK53TfCz2VpQzrm1bdBOZwxSgnx3rUGcGQuUNCS1ZnvbI1grAEC8Bq9QVVwpnDhBXeU6dvybXtoIMZxkULSQwz0_ycYwKYLwur6Jph0hjYzThpOvTbiWrv34kPF20E_HrGw2jM_8TPfqXum0LYLTLAmwQvDvouKLWFzo9g0KeInXEFnURie0khgoJDgSiohklwnOokyUdywMtfmRAEuFHzP1euL2w2Zdr4vfmC-warj-acZhsn869PrtMs39ARma3ximfiJBbfVVwql6BmFx4WR7KKIWmPHcH4Img-85lsW6iYQpYbkY8tpPDNxrMjw9xhAV5AsfU5CFwmSTcm5eLnXhNq4I6mEBM8m3KbT5kZxm_BEZkd-GS6qpLN6S95olIWy_Scl1t8QV5D046ipdM7690qp_UDBB8UosqFrGj68X7r9OXUEasXlL8K7Rp7WTm4VTtLjae1j7wOk4yaXYTO1ymqCXuw3DNB4scddghMVl8y6dY9n6uGS8l7MKHMeo6FULjod8GE0RKGQDwI8HeTNyUH4Pp4Oaw6dbDPeFs2gBnf-W1XW3mWNj_FGHJr-2EfEkJc74MhkqNgjkqE2GTS7_AI3pR4Nuw3lj6Vhs0Q1dswWzQ2CBL3tN8jJs2D3kXtQ7uwKNWhV3rbY87-6bI8nBa7qXmZSWMoQJDEmvmPm7xB_99psTiV1YsSEFgUolRIFMoIT4sKj_SLR1hAZEPjnOoaDDc2T4-Bs0X8ljlM_HJSG7d2zTBIo5E9n0rvpFRTrRotv93CO1E-Dh3-a5oRh6oJGL3-aF62k90Q7jBxT4YTJYAqwXMlfRKhmpcM_ClRtM7V9zhS6LBFua6gX76bHHzMm-aeV8M3QLVmmNKtvaRip_PgF_ljQ3F-nqLoLAUDFaBInrIhBhsrKVe0nehkv2Ya7kTvILdFKzSxU1YayX7nNbbRuMp0Z3fJoUEnFCqcjypymqlhvtl_-OlESNLqUBoru9VUu9TwWl5x1Aa7lAVJ1v9Zm04hj2hNdcrLN9ud3dXkzjek88iHl1jHsbt_RD_4GlEPe75LWM0qOXl9_fot4w7pBOfXmM0jkiHX8DskfxFsl-fX4WfFEYO_GqqRsDRe31WxHwh_Cy9RNGm3jTgdV1g9FhTp_H2CqZ_4QzzIdRknW8lDJNgu41ozJTLanQI3z-LCFIy7JypJvlhbZfS32L462nP5wHcni77O957gu4jgfhk45J29Df-389Bc1QmUwEDBDX4OsrJ7AclH2Rj10qxII",
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "msg_0315ab319b274150006ab97c5060d48196b6bc5bdd24388ed7",
+            "type": "message",
+            "status": "completed",
+            "content": [
+                {
+                    "type": "output_text",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ],
+                    "text": "Current weather in San Francisco, CA: 70°F (about 21°C).\n\nWould you like an hourly forecast or a 7-day outlook? I can fetch more details if you want."
+                }
+            ],
+            "role": "assistant"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": "resp_0315ab319b274150006ab97c487dd08196a38d22e3bd1c1004",
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "mode": "standard",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "text"
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
+    "tools": [
+        {
+            "type": "function",
+            "description": "Get weather for a location",
+            "name": "get_weather",
+            "output_schema": null,
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "City and state."
+                    }
+                },
+                "required": [
+                    "location"
+                ],
+                "additionalProperties": false
+            },
+            "strict": true
+        }
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 367,
+        "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+        },
+        "output_tokens": 396,
+        "output_tokens_details": {
+            "reasoning_tokens": 320
+        },
+        "total_tokens": 763
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

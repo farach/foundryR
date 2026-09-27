@@ -1,0 +1,739 @@
+{
+    "data": [
+        {
+            "object": "eval.run.output_item",
+            "id": "1",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 0,
+            "datasource_item": {
+                "id": 1,
+                "comment": "The lectures were clear and the slides matched what was said.",
+                "theme": "instruction",
+                "foundryr_row_id": "row-1",
+                "sample.output_text": "instruction"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"The lectures were clear and the slides matched what was said.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "instruction"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 120,
+                    "prompt_tokens": 97,
+                    "total_tokens": 217
+                },
+                "latency_ms": 1933.34
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "2",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 1,
+            "datasource_item": {
+                "id": 2,
+                "comment": "Weekly quizzes were too long for the time we had.",
+                "theme": "assessment",
+                "foundryr_row_id": "row-2",
+                "sample.output_text": "assessment"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Weekly quizzes were too long for the time we had.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "assessment"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 106,
+                    "prompt_tokens": 96,
+                    "total_tokens": 202
+                },
+                "latency_ms": 1369.08
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "3",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 2,
+            "datasource_item": {
+                "id": 3,
+                "comment": "Office hours were always full, so I never got help.",
+                "theme": "support",
+                "foundryr_row_id": "row-3",
+                "sample.output_text": "support"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Office hours were always full, so I never got help.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "support"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 134,
+                    "prompt_tokens": 97,
+                    "total_tokens": 231
+                },
+                "latency_ms": 1361.79
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "4",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 3,
+            "datasource_item": {
+                "id": 4,
+                "comment": "The textbook chapters were out of date.",
+                "theme": "materials",
+                "foundryr_row_id": "row-4",
+                "sample.output_text": "materials"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"The textbook chapters were out of date.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "materials"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 125,
+                    "prompt_tokens": 93,
+                    "total_tokens": 218
+                },
+                "latency_ms": 1912.64
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "5",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 4,
+            "datasource_item": {
+                "id": 5,
+                "comment": "Feedback on the midterm came back after the final.",
+                "theme": "assessment",
+                "foundryr_row_id": "row-5",
+                "sample.output_text": "assessment"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Feedback on the midterm came back after the final.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "assessment"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 140,
+                    "prompt_tokens": 96,
+                    "total_tokens": 236
+                },
+                "latency_ms": 1348.32
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "6",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 5,
+            "datasource_item": {
+                "id": 6,
+                "comment": "The instructor explained regression with great examples.",
+                "theme": "instruction",
+                "foundryr_row_id": "row-6",
+                "sample.output_text": "instruction"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"The instructor explained regression with great examples.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "instruction"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 81,
+                    "prompt_tokens": 93,
+                    "total_tokens": 174
+                },
+                "latency_ms": 1264.82
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "7",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 6,
+            "datasource_item": {
+                "id": 7,
+                "comment": "I could not find the practice datasets on the course site.",
+                "theme": "materials",
+                "foundryr_row_id": "row-7",
+                "sample.output_text": "materials"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"I could not find the practice datasets on the course site.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "materials"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 180,
+                    "prompt_tokens": 97,
+                    "total_tokens": 277
+                },
+                "latency_ms": 1827.09
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "8",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 7,
+            "datasource_item": {
+                "id": 8,
+                "comment": "The TA answered forum questions within a day.",
+                "theme": "support",
+                "foundryr_row_id": "row-8",
+                "sample.output_text": "support"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"The TA answered forum questions within a day.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "support"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 114,
+                    "prompt_tokens": 94,
+                    "total_tokens": 208
+                },
+                "latency_ms": 1605.93
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "9",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 8,
+            "datasource_item": {
+                "id": 9,
+                "comment": "Grading rubrics were never posted before assignments were due.",
+                "theme": "assessment",
+                "foundryr_row_id": "row-9",
+                "sample.output_text": "assessment"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Grading rubrics were never posted before assignments were due.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "assessment"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 136,
+                    "prompt_tokens": 97,
+                    "total_tokens": 233
+                },
+                "latency_ms": 1611.01
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "10",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 9,
+            "datasource_item": {
+                "id": 10,
+                "comment": "Recorded lectures had no captions.",
+                "theme": "materials",
+                "foundryr_row_id": "row-10",
+                "sample.output_text": "instruction"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 0,
+                    "label": "fail",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": false,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Recorded lectures had no captions.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "instruction"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 366,
+                    "prompt_tokens": 91,
+                    "total_tokens": 457
+                },
+                "latency_ms": 3102.96
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "11",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 10,
+            "datasource_item": {
+                "id": 11,
+                "comment": "The pace was fine, but the instructor skipped the hard proofs.",
+                "theme": "instruction",
+                "foundryr_row_id": "row-11",
+                "sample.output_text": "instruction"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"The pace was fine, but the instructor skipped the hard proofs.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "instruction"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 142,
+                    "prompt_tokens": 98,
+                    "total_tokens": 240
+                },
+                "latency_ms": 1815.22
+            }
+        },
+        {
+            "object": "eval.run.output_item",
+            "id": "12",
+            "run_id": "evalrun_7bec1522",
+            "eval_id": "eval_eb5dbe17",
+            "created_at": 1790542243,
+            "status": "completed",
+            "datasource_item_id": 11,
+            "datasource_item": {
+                "id": 12,
+                "comment": "Tutoring sessions helped me catch up after I was sick.",
+                "theme": "support",
+                "foundryr_row_id": "row-12",
+                "sample.output_text": "support"
+            },
+            "results": [
+                {
+                    "type": "string_check",
+                    "name": "theme-match",
+                    "metric": "theme-match",
+                    "score": 1,
+                    "label": "pass",
+                    "reason": null,
+                    "threshold": null,
+                    "passed": true,
+                    "status": "completed"
+                }
+            ],
+            "sample": {
+                "error": null,
+                "finish_reason": "",
+                "input": [
+                    {
+                        "role": "developer",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials. instruction means teaching, lectures, and explanations. assessment means quizzes, exams, grading, and feedback on work. support means office hours, tutoring, and help from course staff. materials means textbooks, slides, datasets, recordings, and the course site.\"}]"
+                    },
+                    {
+                        "role": "user",
+                        "content": "[{\"type\": \"input_text\", \"text\": \"Tutoring sessions helped me catch up after I was sick.\"}]"
+                    }
+                ],
+                "max_completion_tokens": null,
+                "model": "gpt-5-nano",
+                "output": [
+                    {
+                        "role": "assistant",
+                        "content": "support"
+                    }
+                ],
+                "seed": null,
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "usage": {
+                    "cached_tokens": null,
+                    "completion_tokens": 87,
+                    "prompt_tokens": 97,
+                    "total_tokens": 184
+                },
+                "latency_ms": 1296.45
+            }
+        }
+    ],
+    "first_id": "1",
+    "last_id": "12",
+    "has_more": false
+}

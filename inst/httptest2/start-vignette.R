@@ -30,6 +30,9 @@ local({
     AZURE_CONTENT_SAFETY_ENDPOINT = "https://example.cognitiveservices.azure.com",
     AZURE_CONTENT_SAFETY_KEY = "not-a-real-key",
     AZURE_FOUNDRY_PROJECT_ENDPOINT = "https://example.services.ai.azure.com/api/projects/demo",
+    # Project evaluations require a Microsoft Entra ID token, and foundryR stops
+    # before the request without one, so replay needs a placeholder token too.
+    AZURE_FOUNDRY_PROJECT_TOKEN = "not-a-real-token",
     ONET_API_KEY = "not-a-real-key"
   )
   old_env <- Sys.getenv(names(placeholders), unset = NA_character_)
@@ -99,6 +102,13 @@ local({
     map <- list()
     if (nzchar(real) && !identical(real, placeholder)) {
       map[[real]] <- placeholder
+      # Evaluation runs also name the account and project in azureai:// URIs.
+      account <- sub("\\..*$", "", real)
+      project <- sub("^.*/api/projects/", "", real)
+      if (nzchar(account) && nzchar(project) && !identical(project, real)) {
+        map[[paste0("azureai://accounts/", account, "/projects/", project)]] <-
+          "azureai://accounts/example/projects/demo"
+      }
     }
     map
   })
@@ -113,10 +123,11 @@ local({
       "AZURE_FOUNDRY_SPEECH_KEY",
       "AZURE_CONTENT_SAFETY_KEY",
       "AZURE_FOUNDRY_TOKEN",
+      "AZURE_FOUNDRY_PROJECT_TOKEN",
       "ONET_API_KEY"
     )
     vals <- vapply(keys, Sys.getenv, character(1))
-    unname(vals[nzchar(vals) & vals != "not-a-real-key"])
+    unname(vals[nzchar(vals) & !vals %in% c("not-a-real-key", "not-a-real-token")])
   })
 
   httptest2::set_redactor(function(response) {
@@ -135,6 +146,13 @@ local({
         fixed = TRUE
       )
     }
+
+    # Evaluation and run IDs carry 32 hex characters, which pushes nested run
+    # fixture paths past the 260-character Windows path limit. Keep the first 8.
+    # Replayed bodies carry the same short IDs, so the requests built from them
+    # during playback resolve to the same fixture files.
+    eval_id_pattern <- "(eval|evalrun)_([0-9a-f]{8})[0-9a-f]{24}"
+    response$url <- gsub(eval_id_pattern, "\\1_\\2", response$url)
 
     # Only run string substitution on textual bodies. Binary bodies (audio/mpeg
     # from foundry_speak(), and similar) never contain the host or key, and
@@ -165,6 +183,11 @@ local({
         response,
         "\"report_url\"\\s*:\\s*\"[^\"]*\"",
         "\"report_url\":\"https://ai.azure.com/\""
+      )
+      response <- httptest2::gsub_response(
+        response,
+        eval_id_pattern,
+        "\\1_\\2"
       )
       for (secret in .foundry_doc_secrets) {
         response <- httptest2::gsub_response(

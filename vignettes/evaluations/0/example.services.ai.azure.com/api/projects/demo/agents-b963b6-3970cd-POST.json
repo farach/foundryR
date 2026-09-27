@@ -1,0 +1,76 @@
+{
+    "object": "agent",
+    "id": "foundryr-course-helpdesk",
+    "name": "foundryr-course-helpdesk",
+    "state": "enabled",
+    "versions": {
+        "latest": {
+            "metadata": {
+
+            },
+            "object": "agent.version",
+            "id": "foundryr-course-helpdesk:1",
+            "name": "foundryr-course-helpdesk",
+            "version": "1",
+            "description": "Course helpdesk used in the foundryR evaluations article.",
+            "created_at": 1790542252,
+            "definition": {
+                "kind": "prompt",
+                "model": "gpt-5-nano",
+                "instructions": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course."
+            },
+            "draft": false,
+            "status": "active",
+            "instance_identity": {
+                "principal_id": "476220d3-6001-4c6f-ace3-8e759ea26df9",
+                "client_id": "476220d3-6001-4c6f-ace3-8e759ea26df9"
+            },
+            "blueprint": {
+                "principal_id": "525df809-bce7-485f-9ed0-2858f00c97fb",
+                "client_id": "a962e9fe-0889-4e07-adea-1af3ee71b1fd"
+            },
+            "blueprint_reference": {
+                "type": "ManagedAgentIdentityBlueprint",
+                "blueprint_id": "foundryr-course-helpdesk-fa02a"
+            },
+            "agent_guid": "fa02a204-91f2-40ac-8462-f1560176bee9"
+        }
+    },
+    "agent_endpoint": {
+        "version_selector": {
+            "version_selection_rules": [
+                {
+                    "type": "FixedRatio",
+                    "agent_version": "@latest",
+                    "traffic_percentage": 100
+                }
+            ]
+        },
+        "protocols": [
+            "responses"
+        ],
+        "protocol_configuration": {
+            "responses": {
+
+            }
+        },
+        "authorization_schemes": [
+            {
+                "type": "Entra"
+            }
+        ]
+    },
+    "instance_identity": {
+        "principal_id": "476220d3-6001-4c6f-ace3-8e759ea26df9",
+        "client_id": "476220d3-6001-4c6f-ace3-8e759ea26df9"
+    },
+    "blueprint": {
+        "principal_id": "525df809-bce7-485f-9ed0-2858f00c97fb",
+        "client_id": "a962e9fe-0889-4e07-adea-1af3ee71b1fd"
+    },
+    "blueprint_reference": {
+        "type": "ManagedAgentIdentityBlueprint",
+        "blueprint_id": "foundryr-course-helpdesk-fa02a"
+    },
+    "configuration_state": "enabled"
+}

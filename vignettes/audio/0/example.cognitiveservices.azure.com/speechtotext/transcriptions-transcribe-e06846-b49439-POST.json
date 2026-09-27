@@ -1,0 +1,226 @@
+{
+    "durationMilliseconds": 16704,
+    "combinedPhrases": [
+        {
+            "text": "Buenos días a todos. En la reunión de hoy revisamos la encuesta a los docentes. La mayoría pidió más tiempo para preparar las clases y menos tareas administrativas. El equipo presentará un plan el próximo mes."
+        }
+    ],
+    "phrases": [
+        {
+            "offsetMilliseconds": 80,
+            "durationMilliseconds": 2120,
+            "text": "Buenos días a todos.",
+            "words": [
+                {
+                    "text": "Buenos",
+                    "offsetMilliseconds": 80,
+                    "durationMilliseconds": 720
+                },
+                {
+                    "text": "días",
+                    "offsetMilliseconds": 800,
+                    "durationMilliseconds": 480
+                },
+                {
+                    "text": "a",
+                    "offsetMilliseconds": 1280,
+                    "durationMilliseconds": 80
+                },
+                {
+                    "text": "todos.",
+                    "offsetMilliseconds": 1360,
+                    "durationMilliseconds": 840
+                }
+            ],
+            "locale": "es-ES",
+            "confidence": 0.97364473
+        },
+        {
+            "offsetMilliseconds": 2400,
+            "durationMilliseconds": 4120,
+            "text": "En la reunión de hoy revisamos la encuesta a los docentes.",
+            "words": [
+                {
+                    "text": "En",
+                    "offsetMilliseconds": 2400,
+                    "durationMilliseconds": 240
+                },
+                {
+                    "text": "la",
+                    "offsetMilliseconds": 2640,
+                    "durationMilliseconds": 160
+                },
+                {
+                    "text": "reunión",
+                    "offsetMilliseconds": 2800,
+                    "durationMilliseconds": 520
+                },
+                {
+                    "text": "de",
+                    "offsetMilliseconds": 3320,
+                    "durationMilliseconds": 120
+                },
+                {
+                    "text": "hoy",
+                    "offsetMilliseconds": 3440,
+                    "durationMilliseconds": 400
+                },
+                {
+                    "text": "revisamos",
+                    "offsetMilliseconds": 3920,
+                    "durationMilliseconds": 720
+                },
+                {
+                    "text": "la",
+                    "offsetMilliseconds": 4640,
+                    "durationMilliseconds": 160
+                },
+                {
+                    "text": "encuesta",
+                    "offsetMilliseconds": 4800,
+                    "durationMilliseconds": 520
+                },
+                {
+                    "text": "a",
+                    "offsetMilliseconds": 5320,
+                    "durationMilliseconds": 120
+                },
+                {
+                    "text": "los",
+                    "offsetMilliseconds": 5440,
+                    "durationMilliseconds": 160
+                },
+                {
+                    "text": "docentes.",
+                    "offsetMilliseconds": 5600,
+                    "durationMilliseconds": 920
+                }
+            ],
+            "locale": "es-ES",
+            "confidence": 0.97364473
+        },
+        {
+            "offsetMilliseconds": 6920,
+            "durationMilliseconds": 6160,
+            "text": "La mayoría pidió más tiempo para preparar las clases y menos tareas administrativas.",
+            "words": [
+                {
+                    "text": "La",
+                    "offsetMilliseconds": 6920,
+                    "durationMilliseconds": 280
+                },
+                {
+                    "text": "mayoría",
+                    "offsetMilliseconds": 7200,
+                    "durationMilliseconds": 560
+                },
+                {
+                    "text": "pidió",
+                    "offsetMilliseconds": 7760,
+                    "durationMilliseconds": 400
+                },
+                {
+                    "text": "más",
+                    "offsetMilliseconds": 8160,
+                    "durationMilliseconds": 320
+                },
+                {
+                    "text": "tiempo",
+                    "offsetMilliseconds": 8480,
+                    "durationMilliseconds": 480
+                },
+                {
+                    "text": "para",
+                    "offsetMilliseconds": 8960,
+                    "durationMilliseconds": 200
+                },
+                {
+                    "text": "preparar",
+                    "offsetMilliseconds": 9160,
+                    "durationMilliseconds": 480
+                },
+                {
+                    "text": "las",
+                    "offsetMilliseconds": 9640,
+                    "durationMilliseconds": 200
+                },
+                {
+                    "text": "clases",
+                    "offsetMilliseconds": 9840,
+                    "durationMilliseconds": 560
+                },
+                {
+                    "text": "y",
+                    "offsetMilliseconds": 10720,
+                    "durationMilliseconds": 160
+                },
+                {
+                    "text": "menos",
+                    "offsetMilliseconds": 10880,
+                    "durationMilliseconds": 520
+                },
+                {
+                    "text": "tareas",
+                    "offsetMilliseconds": 11400,
+                    "durationMilliseconds": 440
+                },
+                {
+                    "text": "administrativas.",
+                    "offsetMilliseconds": 11840,
+                    "durationMilliseconds": 1240
+                }
+            ],
+            "locale": "es-ES",
+            "confidence": 0.97364473
+        },
+        {
+            "offsetMilliseconds": 13600,
+            "durationMilliseconds": 3040,
+            "text": "El equipo presentará un plan el próximo mes.",
+            "words": [
+                {
+                    "text": "El",
+                    "offsetMilliseconds": 13600,
+                    "durationMilliseconds": 200
+                },
+                {
+                    "text": "equipo",
+                    "offsetMilliseconds": 13800,
+                    "durationMilliseconds": 360
+                },
+                {
+                    "text": "presentará",
+                    "offsetMilliseconds": 14160,
+                    "durationMilliseconds": 600
+                },
+                {
+                    "text": "un",
+                    "offsetMilliseconds": 14760,
+                    "durationMilliseconds": 160
+                },
+                {
+                    "text": "plan",
+                    "offsetMilliseconds": 14920,
+                    "durationMilliseconds": 360
+                },
+                {
+                    "text": "el",
+                    "offsetMilliseconds": 15440,
+                    "durationMilliseconds": 280
+                },
+                {
+                    "text": "próximo",
+                    "offsetMilliseconds": 15720,
+                    "durationMilliseconds": 520
+                },
+                {
+                    "text": "mes.",
+                    "offsetMilliseconds": 16240,
+                    "durationMilliseconds": 400
+                }
+            ],
+            "locale": "es-ES",
+            "confidence": 0.97364473
+        }
+    ]
+}

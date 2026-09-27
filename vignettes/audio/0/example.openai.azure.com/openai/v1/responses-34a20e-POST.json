@@ -1,0 +1,216 @@
+{
+    "id": "resp_0f827cb533f5c573016ab97e1345a08195af4985ffe7b99c1b",
+    "object": "response",
+    "created_at": 1790541331,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1790541334,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1711,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 2024,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": "Extract the requested structured data from the input text. Return values that conform exactly to the supplied JSON Schema.",
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_0f827cb533f5c573016ab97e1412908195ac8de996b04ab185",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "encrypted_content": "gAAAAABquX4W0SrJt-VcS0yRX1Mb20jjoc1WSlAKSCWRT6kDqBBV4CQPXtBxvS_KRWtG44Brpotpyel4YLDS2GDV6nLi2sTPKX472MdLJV2iuV61Vr7mIW5M21FbdC87GBjJhfbTQ8C_6npMgEuhIbZzZFIPiOUMhPi2PFJJw-YllAwIQ_ydZJ-Ispx9KfW6wU-tWdHDhKdjkubALVRrv6VKpSpVPFZXZdoGEKVXwQcR-pNJzTR3L1bSeoQZzQoGFiu6RyyApZq3yVxU9lYtDRtYrss8xQYrYfhWKykefGM4gA9ycL05EZruULWtYTxMvgu5hFjp0JaRXk8yZ8iYu2vgi6dF5AefVGiQo6UN92b4W2596IkdUElz7Hy7IO0NmosLiNjm0Se1-JezGCPxfe58CQ0DFtjAf8PEVa_vsb5wo5afCQHoZawOu1KquV8yMy65beSzStzEiY6nEe_UPqVhdNRE-QzQ_2c4PK_mA-ua54yqXAOcUK5kcoLcEQkAPu9SPN78KbZt-UbVFAw8NDFXLuZlHD4YBedd_c8VWO0yYv_PLkUiHHjU4VfjC_WlAd2FeQ_26DbkcdC5rxqgZmFKUuPMaz3ThyWbayduvEfEhsOlEa9uydEF20tXXqzVkPC9JpKEL3UXiaI5aqFu7drBt3S7-ugVGdKUkU0XSdzIFioi1m_hLCiw2VFko3oNUq6gQfpJvQV5WNcwUUYI6hvv-uUOcHw4hEA8hiC3jEVu9hOJ5NfPPFNs3QThartVU5TV-I9e0yARdJRlZ7UIsjOcHHrXFOuelC5uXIb5z3izzBI0u4t57iu5l9nsJkgSdXzaVlNemtEPFlycnzrMa-URLmOMVDhhzcUrNcXoqC3Ot0W731-ND_R6TPLL2o5a3qphYQGtGdoFzZCNp0BFPY1yqI1wN0bSNNIOofTY5cnq6HE5rZXYOCxNepFPXBnhS6enuY9NJ7vCj1RX6n7Ybd3rZByhLacWmrzqWQajlE0eVNJ4rCpOTshKf__oepMlA9eEPDwd4kiTjL8J521guR5PS1HyORPu70K09PDTnlczZp-BdQqWdZCL54gQWMXLdoZzIR6PNrA--dW_HFncX45jfZ-7IAcpw0xc5ICOth4eXKe-8P4pRMlmBS9EBq_ITx0jFdlwz__8EbcY8xlGRzngqY_wzViPc0P3TRz564wBIcrGhNDbqjszrA2dnkrNN7LyHCguIXB2ipRVerA5ASffFk5KjyVpmQsenBXvLYTSHWWH8bhY4lh-6VZOTvgS1nd0meIp8OFPSIeqiUasKJqQqeGV1Arm8RDPISW54X9EOS8xrvUl47UkFtLYmHYzGA2cYij8WVyBYzgv8RnBLhlkY7_8cJ67R5dlObNn8mE2dZcPhTYXfhKivLafh4KSNazPgB3fAryemAhKtaVn3_bUTDerSUUL44ryzVz9uPVvhoXJqwq6RGe0S259IXvidBEpjIyU07ashv4rdaiQOg1ay3biaicOBczEX3S7i7_IofUv49ekOg_905zWySv9tSqMoVQIIFLTBWhmk7gNE4fBv0paJMDftIcnDEWCQxTc_3mQuWQVhb8B6zocxAO2BYeYHnRkdlNyL1SjFHO4V_5bmKrvYLY_pG5zMNZBPQ8svDblXVMKDkwonPsq_aJnkTjEoDbI9O7sGklXc4ToO8ClZIubBaiAKM-1d2J4EFEcJiQabuBhvXs-lqNxj_noeL2GmF808lPlLQtGsmx3FIm21WelFUAsCHpb1lXPl0LP1moXirqf25tvs3K1SOx8q4dpKHBV5_eP2TaGPUcGfVggCSMDAAuiXUp6RZ-K189HAp-wmDqcap50jJ3gu5vbUqVpz4cnek_ErHRHcA0p7k_kkEHUpZYzWjObGQFoYd3P4wQ96FUSASYUN3fpYgV_ptDhbGH-GGX12CyDGu9_tVliOpfCfFWh4fMh1WoLDyz-QpDdIELGFseK5x1Xm_vjm6ycQkf7vk_14MMXdIbkYT6dE-eshAqX5y1nPcQnnRSZqHsSEh-1XNosz8n9WSfC6oic2XUhlo3mTWw1PxdyamQonI1Gwv6YZfC-Dmm-7Mw2b7jXUj2wrnII2znlYHKm-WHi-VgKIGXG21zmEYMT_Nu8CsephFmS-HQsuc8nGwcHZI6v2hFg6vwLVs1uPM2_kH4ZQvZz0yVfrMYdTn2UntdVYRD1n2Z1ujRBbfrn1r_Ao2nkSNeKrP5IQuM7a02aEEc18W-64rDuCgCkQU2IhgVxo1qMvyBWl3d6UZGF0kqNoOJpZLTZp8SvK87oX-fWcISr_LWqTZQWHp67ukx5otdijQHNcHP_Rn5InNy_UH8P8b2j7rYqeMH8L93uHTK5NhYES3HrRwAStlfd90MQDTDGTj7edJsR16razXHtuO1brlHYHJqZHYYyKufbnibDWWiwd13wy5spq32CjVqJE-E17ny0aa4pMpVwqMsJ32uf9_EiM1KEyEcs1TNPXjF2pjhF4T5Us118NTVTtreeRYdIYyqYn5b_QT5BucK7r6l2S9lcRGc-aisHb3N618Fn7F2Zzu9CHycL0reUGrJJtjDPlhqWBpH1AVGnIjtovN5NMMdbHX0O7UWNBiYdIuYi2wOxaS3B_N8Wq0SckBVlhPpVQsTfpo36D0DqUTiF6Xr0bKBdi99FcG58QK0J649uJQuGhdJOkbVCTziHXTOki0xBmRlYWOdT9PQl4fEoiCpJD-BkbR9_jA9DGeOXOJREY7efEzeREq8Mw89KG4c7PCGot8087yc4mPTrJogjV-3rTlNmkv4Vm_YVWrNTsc7zC3Fhv1lEPqbo75txJ0jSVitgi2Xs-qj1_ZeAl4QhICbiQabW2gtHFX8RsxMtPy6x_qVjNwEdFvbbvEIKBUk19QzPHl5wuhWm-pjsFLhiP1Sq8bRK4jRvBjtqByCSiEtzFi7jz5qG9BEhzui9M31CMshR22s9QSWU179LSz35w2OOJhS3pBhy89iklshlSCw3gEU0WqHNeZoEPHHQiPuofaRyWRNFgAB6QobgPHklZAvo6qVV_EBD4JVqPskxayw-an1qBOfHGfqxSHgnfZRizWCTMafwn-yUPxsOs_9iDr4hEKmnMOojN0oO9t9oA-NL_SOcDB5xnI7DPYds0EOOg6PfzYqcl_6NmcNXXEgrEGKLvsgE0us3uLIGjtLlxQsuMhjucSh4BO_D2V3OZ1BYrucoS2Qe-tebjzkNnuxHqe1HYIpDoM05IbsCefBCpXrIXrrAOLzDMG3E7Nm_7YkpjbckWmcNd9R9NbYzZD8U-t4phgpXVi4sHAIEskQc0VMnYWspz3NzQB76Mpkf9pIEn8Fr0_2QQ28ZB7TQ2Dn880rQMK19pHDRkX7iCfvaMgrlVcKGJZ7plKIVxSYhec6PjIU1pGJCQhlHF9FrsO1N5JAe5c-g5Qor7AEeuhJDBvWmpohnT6IlY2hUu2goDsGnrJ2o6aqOQibO5-jehKBF-fqAFP501nIkQP1g4iIb7-Shus5hjRZNPuD311pQvbhAZm7FLPh2thvxlpMhDYmHHfKKyi6vJFWr5c5WvB2AQxEHQvZKawZgWOSMBbtF35Qi7_lmS3xtDEzFMzeDOfSZu_aKAFPioc4EfPjW4HXQFJOLYBWvWhj5qWIZzXmpFJp_ZZJhEn8kogv4ia0p0AUOiBcWls39UPanWwDNA4vqcrnC2sVaW278CgaknzPZMaDpXP6_Zmb4VfPwOGfoH9Spvsxp0xJOut0WaRjd8pVtxVRWOkKCBkcn17GAQHYhh3BhQPdAp2qXsAXQVaj0J0igHgxnleXZSF_l9QdnEZpgJ5N3t-5wIUUNTaa4gyMvRM674gN0xJ_T2ff1tuwNnnNh4HI9jaIaYHSus8YR1JKl6XKuzmhR8yR46ibAqdT56nmq6mKydmOjowhwIA==",
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "msg_0f827cb533f5c573016ab97e15ec488195ad4a8938b07c4aec",
+            "type": "message",
+            "status": "completed",
+            "content": [
+                {
+                    "type": "output_text",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ],
+                    "text": "{\"topic\":\"workload\",\"tone\":\"formal\"}"
+                }
+            ],
+            "role": "assistant"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "mode": "standard",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "json_schema",
+            "description": null,
+            "name": "TranscriptCode",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "topic": {
+                        "type": "string",
+                        "description": "Main topic of the passage.",
+                        "enum": [
+                            "workload",
+                            "curriculum",
+                            "facilities",
+                            "other"
+                        ]
+                    },
+                    "tone": {
+                        "type": "string",
+                        "description": "Overall tone of the speaker.",
+                        "enum": [
+                            "formal",
+                            "informal",
+                            "urgent",
+                            "reflective"
+                        ]
+                    }
+                },
+                "required": [
+                    "topic",
+                    "tone"
+                ],
+                "additionalProperties": false
+            },
+            "strict": true
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
+    "tools": [
+
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 144,
+        "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+        },
+        "output_tokens": 439,
+        "output_tokens_details": {
+            "reasoning_tokens": 384
+        },
+        "total_tokens": 583
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

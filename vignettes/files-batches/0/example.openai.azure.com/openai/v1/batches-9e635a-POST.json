@@ -1,0 +1,28 @@
+{
+    "usage": null,
+    "priority": "high",
+    "cancelled_at": null,
+    "cancelling_at": null,
+    "completed_at": null,
+    "completion_window": "24h",
+    "created_at": 1790540376,
+    "error_file_id": "",
+    "expired_at": null,
+    "expires_at": null,
+    "failed_at": null,
+    "finalizing_at": null,
+    "id": "batch_98917507-133b-4d15-bb5e-7a95ae290bea",
+    "in_progress_at": null,
+    "input_file_id": "file-8b42be133bac46478287985f53422d4c",
+    "errors": null,
+    "metadata": null,
+    "object": "batch",
+    "output_file_id": "",
+    "request_counts": {
+        "total": 0,
+        "completed": 0,
+        "failed": 0
+    },
+    "status": "validating",
+    "endpoint": ""
+}

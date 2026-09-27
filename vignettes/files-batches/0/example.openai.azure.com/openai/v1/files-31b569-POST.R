@@ -1,0 +1,12 @@
+structure(list(method = "POST", url = "https://example.openai.azure.com/openai/v1/files", 
+    status_code = 201L, headers = structure(list(`content-type` = "application/json; charset=utf-8", 
+        date = "Sun, 27 Sep 2026 20:19:33 GMT", server = "uvicorn,istio-envoy", 
+        location = "https://example.openai.azure.com/openai/files/file-8b42be133bac46478287985f53422d4c?api-version=1", 
+        `x-ms-middleware-request-id` = "30b372c0-190f-410f-a82b-e0c290707d6b", 
+        `api-supported-versions` = "2022-12-01,2023-03-15-preview,2023-05-15,2023-06-01-preview,2023-07-01-preview,2023-08-01-preview,2023-09-01-preview,2023-10-01-preview,2023-12-01-preview,2024-02-01,2024-02-15-preview,2024-03-01-preview,2024-04-01-preview,2024-04-15-preview,2024-05-01-preview,2024-06-01,2024-07-01-preview,2024-08-01-preview,2024-09-01-preview,2024-10-01-preview,2024-10-21,2024-11-01-preview,2024-12-01-preview,2025-01-01-preview,2025-02-01-preview,2025-03-01-preview,2025-04-01-preview,2025-04-28,1", 
+        `strict-transport-security` = "max-age=31536000; includeSubDomains; preload", 
+        `apim-request-id` = "3815958b-41aa-4ff8-af52-ec603b10d812", 
+        `x-content-type-options` = "nosniff", `x-ms-region` = "East US 2"), class = "httr2_headers"), 
+    body = charToRaw("{\n  \"status\": \"processed\",\n  \"bytes\": 4614,\n  \"purpose\": \"batch\",\n  \"filename\": \"file72601baf37bd.jsonl\",\n  \"id\": \"file-8b42be133bac46478287985f53422d4c\",\n  \"created_at\": 1790540373,\n  \"object\": \"file\"\n}"), 
+    timing = c(redirect = 0, namelookup = 0, connect = 0, pretransfer = 0.000341, 
+    starttransfer = 0.128992, total = 0.129028), cache = new.env(parent = emptyenv())), class = "httr2_response")

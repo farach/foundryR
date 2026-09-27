@@ -1,0 +1,215 @@
+{
+    "id": "resp_0be1af05f9dcbbb5016ab97567bd5c8190a0758059674fd3a1",
+    "object": "response",
+    "created_at": 1790539111,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1790539114,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1618,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 3148,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": "Code one course evaluation comment. Choose exactly one primary theme. Use instruction for teaching clarity or examples. Use assessment for quizzes, exams, projects, grading or feedback. Use support for office hours or help outside class. Use materials for slides, readings, links or course files. Choose positive, negative or mixed sentiment from the student's wording.",
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_0be1af05f9dcbbb5016ab975681b908190837298f5382bc2d7",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "encrypted_content": "gAAAAABquXVqTDSFbcF9gHatgLcH_g0njMdh9oFVM0TBpM6z54wYGAkbVOfGtARi60Tgk-SgZxjDBSqpzn9jY9uqz7Ccgc_e0ca87L4AGWANmJmwnsV-I6wKb3_bJbbHFYyv0iVylcPxvrHK9Y6NMu2R2NvQVGLVa2BaM6geZZDDauCDpBHftE-_qFMAln1zB0Luy4KbW9DkI_WFOYJmgnWPVtebrFoE8RmbUSWZXiVCzdTSa1lsDLf19_ao9T4sHDtHQrcBALHxB4L8PM4GhEY_nc8NX_XOeHYZOMk6P8qHSBuKZPOcN1wrVCVBF1ltyC68_OR62ZYni7_MhgBtiEV1ZQZJQ7TKCPcUDrl23mI19Nf1Z09b4oMbQGKQ3ArIfMK9pXVCZe94rhlLjcFESZ3ZsJ0oefT7-S2CS_NsAA8fDEakJGRBo8f4RW5TWKvYxNUwDfEVh2UwK9MlfbuEZDvjw0gfBfNioXUZmGyV32-tzZf_Oa_eD4cLcJZTS0UPE5bJR5mZvNhIojenoGgaD95SsMbn0TngUIEgnNhX0yyQYtnswffzv84p1jHpic7o2us3zwJRL-0-mZ1WHD5yOr_SgpKzcvF_bnJvad1I9aHUddIEumJc8HKEdnBYdqjvtj5jH78tNGVvt1zKikuXRIY2HvCbdu9voDFTi3wOQ5qtOjFDe_Jk_c2U9PXQTq9g69HEwla0NFBg8_VwnCHo73EfJlv2w8e7dT499mkYLf06zq9f7sB97ws_xblvVZIew6bpiv_OfQX_VcKyOoHH2TSnnEb8j7n2TTZEEkP2NP1EOccsDgxMhxe0ikLqQbhnhTTIbt-tk3t-xlBrkxPbh35EA2ngDhXRMPq2B0MgWx8QTCjEZxIzOi3NpcneWbYP306E6aI1uTxsLzsrha8Y_9ZhKr1Am0H3T1RPYIj9u2605Z46SeuX1tfrh1cHjUNvKWCUFprUDaOm5HFEdJl01IOOxR-jQ2i9o4x1-br3z3Cbqh5Dr8IUkITA0SauAxuXL3Cc10Id51dxuG3z4WZLEzwDyUX0wukrz5b4RjQ2E4r01LMlUzOBaxOm6fQ9DRBFly7i7D7L5pYya7ctjeaoh8lBwRYF0VsJgxM3_lEFPYqixChIwJiFvk9nzyp45WmHtO6KpivSkUEidBLxCfgiW55OGhPKTkW3JWEdYk2PRxjQM2j99vhvGa1QFdR_AZ2F-a2whFavxhfYPl31TESoI9vAtCHMQ1EEv8Qn0wuvnCK6n3BcwmRJjOEa46F3ozCLOCxeMF3icTACe1OjXl1HsiJN5fZi4o2ZRj9Ll5Rf3b2AgCHYLlhPvO2CGKBOPU2uVqe8vsmofyhpX90-vrD7GqxdL6LzA11o9QAN1V1qK9AAv6Xaua_BLLF3xxBrVPzq4bAun2uvGOMCWolx2Kw7us5iG7gEzes7L9va_d_mWVN9v8faHLZ3YT9oNES_voEMy035CfNyhiAbN1PV4-5lQZOyhdRi9_tJazCg1WuKQBKJMqC-P1VXIDAul65I8U-P_jIWOI3heVWd80jb0-eWZrUbQ_0ZZT5yoc5257_Ptf3gfgLS8NZFXGJWo9Ghxzt1Edt7nO1q-Vma9KGMuwa8dQTwGS1SSZcL1d6I4daerv2C8tefFF8NT6668c4fMadUc6bm8mDGxs95gH_mKGfK_CK9xyDSQpuixip0f-jHH4AmaG195NU3jeQkc6YbdvfZrTU-_WuKEBt3nhWsgu9ivWZYvod9tqzWG47TIWi52LTxFExuOO8aFsiJrpsZV0gmkjS8BO_O4wHJA7-0wLFoWOv4CBjZgKt60METGuwV337bnXOMDsI_w7gD901BTK-bZossFQt7OtI7eiaA2SaSViCbNUNHhy-6pzPTSJhlfH-waI_1EQ0Mc5pB5ZGse51L_yiz9jOWuLe6JYr5HmxsERBssAb3oKVhCpPfQhRavPrJOaflsy6sMqrDhrJM5Ps7v6PtELmIefXAj4NBCXLEtwGk1tjGPJoBZNpSUz-H5xiixaG4_3r5XWz2V_croKfpH7rbb-rJ0Kv8HJNLzguvvfXxl0pdusG-__raFxcmajqHmAH5i9hydot0PmEl8rrbeOx3sgv7EKBC5RUxS9iimngMojgpaCO6R76tqZ5IYa44bhqywDoYzuNaBvbWVsYxo8lEOz-qmyJwTaHphALg7LyMppOl-61SoLrAAIazmhgp0dV8p3lm76jS7wWW6OWAkR8M0f9z68pJ0zqUYQCMnpAp_NnYgcqNj7SDVgM-rt15InCLKq99wk01BzhdBtigZRGj71cLUVk0rtqQPW4uIqMPdUci6MUHlfwwDcoRyNbH_g47CYM1Vj7EsizFOitLRkcV_4hFsGJ7hKB_ukJRHUEdBoMvDmEXWBjcQ0KqbGTutzMbei4To2kCFb8OulyHE7pYP8pSZmLwgk1tx2h6b3SBlLdtdkkY9H2_4EkcHT-77kHXslrUbjyQJDLVgqYRPgVuaOaPhdHCnSXWOWhsNBY42XbkG-n5SJ7cuSei4mNOgEy-IhF0N2wlrye-GP_NMf6wvyZ2TF3lNHHm0fxrPyxMxDMaVMu1Ym7sN0l2WkXb23GeywyLWIhGTOt56V5c-mkUkP9dudAXYrNLfafV1BHLEzn-VN0kFOdqZqFAUJhjSjpO2RjUS3fQuhRAA7PYGhmNiLw-jtLnwlWTkK6eZF2AbQ1ZIaF_C0yWewz1WEi_UV1Pru_kK0CcVib6qZKOVC8ZcuamGxgmFFGt2XWzOLjEzZoy6AKq0aw8OeAKiFKEIbQE4PfMEt6MDpPxYDp9A1ZYlN3OnErNBKhmmDB7TbuRuGyiIc8BralxYUqhZy87yEPX0SX4U64S4MBvAkn8Kmt-q4r8m0eluT8QdMz8gtsYjbPrg_PAl3LVhiwh1vz7fEXr5i9-Xw6KgcFy3Q2vwb7ljaMa9cH6iPWM8d9RwPZRh_3t5NiLDc0QysCXUHd70O9SQ9_ENulH2mlBYHnzyKKmVlpHYV2ie73G8kFz4C40HxYwKxC7qy2JOhe4tIbJtb-LIGB9eJr-OHKjeyNBHWQeMOKZjSN7a7Xo7Wmoocd8gwv-lXL0EemTceTbspr7PNtJDmOg66a3eNc2xkv3KoTLK7E8PUuVPKoAB7GV030zCeBo8VDx8lERc7QJnyIVG9xIf7dz1YqbyPFWw_NX_HkKj4JFICn1UIWe64VFsdrIdAOGdpnI8jo59tXEQsz9J3Owc2sHSKiw6O983n0G8lkvvv44lffyZKMwHDzf1IGTwlKXRyz2_x0Mx71sCYjsIGvcvpjvyL29OYE_w805IJYcLz6exr3jq862NE74lIRWiFezUQjA9x7JJUWM5MUxHOWp355wsf858yq1nLJaxn8gIzPhmGzRK0-lTvV_aMvPOjLelPycacbhnY9JIyghh91PONaQKqEAb37xPHr18dnf_3in0PNK39Pwsw7BEdxk6yFntIcaiBI4c2KgWhj0XJwt6R_SnnigIs7KLyUcvqEIHUeugxf6AnUzbwTVuezg3GPobkg9SKcHcMZmedOizdy7VOU5p6IL0io3sS_KZ3S3xt5RHEjLBeNQYxWazHc-8a2T0jcj6ZLnx2YTR8hJ7Ir6iCTDZrDiBlP-ecOL1bcnb8jPjdbqBsoxu6hmNb7WlLtqQlra4xHPHBGtIG1rl_HVqMD0Vsnae1KYmxTckmkUgICd09eJXMWLgS7RDUsFhl1Pw9WwcvHQQyEYkbT6JeNtRh0VThfMfXxiDUx0gZUHJWbabheyo6HuGOd_qmid_pVwKvEBiQTlfl5AzstHOHMJxION8Jp2g2JaYho9cSjIZbHJxKio32upbJ1WZChlGfSyBhxoyKL4Jtn0wMPdlfTNX961779RaeeybSCmqdcaEUJr04a55N76DzZbCWBJzRIw2DOTloVCOgVtOHlR-b8mlTJOTSSOq-UZVZU1BEXjtz73F4ELfJWAbmB9RF0K3HYmm1NR4WLcC48SbuVEWmSRDj4GBCjXwSvOQ8AtPPgk1QjkDhxURzspGu0lvD0sMnobzAAUumHO5aeG0MxY901wfZnegTvZh3PhoUMF6MlGoiubEGyKjr3FrkXv5eGITNVV0yab57CaIyGciFeVNpnqBrVNfIq-YtINNGO2rxQyiZzYJ4oeNmQtCRujjs9aZsw_P_eiBotf9IJlIWw22y7Kb7_drcmN1Wr_36RzK98U3Y1QNrnOCwBZYVM5-4NnNlXdjVA6F7LPnMdiIHxUMt4NuwgyfqHhMKOBlX01J6IplIK83I0hy6D04xoBV8HtbqppH2zew8UGJ5g_EeUgi2mRiGSGUG_wzqang5h4cpJ8IiKcG52PQE_M1fQMnZX2jYnESvQyGWTWXzlNYC2Sx5dLu5HPbUywPXvxcHBvBA1Pu2bBH3xywrfaBw_oZMa9Bl5JOw5FM1Bs3b2WPEFiiMxRAuT9-BsGabY1PpZK_5SwaENKOf2v-sr4X5eKxgK8u07Q7ZuQvmrgd5pmc_5p0t4K9qYV86eHqlneRxua_0T5YfZhH94lCfeRrB2-foaX13z1yalCbfL4Cefk8nREVClRlFRJFX_or_ynTduyzl4wySSYH1W8P3oYcuP2lL8flnTc4V7SVausDzQ1lH7JcT1L121Pye03Lxbk6pS_66lxiPdzkr19wBjQE-aSrftcFGjpXuAfumv3DvNT20W-TgEdiOnY1u6I5TqSUO2nNTlGdTbp_grW47GG7JD1ui9Y12bwrV5y4YZ6gSadxGh5VN-3G4L2wFlVZ48h5yF4xIwh3K3M9s8V46T4hsV9Pj-SYzboRq6AaRqgDq2IOl_GWCZK0t0MAI6Z-n0JQH4KxugEnsCQ6P-iLhiZLDpDGgFBbnVqjPbBfN6lFsm_eE46d2YaQCypUaSN_PA1_jug5yrZe-FCxUKRlH0Ygv6InQ0f3SjssRBrvXQ7uPjnJV0J-cv_g0kfFzaugk_mOwh8dzzjikrxO17cgRLwUSkzGCp07Q62Du-HNZ3NSpJYQIhJud7TfSpdDKByUWR11j5pOvkJbiZV1kd1y8_dN-JNIk2pFKPXbCIdusZtDaYYYEW6R_PwmZjjUHrVlwjOy__RfINS9b7geN3sgb3ZUYGyys4LvNJ70aNvX87yiERtwZWc0E5TtGoz1xpdaWuervOyn6KCAg0qynVuSPM3NsUXuN1xOaGRfyoeQu4D0eelxvhKtDRyaWVlNdZJH601eD6GWL6uJjd0s1k-OuL-Lw6U9AhOqRehfh_H301gZkswl6cX998RxMYL-9ptMfKY2JEyZTdAnliUm_21VIAdWxHNgTwhtjuSJNXM-Ey8G-MW9CIiHSvTKkTo79XL_w4vhTrlOb9kMuX9ZHOIWo-F3aGDweQMWfWe3tW56yxlkcN6e6CYGOzK7RD6KwZ8NlznfvNXFKxkVRJpiOOMKKlyN2ckNx0bDiNAY3cUWyUE0yVIb4QbKRsMIVM4_UDW4HzqaeE47OPOs5ibzJ53GRXOlRL7z5-0UdTP8a4IpQ==",
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "msg_0be1af05f9dcbbb5016ab9756a4a188190af8abe22c68750e8",
+            "type": "message",
+            "status": "completed",
+            "content": [
+                {
+                    "type": "output_text",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ],
+                    "text": "{\"theme\":\"materials\",\"sentiment\":\"negative\"}"
+                }
+            ],
+            "role": "assistant"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "mode": "standard",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "json_schema",
+            "description": null,
+            "name": "ExtractedData",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "theme": {
+                        "type": "string",
+                        "description": "Primary theme: instruction, assessment, support, or materials.",
+                        "enum": [
+                            "instruction",
+                            "assessment",
+                            "support",
+                            "materials"
+                        ]
+                    },
+                    "sentiment": {
+                        "type": "string",
+                        "description": "Overall sentiment toward the course element.",
+                        "enum": [
+                            "positive",
+                            "negative",
+                            "mixed"
+                        ]
+                    }
+                },
+                "required": [
+                    "theme",
+                    "sentiment"
+                ],
+                "additionalProperties": false
+            },
+            "strict": true
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
+    "tools": [
+
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 162,
+        "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+        },
+        "output_tokens": 639,
+        "output_tokens_details": {
+            "reasoning_tokens": 576
+        },
+        "total_tokens": 801
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

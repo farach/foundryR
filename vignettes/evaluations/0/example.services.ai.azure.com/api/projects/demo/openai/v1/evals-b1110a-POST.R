@@ -1,0 +1,13 @@
+structure(list(method = "POST", url = "https://example.services.ai.azure.com/api/projects/demo/openai/v1/evals", 
+    status_code = 201L, headers = structure(list(`content-type` = "application/json; charset=utf-8", 
+        date = "Sun, 27 Sep 2026 20:48:52 GMT", `access-control-expose-headers` = "Operation-Location,Location,Apim-Request-Id,x-agent-session-id,x-agent-invocation-id", 
+        `content-length` = "1285", `request-context` = "appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d", 
+        `x-ms-response-type` = "standard", `mise-correlation-id` = "1ea1be12-2d74-4746-bd5c-09c415ad77ab", 
+        `strict-transport-security` = "max-age=31536000; includeSubDomains; preload", 
+        `x-content-type-options` = "nosniff", `azureml-served-by-cluster` = "vienna-eastus2-01", 
+        `x-request-time` = "0.534", `apim-request-id` = "db7e1156-abf6-4034-8d90-78f1411043cc", 
+        `x-ms-region` = "East US 2"), class = "httr2_headers"), 
+    body = charToRaw("{\n  \"object\": \"eval\",\n  \"created_at\": 1790542132,\n  \"modified_at\": 1790542132,\n  \"created_by\": \"Alex Farach\",\n  \"id\": \"eval_eb5dbe17\",\n  \"name\": \"course-feedback-themes\",\n  \"metadata\": {},\n  \"properties\": {\n    \"evals_run_type\": \"azure_ai\"\n  },\n  \"data_source_config\": {\n    \"type\": \"custom\",\n    \"item_schema\": {},\n    \"include_sample_schema\": true,\n    \"schema\": {\n      \"item\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"id\": {\n            \"type\": \"integer\"\n          },\n          \"comment\": {\n            \"type\": \"string\"\n          },\n          \"theme\": {\n            \"type\": \"string\"\n          },\n          \"foundryr_row_id\": {\n            \"type\": \"string\"\n          }\n        },\n        \"required\": [\n          \"id\",\n          \"comment\",\n          \"theme\",\n          \"foundryr_row_id\"\n        ]\n      },\n      \"sample\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"output_text\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  },\n  \"testing_criteria\": [\n    {\n      \"type\": \"string_check\",\n      \"id\": \"theme-match_15e43fff-f127-4aa3-93cc-9f5cf7a7b5b1\",\n      \"name\": \"theme-match\",\n      \"input\": \"{{sample.output_text}}\",\n      \"operation\": \"eq\",\n      \"reference\": \"{{item.theme}}\"\n    }\n  ]\n}"), 
+    timing = c(redirect = 0, namelookup = 0.033109, connect = 0.054546, 
+    pretransfer = 0.081956, starttransfer = 0.648631, total = 0.648684
+    ), cache = new.env(parent = emptyenv())), class = "httr2_response")

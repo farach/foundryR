@@ -1,10 +1,10 @@
 {
-    "id": "resp_069ba010d6e31b4c006a46ae173df08194a08593cc8a247401",
+    "id": "resp_0b36ab94c77b35b2006ab974f3c8948193a4c31f7b36f303bd",
     "object": "response",
-    "created_at": 1783016983,
+    "created_at": 1790538995,
     "status": "completed",
     "background": false,
-    "completed_at": 1783016986,
+    "completed_at": 1790538997,
     "content_filters": [
         {
             "blocked": false,
@@ -74,7 +74,7 @@
             },
             "content_filter_offsets": {
                 "start_offset": 0,
-                "end_offset": 1196,
+                "end_offset": 1032,
                 "check_offset": 0
             }
         }
@@ -89,17 +89,18 @@
     "moderation": null,
     "output": [
         {
-            "id": "rs_069ba010d6e31b4c006a46ae17a4a08194926fea6fb9280fa6",
+            "id": "rs_0b36ab94c77b35b2006ab974f4a3b8819396d9bbe1f53971f1",
             "type": "reasoning",
             "content": [
 
             ],
+            "encrypted_content": "gAAAAABquXT1Ty4O0RYYMqyAE0XpwXybv9fXWWXWNbwXzsGsuNbj_WVM5MfEeRpsxwGRTPxIgJnrLZTMcK1NQghK4Y6DicOGjCSukfYdDMrpPGkNcKVnP76Gv6vLKl3RQREBtOgo0FNQvglLcsZKJfiSMavbzE9PUZM6rRoiOjExljR3TXI-6OpAno0VR2xrIJ_PBQYOlHXKGeJE_zkbpuZ_HblFjoTjB3dLW5iuaGhkZC4JPOL2uw9gsqy0jtvlgDohiZpoC8OxqVj6f2n0larHl71eEOMat9080L6o3WhkOZCRwaaSSWpZH3ZYZFxgkrOn1neqdGfxry1sxexUtSOvg1gD8zGls5_7DEoz1vt9qUD9aP3tm-6Y3IPrvpu207SMBydtJAG5YokHyzcoB8TMRLnhBlOTytQXBD75R-141cTen6oHyZNUKjRiRjmauEh5AEGhjI6rVaDQyPlJ9VNSj7otVbXr5lWy_4qrFyOisZkD_Oc-QGMw_E2FpsH7jEaE51iWG0qiPWJ5k-XOTz48cWvWwhIxxBFpqHDnfAOST0N057GaKHsj0uoQ2DVlxA8YDbx5XRsIcM0_-dYZI340g02e5AIOC_SwrdRL8Fnw08Osf8MTAgDhsZSMC-EFUUrVH5u4IYsPNDInFXzlCtDKl0Xj_zHaSEMT-NruNdWDK8qHlLvnaybOKkvJIya637ZH-v8ohd261QjHXQatn2SsEOhFLvSEqNzjhvBAnh9eUMktYQLYMYnSMAwVrGfFndIMdYK43FsyQChhJtnkJ0IMpnXDR5tCspMrUfb5yy0MQAvbevTq1zHZou5TY6Dvpa-TISIMrIKl7Mr54ramwFap2XNpiuTiUpgqYfuEISLWnsEXEQE_eIOvR2ptzsB8Sb8T8q4PENlb3fENKvBXrSTYPeiNsTGnkJodx8MpGXCai8jawKHi-plFhabgMAWMF-3J1WqCVJwzmpJN62m5btvNpAHEmwp8NZmjyJV8Odjr0A10XnqVdPpnXJIH4rlQVaovX0D9JF8j955s5LSbiy5WMZo-judWSpLJJ0alSuLkeKjXxQdEBzh7daKS7qMbjYnZkv2W-aGNCipekApt-gLrgL62pjeF5uamwgeMuUZsLYOH_2UzGPYrlNxxKYjlNz9g_UjzkDs_Qg93mzWItQ39deeXUYOYmg0dvYciNT8ECQt1f0yAJjg0n1l8GiagvvxG97GxBhZgjU0XhKbkOlfR1bB1tqQgYLAMk600AraSbm_kyExvJdnxc6aRbBs8c1xGv2C8aNFKk3lMiPVqTNKbuNkBxclUQjmmJGwpN_XkI9jAjyQOf6ntZvzzHkx3imtXAtxJpxHdzhsC-qvJyAcW78cnUl1QQUnBrVS8LQdE8wr3YbPTpDWWCWZ3o6RRXH4Ve8G4y3LhkyVrkRj-zqXy9OCPhQsOdVrnIBLZvL6-WrAtG11iq-vm9rbV2efFMvBY0K5Ss9U37QpT8Aaz78HZ4GZea0WbBFAl_P9TtuLOhQ2e0yYg1xXeFaeDKMGh-h18RdvnYU_3XZXFcJhNeo7hQAekbHICC-BqKT84MWIY6ZkZ3JP47G7X-N-F-Dlb4rjMbE4DLaJhmQGDHsPGnUmh8i5Ub6rW064Ry66fZ_FGULNthYS9B4nq0QTtW1mbBya5n3Fs4SC4o44ZXzuO1F40belSWWselsG4MfMcfHhQv2cP1MZyt63OtWaUdt2-qnygNtMuN2IBLQZOHYOEL5v2OlX5MuFll9KAwTJocZokF0NkBM2bUCSDgv3Vst8zO4gpogkGQ_HJXrZUSO9E2oQVYyITYdn5vcpmfGipjxUa2i2RbgYfSBmO1UpmASnj8I9W2sLcSYXfuXtrOzpw3A2o5Piyo5TpVcEiMVVNzrQcjNBJf1L1WHibpI7No4Gyq_DLGpVs7OmP2ZnUg6iH2drJ169s35s1w_yt1_0eABz177tS5JhrBd6yUbQ6AzYX_7OJ35DZjuYsU90EaGA4asY0Nhe2JsoC4cSzhbOJdqB63aVrbdT5VhKgx372xlJwx0tmQOQ4U49vCVkjWjzCt52ycNqB2CMNRWOOAtVXAh6LjdPL-VO-h9KLHUMcqaiTBIMqO9kPh18HtG3Q7-fCQrWmjw_Xv7XRcze42ymzCATcI_mzE8DD71G8O7QknGwGdoEKTMFxOVuqoLoGdODX-AG4QWl7fQEbxca1hbLyhDBiicg0wTQToEcXPJ_C7zw-Qr73ZkSi5-uwgGaORpn0RUuVAHkOMhSH69YyNXFn1tx1rSgJjLpBKt7UYgjz41iissizfguZ0o6SrifygujpZMU_s6n8pf8VAA5yA2_gRphvM2PjvjBtkMOvYmfzaxYUrGQS6GGkhMeCn6v9by9q-q7C5Dta49vA6w==",
             "summary": [
 
             ]
         },
         {
-            "id": "msg_069ba010d6e31b4c006a46ae197670819497494b8b42dab8d6",
+            "id": "msg_0b36ab94c77b35b2006ab974f58c3c8193aaf2aded6bdcb213",
             "type": "message",
             "status": "completed",
             "content": [
@@ -111,7 +112,7 @@
                     "logprobs": [
 
                     ],
-                    "text": "R is a free, open-source programming language and environment for statistical computing and graphics, widely used for data analysis and visualization."
+                    "text": "R is a free, open-source programming language and environment for statistical computing and graphics."
                 }
             ],
             "role": "assistant"
@@ -125,6 +126,7 @@
     "reasoning": {
         "context": "current_turn",
         "effort": "medium",
+        "mode": "standard",
         "summary": null
     },
     "safety_identifier": null,
@@ -138,6 +140,24 @@
         "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
     "tools": [
 
     ],
@@ -147,13 +167,14 @@
     "usage": {
         "input_tokens": 15,
         "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
         },
-        "output_tokens": 241,
+        "output_tokens": 205,
         "output_tokens_details": {
-            "reasoning_tokens": 192
+            "reasoning_tokens": 128
         },
-        "total_tokens": 256
+        "total_tokens": 220
     },
     "user": null,
     "metadata": {

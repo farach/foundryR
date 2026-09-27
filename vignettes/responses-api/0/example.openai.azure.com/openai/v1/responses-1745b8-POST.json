@@ -1,0 +1,183 @@
+{
+    "id": "resp_083254d4c0c03253006ab97c3e29a0819780d670e14d5105a7",
+    "object": "response",
+    "created_at": 1790540862,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1790540863,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1550,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1545,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_083254d4c0c03253006ab97c3e85348197af0060d9efef1c3a",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "encrypted_content": "gAAAAABquXw_GqRQkhKVSLO62dH6sC2qDyLeKBcIU2OG_ZUVzFY1G2FV0Jn93aN_ekHeh2LmQa0OkBqZlBM-YqAdwlAEDnWGKH-JgOzV1wT7mCsEQMWH_Jm9rZsFpQZxiNrKpTFcJmozrekCOr4IOdr8qsu2xns_7FjBh5SFh-rH5aLD2t5648dkMnbxc-cYPYwsS9AdNnbsf5Cz_J3cNUo4RmydEGa-CrWWxb-rhijb0aQ3OvtBQh53epTocGwoN1Nm42osoozTpPBrQphd8LDTdgjTa6JQb2xOp-kh_8j3PxK5rIHbpc3VPvK97njNo9SLcO8B8Edwo_qf1mK7EkRcjYrMykC7_asDbs1Wjvecrt4j1jN8ipQf-QJFZbha_mF88SbMyMzCG-w-2sxjYmiT-0recQgyAPQ6wjjn3aU9jvTI2k3oRUZtzsb8OpIRAGB75AzMGepB2Ulwn0pOO7qxgRI7j1zU2y_ubjbQ_VoY3gdcUuyKDNVpM4IMUkFJ-pp9-7z_a350TZBVkuNbbxq9kHk2prA3MBiJQakLxQurPT0NFTBLh_kt8Soin5KJ5d8AzRCxtPqKsJknNzrs8L_e-iQ3C-lkePTi0507x0tAq8yVcsk1Ee-UnZ8ZY0NgsF6WtApxNTqhuBKzCMS-c9c9CL2qEazwViDGhNtDzWBPBXQVyeKvF7z-jP9q92xKHqtMPUq6iWFcpZr3lbbLkvx5zOIWKL_8h9BowxR2vMbv1J6g1G6wMoOh1UzOGGf_xLjpSF1mwvf4M2jhR0OX3n0lX4__1QAKPJOUr6FOw0B0sVLsCTvtHp4JGUblgQgEgt1xsfyeC1qhgNNkU7CNbNSd76iPW908GrmLKEuL0HkAOEZuSHrLTyOGvblnXHoMwcRnX5m8MUiAW32yD2tWkGh3taEqliWHunPyN7V2vxYEI-kMAe1iAQuVDtKwGiY2sZiLbMROf5A1p2oabyA_ctXct5sJnoxOMHj0tA1qnbaBhNZs4xeugQUN-vJ5RSPSOYmYwZINWQmhVysqxFyMz_Qa3vKlm3RoSoLWAgpXufslnM82lMfN8URtx7c8Sz8qYMZyxcwX8LUedIvSJoQu_N5_jdxB2k77frP8cj5Leopf1SOqApPXH16Z-yIytYnY8-Mo6w4MEmFAHvwRtWGcQOxYfLA6xwWn4f7pH3VSecpEBjQ9igc6tXLZljvQiQPCflz7dM0yJ7o3nKmbyWanIAOkott86NpShJ1P3ZJzAM20UhNrNMNf6k2vqd7aaEM6O3T_myevxcQw_vRlBMaZATKDQdgQiZ1WchbfQ6xVFeVF4DrWfstq6BDuaewyBG6eXcAxUfemaxzGEaFKSEERs18pVUZUWVT-xpRmK64kykdsIbdtg6-5zZ80kv-0E9NhWlSBXzDq_DmuBuneFPVh8VFDJ1l9443Whb6bxcD63-IXXvwuWkdJ1KSHEQUapAkEAp8i1_8UK52koCTJE2uoUS1SX2ofInHRmg1bHeXd2-Spkm0bURu1igBrLAT5SOH363xY66zyX-B2TvKsgj20VNgNk7QMt9ceeYcWOtszi_HUZ1ewKK9CqPmpRdUyR7JMHz_dIxgxiiKoF79tyt7jjqM0Ha-MJaKfMt3CmC5o-HAGva8qE-ZJyFJpyx461uPePXV9rSOvWK2UIyRIHxWeqSc6Q3cGOR_lN0TFJZwcFIHbxLf9NYpAmuRr4fH8yXOehyK0A-vL1wdddOzGQg3gp_0zayiWkYKRcIO2RjR-eK6mlaOSBVRxwQ3x-I-E5uitP8dUaDCAqr9mjXVE5lWHIS5du3RlgKKug9w0opnnOKUfe2mQpzcs19Jio5SNvIufdNKkUFqFPKVGfIW40OgLqfwG3NgQIzs2nvShQIB5CTkVdFvCorF5d121f1mFtb8fzH_qMFwNYhru3vQ-PpI4uuIXg0sb-KU5CU6Bh8UGt50eB_As5Eybz9b-G0npbAqpaowefHZOCkYLGw4yQRAnQMl2SuJE9OUfHjg8pSpbIpi-thz-cXC97EbgaMHC1K-XB_fYQYDIWn3fYREA3qCQ3iSLIiNeRTtlxqo6OKHRuAb5iQG4HlEgKrEVjyHCxxnB19F3FJ5pNmLNoDVO39atPtguRWGQzZbqHtffkRu_cKx1u79SgwYeeVaBQoj9bFfgbBXiGnqtjbQkDzcSj6RbL66xDh9ZHL_XpWziDpPC6UNVsywS9LBgTYCeWBJQFHv3u5ZEm4QBAWn6wmWml8HBYcIIkZEu3j-fZO9AnLiGVIvHmGU610CJjFtn7GAf0SaMI4Ff39lP3cFd1SE5s-UlweSumElVDSf9pRqP7th0i7fWjBQYdfYsHs77RsErgep4bhIzoomsbOXILMcxhD5MZ6ExVHDZExjIT454jfcT9ONbzcwmY0bIbNMX9o_UXffnN5UEeme9oZlhw7N0JkTPwdNLWKkraM4Y35uY-soG7yRXGfa7Ri6QBudkS9nBduWvfy_P72L5y4o_soVlF7GDZ91p78DM-wnVnq_JkZzpIrHCmVJedFD_PCwAZIh2NL1rRvG7Vo2iKI5_7E6-tONNzjuHdBB_ZsY_ebfvntiNDFuSCL_VVl6zXb7oRKP0Ri5TmEOA4-bCTGrs13pG78hz-jFLYpok9m1PLbbAeq6ASJYtBd-IchUHAensrlByxN3cVXFffP8eYa7l9TgIUCj3mAQvCnPwOtpge-DrFrWD-t0de7MCZXzm2UVjlYeRfu0gaCow0p9fXS7o0r-fc6ZbfCF5wfjLlOO7sJkl9smtAKgqRBz3XIn5Jb2zKcPqUcRnABpEWjsg3WVOzlE6gfoa9rLC9m7dSjj6psPT72MO-i-BelpqOCjOcuHNEcNG2PtPkIqmbUEA9C9M4RjYqtiAX1Nrxklx1enoDLEbF4jtzw-0HuK69Zxnx58=",
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "msg_083254d4c0c03253006ab97c3f86348197af7608ecbff6d592",
+            "type": "message",
+            "status": "completed",
+            "content": [
+                {
+                    "type": "output_text",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ],
+                    "text": "Catastrophic forgetting is when a neural network forgets how to do an old task after learning a new one, because updating its internal parameters for the new task overwrites the adjustments it had made for the old task."
+                }
+            ],
+            "role": "assistant"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": "resp_083254d4c0c03253006ab97c3be8b8819785b9176d8e9fa19f",
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "mode": "standard",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "text"
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
+    "tools": [
+
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 77,
+        "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+        },
+        "output_tokens": 313,
+        "output_tokens_details": {
+            "reasoning_tokens": 256
+        },
+        "total_tokens": 390
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

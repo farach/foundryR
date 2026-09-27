@@ -1,0 +1,220 @@
+{
+    "object": "eval.run",
+    "created_at": 1790542133,
+    "modified_at": 1790542188,
+    "duration": "PT55.0293767S",
+    "created_by": "Alex Farach",
+    "id": "evalrun_a9abaf5d",
+    "eval_id": "eval_eb5dbe17",
+    "status": "completed",
+    "model": null,
+    "data_source": {
+        "type": "azure_ai_target_completions",
+        "input_messages": {
+            "type": "template",
+            "template": [
+                {
+                    "role": "developer",
+                    "content": {
+                        "type": "input_text",
+                        "text": "Classify the course feedback comment into one theme. Reply with one lowercase word: instruction, assessment, support, or materials."
+                    },
+                    "type": "message"
+                },
+                {
+                    "role": "user",
+                    "content": {
+                        "type": "input_text",
+                        "text": "{{item.comment}}"
+                    },
+                    "type": "message"
+                }
+            ]
+        },
+        "source": {
+            "type": "file_content",
+            "content": [
+                {
+                    "item": {
+                        "id": 1,
+                        "comment": "The lectures were clear and the slides matched what was said.",
+                        "theme": "instruction",
+                        "foundryr_row_id": "row-1"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 2,
+                        "comment": "Weekly quizzes were too long for the time we had.",
+                        "theme": "assessment",
+                        "foundryr_row_id": "row-2"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 3,
+                        "comment": "Office hours were always full, so I never got help.",
+                        "theme": "support",
+                        "foundryr_row_id": "row-3"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 4,
+                        "comment": "The textbook chapters were out of date.",
+                        "theme": "materials",
+                        "foundryr_row_id": "row-4"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 5,
+                        "comment": "Feedback on the midterm came back after the final.",
+                        "theme": "assessment",
+                        "foundryr_row_id": "row-5"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 6,
+                        "comment": "The instructor explained regression with great examples.",
+                        "theme": "instruction",
+                        "foundryr_row_id": "row-6"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 7,
+                        "comment": "I could not find the practice datasets on the course site.",
+                        "theme": "materials",
+                        "foundryr_row_id": "row-7"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 8,
+                        "comment": "The TA answered forum questions within a day.",
+                        "theme": "support",
+                        "foundryr_row_id": "row-8"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 9,
+                        "comment": "Grading rubrics were never posted before assignments were due.",
+                        "theme": "assessment",
+                        "foundryr_row_id": "row-9"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 10,
+                        "comment": "Recorded lectures had no captions.",
+                        "theme": "materials",
+                        "foundryr_row_id": "row-10"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 11,
+                        "comment": "The pace was fine, but the instructor skipped the hard proofs.",
+                        "theme": "instruction",
+                        "foundryr_row_id": "row-11"
+                    }
+                },
+                {
+                    "item": {
+                        "id": 12,
+                        "comment": "Tutoring sessions helped me catch up after I was sick.",
+                        "theme": "support",
+                        "foundryr_row_id": "row-12"
+                    }
+                }
+            ]
+        },
+        "target": {
+            "type": "azure_ai_model",
+            "model": "gpt-5-nano",
+            "resolved_model": "gpt-5-nano",
+            "sampling_params": null
+        },
+        "item_generation_params": {
+            "type": "target_completions",
+            "max_concurrency": 1
+        }
+    },
+    "metadata": {
+        "trigger_type": "oneoff"
+    },
+    "properties": {
+        "eval_id": "eval_eb5dbe17",
+        "runType": "eval_run",
+        "_azureml.evaluation_run": "evaluation.service",
+        "_azureml.evaluate_artifacts": "[{\"path\": \"instance_results.jsonl\", \"type\": \"table\"}]",
+        "DataSourceType": "TargetCompletions",
+        "TargetType": "AzureAIModel",
+        "AOAISubRunIds": "[{\"eval_group_id\": \"eval_6ab9814c\", \"eval_run_id\": \"evalrun_6ab9814e\"}]",
+        "job_logs": "azureai://accounts/example/projects/demo/evaluationresults/eval-result-evalrun_a9abaf5d-QCGX/versions/1"
+    },
+    "name": "course-feedback-themes",
+    "report_url": "https://ai.azure.com/",
+    "result_counts": {
+        "total": 12,
+        "passed": 12,
+        "failed": 0,
+        "errored": 0,
+        "skipped": 0
+    },
+    "per_model_usage": [
+        {
+            "model_name": "gpt-5-nano",
+            "invocation_count": 12,
+            "total_tokens": 2357,
+            "prompt_tokens": 546,
+            "completion_tokens": 1811,
+            "cached_tokens": 0
+        },
+        {
+            "model_name": "azure_ai_model_target",
+            "invocation_count": 12,
+            "total_tokens": 2357,
+            "prompt_tokens": 546,
+            "completion_tokens": 1811,
+            "cached_tokens": 0
+        }
+    ],
+    "latency": {
+        "target": {
+            "p50_ms": 1583.33,
+            "p95_ms": 2460.7,
+            "sample_count": 12
+        }
+    },
+    "estimated_cost": {
+        "target": {
+            "estimated_cost": 0.000752,
+            "currency": "USD",
+            "completeness": "complete",
+            "pricing_version": "e2a04cda4170536936e166ef5cca068e002577d2b110de1b0a35f65fae379c2f",
+            "model_costs": [
+                {
+                    "model_name": "gpt-5-nano",
+                    "estimated_cost": 0.000752,
+                    "prompt_tokens": 546,
+                    "cached_tokens": 0,
+                    "completion_tokens": 1811
+                }
+            ]
+        }
+    },
+    "per_testing_criteria_results": [
+        {
+            "testing_criteria": "theme-match",
+            "passed": 12,
+            "failed": 0,
+            "errored": 0,
+            "skipped": 0
+        }
+    ],
+    "error": null
+}
