@@ -22,12 +22,11 @@
 #' @param top_k Integer. Maximum search results.
 #' @param filters List. Optional search filters.
 #' @param rewrite_query Logical. Whether the service may rewrite the query.
-#' @param api_key Character. Optional API key override (resource endpoint
-#'   only).
+#' @param api_key Character. Optional API key override.
 #' @param endpoint Character. Optional endpoint override.
 #' @param token Character. Optional bearer token override.
 #' @param project_endpoint Character. Optional project endpoint. When supplied,
-#'   the call uses the project endpoint and Microsoft Entra ID authentication.
+#'   the call uses the project endpoint instead of the resource endpoint.
 #'
 #' @return A tibble with vector store, file, or search-result metadata.
 #' @name foundry_vector_stores

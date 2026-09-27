@@ -548,7 +548,13 @@ foundry_perform_speech <- function(req, task) {
   }
 
   service_message <- foundry_error_details(resp)$message
-  if (status == 400L && grepl("Enhanced mode", service_message, ignore.case = TRUE)) {
+  # Translation always uses enhanced mode, so "not supported" there means the
+  # resource's region or its LLM Speech model cannot translate.
+  enhanced_unavailable <- status == 400L && (
+    grepl("Enhanced mode", service_message, ignore.case = TRUE) ||
+      (identical(task, "translate") && grepl("not supported", service_message, ignore.case = TRUE))
+  )
+  if (enhanced_unavailable) {
     foundry_abort_speech_enhanced_region(service_message, task = task)
   }
   rlang::abort(

@@ -505,8 +505,9 @@ foundry_eval_run_data <- function(file_id = NULL,
 #'   endpoint, such as
 #'   `"https://<account>.services.ai.azure.com/api/projects/<project>"`.
 #'   Supplying it selects the project-scoped Evals route
-#'   (`<project>/openai/v1/evals`), which accepts Microsoft Entra ID tokens
-#'   only. Without it, evaluation calls use the resource endpoint, as in
+#'   (`<project>/openai/v1/evals`), which needs a Microsoft Entra ID token: the
+#'   service answers HTTP 403 to API keys there. Without it, evaluation calls use
+#'   the resource endpoint, as in
 #'   foundryR 0.1.0, unless [foundry_set_route()] selected the project or the
 #'   call needs a feature that exists only on a project endpoint: built-in
 #'   `azure_ai_evaluator` graders, model or agent targets, or stored responses.
@@ -1392,15 +1393,16 @@ foundry_eval_output_item_tibble <- function(item) {
   )
 
   grader_row <- function(res) {
+    judge <- foundry_eval_judge_output(res$sample)
     tibble::tibble(
       grader_name = res$name %||% NA_character_,
       grader_type = res$type %||% NA_character_,
       metric = res$metric %||% NA_character_,
       score = as.numeric(res$score %||% NA_real_),
-      label = res$label %||% NA_character_,
+      label = res$label %||% judge$label %||% NA_character_,
       passed = if (is.null(res$passed)) NA else isTRUE(res$passed),
       threshold = as.numeric(res$threshold %||% NA_real_),
-      reason = res$reason %||% NA_character_
+      reason = res$reason %||% judge$reason %||% NA_character_
     )
   }
 
@@ -1411,6 +1413,41 @@ foundry_eval_output_item_tibble <- function(item) {
   purrr::map_dfr(results, function(res) {
     dplyr::bind_cols(base, grader_row(res), item_details)
   })
+}
+
+
+# Model graders (label_model, score_model) return the judge's answer as JSON in
+# the result's `sample.output`: `steps` (each with a `conclusion`) and `result`,
+# which is the chosen label for label_model graders.
+foundry_eval_judge_output <- function(sample) {
+  output <- sample$output
+  if (!is.list(output) || length(output) == 0L) {
+    return(list())
+  }
+  content <- output[[length(output)]]$content
+  if (!is.character(content) || length(content) != 1L) {
+    return(list())
+  }
+  parsed <- tryCatch(
+    jsonlite::fromJSON(content, simplifyVector = FALSE),
+    error = function(e) NULL
+  )
+  if (!is.list(parsed) || is.null(names(parsed))) {
+    return(list())
+  }
+  label <- if (is.character(parsed$result) && length(parsed$result) == 1L) parsed$result
+  reason <- NULL
+  if (is.list(parsed$steps) && length(parsed$steps) > 0L) {
+    conclusions <- vapply(parsed$steps, function(step) {
+      text <- if (is.list(step)) step$conclusion %||% step$description
+      if (is.character(text) && length(text) == 1L) text else NA_character_
+    }, character(1))
+    conclusions <- conclusions[!is.na(conclusions) & nzchar(conclusions)]
+    if (length(conclusions) > 0L) {
+      reason <- paste(conclusions, collapse = " ")
+    }
+  }
+  list(label = label, reason = reason)
 }
 
 

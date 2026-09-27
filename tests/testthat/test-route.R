@@ -86,27 +86,32 @@ test_that("foundry_set_route returns the previous route and warns without a proj
   expect_error(foundry_set_route("somewhere"))
 })
 
-test_that("project requests are Entra-only", {
+test_that("project requests accept API keys except for evaluations", {
   setup_mock_env()
   withr::local_envvar(AZURE_FOUNDRY_PROJECT_ENDPOINT = project_url)
+
+  files_req <- foundry_build_routed_request("files", path = "files", method = "GET", project_endpoint = project_url)
+  expect_equal(files_req$url, paste0(project_url, "/openai/v1/files"))
+  expect_contains(names(files_req$headers), "api-key")
+
   expect_error(
-    foundry_build_routed_request("files", path = "files", method = "GET", project_endpoint = project_url),
+    foundry_build_routed_request("evals", path = "evals", method = "GET", project_endpoint = project_url),
     "Microsoft Entra ID token"
   )
   expect_error(
     foundry_build_routed_request(
-      "files",
-      path = "files",
+      "evals",
+      path = "evals",
       method = "GET",
       api_key = "key",
       project_endpoint = project_url
     ),
-    "not API keys"
+    "not an API key"
   )
 
   withr::local_envvar(AZURE_FOUNDRY_PROJECT_TOKEN = "test-project-token")
-  req <- foundry_build_routed_request("files", path = "files", method = "GET", project_endpoint = project_url)
-  expect_equal(req$url, paste0(project_url, "/openai/v1/files"))
+  req <- foundry_build_routed_request("evals", path = "evals", method = "GET", project_endpoint = project_url)
+  expect_equal(req$url, paste0(project_url, "/openai/v1/evals"))
   expect_equal(request_header(req, "Authorization"), "Bearer test-project-token")
   expect_null(req$headers$`api-key`)
 })

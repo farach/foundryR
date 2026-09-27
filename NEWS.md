@@ -4,7 +4,6 @@
 
 These changes can alter the output of code written for 0.1.0. Most fix behavior that was wrong or that the service rejected.
 
-- Project endpoints now authenticate with Microsoft Entra ID only. Calls to a project endpoint no longer fall back to an API key, and passing `api_key` together with `project_endpoint` is an error. The service rejects API keys there, so these calls already failed; they now fail before the request is sent, with a message that explains how to set a project token.
 - `foundry_transcribe()` now uses standard Speech fast transcription by default, with no enhanced mode and no model. The old default, enhanced mode with `mai-transcribe-1.5`, is rejected in many regions, including East US 2. Pass `model = "mai-transcribe-2"` or the new `enhanced = TRUE` to use MAI-Transcribe or LLM Speech where they are available.
 - `foundry_translate_audio()` no longer defaults to a MAI-Transcribe model for Speech translation, because MAI-Transcribe does not translate. Speech translation still needs LLM Speech enhanced mode.
 - OpenAI-route audio calls (`foundry_transcribe()` and `foundry_translate_audio()` with `service = "openai"`, and `foundry_speak()`) now require an explicit `model` deployment name instead of falling back to `AZURE_FOUNDRY_MODEL`, which usually names a chat deployment.
@@ -57,6 +56,9 @@ These changes can alter the output of code written for 0.1.0. Most fix behavior 
 - `foundry_transcribe()` places `transcribe_style` under `enhancedMode.modelOptions`, as Microsoft Learn documents, reports enhanced-mode region failures with guidance, and fills `duration_ms` from Whisper `verbose_json` responses.
 - `foundry_vector_search()` returns the text of each content part rather than the parts' type labels.
 - `foundry_eval_delete()` warns when the service does not confirm the deletion. A project endpoint has been observed to answer `deleted = false` and keep the evaluation.
+- Evaluation calls to a project endpoint need a Microsoft Entra ID token. With only an API key they now stop before the request with an explanation, instead of the service's HTTP 403. The other project APIs (responses, agents, conversations, files, and vector stores) accept the resource's API key, as in 0.1.0.
+- `foundry_eval_run_results()` reports each grader under the name you gave it; the resource endpoint appends an ID to grader names, which is now removed from `.grader`. For `label_model` and `score_model` graders, `.label` and `.reason` (and `label` and `reason` in `foundry_eval_run_output_items()`) now hold the judge's chosen label and the conclusions of its reasoning, which were empty.
+- `foundry_translate_audio()` gives region guidance when the Speech resource cannot translate, including the "specified model is not supported" answer seen in regions without LLM Speech translation.
 - `foundry_eval_run_output_items()` follows the service's pagination and returns every output item. It previously returned only the first page, which silently truncated larger runs. `limit` still caps the number of output items returned.
 - `codebook_diff()` shows key-level changes inside a changed field, such as `enum: +workload`, instead of cutting values off at 77 characters.
 - `foundry_models()` is documented correctly: it lists the models available to your resource, not your deployments.

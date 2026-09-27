@@ -35,9 +35,11 @@ agent target, or stored responses. It prints a message when it switches.
 Objects created on one endpoint are not always visible from the other. Look
 a file, vector store, or evaluation up on the endpoint where you created it.
 
-Project endpoints accept Microsoft Entra ID tokens, not API keys. See
-\code{\link[=foundry_token_azure_cli]{foundry_token_azure_cli()}}, \code{\link[=foundry_token_azure_identity]{foundry_token_azure_identity()}}, and
-\code{\link[=foundry_set_token]{foundry_set_token()}} with \code{scope = "project"}.
+Project endpoints accept the resource's API key for responses, agents,
+conversations, files, and vector stores. Evaluations on a project endpoint
+need a Microsoft Entra ID token; see \code{\link[=foundry_token_azure_cli]{foundry_token_azure_cli()}},
+\code{\link[=foundry_token_azure_identity]{foundry_token_azure_identity()}}, and \code{\link[=foundry_set_token]{foundry_set_token()}} with
+\code{scope = "project"}.
 }
 \examples{
 old <- foundry_set_route("project")

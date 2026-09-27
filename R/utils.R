@@ -107,10 +107,12 @@ foundry_build_project_request <- function(path,
                                           api_key = NULL,
                                           token = NULL,
                                           endpoint = NULL,
-                                          api_version = "v1") {
-  if (!is.null(api_key)) {
+                                          api_version = "v1",
+                                          allow_key = TRUE) {
+  if (!allow_key && !is.null(api_key)) {
     cli::cli_abort(c(
-      "Foundry project endpoints accept Microsoft Entra ID tokens, not API keys.",
+      "Evaluations on a Foundry project endpoint need a Microsoft Entra ID token, not an API key.",
+      "i" = "The service answers HTTP 403 to API keys there.",
       "i" = "Drop {.arg api_key} and authenticate with {.code foundry_set_token_provider(foundry_token_azure_cli(), scope = \"project\")}, {.fn foundry_token_azure_identity}, or {.code foundry_set_token(scope = \"project\")}."
     ))
   }
@@ -122,9 +124,10 @@ foundry_build_project_request <- function(path,
   req <- httr2::request(url) |>
     httr2::req_method(method) |>
     foundry_authenticate_request(
+      api_key = api_key,
       token = token,
       token_scope = "project",
-      allow_key = FALSE
+      allow_key = allow_key
     ) |>
     httr2::req_retry(max_tries = 3, backoff = ~ 2) |>
     httr2::req_error(body = foundry_error_body)
@@ -205,8 +208,8 @@ foundry_authenticate_request <- function(req,
 
   if (required && !allow_key) {
     cli::cli_abort(c(
-      "The Foundry project endpoint needs a Microsoft Entra ID token.",
-      "i" = "Project endpoints do not accept API keys.",
+      "Evaluations on a Foundry project endpoint need a Microsoft Entra ID token.",
+      "i" = "The service answers HTTP 403 to API keys there.",
       "i" = "Use {.code foundry_set_token_provider(foundry_token_azure_cli(), scope = \"project\")}, {.fn foundry_token_azure_identity}, or {.code foundry_set_token(scope = \"project\")}."
     ))
   }

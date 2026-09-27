@@ -288,6 +288,36 @@ test_that("Speech enhanced mode region errors are actionable", {
   )
 })
 
+test_that("Speech translation 'not supported' errors get region guidance", {
+  setup_mock_env()
+  withr::local_envvar(
+    AZURE_FOUNDRY_SPEECH_ENDPOINT = "https://speech.example.com",
+    AZURE_FOUNDRY_SPEECH_KEY = "speech-key",
+    AZURE_FOUNDRY_SPEECH_TOKEN = ""
+  )
+  audio <- withr::local_tempfile(fileext = ".wav")
+  writeBin(charToRaw("fake audio"), audio)
+  # Shape returned live by a Sweden Central Speech resource.
+  mock_resp <- mock_httr2_response(
+    list(error = list(message = "The specified model is not supported.")),
+    status_code = 400L
+  )
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) mock_resp,
+    .package = "httr2"
+  )
+
+  expect_error(
+    foundry_translate_audio(audio, target_language = "es"),
+    regexp = "not available for this Speech resource's region.*specified model is not supported"
+  )
+  expect_error(
+    foundry_transcribe(audio),
+    regexp = "HTTP 400 from the Speech endpoint",
+    class = "httr2_http_400"
+  )
+})
+
 test_that("OpenAI audio routes require explicit models", {
   setup_mock_env()
   audio <- withr::local_tempfile(fileext = ".wav")

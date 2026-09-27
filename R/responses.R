@@ -49,9 +49,9 @@
 #' @param api_key Character. Optional API key override.
 #' @param endpoint Character. Optional resource endpoint override.
 #' @param project_endpoint Character. Optional project endpoint override. When
-#'   supplied, the request uses the project-scoped Responses API, which accepts
-#'   Microsoft Entra ID tokens only. Agent-backed responses always use a project
-#'   endpoint, and [foundry_set_route()] can make it the session default.
+#'   supplied, the request uses the project-scoped Responses API. Agent-backed
+#'   responses always use a project endpoint, and [foundry_set_route()] can make
+#'   it the session default.
 #' @param agent Character or list. Optional agent to run instead of a bare
 #'   model: an agent name, a [foundry_agent_reference()] object, or a one-row
 #'   tibble from [foundry_agent_create()]. When supplied, `model` is ignored,

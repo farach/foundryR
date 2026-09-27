@@ -348,6 +348,32 @@ test_that("foundry_eval_delete warns when the service keeps the evaluation", {
   expect_false(out$deleted)
 })
 
+test_that("model grader results carry the judge's label and reasoning", {
+  # Shape returned live by a label_model grader on the resource endpoint.
+  item <- list(
+    id = "oi_1", run_id = "run_1", eval_id = "eval_1", datasource_item_id = 0L,
+    status = "completed",
+    results = list(list(
+      name = "tone-4b960655-97b3-4845-9f4b-1f4d44dad466",
+      score = 0,
+      passed = FALSE,
+      sample = list(output = list(list(
+        role = "assistant",
+        content = paste0(
+          '{"steps":[{"description":"Read the wording.","conclusion":"The message insults the reader."},',
+          '{"description":"Decide.","conclusion":"It is rude."}],"result":"rude"}'
+        )
+      )))
+    ))
+  )
+  out <- foundry_eval_output_item_tibble(item)
+  expect_equal(out$label, "rude")
+  expect_equal(out$reason, "The message insults the reader. It is rude.")
+  expect_equal(out$grader_name, "tone-4b960655-97b3-4845-9f4b-1f4d44dad466")
+  expect_equal(foundry_eval_grader_name(out$grader_name), "tone")
+  expect_equal(foundry_eval_grader_name("label-match"), "label-match")
+})
+
 # ---------------------------------------------------------------------------
 # Run lifecycle
 # ---------------------------------------------------------------------------

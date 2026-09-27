@@ -74,8 +74,7 @@ foundry_conversation_items_add(
 \arguments{
 \item{metadata}{List. Optional metadata.}
 
-\item{api_key}{Not supported: project endpoints do not accept API keys.
-Kept for compatibility; supplying it is an error.}
+\item{api_key}{Character. Optional API key override.}
 
 \item{endpoint}{Character. A project endpoint URL, accepted for
 compatibility. A resource endpoint is an error because conversations do not
@@ -107,18 +106,18 @@ the Responses API.
 \details{
 Conversations exist only on a Foundry project endpoint, so these functions
 always use one: \code{project_endpoint} if you pass it, otherwise the endpoint set
-with \code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}}. Project endpoints accept Microsoft
-Entra ID tokens, not API keys.
+with \code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}}.
 }
 \examples{
-# Requires a configured project endpoint and a project-scoped Microsoft
-# Entra ID token, with permission to create and delete the conversation.
+# Requires a configured project endpoint and credentials with permission
+# to create and delete the conversation.
 if (interactive() &&
     nzchar(Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT"))) {
   conversation <- foundry_conversation_create(
     metadata = list(example = "cran")
   )
   id <- conversation$conversation_id[[1]]
+  foundry_conversations(limit = 10)
   foundry_conversation_get(id)
   foundry_conversation_update(id, metadata = list(example = "updated"))
   foundry_conversation_items(id)

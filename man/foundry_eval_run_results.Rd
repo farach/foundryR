@@ -38,8 +38,9 @@ v1 evals surface is path-versioned, so this is usually left \code{NULL}.}
 endpoint, such as
 \code{"https://<account>.services.ai.azure.com/api/projects/<project>"}.
 Supplying it selects the project-scoped Evals route
-(\verb{<project>/openai/v1/evals}), which accepts Microsoft Entra ID tokens
-only. Without it, evaluation calls use the resource endpoint, as in
+(\verb{<project>/openai/v1/evals}), which needs a Microsoft Entra ID token: the
+service answers HTTP 403 to API keys there. Without it, evaluation calls use
+the resource endpoint, as in
 foundryR 0.1.0, unless \code{\link[=foundry_set_route]{foundry_set_route()}} selected the project or the
 call needs a feature that exists only on a project endpoint: built-in
 \code{azure_ai_evaluator} graders, model or agent targets, or stored responses.
@@ -55,9 +56,13 @@ of \code{data}. It contains every column of \code{data} followed by:
 \item{.eval_id, .run_id, .output_item_id}{Evaluation, run, and output
 item identifiers.}
 \item{.status}{Output item status reported by the service.}
-\item{.grader, .grader_type, .metric}{Grader name, type, and metric.}
+\item{.grader, .grader_type, .metric}{Grader name, type, and metric.
+\code{.grader} is the name you gave the grader; the resource endpoint's
+appended ID is removed.}
 \item{.score, .label, .passed, .threshold, .reason}{Grader result. Not
-every grader reports every field.}
+every grader reports every field. For \code{label_model} and \code{score_model}
+graders, \code{.label} is the judge's chosen label and \code{.reason} joins the
+conclusions of the judge's reasoning steps.}
 \item{.output_text, .output_items}{The generated response for target
 runs: plain text and the structured output (a list-column).}
 }

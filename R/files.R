@@ -14,13 +14,12 @@
 #'   creation when the file should expire, sent as an `expires_after` object.
 #'   Default `NULL` sends no expiry. The service rejects an expiry for
 #'   `purpose = "assistants"`.
-#' @param api_key Character. Optional API key override (resource endpoint
-#'   only).
+#' @param api_key Character. Optional API key override.
 #' @param token Character. Optional bearer token override.
 #' @param endpoint Character. Optional endpoint override.
 #' @param api_version Character. Optional API version query value.
 #' @param project_endpoint Character. Optional project endpoint. When supplied,
-#'   the call uses the project endpoint and Microsoft Entra ID authentication.
+#'   the call uses the project endpoint instead of the resource endpoint.
 #'
 #' @return A one-row tibble with file metadata.
 #' @export

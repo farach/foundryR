@@ -83,8 +83,9 @@ most one of \code{endpoint} and \code{project_endpoint}.}
 endpoint, such as
 \code{"https://<account>.services.ai.azure.com/api/projects/<project>"}.
 Supplying it selects the project-scoped Evals route
-(\verb{<project>/openai/v1/evals}), which accepts Microsoft Entra ID tokens
-only. Without it, evaluation calls use the resource endpoint, as in
+(\verb{<project>/openai/v1/evals}), which needs a Microsoft Entra ID token: the
+service answers HTTP 403 to API keys there. Without it, evaluation calls use
+the resource endpoint, as in
 foundryR 0.1.0, unless \code{\link[=foundry_set_route]{foundry_set_route()}} selected the project or the
 call needs a feature that exists only on a project endpoint: built-in
 \code{azure_ai_evaluator} graders, model or agent targets, or stored responses.

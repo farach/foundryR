@@ -23,9 +23,11 @@
 #' Objects created on one endpoint are not always visible from the other. Look
 #' a file, vector store, or evaluation up on the endpoint where you created it.
 #'
-#' Project endpoints accept Microsoft Entra ID tokens, not API keys. See
-#' [foundry_token_azure_cli()], [foundry_token_azure_identity()], and
-#' [foundry_set_token()] with `scope = "project"`.
+#' Project endpoints accept the resource's API key for responses, agents,
+#' conversations, files, and vector stores. Evaluations on a project endpoint
+#' need a Microsoft Entra ID token; see [foundry_token_azure_cli()],
+#' [foundry_token_azure_identity()], and [foundry_set_token()] with
+#' `scope = "project"`.
 #'
 #' @param route Character. `"resource"` (the default) or `"project"`.
 #'
@@ -177,7 +179,10 @@ foundry_build_routed_request <- function(family,
       api_key = api_key,
       token = token,
       endpoint = route$project_endpoint,
-      api_version = api_version
+      api_version = api_version,
+      # Live checks: project evaluations answer 403 to API keys; the other
+      # project APIs accept them.
+      allow_key = !identical(family, "evals")
     ))
   }
 

@@ -119,15 +119,14 @@ time.}
 
 \item{metadata}{List. Optional metadata.}
 
-\item{api_key}{Character. Optional API key override (resource endpoint
-only).}
+\item{api_key}{Character. Optional API key override.}
 
 \item{endpoint}{Character. Optional endpoint override.}
 
 \item{token}{Character. Optional bearer token override.}
 
 \item{project_endpoint}{Character. Optional project endpoint. When supplied,
-the call uses the project endpoint and Microsoft Entra ID authentication.}
+the call uses the project endpoint instead of the resource endpoint.}
 
 \item{limit}{Integer. Optional page size.}
 

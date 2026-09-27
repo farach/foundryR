@@ -361,9 +361,13 @@ foundry_eval_run_wait <- function(eval_id,
 #'     \item{.eval_id, .run_id, .output_item_id}{Evaluation, run, and output
 #'       item identifiers.}
 #'     \item{.status}{Output item status reported by the service.}
-#'     \item{.grader, .grader_type, .metric}{Grader name, type, and metric.}
+#'     \item{.grader, .grader_type, .metric}{Grader name, type, and metric.
+#'       `.grader` is the name you gave the grader; the resource endpoint's
+#'       appended ID is removed.}
 #'     \item{.score, .label, .passed, .threshold, .reason}{Grader result. Not
-#'       every grader reports every field.}
+#'       every grader reports every field. For `label_model` and `score_model`
+#'       graders, `.label` is the judge's chosen label and `.reason` joins the
+#'       conclusions of the judge's reasoning steps.}
 #'     \item{.output_text, .output_items}{The generated response for target
 #'       runs: plain text and the structured output (a list-column).}
 #'   }
@@ -737,6 +741,17 @@ foundry_eval_items <- function(data, schema = NULL) {
 }
 
 
+# The resource endpoint appends "-<uuid>" to grader names; restore the name the
+# grader was given so results can be filtered by it.
+foundry_eval_grader_name <- function(name) {
+  sub(
+    "-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+    "",
+    name
+  )
+}
+
+
 foundry_eval_same_value <- function(expected, echoed) {
   if (is.null(echoed) || length(echoed) != 1L) {
     return(FALSE)
@@ -817,7 +832,7 @@ foundry_eval_join_results <- function(items, data, eval_id, run_id) {
     .run_id = run_id,
     .output_item_id = c(items$output_item_id, rep(NA_character_, length(unmatched))),
     .status = c(items$status, rep(NA_character_, length(unmatched))),
-    .grader = c(items$grader_name, rep(NA_character_, length(unmatched))),
+    .grader = c(foundry_eval_grader_name(items$grader_name), rep(NA_character_, length(unmatched))),
     .grader_type = c(items$grader_type, rep(NA_character_, length(unmatched))),
     .metric = c(items$metric, rep(NA_character_, length(unmatched))),
     .score = c(items$score, rep(NA_real_, length(unmatched))),

@@ -105,9 +105,9 @@ include.}
 \item{endpoint}{Character. Optional resource endpoint override.}
 
 \item{project_endpoint}{Character. Optional project endpoint override. When
-supplied, the request uses the project-scoped Responses API, which accepts
-Microsoft Entra ID tokens only. Agent-backed responses always use a project
-endpoint, and \code{\link[=foundry_set_route]{foundry_set_route()}} can make it the session default.}
+supplied, the request uses the project-scoped Responses API. Agent-backed
+responses always use a project endpoint, and \code{\link[=foundry_set_route]{foundry_set_route()}} can make
+it the session default.}
 
 \item{agent}{Character or list. Optional agent to run instead of a bare
 model: an agent name, a \code{\link[=foundry_agent_reference]{foundry_agent_reference()}} object, or a one-row

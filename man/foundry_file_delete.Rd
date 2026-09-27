@@ -16,8 +16,7 @@ foundry_file_delete(
 \arguments{
 \item{file_id}{Character. File ID to delete.}
 
-\item{api_key}{Character. Optional API key override (resource endpoint
-only).}
+\item{api_key}{Character. Optional API key override.}
 
 \item{token}{Character. Optional bearer token override.}
 
@@ -26,7 +25,7 @@ only).}
 \item{api_version}{Character. Optional API version query value.}
 
 \item{project_endpoint}{Character. Optional project endpoint. When supplied,
-the call uses the project endpoint and Microsoft Entra ID authentication.}
+the call uses the project endpoint instead of the resource endpoint.}
 }
 \value{
 A tibble with deletion status.
