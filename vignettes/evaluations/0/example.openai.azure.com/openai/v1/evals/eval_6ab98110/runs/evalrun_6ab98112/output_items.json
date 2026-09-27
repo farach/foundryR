@@ -1,0 +1,644 @@
+{
+    "object": "list",
+    "data": [
+        {
+            "id": "outputitem_6ab98124020081919c76178018f1f662",
+            "object": "eval.run.output_item",
+            "created_at": 1790542116,
+            "status": "fail",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 7,
+                "comment": "I could not find the practice datasets on the course site.",
+                "theme": "materials",
+                "draft_theme": "support",
+                "foundryr_row_id": "row-7"
+            },
+            "datasource_item_id": 6,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 0.0,
+                    "passed": false,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is materials. The proposed theme is support. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Identify the meaning of the reference theme 'materials' — typically refers to substances or components used to make or build things (e.g., wood, metal, fabric) or educational materials when in that context.\",\"conclusion\":\"'materials' centers on physical substances or instructional content.\"},{\"description\":\"Identify the meaning of the proposed theme 'support' — generally refers to assistance, reinforcement, or something that holds up or helps (e.g., emotional support, structural support, support services).\",\"conclusion\":\"'support' centers on assistance or reinforcement, not substances.\"},{\"description\":\"Compare the two themes for semantic overlap. While 'support' can be related to materials in contexts like 'supporting materials' or 'structural support,' as standalone single-word themes they represent different core concepts (substance vs. assistance/role).\",\"conclusion\":\"The proposed theme does not match the primary meaning of the reference theme.\"}],\"result\":\"mismatch\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 471,
+                            "completion_tokens": 338,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab981236b508191a7858c2968999125",
+            "object": "eval.run.output_item",
+            "created_at": 1790542115,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 6,
+                "comment": "The instructor explained regression with great examples.",
+                "theme": "instruction",
+                "draft_theme": "instruction",
+                "foundryr_row_id": "row-6"
+            },
+            "datasource_item_id": 5,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is instruction. The proposed theme is instruction. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Compare the reference theme 'instruction' with the proposed theme 'instruction'.\",\"conclusion\":\"They are identical strings.\"},{\"description\":\"Determine if identical themes constitute a match.\",\"conclusion\":\"Identical themes indicate a match.\"}],\"result\":\"match\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 267,
+                            "completion_tokens": 134,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab98122d2dc8191a9d36c503c6a2e64",
+            "object": "eval.run.output_item",
+            "created_at": 1790542115,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 1,
+                "comment": "The lectures were clear and the slides matched what was said.",
+                "theme": "instruction",
+                "draft_theme": "instruction",
+                "foundryr_row_id": "row-1"
+            },
+            "datasource_item_id": 0,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is instruction. The proposed theme is instruction. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Compare the reference theme ('instruction') with the proposed theme ('instruction').\",\"conclusion\":\"They are identical strings.\"},{\"description\":\"Determine if an identical match qualifies as a match between themes.\",\"conclusion\":\"Identical themes indicate a match.\"}],\"result\":\"match\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 271,
+                            "completion_tokens": 138,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab9812140608191a971305c65a67235",
+            "object": "eval.run.output_item",
+            "created_at": 1790542114,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 12,
+                "comment": "Tutoring sessions helped me catch up after I was sick.",
+                "theme": "support",
+                "draft_theme": "support",
+                "foundryr_row_id": "row-12"
+            },
+            "datasource_item_id": 11,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is support. The proposed theme is support. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Compare the reference theme ('support') to the proposed theme ('support'). They are identical strings with the same meaning.\",\"conclusion\":\"The themes match.\"},{\"description\":\"Assign final label based on the exact match of themes.\",\"conclusion\":\"Label = match.\"}],\"result\":\"match\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 338,
+                            "completion_tokens": 205,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab98120ac008191b1cda30b5fc4a76b",
+            "object": "eval.run.output_item",
+            "created_at": 1790542113,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 2,
+                "comment": "Weekly quizzes were too long for the time we had.",
+                "theme": "assessment",
+                "draft_theme": "assessment",
+                "foundryr_row_id": "row-2"
+            },
+            "datasource_item_id": 1,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is assessment. The proposed theme is assessment. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Compare the reference theme 'assessment' with the proposed theme 'assessment' to determine if they are the same concept or label.\",\"conclusion\":\"The two themes are identical in wording and meaning.\"},{\"description\":\"Decide whether the identical themes indicate a match.\",\"conclusion\":\"Since both themes are the same, the proposal matches the reference.\"}],\"result\":\"match\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 290,
+                            "completion_tokens": 157,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab981200730819183d1bd061a135294",
+            "object": "eval.run.output_item",
+            "created_at": 1790542112,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 9,
+                "comment": "Grading rubrics were never posted before assignments were due.",
+                "theme": "assessment",
+                "draft_theme": "assessment",
+                "foundryr_row_id": "row-9"
+            },
+            "datasource_item_id": 8,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is assessment. The proposed theme is assessment. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\n  \"steps\": [\n    {\n      \"description\": \"Compare the reference theme ('assessment') with the proposed theme ('assessment').\",\n      \"conclusion\": \"The two themes are identical.\"\n    },\n    {\n      \"description\": \"Determine whether identical themes constitute a match.\",\n      \"conclusion\": \"Identical themes indicate a match.\"\n    }\n  ],\n  \"result\": \"match\"\n}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 293,
+                            "completion_tokens": 160,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab9811f68148191aab0f51214c8e786",
+            "object": "eval.run.output_item",
+            "created_at": 1790542111,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 11,
+                "comment": "The pace was fine, but the instructor skipped the hard proofs.",
+                "theme": "instruction",
+                "draft_theme": "instruction",
+                "foundryr_row_id": "row-11"
+            },
+            "datasource_item_id": 10,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is instruction. The proposed theme is instruction. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Compare the reference theme 'instruction' with the proposed theme 'instruction'.\",\"conclusion\":\"They are identical strings.\"},{\"description\":\"Determine whether identical themes constitute a match.\",\"conclusion\":\"Identical themes mean the proposal matches the reference.\"}],\"result\":\"match\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 270,
+                            "completion_tokens": 137,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab9811ed5f8819190d2ca123181fb57",
+            "object": "eval.run.output_item",
+            "created_at": 1790542111,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 8,
+                "comment": "The TA answered forum questions within a day.",
+                "theme": "support",
+                "draft_theme": "support",
+                "foundryr_row_id": "row-8"
+            },
+            "datasource_item_id": 7,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is support. The proposed theme is support. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Compare the reference theme 'support' and the proposed theme 'support'.\",\"conclusion\":\"They are identical.\"},{\"description\":\"Determine whether identical themes should be labeled as match.\",\"conclusion\":\"Identical themes => match.\"}],\"result\":\"match\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 267,
+                            "completion_tokens": 134,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab9811e374081918e42b62fd9839c12",
+            "object": "eval.run.output_item",
+            "created_at": 1790542110,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 10,
+                "comment": "Recorded lectures had no captions.",
+                "theme": "materials",
+                "draft_theme": "materials",
+                "foundryr_row_id": "row-10"
+            },
+            "datasource_item_id": 9,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is materials. The proposed theme is materials. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Compare the reference theme 'materials' with the proposed theme 'materials'.\",\"conclusion\":\"The two themes are identical.\"},{\"description\":\"Determine whether identical themes should be labeled as match.\",\"conclusion\":\"Identical themes indicate a match.\"}],\"result\":\"match\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 270,
+                            "completion_tokens": 137,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab9811da8088191b33670069d6f9f20",
+            "object": "eval.run.output_item",
+            "created_at": 1790542110,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 3,
+                "comment": "Office hours were always full, so I never got help.",
+                "theme": "support",
+                "draft_theme": "support",
+                "foundryr_row_id": "row-3"
+            },
+            "datasource_item_id": 2,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is support. The proposed theme is support. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Compare the reference theme 'support' with the proposed theme 'support'.\",\"conclusion\":\"The themes are identical in wording and meaning.\"},{\"description\":\"Determine whether the themes align exactly.\",\"conclusion\":\"They align exactly as both are 'support'.\"}],\"result\":\"match\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 273,
+                            "completion_tokens": 140,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab9811d0d348191bf9c46aebca9d8ab",
+            "object": "eval.run.output_item",
+            "created_at": 1790542109,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 5,
+                "comment": "Feedback on the midterm came back after the final.",
+                "theme": "assessment",
+                "draft_theme": "assessment",
+                "foundryr_row_id": "row-5"
+            },
+            "datasource_item_id": 4,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is assessment. The proposed theme is assessment. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Compare the reference theme ('assessment') to the proposed theme ('assessment').\",\"conclusion\":\"Both themes are identical.\"},{\"description\":\"Determine whether identical themes constitute a match.\",\"conclusion\":\"Identical themes indicate a match.\"}],\"result\":\"match\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 267,
+                            "completion_tokens": 134,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        },
+        {
+            "id": "outputitem_6ab9811c4c508191b139f5f28dd4b14e",
+            "object": "eval.run.output_item",
+            "created_at": 1790542109,
+            "status": "pass",
+            "_datasource_item_content_hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "available_includes": [
+
+            ],
+            "datasource_item": {
+                "id": 4,
+                "comment": "The textbook chapters were out of date.",
+                "theme": "materials",
+                "draft_theme": "materials",
+                "foundryr_row_id": "row-4"
+            },
+            "datasource_item_id": 3,
+            "eval_id": "eval_6ab98110",
+            "results": [
+                {
+                    "name": "label-audit-9635319d-b016-47ea-81f8-44ebbd552625",
+                    "score": 1.0,
+                    "passed": true,
+                    "sample": {
+                        "input": [
+                            {
+                                "role": "user",
+                                "content": "The reference theme is materials. The proposed theme is materials. Label the proposal as match or mismatch."
+                            }
+                        ],
+                        "output": [
+                            {
+                                "role": "assistant",
+                                "content": "{\"steps\":[{\"description\":\"Identify the reference theme: 'materials'.\",\"conclusion\":\"Reference theme is materials.\"},{\"description\":\"Identify the proposed theme: 'materials'.\",\"conclusion\":\"Proposed theme is materials.\"},{\"description\":\"Compare the reference and proposed themes for equivalence.\",\"conclusion\":\"They are identical.\"}],\"result\":\"match\"}"
+                            }
+                        ],
+                        "finish_reason": "stop",
+                        "model": "gpt-5-mini-2025-08-07",
+                        "usage": {
+                            "total_tokens": 281,
+                            "completion_tokens": 148,
+                            "prompt_tokens": 133,
+                            "cached_tokens": 0
+                        },
+                        "error": null,
+                        "temperature": 1.0,
+                        "top_p": 1.0
+                    }
+                }
+            ],
+            "run_id": "evalrun_6ab98112",
+            "sample": null
+        }
+    ],
+    "first_id": "outputitem_6ab98124020081919c76178018f1f662",
+    "has_more": false,
+    "last_id": "outputitem_6ab9811c4c508191b139f5f28dd4b14e"
+}

@@ -21,18 +21,21 @@ foundry_transcribe(
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  enhanced = NULL
 )
 }
 \arguments{
 \item{file}{Character. Local audio file path.}
 
-\item{model}{Character. Model or deployment name. Defaults to
-\code{"mai-transcribe-1.5"} for \code{service = "speech"} and to
-\code{AZURE_FOUNDRY_MODEL} for \code{service = "openai"}.}
+\item{model}{Character. Optional Speech enhanced-mode model, or required
+Azure OpenAI audio deployment name when \code{service = "openai"}. Leave \code{NULL}
+with \code{service = "speech"} to use standard fast transcription; the returned
+\code{model} column is \code{NA} for this path.}
 
-\item{service}{Character. \code{"speech"} for LLM Speech/MAI-Transcribe or
-\code{"openai"} for \verb{/openai/v1/audio/transcriptions}.}
+\item{service}{Character. \code{"speech"} for standard Speech fast transcription
+or enhanced LLM Speech/MAI-Transcribe; \code{"openai"} for
+\verb{/openai/v1/audio/transcriptions}.}
 
 \item{api}{Character. Used when \code{service = "openai"}. \code{"v1"} calls the
 \verb{/openai/v1/...} data-plane path; \code{"deployment"} calls
@@ -69,21 +72,44 @@ granularities, such as \code{"segment"} or \code{"word"}.}
 
 \item{api_version}{Character. Optional API version. Defaults to
 \code{"2025-10-15"} for Speech and \code{"preview"} for OpenAI audio.}
+
+\item{enhanced}{Logical or \code{NULL}. For \code{service = "speech"}, \code{NULL} uses
+standard fast transcription unless a model, prompt, or \code{transcribe_style}
+requires enhanced mode. \code{TRUE} forces LLM Speech enhanced mode. \code{FALSE}
+forbids enhanced mode and errors if enhanced-only options are supplied.}
 }
 \value{
-A one-row tibble with transcript text, phrase-level detail, and the
-raw response in list-columns.
+A one-row tibble with transcript text, phrase-level detail, the model
+that ran (\code{NA} for standard Speech fast transcription), and the raw response
+in list-columns.
 }
 \description{
-Transcribe audio through the Speech in Foundry Tools LLM Speech API, including
-MAI-Transcribe models, or through the Azure OpenAI v1 preview audio endpoint.
+Transcribe audio through standard Speech fast transcription, the Speech in
+Foundry Tools enhanced LLM Speech/MAI-Transcribe API, or the Azure OpenAI v1
+preview audio endpoint.
+}
+\details{
+Standard Speech fast transcription is the default for \code{service = "speech"};
+it works in regular Speech regions and does not require a model deployment.
+Enhanced LLM Speech and MAI-Transcribe modes are opt-in, preview or
+region-limited, and are used when \code{enhanced = TRUE}, \code{model} is supplied, or
+enhanced-only options such as \code{prompt} or \code{transcribe_style} are supplied.
+
+For Azure OpenAI audio, pass the deployment name explicitly in \code{model}.
+Azure \code{whisper} version \code{001} retires on 2026-12-15. The
+\verb{gpt-4o-mini-transcribe} version \code{2025-12-15} is generally available until
+2027-06-15.
 }
 \examples{
 \dontrun{
-# Requires configured Azure Speech/OpenAI endpoints and credentials,
-# the corresponding models, and your own local audio input files.
-foundry_transcribe("interview.mp3", model = "mai-transcribe-1.5")
-foundry_transcribe("interview.mp3", service = "openai", model = "gpt-4o-transcribe")
+# Requires configured Azure Speech/OpenAI endpoints and credentials
+# and your own local audio input files.
+foundry_transcribe("interview.mp3")
+foundry_transcribe("interview.mp3", model = "mai-transcribe-2")
+foundry_transcribe("interview.mp3", enhanced = TRUE, prompt = "Use names exactly.")
+foundry_transcribe(
+  "interview.mp3", service = "openai", model = "gpt-4o-transcribe"
+)
 foundry_transcribe(
   "speech.wav", service = "openai", model = "whisper", api = "deployment"
 )

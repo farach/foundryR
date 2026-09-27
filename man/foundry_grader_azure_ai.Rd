@@ -18,7 +18,8 @@ foundry_grader_azure_ai(
 \item{evaluator_name}{Character. The evaluator ID, e.g. \code{"builtin.coherence"}.}
 
 \item{initialization_parameters}{List. Optional parameters passed to the
-evaluator, e.g. \code{list(model = "gpt-5-nano")} for model-graded evaluators.}
+evaluator. Model-graded evaluators take the judge deployment as
+\code{list(deployment_name = "gpt-5-mini")}.}
 
 \item{data_mapping}{Named list. Optional mapping from evaluator inputs to
 dataset templates, e.g. \code{list(query = "{{item.query}}", response = "{{sample.output_text}}")}.}
@@ -31,14 +32,15 @@ A named list describing an \code{azure_ai_evaluator} grader.
 }
 \description{
 Reference a Microsoft Foundry built-in evaluator (a \verb{builtin.*} ID such as
-\code{builtin.coherence} or \code{builtin.groundedness}) as a grader. This grader type
-is only available on the project-scoped Foundry endpoint.
+\code{builtin.coherence} or \code{builtin.groundedness}) as a grader. Built-in
+evaluators run only on a Foundry project endpoint; \code{\link[=foundry_eval_create]{foundry_eval_create()}}
+and \code{\link[=foundry_evaluate]{foundry_evaluate()}} switch to it when a grader of this type is present.
 }
 \examples{
 foundry_grader_azure_ai(
   name = "coherence",
   evaluator_name = "builtin.coherence",
-  initialization_parameters = list(model = "gpt-5-nano"),
+  initialization_parameters = list(deployment_name = "gpt-5-mini"),
   data_mapping = list(
     query = "{{item.query}}",
     response = "{{sample.output_text}}"

@@ -1,0 +1,101 @@
+# Azure model retirements that affect foundryR's defaults and documentation.
+#
+# Dates come from Azure's model metadata, checked 2026-09-27:
+#   az cognitiveservices model list -l eastus2
+# When Microsoft moves a date, update the entry here. The foundry-deadlines
+# workflow opens one issue per entry once `date - remind_days` has passed and
+# assigns it to the maintainer. It never opens a second issue for an entry,
+# so closing the issue marks the work as done.
+
+deadlines:
+  - id: sora-2-retirement
+    date: 2026-10-15
+    remind_days: 21
+    models: [sora-2 2025-12-08]
+    title: Release the defunct video functions to CRAN before sora-2 retires
+    why: >-
+      Azure retires its last Sora model on 2026-10-15 and has announced no
+      replacement. foundryR 0.1.0 on CRAN still exports video functions that
+      will fail after that date; the development version makes them defunct.
+    tasks:
+      - Bump the version to 0.2.0 and turn the NEWS.md development heading into the release heading.
+      - Run R CMD check --as-cran and devtools::check_win_devel().
+      - Update cran-comments.md and submit with devtools::submit_cran().
+      - Confirm the CRAN submission email (maintainer only).
+
+  - id: whisper-001-retirement
+    date: 2026-12-15
+    remind_days: 45
+    models: [whisper 001]
+    title: Replace the Whisper examples before whisper 001 retires
+    why: >-
+      The audio article and the foundry_translate_audio() documentation use a
+      classic whisper 001 deployment, the only Azure OpenAI model that serves
+      the audio translations endpoint.
+    tasks:
+      - Check whether Azure lists a replacement model for audio translation.
+      - Update vignettes/audio.Rmd, vignettes/api-support.Rmd, and the foundry_translate_audio() and foundry_transcribe() documentation.
+      - Re-record the audio article with data-raw/record-doc-outputs.R.
+      - If no replacement exists, soft-deprecate foundry_translate_audio(service = "openai") and note it in NEWS.md.
+
+  - id: gpt-5-nano-mini-retirement
+    date: 2027-02-09
+    remind_days: 60
+    models: [gpt-5-nano 2025-08-07, gpt-5-mini 2025-08-07]
+    title: Move the documentation off gpt-5-nano and gpt-5-mini 2025-08-07
+    why: >-
+      Every article uses gpt-5-nano as the default deployment and gpt-5-mini as
+      the evaluation judge.
+    tasks:
+      - Create successor deployments; check az cognitiveservices model list for current models and dates.
+      - Update deployment names in the articles, README.Rmd, and the replay placeholder in inst/httptest2/start-vignette.R.
+      - Re-record every article and the README, then inspect the rendered output.
+
+  - id: gpt-4-1-nano-batch-retirement
+    date: 2027-04-14
+    remind_days: 45
+    models: [gpt-4.1-nano 2025-04-14 (GlobalBatch)]
+    title: Replace the Global Batch deployment used by the batch article
+    why: >-
+      vignettes/files-batches.Rmd runs its batch jobs on the gpt-4.1-nano-batch
+      Global Batch deployment.
+    tasks:
+      - Create a Global Batch deployment of a current model.
+      - Update the deployment name in vignettes/files-batches.Rmd and re-record it.
+
+  - id: speech-models-retirement
+    date: 2027-06-15
+    remind_days: 45
+    models: [gpt-4o-mini-tts 2025-12-15, gpt-4o-mini-transcribe 2025-12-15]
+    title: Replace the speech synthesis deployment and transcription references
+    why: >-
+      The audio article synthesizes speech with gpt-4o-mini-tts, and the
+      foundry_transcribe() documentation names gpt-4o-mini-transcribe 2025-12-15.
+    tasks:
+      - Create a successor speech synthesis deployment.
+      - Update vignettes/audio.Rmd and the audio function documentation, then re-record the audio article.
+
+  - id: gpt-image-2-retirement
+    date: 2027-10-21
+    remind_days: 45
+    models: [gpt-image-2 2026-04-21]
+    title: Replace the image deployment used by the image article
+    why: >-
+      vignettes/media-generation.Rmd generates and edits images with gpt-image-2.
+    tasks:
+      - Create a successor image deployment.
+      - Update vignettes/media-generation.Rmd and the image function examples, then re-record the article.
+
+  - id: text-embedding-3-small-retirement
+    date: 2028-02-09
+    remind_days: 60
+    models: [text-embedding-3-small 1]
+    title: Replace text-embedding-3-small in the embedding articles and defaults
+    why: >-
+      The embeddings, tidymodels, getting-started, and O*NET articles embed text
+      with text-embedding-3-small, and the replay placeholder names it as the
+      default embedding model.
+    tasks:
+      - Create a successor embedding deployment.
+      - Update the model name in the articles and in inst/httptest2/start-vignette.R.
+      - Re-record the affected articles; stored vectors from the old model are not comparable with new ones.

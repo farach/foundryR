@@ -6,13 +6,15 @@
 # Test fixtures and environment
 # ---------------------------------------------------------------------------
 
-# Agents live on the project endpoint, so tests need that env var in addition
-# to the shared mock credentials.
+# Agents live on the project endpoint, which accepts Microsoft Entra ID tokens
+# only, so tests need the project endpoint and a project token in addition to
+# the shared mock credentials.
 setup_agent_env <- function(env = parent.frame()) {
   setup_mock_env(env = env)
   withr::local_envvar(
     AZURE_FOUNDRY_PROJECT_ENDPOINT =
       "https://test-resource.services.ai.azure.com/api/projects/test-project",
+    AZURE_FOUNDRY_PROJECT_TOKEN = "test-project-token",
     .local_envir = env
   )
 }

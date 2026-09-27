@@ -1,0 +1,88 @@
+{
+    "object": "eval.run",
+    "created_at": 1790542373,
+    "modified_at": 1790542387,
+    "duration": "PT12.5433986S",
+    "created_by": "Alex Farach",
+    "id": "evalrun_6d18ea56",
+    "eval_id": "eval_f82c7323",
+    "status": "completed",
+    "model": null,
+    "data_source": {
+        "type": "azure_ai_responses",
+        "item_generation_params": {
+            "type": "response_retrieval",
+            "max_num_turns": 10,
+            "data_mapping": {
+                "response_id": "{{item.resp_id}}"
+            },
+            "source": {
+                "type": "file_content",
+                "content": [
+                    {
+                        "item": {
+                            "resp_id": "resp_0892c464297f5d24006ab98219116c8193b47a848fc28d35c6"
+                        }
+                    },
+                    {
+                        "item": {
+                            "resp_id": "resp_029a6bb9a707702a006ab9821e278c819591ff98fc7b45b299"
+                        }
+                    }
+                ]
+            }
+        },
+        "max_runs_hourly": null,
+        "event_configuration_id": null
+    },
+    "metadata": {
+        "trigger_type": "oneoff"
+    },
+    "properties": {
+        "eval_id": "eval_f82c7323",
+        "runType": "eval_run",
+        "_azureml.evaluation_run": "evaluation.service",
+        "_azureml.evaluate_artifacts": "[{\"path\": \"instance_results.jsonl\", \"type\": \"table\"}]",
+        "DataSourceType": "AzureAIResponses",
+        "ItemGenerationType": "ResponseRetrieval",
+        "TargetType": "AzureAIAgent",
+        "job_logs": "azureai://accounts/example/projects/demo/evaluationresults/eval-result-evalrun_6d18ea56-QLES/versions/1"
+    },
+    "name": "sampled-helpdesk-responses",
+    "report_url": "https://ai.azure.com/",
+    "result_counts": {
+        "total": 2,
+        "passed": 2,
+        "failed": 0,
+        "errored": 0,
+        "skipped": 0
+    },
+    "per_model_usage": [
+        {
+            "model_name": "gpt-5-mini-2025-08-07",
+            "invocation_count": 2,
+            "total_tokens": 4207,
+            "prompt_tokens": 3429,
+            "completion_tokens": 778,
+            "cached_tokens": 0
+        },
+        {
+            "model_name": "azure_ai_evaluation",
+            "invocation_count": 2,
+            "total_tokens": 4207,
+            "prompt_tokens": 3429,
+            "completion_tokens": 778,
+            "cached_tokens": 0
+        }
+    ],
+    "per_testing_criteria_results": [
+        {
+            "testing_criteria": "coherence",
+            "passed": 2,
+            "failed": 0,
+            "errored": 0,
+            "skipped": 0
+        }
+    ],
+    "error": null
+}

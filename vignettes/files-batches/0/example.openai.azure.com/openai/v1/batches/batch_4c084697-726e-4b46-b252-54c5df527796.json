@@ -1,0 +1,38 @@
+{
+    "usage": {
+        "input_tokens": 681,
+        "output_tokens": 66,
+        "total_tokens": 747,
+        "input_tokens_details": {
+            "cached_tokens": 0
+        },
+        "output_tokens_details": {
+            "reasoning_tokens": 0
+        }
+    },
+    "priority": "high",
+    "cancelled_at": null,
+    "cancelling_at": null,
+    "completed_at": 1790548744,
+    "completion_window": "24h",
+    "created_at": 1790548273,
+    "error_file_id": null,
+    "expired_at": null,
+    "expires_at": null,
+    "failed_at": null,
+    "finalizing_at": 1790548712,
+    "id": "batch_4c084697-726e-4b46-b252-54c5df527796",
+    "in_progress_at": 1790548395,
+    "input_file_id": "file-f2656a86733b4d059fe8727280d62316",
+    "errors": null,
+    "metadata": null,
+    "object": "batch",
+    "output_file_id": "file-db6eb665-7c3f-425d-9246-ec893f912a2b",
+    "request_counts": {
+        "total": 6,
+        "completed": 6,
+        "failed": 0
+    },
+    "status": "completed",
+    "endpoint": "/v1/responses"
+}

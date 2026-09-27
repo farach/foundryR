@@ -4,7 +4,12 @@
 \alias{parse_shield_response}
 \title{Parse Shield API Response}
 \usage{
-parse_shield_response(result, user_prompt, documents)
+parse_shield_response(
+  result,
+  user_prompt,
+  documents,
+  document_indices = seq_along(documents)
+)
 }
 \arguments{
 \item{result}{List. The parsed JSON response from the API.}
@@ -12,6 +17,8 @@ parse_shield_response(result, user_prompt, documents)
 \item{user_prompt}{Character. The original user prompt.}
 
 \item{documents}{Character vector. The original documents (or NULL).}
+
+\item{document_indices}{Integer vector. Original indices for \code{documents}.}
 }
 \value{
 A tibble with source, content, and attack_detected columns.

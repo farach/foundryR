@@ -1,0 +1,30 @@
+name: foundry-deadlines
+
+# Weekly check of the Azure retirement dates in .github/foundry-deadlines.yml.
+# Files one issue per deadline once its reminder window opens.
+
+on:
+  schedule:
+    - cron: "0 13 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: python -m pip install --quiet pyyaml
+
+      - name: File issues for open reminder windows
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/foundry_deadlines.py

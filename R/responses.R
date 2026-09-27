@@ -50,7 +50,8 @@
 #' @param endpoint Character. Optional resource endpoint override.
 #' @param project_endpoint Character. Optional project endpoint override. When
 #'   supplied, the request uses the project-scoped Responses API. Agent-backed
-#'   responses always use this endpoint family.
+#'   responses always use a project endpoint, and [foundry_set_route()] can make
+#'   it the session default.
 #' @param agent Character or list. Optional agent to run instead of a bare
 #'   model: an agent name, a [foundry_agent_reference()] object, or a one-row
 #'   tibble from [foundry_agent_create()]. When supplied, `model` is ignored,
@@ -58,6 +59,7 @@
 #'   the project-scoped endpoint.
 #' @param agent_version Character. Optional agent version to pin when `agent` is
 #'   a bare name. Omit to use the latest version.
+#' @param token Character. Optional bearer token override for this call.
 #' @param ... Additional request body parameters passed to the Responses API.
 #'
 #' @return A one-row tibble with response metadata, generated text, parsed
@@ -128,6 +130,7 @@ foundry_response <- function(input,
                              project_endpoint = NULL,
                              agent = NULL,
                              agent_version = NULL,
+                             token = NULL,
                              ...) {
 
   input <- foundry_validate_response_input(input)
@@ -247,24 +250,21 @@ foundry_response <- function(input,
     }
   }
 
-  if (is.null(agent) && is.null(project_endpoint)) {
-    req <- foundry_build_v1_request(
-      path = "responses",
-      body = body,
-      method = "POST",
-      api_key = api_key,
-      endpoint = endpoint
-    )
-  } else {
-    req <- foundry_build_project_request(
-      path = "openai/v1/responses",
-      body = body,
-      method = "POST",
-      api_key = api_key,
-      endpoint = project_endpoint,
-      api_version = NULL
-    )
-  }
+  route <- foundry_resolve_route(
+    "responses",
+    endpoint = endpoint,
+    project_endpoint = project_endpoint,
+    needs_project = if (!is.null(agent)) "a server-side agent" else NULL
+  )
+  req <- foundry_build_routed_request(
+    "responses",
+    path = "responses",
+    body = body,
+    method = "POST",
+    api_key = api_key,
+    token = token,
+    route = route
+  )
 
   result <- foundry_perform(req)
   foundry_parse_response(result, parse_json = parse_json)
@@ -631,21 +631,13 @@ foundry_build_response_lifecycle_request <- function(path,
                                                      api_key = NULL,
                                                      endpoint = NULL,
                                                      project_endpoint = NULL) {
-  if (!is.null(project_endpoint)) {
-    return(foundry_build_project_request(
-      path = paste0("openai/v1/", path),
-      method = method,
-      api_key = api_key,
-      endpoint = project_endpoint,
-      api_version = NULL
-    ))
-  }
-
-  foundry_build_v1_request(
+  foundry_build_routed_request(
+    "responses",
     path = path,
     method = method,
     api_key = api_key,
-    endpoint = endpoint
+    endpoint = endpoint,
+    project_endpoint = project_endpoint
   )
 }
 
@@ -675,9 +667,10 @@ foundry_build_response_lifecycle_request <- function(path,
 #'   `FALSE` because bulk extraction often processes sensitive research data.
 #' @param max_active Integer. Maximum number of concurrent requests.
 #' @param progress Logical. Whether to show a progress bar for parallel
-#'   extraction.
+#'   extraction. Defaults to `getOption("foundryR.progress", interactive())`.
 #' @param api_key Character. Optional API key override.
 #' @param endpoint Character. Optional endpoint override.
+#' @param token Character. Optional bearer token override for these calls.
 #' @param ... Additional parameters passed to `foundry_response()`.
 #'
 #' @return A tibble with one row per input text. Metadata columns are prefixed
@@ -718,9 +711,10 @@ foundry_extract <- function(text,
                             flatten = TRUE,
                             store = FALSE,
                             max_active = 2L,
-                            progress = TRUE,
+                            progress = getOption("foundryR.progress", interactive()),
                             api_key = NULL,
                             endpoint = NULL,
+                            token = NULL,
                             ...) {
 
   if (is.data.frame(text) && is.character(schema) && length(schema) == 1L &&
@@ -759,6 +753,16 @@ foundry_extract <- function(text,
     cli::cli_abort("{.arg schema} must be a JSON Schema represented as an R list.")
   }
   schema <- as_foundry_schema(schema)
+  schema_fields <- foundry_schema_field_names(schema)
+  if (data_input && length(schema_fields) > 0L) {
+    collisions <- intersect(names(input_data), schema_fields)
+    if (length(collisions) > 0L) {
+      cli::cli_abort(c(
+        "Extracted field name(s) collide with input data column(s): {.field {collisions}}.",
+        "i" = "Rename the input column(s) or the schema field(s) before calling {.fun foundry_extract}."
+      ))
+    }
+  }
   foundry_check_character_scalar(schema_name, "schema_name")
   if (!is.logical(strict) || length(strict) != 1L || is.na(strict)) {
     cli::cli_abort("{.arg strict} must be TRUE or FALSE.")
@@ -822,6 +826,7 @@ foundry_extract <- function(text,
   }
 
   dots <- list(...)
+  route <- foundry_resolve_route("responses", endpoint = endpoint)
   requests <- purrr::map(valid_idx, function(i) {
     body <- list(
       model = model,
@@ -833,11 +838,13 @@ foundry_extract <- function(text,
     for (nm in names(dots)) {
       body[[nm]] <- dots[[nm]]
     }
-    foundry_build_v1_request(
+    foundry_build_routed_request(
+      "responses",
       path = "responses",
       body = body,
       api_key = api_key,
-      endpoint = endpoint
+      token = token,
+      route = route
     )
   })
 
@@ -853,14 +860,17 @@ foundry_extract <- function(text,
       responses[[j]],
       i = i,
       input_text = text_values[i],
-      flatten = flatten
+      flatten = flatten,
+      schema = schema
     )
   }
 
   out <- dplyr::bind_rows(foundry_reconcile_row_types(rows))
+  out <- foundry_apply_schema_types(out, schema, flatten = flatten)
   if (data_input) {
     out <- dplyr::bind_cols(input_data, out)
   }
+  out <- foundry_order_extract_columns(out, schema, input_cols = if (data_input) names(input_data) else character(), flatten = flatten)
   out
 }
 
@@ -902,7 +912,8 @@ foundry_reconcile_row_types <- function(rows) {
 foundry_extract_parse_parallel_response <- function(resp,
                                                     i,
                                                     input_text,
-                                                    flatten) {
+                                                    flatten,
+                                                    schema = NULL) {
   is_error_obj <- inherits(resp, "error") || inherits(resp, "httr2_failure")
   is_http_error <- !is_error_obj && httr2::resp_is_error(resp)
 
@@ -910,10 +921,7 @@ foundry_extract_parse_parallel_response <- function(resp,
     error_msg <- if (is_error_obj) {
       conditionMessage(resp)
     } else {
-      tryCatch(
-        foundry_error_body(resp),
-        error = function(e) "Unknown API error"
-      )
+      foundry_error_message(resp)
     }
     return(foundry_extract_error_row(
       i,
@@ -941,13 +949,13 @@ foundry_extract_parse_parallel_response <- function(resp,
   }
 
   response <- foundry_parse_response(result, parse_json = TRUE)
-  structured_error <- response$structured_error[[1]]
-  if (!is.na(structured_error)) {
+  problem <- foundry_extract_problem(response)
+  if (!is.na(problem)) {
     return(foundry_extract_error_row(
       i,
       input_text,
       response$status,
-      structured_error,
+      problem,
       flatten = flatten,
       raw_response = response$raw_response[[1]]
     ))
@@ -970,7 +978,7 @@ foundry_extract_parse_parallel_response <- function(resp,
     return(base)
   }
 
-  dplyr::bind_cols(base, foundry_list_to_row(data))
+  dplyr::bind_cols(base, foundry_list_to_row(data, schema = schema))
 }
 
 
@@ -992,6 +1000,55 @@ foundry_extract_error_row <- function(i,
   )
   if (!flatten) out$.data <- list(NULL)
   out
+}
+
+
+# A response without parsed structured data is an extraction failure. Name the
+# cause so a row of missing fields is never mistaken for a valid empty answer.
+foundry_extract_problem <- function(response) {
+  structured_error <- response$structured_error[[1]] %||% NA_character_
+  if (!is.null(response$structured[[1]]) && is.na(structured_error)) {
+    return(NA_character_)
+  }
+
+  status <- response$status[[1]] %||% NA_character_
+  reason <- response$incomplete_reason[[1]] %||% NA_character_
+  refusal <- response$refusal[[1]] %||% NA_character_
+  problems <- character()
+  if (!is.na(refusal) && nzchar(refusal)) {
+    problems <- c(problems, paste0("The model refused: ", refusal))
+  }
+  if (identical(status, "incomplete")) {
+    problems <- c(problems, foundry_incomplete_message(reason))
+  }
+  # A parse error is only a symptom when the model refused or stopped early.
+  if (!is.na(structured_error) && length(problems) == 0L) {
+    problems <- structured_error
+  }
+  if (length(problems) == 0L) {
+    problems <- "The response contained no structured output."
+  }
+  paste(problems, collapse = " ")
+}
+
+
+foundry_incomplete_message <- function(reason) {
+  if (is.na(reason) || !nzchar(reason)) {
+    return("The response is incomplete.")
+  }
+  hint <- switch(
+    reason,
+    content_filter = paste(
+      " The Azure content filter stopped the output;",
+      "check the content filter configuration on the deployment."
+    ),
+    max_output_tokens = paste(
+      " The output-token limit was reached;",
+      "raise `max_output_tokens` or lower the reasoning effort."
+    ),
+    ""
+  )
+  paste0("The response is incomplete (", reason, ").", hint)
 }
 
 
@@ -1168,6 +1225,24 @@ foundry_check_logical_scalar <- function(x, arg) {
     cli::cli_abort("{.arg {arg}} must be TRUE or FALSE.")
   }
   invisible(x)
+}
+
+
+foundry_check_positive_integer <- function(x, arg) {
+  x <- as.integer(x)
+  if (is.na(x) || x < 1L) {
+    cli::cli_abort("{.arg {arg}} must be a positive integer.")
+  }
+  x
+}
+
+
+foundry_check_integer_range <- function(x, arg, min, max) {
+  x <- as.integer(x)
+  if (is.na(x) || x < min || x > max) {
+    cli::cli_abort("{.arg {arg}} must be between {min} and {max}.")
+  }
+  x
 }
 
 
@@ -1495,16 +1570,29 @@ foundry_response_created_at <- function(created_at) {
 }
 
 
-foundry_list_to_row <- function(x) {
+foundry_list_to_row <- function(x, schema = NULL) {
   if (is.null(x)) {
-    return(tibble::tibble())
+    if (is.null(schema)) {
+      return(tibble::tibble())
+    }
+    fields <- lapply(foundry_schema_field_specs(schema), function(spec) {
+      foundry_schema_value_to_cell(NULL, spec)
+    })
+    return(tibble::as_tibble(fields))
   }
 
   if (!is.list(x) || is.null(names(x))) {
     return(tibble::tibble(value = list(x)))
   }
 
-  fields <- lapply(x, function(value) {
+  specs <- foundry_schema_field_specs(schema)
+  field_names <- unique(c(names(specs), names(x)))
+  fields <- lapply(field_names, function(nm) {
+    value <- x[[nm]]
+    spec <- specs[[nm]] %||% list(kind = "unknown")
+    if (!is.null(specs[[nm]])) {
+      return(foundry_schema_value_to_cell(value, spec))
+    }
     value <- foundry_simplify_json_value(value)
     if (is.null(value)) {
       list(NULL)
@@ -1514,8 +1602,120 @@ foundry_list_to_row <- function(x) {
       list(value)
     }
   })
+  names(fields) <- field_names
 
   tibble::as_tibble(fields)
+}
+
+
+foundry_schema_field_names <- function(schema) {
+  names(foundry_schema_field_specs(schema))
+}
+
+
+foundry_schema_field_specs <- function(schema) {
+  properties <- schema$properties %||% list()
+  if (!is.list(properties) || is.null(names(properties))) {
+    return(list())
+  }
+  stats::setNames(lapply(properties, foundry_schema_field_spec), names(properties))
+}
+
+
+foundry_schema_field_spec <- function(property) {
+  type <- property$type %||% "unknown"
+  if (is.atomic(type)) {
+    type <- setdiff(as.character(type), "null")
+    type <- type[[1]] %||% "unknown"
+  }
+  kind <- if (!is.null(property$enum)) {
+    "string"
+  } else if (type %in% c("string", "number", "integer", "boolean", "array", "object")) {
+    type
+  } else {
+    "unknown"
+  }
+  list(kind = kind)
+}
+
+
+foundry_schema_value_to_cell <- function(value, spec) {
+  kind <- spec$kind %||% "unknown"
+  if (kind %in% c("array", "object")) {
+    if (is.null(value)) {
+      return(list(NULL))
+    }
+    return(list(foundry_simplify_json_value(value)))
+  }
+  if (is.null(value)) {
+    return(switch(
+      kind,
+      string = NA_character_,
+      number = NA_real_,
+      integer = NA_integer_,
+      boolean = NA,
+      NA
+    ))
+  }
+  switch(
+    kind,
+    string = unname(as.character(value)),
+    number = unname(as.numeric(value)),
+    integer = unname(as.integer(value)),
+    boolean = unname(as.logical(value)),
+    value
+  )
+}
+
+
+foundry_apply_schema_types <- function(out, schema, flatten) {
+  if (!isTRUE(flatten)) {
+    return(out)
+  }
+  specs <- foundry_schema_field_specs(schema)
+  if (length(specs) == 0L) {
+    return(out)
+  }
+  for (nm in names(specs)) {
+    if (!nm %in% names(out)) {
+      out[[nm]] <- rep(list(NULL), nrow(out))
+    }
+    kind <- specs[[nm]]$kind %||% "unknown"
+    if (kind %in% c("array", "object")) {
+      col <- out[[nm]]
+      if (!is.list(col)) {
+        col <- lapply(col, function(value) {
+          if (length(value) == 0L || all(is.na(value))) NULL else value
+        })
+      }
+      out[[nm]] <- col
+    } else if (kind == "string") {
+      out[[nm]] <- unname(vapply(out[[nm]], function(value) {
+        if (is.null(value) || length(value) == 0L || is.na(value[[1]])) NA_character_ else as.character(value[[1]])
+      }, character(1)))
+    } else if (kind == "number") {
+      out[[nm]] <- unname(vapply(out[[nm]], function(value) {
+        if (is.null(value) || length(value) == 0L || is.na(value[[1]])) NA_real_ else as.numeric(value[[1]])
+      }, numeric(1)))
+    } else if (kind == "integer") {
+      out[[nm]] <- unname(vapply(out[[nm]], function(value) {
+        if (is.null(value) || length(value) == 0L || is.na(value[[1]])) NA_integer_ else as.integer(value[[1]])
+      }, integer(1)))
+    } else if (kind == "boolean") {
+      out[[nm]] <- unname(vapply(out[[nm]], function(value) {
+        if (is.null(value) || length(value) == 0L || is.na(value[[1]])) NA else as.logical(value[[1]])
+      }, logical(1)))
+    }
+  }
+  out
+}
+
+
+foundry_order_extract_columns <- function(out, schema, input_cols = character(), flatten = TRUE) {
+  field_cols <- if (isTRUE(flatten)) intersect(foundry_schema_field_names(schema), names(out)) else character()
+  metadata_cols <- names(out)[startsWith(names(out), ".")]
+  other_cols <- setdiff(names(out), c(input_cols, field_cols, metadata_cols))
+  out[c(input_cols, field_cols, metadata_cols, other_cols)]
 }
 
 

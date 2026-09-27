@@ -12,7 +12,8 @@ foundry_eval_create(
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  project_endpoint = NULL
 )
 }
 \arguments{
@@ -30,10 +31,27 @@ graders.}
 
 \item{token}{Character. Optional bearer token. Falls back to configured auth.}
 
-\item{endpoint}{Character. Optional endpoint override.}
+\item{endpoint}{Character. Optional resource endpoint. Supplying it selects
+the resource-scoped Evals route (\verb{<resource>/openai/v1/evals}). Supply at
+most one of \code{endpoint} and \code{project_endpoint}.}
 
 \item{api_version}{Character. Optional \code{api-version} query value. The Foundry
 v1 evals surface is path-versioned, so this is usually left \code{NULL}.}
+
+\item{project_endpoint}{Character. Optional Microsoft Foundry project
+endpoint, such as
+\code{"https://<account>.services.ai.azure.com/api/projects/<project>"}.
+Supplying it selects the project-scoped Evals route
+(\verb{<project>/openai/v1/evals}), which needs a Microsoft Entra ID token: the
+service answers HTTP 403 to API keys there. Without it, evaluation calls use
+the resource endpoint, as in
+foundryR 0.1.0, unless \code{\link[=foundry_set_route]{foundry_set_route()}} selected the project or the
+call needs a feature that exists only on a project endpoint: built-in
+\code{azure_ai_evaluator} graders, model or agent targets, or stored responses.
+Those calls use the endpoint set with \code{\link[=foundry_set_project_endpoint]{foundry_set_project_endpoint()}} and
+print a message. Evaluations created on the project endpoint are not
+visible from the resource endpoint, so pass \code{project_endpoint} (or set the
+route) when you look them up later.}
 }
 \value{
 A one-row tibble describing the created evaluation.

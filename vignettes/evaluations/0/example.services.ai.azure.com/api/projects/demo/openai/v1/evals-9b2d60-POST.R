@@ -1,0 +1,12 @@
+structure(list(method = "POST", url = "https://example.services.ai.azure.com/api/projects/demo/openai/v1/evals", 
+    status_code = 201L, headers = structure(list(`content-type` = "application/json; charset=utf-8", 
+        date = "Sun, 27 Sep 2026 20:52:53 GMT", `access-control-expose-headers` = "Operation-Location,Location,Apim-Request-Id,x-agent-session-id,x-agent-invocation-id", 
+        `content-length` = "733", `request-context` = "appId=cid-v1:2d2e8e63-272e-4b3c-8598-4ee570a0e70d", 
+        `x-ms-response-type` = "standard", `mise-correlation-id` = "8906daad-b6b2-4b81-8ade-71f5899c1ad1", 
+        `strict-transport-security` = "max-age=31536000; includeSubDomains; preload", 
+        `x-content-type-options` = "nosniff", `azureml-served-by-cluster` = "vienna-eastus2-02", 
+        `x-request-time` = "0.163", `apim-request-id` = "37bb890b-2693-4e53-948d-f4c424f711be", 
+        `x-ms-region` = "East US 2"), class = "httr2_headers"), 
+    body = charToRaw("{\n  \"object\": \"eval\",\n  \"created_at\": 1790542373,\n  \"modified_at\": 1790542373,\n  \"created_by\": \"Alex Farach\",\n  \"id\": \"eval_f82c7323\",\n  \"name\": \"stored-helpdesk-responses\",\n  \"metadata\": {},\n  \"properties\": {\n    \"evals_run_type\": \"azure_ai\"\n  },\n  \"data_source_config\": {\n    \"scenario\": \"responses\",\n    \"type\": \"azure_ai_source\",\n    \"schema\": {}\n  },\n  \"testing_criteria\": [\n    {\n      \"type\": \"azure_ai_evaluator\",\n      \"id\": \"coherence_20e7c51d-b0c8-4a6b-a5df-8ef34022341d\",\n      \"name\": \"coherence\",\n      \"evaluator_name\": \"builtin.coherence\",\n      \"evaluator_version\": \"\",\n      \"initialization_parameters\": {\n        \"deployment_name\": \"gpt-5-mini\"\n      },\n      \"data_mapping\": {}\n    }\n  ]\n}"), 
+    timing = c(redirect = 0, namelookup = 0, connect = 0, pretransfer = 0.000168, 
+    starttransfer = 0.205273, total = 0.205318), cache = new.env(parent = emptyenv())), class = "httr2_response")

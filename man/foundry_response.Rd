@@ -32,6 +32,7 @@ foundry_response(
   project_endpoint = NULL,
   agent = NULL,
   agent_version = NULL,
+  token = NULL,
   ...
 )
 }
@@ -105,7 +106,8 @@ include.}
 
 \item{project_endpoint}{Character. Optional project endpoint override. When
 supplied, the request uses the project-scoped Responses API. Agent-backed
-responses always use this endpoint family.}
+responses always use a project endpoint, and \code{\link[=foundry_set_route]{foundry_set_route()}} can make
+it the session default.}
 
 \item{agent}{Character or list. Optional agent to run instead of a bare
 model: an agent name, a \code{\link[=foundry_agent_reference]{foundry_agent_reference()}} object, or a one-row
@@ -115,6 +117,8 @@ the project-scoped endpoint.}
 
 \item{agent_version}{Character. Optional agent version to pin when \code{agent} is
 a bare name. Omit to use the latest version.}
+
+\item{token}{Character. Optional bearer token override for this call.}
 
 \item{...}{Additional request body parameters passed to the Responses API.}
 }

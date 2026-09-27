@@ -1,0 +1,15 @@
+structure(list(method = "POST", url = "https://example.openai.azure.com/openai/v1/evals", 
+    status_code = 201L, headers = structure(list(`content-type` = "application/json", 
+        date = "Sun, 27 Sep 2026 20:48:15 GMT", server = "istio-envoy", 
+        `content-encoding` = "gzip", vary = "Accept-Encoding", 
+        `openai-version` = "2020-10-01", `openai-organization` = "default-org", 
+        `openai-project` = "disabled-auth-fake-default-project", 
+        `x-request-id` = "d5e6a065-f10b-4f82-9e4a-9bd92ad1f11b", 
+        `openai-processing-ms` = "983", `azureml-served-by-cluster` = "hyena-eastus2-02", 
+        `apim-request-id` = "6bdc7cf5-1da6-4e5b-8fa9-cfbb22f7eacc", 
+        `strict-transport-security` = "max-age=31536000; includeSubDomains; preload", 
+        `x-content-type-options` = "nosniff", `x-ms-region` = "East US 2"), class = "httr2_headers"), 
+    body = charToRaw("{\n  \"id\": \"eval_6ab98110\",\n  \"object\": \"eval\",\n  \"created_at\": 1790542096,\n  \"data_source_config\": {\n    \"type\": \"custom\",\n    \"max_items\": null,\n    \"schema\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"item\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"id\": {\n              \"type\": \"integer\"\n            },\n            \"comment\": {\n              \"type\": \"string\"\n            },\n            \"theme\": {\n              \"type\": \"string\"\n            },\n            \"draft_theme\": {\n              \"type\": \"string\"\n            },\n            \"foundryr_row_id\": {\n              \"type\": \"string\"\n            }\n          },\n          \"required\": [\n            \"id\",\n            \"comment\",\n            \"theme\",\n            \"draft_theme\",\n            \"foundryr_row_id\"\n          ]\n        }\n      },\n      \"required\": [\n        \"item\"\n      ]\n    }\n  },\n  \"name\": \"course-feedback-existing-labels\",\n  \"testing_criteria\": [\n    {\n      \"id\": \"label-audit-9635319d-b016-47ea-81f8-44ebbd552625\",\n      \"type\": \"label_model\",\n      \"grdr_id\": null,\n      \"inactive_at\": null,\n      \"input\": [\n        {\n          \"type\": \"message\",\n          \"role\": \"user\",\n          \"content\": \"The reference theme is {{item.theme}}. The proposed theme is {{item.draft_theme}}. Label the proposal as match or mismatch.\"\n        }\n      ],\n      \"labels\": [\n        \"match\",\n        \"mismatch\"\n      ],\n      \"model\": \"gpt-5-mini\",\n      \"name\": \"label-audit\",\n      \"passing_labels\": [\n        \"match\"\n      ],\n      \"sampling_params\": null\n    }\n  ],\n  \"metadata\": {}\n}"), 
+    timing = c(redirect = 0, namelookup = 0.040412, connect = 0.079297, 
+    pretransfer = 0.111584, starttransfer = 1.166264, total = 1.166407
+    ), cache = new.env(parent = emptyenv())), class = "httr2_response")

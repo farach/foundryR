@@ -1,0 +1,43 @@
+{
+    "start": 1,
+    "end": 5,
+    "total": 35,
+    "next": "https://api-v2.onetcenter.org/online/occupations/29-1141.00/details/skills?start=6&end=10",
+    "element": [
+        {
+            "id": "2.B.1.a",
+            "related": "https://api-v2.onetcenter.org/online/occupations/29-1141.00/related/skills/2.B.1.a",
+            "name": "Social Perceptiveness",
+            "description": "Being aware of others' reactions and understanding why they react as they do.",
+            "importance": 78
+        },
+        {
+            "id": "2.A.1.b",
+            "related": "https://api-v2.onetcenter.org/online/occupations/29-1141.00/related/skills/2.A.1.b",
+            "name": "Active Listening",
+            "description": "Giving full attention to what other people are saying, taking time to understand the points being made, asking questions as appropriate, and not interrupting at inappropriate times.",
+            "importance": 75
+        },
+        {
+            "id": "2.B.1.b",
+            "related": "https://api-v2.onetcenter.org/online/occupations/29-1141.00/related/skills/2.B.1.b",
+            "name": "Coordination",
+            "description": "Adjusting actions in relation to others' actions.",
+            "importance": 75
+        },
+        {
+            "id": "2.A.2.a",
+            "related": "https://api-v2.onetcenter.org/online/occupations/29-1141.00/related/skills/2.A.2.a",
+            "name": "Critical Thinking",
+            "description": "Using logic and reasoning to identify the strengths and weaknesses of alternative solutions, conclusions, or approaches to problems.",
+            "importance": 75
+        },
+        {
+            "id": "2.B.1.f",
+            "related": "https://api-v2.onetcenter.org/online/occupations/29-1141.00/related/skills/2.B.1.f",
+            "name": "Service Orientation",
+            "description": "Actively looking for ways to help people.",
+            "importance": 75
+        }
+    ]
+}

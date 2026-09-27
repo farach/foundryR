@@ -3,16 +3,23 @@
 #' Upload a local file for use with Foundry APIs such as Batch, fine-tuning,
 #' evals, or assistants/file-search workflows.
 #'
+#' Files live on the endpoint where you upload them. Server-side agents search
+#' files on the project endpoint, so upload files for an agent's vector store
+#' with `project_endpoint` (or after `foundry_set_route("project")`).
+#'
 #' @param path Character. Local file path to upload.
 #' @param purpose Character. File purpose. One of `"assistants"`, `"batch"`,
 #'   `"fine-tune"`, or `"evals"`.
 #' @param expires_after_seconds Integer. Optional number of seconds after
-#'   creation when the file should expire. Azure's v1 Files API accepts this as
-#'   an `expires_after` object.
+#'   creation when the file should expire, sent as an `expires_after` object.
+#'   Default `NULL` sends no expiry. The service rejects an expiry for
+#'   `purpose = "assistants"`.
 #' @param api_key Character. Optional API key override.
 #' @param token Character. Optional bearer token override.
 #' @param endpoint Character. Optional endpoint override.
 #' @param api_version Character. Optional API version query value.
+#' @param project_endpoint Character. Optional project endpoint. When supplied,
+#'   the call uses the project endpoint instead of the resource endpoint.
 #'
 #' @return A one-row tibble with file metadata.
 #' @export
@@ -32,23 +39,26 @@
 #' }
 foundry_file_upload <- function(path,
                                 purpose = c("assistants", "batch", "fine-tune", "evals"),
-                                expires_after_seconds = 30 * 24 * 60 * 60,
+                                expires_after_seconds = NULL,
                                 api_key = NULL,
                                 token = NULL,
                                 endpoint = NULL,
-                                api_version = NULL) {
+                                api_version = NULL,
+                                project_endpoint = NULL) {
   foundry_check_character_scalar(path, "path")
   if (!file.exists(path)) {
     cli::cli_abort("File does not exist: {.file {path}}.")
   }
   purpose <- match.arg(purpose)
 
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "files",
     path = "files",
     method = "POST",
     api_key = api_key,
     token = token,
     endpoint = endpoint,
+    project_endpoint = project_endpoint,
     api_version = api_version
   )
 
@@ -96,13 +106,16 @@ foundry_files <- function(purpose = NULL,
                           api_key = NULL,
                           token = NULL,
                           endpoint = NULL,
-                          api_version = NULL) {
-  req <- foundry_build_v1_request(
+                          api_version = NULL,
+                          project_endpoint = NULL) {
+  req <- foundry_build_routed_request(
+    "files",
     path = "files",
     method = "GET",
     api_key = api_key,
     token = token,
     endpoint = endpoint,
+    project_endpoint = project_endpoint,
     api_version = api_version
   )
 
@@ -136,15 +149,18 @@ foundry_file_get <- function(file_id,
                              api_key = NULL,
                              token = NULL,
                              endpoint = NULL,
-                             api_version = NULL) {
+                             api_version = NULL,
+                             project_endpoint = NULL) {
   foundry_check_character_scalar(file_id, "file_id")
 
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "files",
     path = paste0("files/", file_id),
     method = "GET",
     api_key = api_key,
     token = token,
     endpoint = endpoint,
+    project_endpoint = project_endpoint,
     api_version = api_version
   )
 
@@ -170,15 +186,18 @@ foundry_file_delete <- function(file_id,
                                 api_key = NULL,
                                 token = NULL,
                                 endpoint = NULL,
-                                api_version = NULL) {
+                                api_version = NULL,
+                                project_endpoint = NULL) {
   foundry_check_character_scalar(file_id, "file_id")
 
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "files",
     path = paste0("files/", file_id),
     method = "DELETE",
     api_key = api_key,
     token = token,
     endpoint = endpoint,
+    project_endpoint = project_endpoint,
     api_version = api_version
   )
 
@@ -215,16 +234,19 @@ foundry_file_download <- function(file_id,
                                   api_key = NULL,
                                   token = NULL,
                                   endpoint = NULL,
-                                  api_version = NULL) {
+                                  api_version = NULL,
+                                  project_endpoint = NULL) {
   foundry_check_character_scalar(file_id, "file_id")
   foundry_check_character_scalar(path, "path")
 
-  req <- foundry_build_v1_request(
+  req <- foundry_build_routed_request(
+    "files",
     path = paste0("files/", file_id, "/content"),
     method = "GET",
     api_key = api_key,
     token = token,
     endpoint = endpoint,
+    project_endpoint = project_endpoint,
     api_version = api_version
   )
 

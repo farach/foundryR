@@ -28,12 +28,14 @@ foundry_translate_audio(
 \code{service = "speech"}, such as \code{"en"}, \code{"es"}, \code{"fr"}, \code{"de"}, \code{"ko"},
 \code{"ja"}, \code{"pt"}, or \code{"zh"}.}
 
-\item{model}{Character. Optional model or deployment name. For Speech
+\item{model}{Character. Optional Speech enhanced-mode model, or required
+Azure OpenAI audio deployment name when \code{service = "openai"}. For Speech
 translation this is omitted by default because MAI-Transcribe models do not
-translate. For \code{service = "openai"}, defaults to \code{AZURE_FOUNDRY_MODEL}.}
+translate.}
 
-\item{service}{Character. \code{"speech"} for LLM Speech/MAI-Transcribe or
-\code{"openai"} for \verb{/openai/v1/audio/transcriptions}.}
+\item{service}{Character. \code{"speech"} for standard Speech fast transcription
+or enhanced LLM Speech/MAI-Transcribe; \code{"openai"} for
+\verb{/openai/v1/audio/transcriptions}.}
 
 \item{api}{Character. Used when \code{service = "openai"}. \code{"v1"} calls the
 \verb{/openai/v1/...} data-plane path; \code{"deployment"} calls
@@ -66,14 +68,31 @@ A one-row tibble with translated text, phrase-level detail, and the
 raw response in list-columns.
 }
 \description{
-Translate audio through LLM Speech enhanced mode or the OpenAI-compatible v1
-audio translations endpoint. LLM Speech supports multiple target languages;
-the OpenAI-compatible translations endpoint translates to English.
+Translate audio through Speech enhanced LLM Speech mode or the
+OpenAI-compatible v1 audio translations endpoint. Speech translation requires
+enhanced mode and a region where LLM Speech is available. The
+OpenAI-compatible translations endpoint translates to English.
+}
+\details{
+Speech translation uses LLM Speech enhanced mode because standard Speech fast
+transcription and MAI-Transcribe do not translate. For Azure OpenAI audio,
+pass the deployment name explicitly in \code{model}. Azure \code{whisper} version \code{001}
+retires on 2026-12-15. The \verb{gpt-4o-mini-transcribe} version \code{2025-12-15} is
+generally available until 2027-06-15.
+
+In live testing, an Azure \code{whisper} version \code{001} deployment returned Spanish
+speech as Spanish text through the translations route in two of three
+attempts, so check the language of the output before you rely on it.
+Transcribing in the source language with \code{\link[=foundry_transcribe]{foundry_transcribe()}} and
+translating the text with \code{\link[=foundry_response]{foundry_response()}} is an alternative.
 }
 \examples{
 \dontrun{
-# Requires a configured Azure Speech endpoint and credentials,
-# and your own local audio input file.
+# Requires a configured Azure Speech endpoint in an LLM Speech region,
+# credentials, and your own local audio input file.
 foundry_translate_audio("interview-es.mp3", target_language = "en")
+foundry_translate_audio(
+  "interview-es.mp3", service = "openai", model = "whisper", api = "deployment"
+)
 }
 }

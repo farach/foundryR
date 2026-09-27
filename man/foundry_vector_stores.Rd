@@ -19,17 +19,27 @@ foundry_vector_store_create(
   expires_after_days = NULL,
   metadata = NULL,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
 foundry_vector_stores(
   limit = NULL,
   after = NULL,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
-foundry_vector_store_get(vector_store_id, api_key = NULL, endpoint = NULL)
+foundry_vector_store_get(
+  vector_store_id,
+  api_key = NULL,
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
+)
 
 foundry_vector_store_modify(
   vector_store_id,
@@ -37,38 +47,54 @@ foundry_vector_store_modify(
   metadata = NULL,
   expires_after_days = NULL,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
-foundry_vector_store_delete(vector_store_id, api_key = NULL, endpoint = NULL)
+foundry_vector_store_delete(
+  vector_store_id,
+  api_key = NULL,
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
+)
 
 foundry_vector_store_files(
   vector_store_id,
   limit = NULL,
   after = NULL,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
 foundry_vector_store_file_add(
   vector_store_id,
   file_id,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
 foundry_vector_store_file_remove(
   vector_store_id,
   file_id,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
 foundry_vector_store_file_batch(
   vector_store_id,
   file_ids,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 
 foundry_vector_search(
@@ -78,7 +104,9 @@ foundry_vector_search(
   filters = NULL,
   rewrite_query = FALSE,
   api_key = NULL,
-  endpoint = NULL
+  endpoint = NULL,
+  token = NULL,
+  project_endpoint = NULL
 )
 }
 \arguments{
@@ -94,6 +122,11 @@ time.}
 \item{api_key}{Character. Optional API key override.}
 
 \item{endpoint}{Character. Optional endpoint override.}
+
+\item{token}{Character. Optional bearer token override.}
+
+\item{project_endpoint}{Character. Optional project endpoint. When supplied,
+the call uses the project endpoint instead of the resource endpoint.}
 
 \item{limit}{Integer. Optional page size.}
 
@@ -116,6 +149,14 @@ A tibble with vector store, file, or search-result metadata.
 }
 \description{
 Create, list, retrieve, update, delete, and search hosted vector stores.
+}
+\details{
+Vector stores live on the endpoint where you create them. A server-side
+agent's \code{file_search} tool searches vector stores on the project endpoint,
+so create those stores (and upload their files) with \code{project_endpoint}, or
+after \code{foundry_set_route("project")}. Direct search with
+\code{foundry_vector_search()} currently rejects Microsoft Entra ID tokens; call
+it on the resource endpoint with an API key.
 }
 \examples{
 # Requires a configured Azure endpoint and credentials with permission

@@ -126,10 +126,22 @@ foundry_batch_requests <- function(data,
       url = endpoint,
       body = request_body
     )
-    jsonlite::toJSON(request, auto_unbox = TRUE, null = "null")
+    jsonlite::toJSON(
+      request,
+      auto_unbox = TRUE,
+      digits = NA,
+      na = "null",
+      null = "null"
+    )
   })
 
-  writeLines(lines, path, useBytes = TRUE)
+  # A binary connection keeps "\n" record separators on every platform, as JSON
+  # Lines expects; text mode would write "\r\n" on Windows.
+  con <- file(path, open = "wb")
+  tryCatch(
+    writeLines(lines, con, sep = "\n", useBytes = TRUE),
+    finally = close(con)
+  )
   tibble::tibble(
     path = normalizePath(path, winslash = "/", mustWork = FALSE),
     requests = length(lines),
@@ -366,18 +378,138 @@ foundry_extract_batch <- function(data,
     endpoint_url = endpoint_url,
     api_version = api_version
   )
-  results <- foundry_batch_results(
+  results <- foundry_extract_batch_results(
     final$batch_id,
+    data = data,
+    schema = schema,
+    text_col = text_col,
+    api_key = api_key,
+    token = token,
+    endpoint_url = endpoint_url,
+    api_version = api_version
+  )
+  results
+}
+
+
+#' Collect completed structured extraction batch results
+#'
+#' Download a completed extraction batch, parse structured Responses API output
+#' with the same schema-driven flattening rules as [foundry_extract()], and join
+#' results back to the original input rows using the `row-N` custom IDs written
+#' by [foundry_batch_requests()].
+#'
+#' @param batch_id Character. Batch ID to retrieve.
+#' @param data Data frame originally submitted to [foundry_extract_batch()].
+#' @param schema List. JSON Schema object used for structured extraction.
+#' @param text_col Character. Optional original input text column. When
+#'   supplied, `.input_text` is filled from this column after joining rows.
+#' @param keep_raw Logical. Whether to keep the raw JSONL result object in a
+#'   `raw_batch_result` list-column.
+#' @inheritParams foundry_batch_create
+#'
+#' @return A tibble containing the caller's input columns, extracted schema
+#'   fields, and dot-prefixed extraction metadata.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' schema <- foundry_schema(sentiment = schema_string())
+#' jobs <- data.frame(text = c("Great service.", "Slow support."))
+#' foundry_extract_batch_results("batch_abc123", jobs, schema)
+#' }
+foundry_extract_batch_results <- function(batch_id,
+                                          data,
+                                          schema,
+                                          text_col = NULL,
+                                          keep_raw = FALSE,
+                                          api_key = NULL,
+                                          token = NULL,
+                                          endpoint_url = NULL,
+                                          api_version = NULL) {
+  if (!is.data.frame(data)) {
+    cli::cli_abort("{.arg data} must be a data frame.")
+  }
+  if (is.null(schema) || !is.list(schema)) {
+    cli::cli_abort("{.arg schema} must be a JSON Schema represented as an R list.")
+  }
+  input_data <- tibble::as_tibble(data)
+  schema <- as_foundry_schema(schema)
+  if (!is.null(text_col)) {
+    foundry_check_character_scalar(text_col, "text_col")
+    if (!text_col %in% names(input_data)) {
+      cli::cli_abort("Column {.field {text_col}} was not found in {.arg data}.")
+    }
+  }
+  collisions <- intersect(names(input_data), foundry_schema_field_names(schema))
+  if (length(collisions) > 0L) {
+    cli::cli_abort(c(
+      "Extracted field name(s) collide with input data column(s): {.field {collisions}}.",
+      "i" = "Rename the input column(s) or the schema field(s) before collecting extraction results."
+    ))
+  }
+
+  results <- foundry_batch_results(
+    batch_id,
+    keep_raw = keep_raw,
     api_key = api_key,
     token = token,
     endpoint_url = endpoint_url,
     api_version = api_version
   )
   row_idx <- suppressWarnings(as.integer(sub("^row-", "", results$custom_id)))
-  if (all(!is.na(row_idx))) {
-    return(dplyr::bind_cols(tibble::as_tibble(data)[row_idx, , drop = FALSE], results))
+  if (length(row_idx) > 0L && any(is.na(row_idx))) {
+    cli::cli_abort("Batch result custom IDs must use the {.val row-N} format.")
   }
-  results
+  if (length(row_idx) > 0L && any(row_idx < 1L | row_idx > nrow(input_data))) {
+    cli::cli_abort("Batch result custom IDs refer to rows outside {.arg data}.")
+  }
+  missing_rows <- setdiff(seq_len(nrow(input_data)), row_idx)
+  if (length(missing_rows) > 0L) {
+    n_missing <- length(missing_rows)
+    shown <- paste(utils::head(missing_rows, 10L), collapse = ", ")
+    if (n_missing > 10L) shown <- paste0(shown, ", ...")
+    cli::cli_warn(c(
+      "{n_missing} input row{?s} {?has/have} no result in batch {.val {batch_id}}.",
+      "i" = "Rows without a result: {shown}. The batch may have expired or been cancelled before these requests ran."
+    ))
+  }
+
+  rows <- vector("list", length(row_idx))
+  for (i in seq_along(row_idx)) {
+    result <- results[i, , drop = FALSE]
+    input_text <- if (is.null(text_col)) {
+      NA_character_
+    } else {
+      as.character(input_data[[text_col]][[row_idx[[i]]]])
+    }
+    problem <- if (isTRUE(result$.error[[1]])) {
+      msg <- result$.error_msg[[1]] %||% NA_character_
+      if (is.na(msg)) "Batch request failed." else msg
+    } else {
+      foundry_extract_problem(result)
+    }
+    base <- tibble::tibble(
+      .input_idx = row_idx[[i]],
+      .input_text = input_text,
+      .response_id = result$response_id[[1]] %||% NA_character_,
+      .status = result$status[[1]] %||% NA_character_,
+      .output_text = result$output_text[[1]] %||% NA_character_,
+      .error = !is.na(problem),
+      .error_msg = problem,
+      raw_response = result$raw_response
+    )
+    if (keep_raw && "raw_batch_result" %in% names(result)) {
+      base$raw_batch_result <- result$raw_batch_result
+    }
+    structured <- result$structured[[1]] %||% NULL
+    rows[[i]] <- dplyr::bind_cols(base, foundry_list_to_row(structured, schema = schema))
+  }
+
+  out <- dplyr::bind_rows(foundry_reconcile_row_types(rows))
+  out <- foundry_apply_schema_types(out, schema, flatten = TRUE)
+  out <- dplyr::bind_cols(input_data[row_idx, , drop = FALSE], out)
+  foundry_order_extract_columns(out, schema, input_cols = names(input_data), flatten = TRUE)
 }
 
 
@@ -388,8 +520,10 @@ foundry_extract_batch <- function(data,
 #' Azure prices because they change over time.
 #'
 #' @param x Data frame with foundryR token columns.
-#' @param rates Optional named numeric vector with any of `input`,
-#'   `cached_input`, and `output` rates per token.
+#' @param rates Optional named numeric vector or list with any of `input`,
+#'   `cached_input`, and `output` rates per token. Service-reported
+#'   `input_tokens` include cached tokens; cached tokens are billed at
+#'   `cached_input` when supplied, otherwise at the `input` rate.
 #'
 #' @return A one-row tibble with token totals and optional `cost`.
 #' @export
@@ -409,8 +543,13 @@ foundry_usage <- function(x, rates = NULL) {
   if (!is.data.frame(x)) {
     cli::cli_abort("{.arg x} must be a data frame.")
   }
-  if (!is.null(rates) && (!is.numeric(rates) || is.null(names(rates)))) {
-    cli::cli_abort("{.arg rates} must be a named numeric vector.")
+  if (!is.null(rates)) {
+    if (is.list(rates)) {
+      rates <- unlist(rates, use.names = TRUE)
+    }
+    if (!is.numeric(rates) || is.null(names(rates))) {
+      cli::cli_abort("{.arg rates} must be a named numeric vector or list.")
+    }
   }
 
   input_tokens <- foundry_sum_columns(x, c("input_tokens", "prompt_tokens"))
@@ -430,11 +569,23 @@ foundry_usage <- function(x, rates = NULL) {
 
   if (!is.null(rates)) {
     cost <- 0
-    if ("input" %in% names(rates)) cost <- cost + input_tokens * rates[["input"]]
-    if ("cached_input" %in% names(rates)) {
-      cost <- cost + cached_input_tokens * rates[["cached_input"]]
+    input_total <- if (is.na(input_tokens)) 0 else input_tokens
+    cached_total <- if (is.na(cached_input_tokens)) 0 else cached_input_tokens
+    output_total <- if (is.na(output_tokens)) 0 else output_tokens
+    if ("input" %in% names(rates)) {
+      cached_rate <- if ("cached_input" %in% names(rates)) {
+        rates[["cached_input"]]
+      } else {
+        rates[["input"]]
+      }
+      cost <- cost +
+        max(input_total - cached_total, 0) * rates[["input"]] +
+        cached_total * cached_rate
     }
-    if ("output" %in% names(rates)) cost <- cost + output_tokens * rates[["output"]]
+    if (!"input" %in% names(rates) && "cached_input" %in% names(rates)) {
+      cost <- cost + cached_total * rates[["cached_input"]]
+    }
+    if ("output" %in% names(rates)) cost <- cost + output_total * rates[["output"]]
     out$cost <- cost
   }
 
@@ -660,6 +811,7 @@ foundry_file_content_lines <- function(file_id,
   )
   raw <- foundry_perform_raw(req)
   text <- rawToChar(raw)
+  Encoding(text) <- "UTF-8"
   lines <- strsplit(text, "\r?\n", perl = TRUE)[[1]]
   lines[nzchar(lines)]
 }
@@ -700,15 +852,19 @@ foundry_parse_batch_item <- function(item, endpoint, keep_raw) {
     return(base)
   }
 
-  parsed <- foundry_parse_batch_body(body, endpoint)
+  parsed <- foundry_parse_batch_body(
+    body,
+    endpoint,
+    parse_json = foundry_batch_item_json_format(item, body)
+  )
   dplyr::bind_cols(base, parsed)
 }
 
 
-foundry_parse_batch_body <- function(body, endpoint) {
+foundry_parse_batch_body <- function(body, endpoint, parse_json = TRUE) {
   endpoint <- endpoint %||% ""
   if (grepl("responses", endpoint, fixed = TRUE)) {
-    return(foundry_parse_response(body, parse_json = TRUE))
+    return(foundry_parse_response(body, parse_json = parse_json))
   }
   if (grepl("chat/completions", endpoint, fixed = TRUE)) {
     out <- foundry_parse_chat_response(body, body$model %||% NA_character_)
@@ -729,6 +885,14 @@ foundry_parse_batch_body <- function(body, endpoint) {
   }
 
   tibble::tibble(raw_response = list(body))
+}
+
+
+foundry_batch_item_json_format <- function(item, body) {
+  type <- item$request$body$text$format$type %||%
+    body$text$format$type %||%
+    NA_character_
+  !is.na(type) && type %in% c("json_schema", "json_object")
 }
 
 

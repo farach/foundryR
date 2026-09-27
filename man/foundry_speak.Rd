@@ -23,7 +23,7 @@ foundry_speak(
 \arguments{
 \item{text}{Character. Text to synthesize.}
 
-\item{model}{Character. Speech model deployment name.}
+\item{model}{Character. Required speech model deployment name.}
 
 \item{voice}{Character. Voice name supported by the deployed model.}
 
@@ -61,6 +61,13 @@ Use a Microsoft Foundry speech deployment to synthesize audio and save it to
 a local file. The v1 data-plane path is used by default; set
 \code{api = "deployment"} for a deployment exposed only on the classic
 \verb{/openai/deployments/\{model\}/audio/speech} path.
+}
+\details{
+Pass the speech deployment name explicitly in \code{model}; audio routes do not
+fall back to \code{AZURE_FOUNDRY_MODEL} because that environment variable commonly
+names a chat deployment. Azure \code{whisper} version \code{001} retires on
+2026-12-15. The \verb{gpt-4o-mini-transcribe} version \code{2025-12-15} is generally
+available until 2027-06-15.
 }
 \examples{
 \dontrun{

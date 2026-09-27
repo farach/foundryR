@@ -18,9 +18,10 @@
 #'   \describe{
 #'     \item{source}{Character. Identifies the analyzed item: "user_prompt",
 #'       "document_1", "document_2", etc.}
-#'     \item{content}{Character. The text that was analyzed (truncated to 100 chars
-#'       for display).
-#'     }
+#'     \item{.input_idx}{Integer. Position of the analyzed input. For document
+#'       rows, this is the original position in `documents`, including skipped
+#'       `NA` or empty entries.}
+#'     \item{content}{Character. The full text that was analyzed.}
 #'     \item{attack_detected}{Logical. TRUE if a prompt injection or jailbreak
 #'       attempt was detected.}
 #'   }
@@ -101,16 +102,20 @@ foundry_shield <- function(user_prompt,
     if (!is.character(documents)) {
       cli::cli_abort("{.arg documents} must be a character vector.")
     }
+    document_indices <- seq_along(documents)
+    keep_documents <- !is.na(documents) & documents != ""
     # Remove NA values with warning
     if (any(is.na(documents))) {
       cli::cli_warn("Removing NA values from {.arg documents}.")
-      documents <- documents[!is.na(documents)]
     }
-    # Remove empty strings
-    documents <- documents[documents != ""]
+    documents <- documents[keep_documents]
+    document_indices <- document_indices[keep_documents]
     if (length(documents) == 0) {
       documents <- NULL
+      document_indices <- integer()
     }
+  } else {
+    document_indices <- integer()
   }
 
   endpoint <- get_content_safety_endpoint(endpoint, required = TRUE)
@@ -150,7 +155,7 @@ foundry_shield <- function(user_prompt,
   result <- httr2::resp_body_json(resp)
 
   # Parse response into tibble
-  parse_shield_response(result, user_prompt, documents)
+  parse_shield_response(result, user_prompt, documents, document_indices)
 }
 
 
@@ -161,28 +166,24 @@ foundry_shield <- function(user_prompt,
 #' @param result List. The parsed JSON response from the API.
 #' @param user_prompt Character. The original user prompt.
 #' @param documents Character vector. The original documents (or NULL).
+#' @param document_indices Integer vector. Original indices for `documents`.
 #'
 #' @return A tibble with source, content, and attack_detected columns.
 #' @keywords internal
-parse_shield_response <- function(result, user_prompt, documents) {
-
-  # Helper to truncate content for display
-  truncate_content <- function(text, max_chars = 100) {
-    if (nchar(text) > max_chars) {
-      paste0(substr(text, 1, max_chars - 3), "...")
-    } else {
-      text
-    }
-  }
+parse_shield_response <- function(result,
+                                  user_prompt,
+                                  documents,
+                                  document_indices = seq_along(documents)) {
 
   # Start with user prompt analysis
   rows <- list()
 
   # User prompt result
-  user_attack <- result$userPromptAnalysis$attackDetected %||% FALSE
+  user_attack <- result$userPromptAnalysis$attackDetected %||% NA
   rows[[1]] <- tibble::tibble(
     source = "user_prompt",
-    content = truncate_content(user_prompt),
+    .input_idx = 1L,
+    content = user_prompt,
     attack_detected = user_attack
   )
 
@@ -191,14 +192,16 @@ parse_shield_response <- function(result, user_prompt, documents) {
     doc_analyses <- result$documentsAnalysis
 
     for (i in seq_along(documents)) {
-      doc_attack <- FALSE
+      doc_attack <- NA
       if (i <= length(doc_analyses)) {
-        doc_attack <- doc_analyses[[i]]$attackDetected %||% FALSE
+        doc_attack <- doc_analyses[[i]]$attackDetected %||% NA
       }
+      original_i <- document_indices[[i]]
 
       rows[[i + 1]] <- tibble::tibble(
-        source = paste0("document_", i),
-        content = truncate_content(documents[i]),
+        source = paste0("document_", original_i),
+        .input_idx = original_i,
+        content = documents[i],
         attack_detected = doc_attack
       )
     }
@@ -218,36 +221,5 @@ parse_shield_response <- function(result, user_prompt, documents) {
 #' @return Character string with error message.
 #' @keywords internal
 shield_error_body <- function(resp) {
-  body <- tryCatch(
-    httr2::resp_body_json(resp),
-    error = function(e) list(error = list(message = httr2::resp_body_string(resp)))
-  )
-
-  # Azure Content Safety error format
-  error_msg <- body$error$message %||%
-    body$message %||%
-    body$error %||%
-    "Unknown API error"
-
-  error_code <- body$error$code %||% ""
-
-  # Authentication errors
-  if (grepl("401|unauthorized|invalid.*key|Unauthorized", error_msg, ignore.case = TRUE)) {
-    return("Invalid API key. Check your AZURE_CONTENT_SAFETY_KEY.")
-  }
-
-  # Resource not found
-  if (grepl("404|not found|resource", error_msg, ignore.case = TRUE)) {
-    return(paste0(
-      "Content Safety resource not found. Verify your AZURE_CONTENT_SAFETY_ENDPOINT. ",
-      error_msg
-    ))
-  }
-
-  # Rate limiting
-  if (grepl("429|rate limit|too many requests|throttl", error_msg, ignore.case = TRUE)) {
-    return("Rate limit exceeded. Please wait and retry.")
-  }
-
-  paste0("Shield API error: ", error_msg)
+  foundry_classify_error(resp, service = "content_safety")
 }

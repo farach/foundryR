@@ -1,10 +1,10 @@
 {
-    "id": "resp_08bfb26cf881f896006a46ae854ac08193bfc022a77e0e4888",
+    "id": "resp_00c37cf7211a09ff006ab97c3640888195a36be63000dc9349",
     "object": "response",
-    "created_at": 1783017093,
+    "created_at": 1790540854,
     "status": "completed",
     "background": false,
-    "completed_at": 1783017097,
+    "completed_at": 1790540859,
     "content_filters": [
         {
             "blocked": false,
@@ -74,7 +74,7 @@
             },
             "content_filter_offsets": {
                 "start_offset": 0,
-                "end_offset": 1631,
+                "end_offset": 1779,
                 "check_offset": 0
             }
         }
@@ -89,17 +89,18 @@
     "moderation": null,
     "output": [
         {
-            "id": "rs_08bfb26cf881f896006a46ae859f7c8193ae30f4c88f7d7584",
+            "id": "rs_00c37cf7211a09ff006ab97c3972f08195a7b9f786489ada5b",
             "type": "reasoning",
             "content": [
 
             ],
+            "encrypted_content": "gAAAAABquXw7HiVVeNMCBT2ceV14Vvop0WWRkWC528lUB3Xj9QjgvyiJt10HqEqOcrR82f3RpArfIlGZTdrytAQ6bp66QmGRh2FBKtUnTZ7wRoTYb3h2_BrVcHJc-3LkdtQORyf3yM5N6gF5dJ65WfjIFYaLRuJA6UxOS5pVyAZxhXuP6fUFipdpnV_DdQBuV8dZBFcd3ExEm2R99i2GIpdE3TJHSTy9wROLWGRppjoIx3TMl5PI_GncJ9oUT2QLHAQYZupD9milof6VL0v0xit6FvQJHaANUTNq4kpBqO0zbcs1Ut1OdxfKeDGOP7K5BWJEU7YajNHfCqoa4EYBpT8MzsK3AXzWieb4IIpqf7n_bLjbNpsN_fOkc2p6tRO4_w3Bw8T2GjoDhKe99a6S8S9r6sIsk6rulfrIANVgYsNUEYmpany3OMPbbJWxjlNvDFzfSk9-pnR4bMhJ5zfUCx1olwxbJE1CC9dt934dijN0i3-naNv-xzaVEiTkTRP8C7WD_YDVnNZ2eOCVfb5oHQM9SKq7G0SEky-OBmYtUmrMeLtzibSWRdN5M5MgcUNnMb2VMWLx5ZB_3z0TUQJN8kDSttdMLK4Dp0-4skx9VjkWXOZ1si8T7Eqroxsjqoe6fPqyo7J1L_6c69X0jmhKcAZ_p4YwquLqhNtDbxLdCV5hwp9fmiacoBmrwVKG0tNM65kXs-3acCt4Hn0b25Vfze_Ql-R7VASbCPJySgAvpWQlYo0RYVIG_68CsU_3t9XIhjkt2uYDYQgH-g_05YVG_EOv_TkQbmYTtfc4X7-7zqKsBqBGemStfNYR4bjWm4iM6NwkT0GfZU9sXIFCs-BlETvzyWpBYivTc54vxRjIvSCKVfkZxWR3CWniadj4mIwlNW6mbLrMcBV9FgDyYeHDb_tvqjQiT1WY-EK6L6s5MMyEGrxoXYiQ6N5Ofni0U7TnAB77GRWTfz6wR1R6m6a05f1tnuYSCYVGLIMxXp7egh40CgkO_pe2zGPHxmeb9yjtxDc3eKHGliKgjrDxSvh8YEUh7gA756TQwTqg-UeXtCS2ChHp5paktEq0uozFCXSc-JcxrJ0Y2cSLH7MXJghCK4dhHE-0m-sCeGEPD05YnLaGwtHN0YIg-2q2sk7_sV7cSkMUW3ej090WKc-jMIA9LpnVJ7GmMiAQ18QsIkngGLraDWGiIoLtKrbXkb22N8O9ZNHAvPl8cx0frZ2mvsVqpqg8sVTu9jBcaGeVMCI0GlqdQaQZnuK9joE8vIkETqLSf7Z_Vn08oOw3FNLMXe6cTk9xj253TxUGvd8Og0km1IO0YKlOz-SZPEN6NpF09p4AozORbYx4Jnw58LqmIjZOQu3znff-k7BNM4ZveRiWlOhUFx43MDP78lynUHXDmITCL2X6QOwlJPDCYtkI8_HNWDWQf5ZBQl8KnEgXhBHpPcmkYRSpohybEuIZ1aVvWJmXifpaUMbhPsuL6a6NyXp9cSq_JPNbpY8geybi-pVC0MTiIxnCIR-veL2XHF4WnDqBv9RMIABiPR8SFRLHBQYq6RrgIpp5v3SbpGm8lK99DvksEA_V_5JzsjdNW8IK4EOTwlwkzEAX0tqilISBl3pjzATvJMs_kHBFZ_FrE7kWWP9ldPl68WJ5V7tvRRO0tH7mnypuwMA-b7NbTnk_mZq_ICyaRh79h5cuQm2RuQPY39tJsQUcEXftx3oZIzLCDGWZlPYAbMqNx_6kf3CgmehAlA_VJ13dReSo3b6xNX5Jis8RP41Pr-P2Tj_q0HGrPUDoYI8JiYFtEU9vonU9dbROLxixPWxybz7BnmE_rMEvh7UBrm0pPOHOcwYFQC8yhU-o1Y0DZoZtxst0txJvdUt3T0j7Xjlyuy3n5pfgFV36ZuiotW8uRmEzXU5LkH5ZOQ7O2f2XRASL-AhtRdWajoCiOMdcqghywb01IiCPSKA3fZzh0xVCT8gU_AV6bSF5kQ767X53WvCFD5-iIZbjxzg5A1BqLCiQb-ZSJYpryEKr71x80PHudRU6QYsS7ltFUiulYrFlfiKzP_ohg7oA4M_Hlqve4RHCCWdc1w4mCP9nVaFuG45Y0ZuKXnuMWQ6UIlBNiMD5078rvl8P9zUf4bptNIwsH_GpRv_Z5fTl8VRNMSTfzlyQH5w0qsRGiNXe1mgwrko7wEepPTR4ujFN2ZBEi0Gdr8ghRcqcYQomlGZ3LhzAj0W4yxCfUYGm5kha8wTaa8-w_b2vgs5r6tyQokbTJJ9b2Flgk8dBiDk6dAQqsI1PH9YfxSOVTx4lD_siI6eTquYnwUbUL0uj7aPlXj0bNna4DxdINAwmu31WL6mYdjtQ6uc-BxzfKvpIPdXCFCl636M8pa4wPZmZRAhmrbGiyAtuvDlln_s0ZuksGPmUbmvLwxopUWzz_0oYISV7K4lj9U3oI1WeDGOy8dwQdHOtM9Q0EIV1eYzOa0jCGYVKT8X7ZlBTcM7HehgNk6Uo8M1wwMXdMP4E-7LPx6GnJAK6Q6K1U0FaQ5_RJQ80PMvkmvSPKF70jCA1aVewLNII9sPohMiGEvS9cFZxdDnB9GEUs5RDzbkFpXBFEtvo1tClUFWJrersdExIBOBIikDBr1zp0txO-7aGQCjLHfnF6FsEwMG3rEKTJrHOBeG25rX-9TgrDCeB4b2zf0jb8_C4Yd5f62ZTq6LOvSJwmF6MMR2vajg2nbE_BT6jMAo77TMjwXZXYWesDrviDvUftvKTd000KJG-QIRhuEpe_icycIthaX3g38tyu4UtKanOxafdf7w0941yPIY1S2Fjo3eHmUZHTzOkidjkY9vvao_I7-tqZb6CXlnpGQ45HVpRgCEK1T9_QFZDloZZP6X1Ji2m_x-fQU1MButEAps5CA74cTZoYC6i1PszNzSN-afbiN3j-A5hqH7T9xZ8BLivuwXPp6gz_zYz8NMu6SRC0zjSbgIe_j2ablQmhbRVtfzeGd5CeESe4IihYTgRJB-SQJPrn6Cy5xQgN9jPmFJIDa5ZrP9szIImIW8V1aJs66VNyMe7eC0NrYCFaS6MttWDPzv__RG-nHNMsznLL9MXYnR7buZNXP_TSl_pTNle2eu1a-Z_vAlLlKlkM70m4zdWK_XNhSKjt5wOzDUH3QxaPkOsuBKoe_47O8pVWRseLQ==",
             "summary": [
 
             ]
         },
         {
-            "id": "msg_08bfb26cf881f896006a46ae885a8081938a68f4facfbf6b61",
+            "id": "msg_00c37cf7211a09ff006ab97c3aeb608195ae3c4c983c0d9bf5",
             "type": "message",
             "status": "completed",
             "content": [
@@ -111,7 +112,7 @@
                     "logprobs": [
 
                     ],
-                    "text": "Retrieval-augmented generation is a framework in which a language model generates text conditioned on both its internal knowledge and external retrieved documents from a database or corpus, grounding the output in retrieved evidence to be more factual and up-to-date."
+                    "text": "Retrieval-augmented generation (RAG) is a method that augments a text-generating model with a retrieval component that fetches relevant documents from an external corpus and conditions the generated output on those documents to improve factual accuracy and up-to-date knowledge."
                 }
             ],
             "role": "assistant"
@@ -125,6 +126,7 @@
     "reasoning": {
         "context": "current_turn",
         "effort": "medium",
+        "mode": "standard",
         "summary": null
     },
     "safety_identifier": null,
@@ -138,6 +140,24 @@
         "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
     "tools": [
 
     ],
@@ -147,13 +167,14 @@
     "usage": {
         "input_tokens": 19,
         "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
         },
-        "output_tokens": 307,
+        "output_tokens": 356,
         "output_tokens_details": {
-            "reasoning_tokens": 192
+            "reasoning_tokens": 256
         },
-        "total_tokens": 326
+        "total_tokens": 375
     },
     "user": null,
     "metadata": {

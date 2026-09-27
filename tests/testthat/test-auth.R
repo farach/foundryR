@@ -191,3 +191,26 @@ test_that("azure cli token provider caches tokens", {
     "https://cognitiveservices.azure.com"
   )
 })
+
+test_that("foundry_set_token_provider warns when a CLI provider's audience does not match the scope", {
+  old_resource <- foundry_get_token_provider("resource")
+  old_project <- foundry_get_token_provider("project")
+  withr::defer({
+    foundry_set_token_provider(old_resource, scope = "resource")
+    foundry_set_token_provider(old_project, scope = "project")
+  })
+
+  expect_warning(
+    foundry_set_token_provider(foundry_token_azure_cli(), scope = "project"),
+    "https://ai.azure.com"
+  )
+  expect_no_warning(
+    foundry_set_token_provider(foundry_token_azure_cli("https://ai.azure.com"), scope = "project")
+  )
+  expect_warning(
+    foundry_set_token_provider(foundry_token_azure_cli("https://ai.azure.com"), scope = "resource"),
+    "cognitiveservices"
+  )
+  expect_no_warning(foundry_set_token_provider(foundry_token_azure_cli(), scope = "resource"))
+  expect_no_warning(foundry_set_token_provider(function() "token", scope = "project"))
+})

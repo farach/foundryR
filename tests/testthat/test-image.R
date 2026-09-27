@@ -535,6 +535,28 @@ test_that("foundry_image handles b64_json response format (mocked)", {
   expect_true(is.na(result$url))
 })
 
+test_that("foundry_image reads the top-level output format for gpt-image models", {
+  setup_mock_env()
+  withr::local_envvar(
+    AZURE_FOUNDRY_IMAGE_ENDPOINT = "https://test-image.openai.azure.com",
+    AZURE_FOUNDRY_IMAGE_MODEL = "gpt-image-2"
+  )
+
+  mock_request(list(
+    created = as.integer(Sys.time()),
+    background = "opaque",
+    output_format = "png",
+    quality = "low",
+    size = "1024x1024",
+    data = list(list(b64_json = "iVBORw0KGgo="))
+  ))
+
+  result <- foundry_image("A classroom", model = "gpt-image-2")
+
+  expect_equal(result$output_format, "png")
+  expect_true(is.na(result$revised_prompt))
+})
+
 # ============================================================================
 # foundry_save_image with base64 data
 # ============================================================================

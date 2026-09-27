@@ -1,0 +1,236 @@
+{
+    "id": "resp_05164995a29378da016ab996b7d8e481979d6dff73b7aeac93",
+    "object": "response",
+    "created_at": 1790547639,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1790547642,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 2156,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1672,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": "Pick the one candidate occupation that best matches the job description. Choose only from the candidates listed with the description.",
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_05164995a29378da016ab996b82ba48197bc8bca7edce73394",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "encrypted_content": "gAAAAABquZa62oVeFjRckucGlDL8l6nlccHdVrtHezD6cGbGDqNIbkEXoi_p73b9zy29UqD3S4x1ZMrPbrsBErZVE60KYjzrgw_rBd9D4eeT9YsvIwekNO7oZdDghXPUT2lmb1Aq25kPclChGSh_lzw6-iBWlVH0sUDttsz_zVbfn3vKGlsfZNxELhjmBqMfwUlSW_H__A27rOF3ajOhRNDLcSZdQrAEdcUn-ecPFMSXYymws77OwxSYGHSJlhIIU09qbnWqxRsA43WNLPr-Mt4xcibyBCsC9FT-HkXMGvSYNX53BGKqOklWHvSxN4M5Ag1Pfsfd3AR8DBnDYksrQPh0TcfyWrnYoYbP6m_dIfQGnOyMgFwMScQZ6gXtfBdL_UrsYyRTc-LzXVdt1qmY0zETTHkG5C8Ar6YZC2IvCpPYnJsF2FBQLnz5UtTNt5QzaeIxr-Z8HHXKlRxuFGQ7bihmTokzFAF7nZ1CH_H8UPj6CsnBdwx-DkFfFQr24NNC49IIXi9qKiwYxMFEADHu0oBgVCV7Ml7_xX7TLj_nXotJp4ZgJNB3AweE86fi3RGdfAwKq4ifjJQsJawX7SAG0qAqPOH7ytn8F7KZjJO5N5LEOA5UhC1ESE3vDrW26_VK_xjsH7z42Zo2Dg9-HaKiurPJP4_db32Hj5G8AcKM6vi3WRtqlfz4NIo3zpd4nqO-A_8I7kjrbJluenR70EH6sDKWMHeXSQPggwfeBAfsZByLKw7rPwOH8oEqv5nr7BEQO3cOchHnw9YT4NO_FZgYk5CoyWi3pdzAku8sDu43mKxA8UDCqEBxfh102B_s3gbdl3kJ3KNeTaAKc_psmTJBZ6PUji2jtuwkiyKwS_ynSuEh6o0CO1uDPEOYlXIaZu50l7PeKQMMsPz5AV-JzGZuPkq1e0yEP-0xmIYiec7KAru61XKzqwYEM3AcKFVizKhlOQZVuwR8JIQkIfqbBhfB24nWOitU_m-0k9VYKLi6jGgwP7Ogj9wqKkrEMdiUhyYBeGUTMpPLS7DF8aysxMR27L88Y46ZO-8HrJ_c1iHA-t9dwPJ4d0iDlH2RTpX94-ub9H9aDDtwJeD2YionWBjWuYxiJzX-o-XlxdnIaYdqFsstk7IkJ1okZ5QrKHOJ0fk65_8J6TzLNxdAsTs79ylXOaMTsX7vNrIjfQgSUGpw_Gw3UfsAq4Hj-hs1_R6SsulIehL_vXebm4eKGIMizukdr5QCM9cChWF5susS2rU8iUMaP7gYu1sW8kmUUGeURaG4WSoyrKZgt0_fNfS6kFzC2OJ2As2YVw_-ZjcZSUCJT3RoukZePtJgT-zukpYzUUTGYd3x6S9Wsj5Baub39RNhPZPngd4guZLieX7Mc7Ebr_RN6Qx-X-qqncfheaqn7qfw33DG8vJSNMYdhkTJTURYlipOb2UOsEptTJuq4n2W1yCCWcm7OMPfFqR9eAE3uG_nn2q2AyUSJQkzVGwbjQ1jeZulxUt1r8X3ytqw8fE5_832PM0wJ-2m95vAyAsGa3HqDE_ghXBAQLWqSELrJ07YYu1nf2ujZHnd2K_88SRF2qOHgwJYXiDnkG4avKkfVfvw9QmaYulXI5mhNA9vvuA6Q1HbI85imtoIobR56lf9Srny6yJXriVFs0-c02vdxEJ8BsmQZNC2GRRt992c6qW2H5zNNOyLULQqtetEnBhlXZf-ItMPyBzeKtiQzHcwSIir2fr4mxWiZzqyq2Zz6sJPVn_g9OlAi7ztSApSOa2N3j8RmuCy6noQw3OQhPU2a4ai6759_VTyrr-Tt3gxZuxAb3Ek2XgR2R0YbxoLX3VLejT9bCNj7MDDKPqAT6L-rDdmBLWPG0DsxQ1ln_NiOaPLVPM6TjNb_KbPS6GCnoxksLPUadEUG-s2Ds-zLn-pvwbcqtsTyI5b_1_h7icxutHErQx8x6MKGgor5r32XG9AesUVFgNCIWzatK3YizCXUgxGN9kyBdLLOZ6QCJSkCBo8iVmpm8bkqM1bVuWWii87LugFARDoXju2wtrlzztIqLyAbZd39YgZEecZS2Wg-4CJsWDXR6Y_HvJZG3GjpYNYaX0xK_FW3K00TBL7CwMpPhnL8W3YTObME1wERr-RN_cgWLyFpy3DuVVuJ7otZgR8kvfSeugOQvsOIo-HiqRZexEcavbmjzmw-X0xLchwdlvEix36cH7wBdaYW0nKBeBXzNSWlX0AR5OZTOilt_T9tW7TmKOxLA5nvWivgBiM_qdD0jZtyPfOZVowu1zkeyCs9QfI7kG0pC8GesGIYpFijLzTD6J7wcwCzgvpBAoXVJqIoa1hwMtNIc4Yv_UUbUK3iYxh1-WePHW-RlMPb7zOCenzfJF0oz-GtDdwBvHNGb089Vj06oJj7J4ZF1x8BauqE3DK-8FkUk6KmgLAOkRiI7sUUF2H11o0Sfan9gecL3Y6d6wwI7k8moAdorcud0_sLBvFp-31s1hGNdRDdehpaLqKhlSkNjCUPZON85hmvzo7_UdeVkmn3nMtIIh7JDZ_mC_yLf1NUJJ4tDkUhBxvPt5VLWT_eBKvvILKOXT5VXOYojmDdvpmWMx2YmaXbvv1XL8VXBxuBO3vRFM3NkERRR9oRe9Cx09stpdRRFh0qN7j7y1XW0bCBJlR7PnT58IomLiY49DpDz9MsD0qrKb4klIe8byO6RkiTkcJlK8EClaekIsxDUU-F8LHBBiqKJLOdmfo_NBgXo4hYVvAJZ5rygrN5UAkXrr9enBmSS7RbYoBlhIcKWq3FzoGPvzXwvni4ZvFNmh6Qcu1DL06j-Fsldeq-_mQKj0YpldtRpvX_oi9Zq7ftPZ2fTFagRIfZeKBVR1Qxk87Pe9HrnEaoyvaNLfEKhuo4pd6_GUyv1Bm8iVeMXJ9pUiCBmedBtAqdWIcuLFMYQi8M-0TlMa7fV88fFDwdsXbBAP6atSHAfzgOue_yZGo66mAxAQHGK3n0jzN0FYfv2Wiy_mxcEwn7CWkTwisAcTTa8TBUrNc1TX_OQSuKckSKskqMJt2N3qymR3-dqvWNouXE0jEpe8goioXBASNiDHiUgU8HVjw6xD47mu6o7AaBcOWXhiLki3b-RMCyi5ZEMJ7lrcrRzWzYs7q2U3aDph53ChO51ZOkr4Nka6g1iSxy3luHpyL9KS2NZp1S0o2Grxw4c95LU6QpRY5w-omzaSgKX72oLhNHFxPePV2vzsjJTtfQkkgHrUR-JjWzJtA4ilqt1SBQlfS7zyzWnI7EKxQ7l74YNroOow2PxHjo6us7Puy1-incaxdDcOT7IuZIEjj6zv-9a_b_APRKoxN6QIv71RAbp7Ie7KP_tKAgj14kjEwaHilbZcrliwc_6EJ3Yb6KhBRmPk0cS1jvtvW-90hXGprZY1ivXbHqlhELQzgtkvlh1kE38w98RMaZK-yzdskqEjGiZZBeO9AxBH0ncGbtvdu8bE5dM6dzy2SgtDa3raEED8MRg==",
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "msg_05164995a29378da016ab996ba8ec4819799fa74ecaefb80de",
+            "type": "message",
+            "status": "completed",
+            "content": [
+                {
+                    "type": "output_text",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ],
+                    "text": "{\"choice\":\"29-1292.00\"}"
+                }
+            ],
+            "role": "assistant"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "mode": "standard",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "json_schema",
+            "description": null,
+            "name": "ExtractedData",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "choice": {
+                        "type": "string",
+                        "description": "Code of the candidate occupation that best matches the job description.",
+                        "enum": [
+                            "15-1212.00",
+                            "15-1231.00",
+                            "15-1244.00",
+                            "15-1299.01",
+                            "15-1299.05",
+                            "25-1022.00",
+                            "25-1054.00",
+                            "25-1064.00",
+                            "25-1067.00",
+                            "25-1072.00",
+                            "25-1082.00",
+                            "25-2012.00",
+                            "25-2057.00",
+                            "25-4031.00",
+                            "29-1021.00",
+                            "29-1023.00",
+                            "29-1029.00",
+                            "29-1071.01",
+                            "29-1141.01",
+                            "29-1141.02",
+                            "29-1141.03",
+                            "29-1229.02",
+                            "29-1292.00",
+                            "43-2011.00",
+                            "43-3011.00",
+                            "43-3021.00",
+                            "43-3031.00",
+                            "43-3061.00",
+                            "43-4071.00",
+                            "43-4081.00",
+                            "43-4121.00",
+                            "43-4131.00",
+                            "43-4141.00",
+                            "43-4171.00",
+                            "43-9061.00"
+                        ]
+                    }
+                },
+                "required": [
+                    "choice"
+                ],
+                "additionalProperties": false
+            },
+            "strict": true
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
+    "tools": [
+
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 407,
+        "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+        },
+        "output_tokens": 566,
+        "output_tokens_details": {
+            "reasoning_tokens": 512
+        },
+        "total_tokens": 973
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

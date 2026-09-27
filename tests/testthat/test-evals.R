@@ -228,6 +228,10 @@ test_that("foundry_eval_create posts graders to the evals endpoint", {
 
 test_that("foundry_eval_create accepts a list of graders", {
   setup_mock_env()
+  withr::local_envvar(
+    AZURE_FOUNDRY_PROJECT_ENDPOINT = "https://acct.services.ai.azure.com/api/projects/demo",
+    AZURE_FOUNDRY_PROJECT_TOKEN = "test-project-token"
+  )
   captured <- NULL
   resp <- mock_httr2_response(mock_eval_object())
   testthat::local_mocked_bindings(
@@ -238,17 +242,21 @@ test_that("foundry_eval_create accepts a list of graders", {
     .package = "httr2"
   )
 
-  foundry_eval_create(
+  suppressMessages(foundry_eval_create(
     data_source_config = foundry_eval_data_config("logs"),
     testing_criteria = list(
       foundry_grader_string_check("a", "x", "y", "eq"),
       foundry_grader_azure_ai("b", "builtin.coherence")
     )
-  )
+  ))
 
   body <- captured$body$data
   expect_length(body$testing_criteria, 2L)
   expect_equal(body$testing_criteria[[2]]$type, "azure_ai_evaluator")
+  expect_equal(
+    captured$url,
+    "https://acct.services.ai.azure.com/api/projects/demo/openai/v1/evals"
+  )
 })
 
 test_that("foundry_eval_create rejects a bad data_source_config", {
@@ -329,6 +337,41 @@ test_that("foundry_eval_delete parses the deletion result", {
   expect_true(out$deleted)
   expect_equal(out$eval_id, "eval_1")
   expect_equal(out$object, "eval.deleted")
+})
+
+test_that("foundry_eval_delete warns when the service keeps the evaluation", {
+  setup_mock_env()
+  # Shape returned live by a project endpoint: the eval was still retrievable.
+  mock_request(list(object = "eval.deleted", deleted = FALSE, eval_id = "eval_1"))
+
+  expect_warning(out <- foundry_eval_delete("eval_1"), "did not confirm")
+  expect_false(out$deleted)
+})
+
+test_that("model grader results carry the judge's label and reasoning", {
+  # Shape returned live by a label_model grader on the resource endpoint.
+  item <- list(
+    id = "oi_1", run_id = "run_1", eval_id = "eval_1", datasource_item_id = 0L,
+    status = "completed",
+    results = list(list(
+      name = "tone-4b960655-97b3-4845-9f4b-1f4d44dad466",
+      score = 0,
+      passed = FALSE,
+      sample = list(output = list(list(
+        role = "assistant",
+        content = paste0(
+          '{"steps":[{"description":"Read the wording.","conclusion":"The message insults the reader."},',
+          '{"description":"Decide.","conclusion":"It is rude."}],"result":"rude"}'
+        )
+      )))
+    ))
+  )
+  out <- foundry_eval_output_item_tibble(item)
+  expect_equal(out$label, "rude")
+  expect_equal(out$reason, "The message insults the reader. It is rude.")
+  expect_equal(out$grader_name, "tone-4b960655-97b3-4845-9f4b-1f4d44dad466")
+  expect_equal(foundry_eval_grader_name(out$grader_name), "tone")
+  expect_equal(foundry_eval_grader_name("label-match"), "label-match")
 })
 
 # ---------------------------------------------------------------------------
@@ -480,4 +523,133 @@ test_that("foundry_eval_run_output_items yields one NA row when results are empt
   expect_equal(nrow(out), 1L)
   expect_equal(out$output_item_id, "oi_2")
   expect_true(is.na(out$grader_name))
+})
+
+# ---------------------------------------------------------------------------
+# Pagination and project routing
+# ---------------------------------------------------------------------------
+
+mock_output_item <- function(id, index) {
+  list(
+    id = id, run_id = "evalrun_1", eval_id = "eval_1",
+    datasource_item_id = index, status = "pass",
+    results = list(list(name = "exact", type = "string_check", passed = TRUE))
+  )
+}
+
+test_that("foundry_eval_run_output_items follows has_more across pages", {
+  setup_mock_env()
+  urls <- character()
+  pages <- list(
+    list(
+      object = "list", has_more = TRUE, last_id = "oi_2",
+      data = list(mock_output_item("oi_1", 0L), mock_output_item("oi_2", 1L))
+    ),
+    list(
+      object = "list", has_more = FALSE, last_id = "oi_3",
+      data = list(mock_output_item("oi_3", 2L))
+    )
+  )
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      urls <<- c(urls, req$url)
+      mock_httr2_response(pages[[length(urls)]])
+    },
+    .package = "httr2"
+  )
+
+  out <- foundry_eval_run_output_items("eval_1", "evalrun_1")
+
+  expect_length(urls, 2L)
+  expect_false(grepl("after=", urls[[1]]))
+  expect_match(urls[[2]], "after=oi_2")
+  # No page size is sent unless the caller asks for one.
+  expect_false(any(grepl("limit=", urls)))
+  expect_equal(out$output_item_id, c("oi_1", "oi_2", "oi_3"))
+})
+
+test_that("foundry_eval_run_output_items treats limit as a total cap", {
+  setup_mock_env()
+  urls <- character()
+  pages <- list(
+    list(
+      object = "list", has_more = TRUE, last_id = "oi_2",
+      data = list(mock_output_item("oi_1", 0L), mock_output_item("oi_2", 1L))
+    ),
+    list(
+      object = "list", has_more = TRUE, last_id = "oi_4",
+      data = list(mock_output_item("oi_3", 2L), mock_output_item("oi_4", 3L))
+    )
+  )
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      urls <<- c(urls, req$url)
+      mock_httr2_response(pages[[length(urls)]])
+    },
+    .package = "httr2"
+  )
+
+  out <- foundry_eval_run_output_items("eval_1", "evalrun_1", limit = 3)
+
+  expect_match(urls[[1]], "limit=3")
+  expect_match(urls[[2]], "limit=1")
+  expect_equal(out$output_item_id, c("oi_1", "oi_2", "oi_3"))
+  expect_error(
+    foundry_eval_run_output_items("eval_1", "evalrun_1", limit = 0),
+    "positive integer"
+  )
+})
+
+test_that("project_endpoint routes eval calls through the project Evals route", {
+  setup_mock_env()
+  withr::local_envvar(
+    AZURE_FOUNDRY_KEY = "",
+    AZURE_FOUNDRY_PROJECT_TOKEN = "project-token-123"
+  )
+  captured <- NULL
+  resp <- mock_httr2_response(mock_eval_object())
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      resp
+    },
+    .package = "httr2"
+  )
+  project <- "https://acct.services.ai.azure.com/api/projects/demo"
+
+  foundry_eval_get("eval_1", project_endpoint = project)
+
+  expect_equal(captured$url, paste0(project, "/openai/v1/evals/eval_1"))
+  expect_contains(names(captured$headers), "Authorization")
+  expect_false("api-key" %in% names(captured$headers))
+
+  foundry_eval_run_cancel("eval_1", "evalrun_1", project_endpoint = project)
+  expect_equal(
+    captured$url,
+    paste0(project, "/openai/v1/evals/eval_1/runs/evalrun_1")
+  )
+  expect_equal(captured$method, "POST")
+})
+
+test_that("resource routing remains the default for eval calls", {
+  setup_mock_env()
+  captured <- NULL
+  resp <- mock_httr2_response(mock_eval_object())
+  testthat::local_mocked_bindings(
+    req_perform = function(req, ...) {
+      captured <<- req
+      resp
+    },
+    .package = "httr2"
+  )
+
+  foundry_eval_get("eval_1")
+  expect_equal(
+    captured$url,
+    "https://test-resource.openai.azure.com/openai/v1/evals/eval_1"
+  )
+  expect_error(
+    foundry_eval_get("eval_1", project_endpoint = c("a", "b")),
+    "project_endpoint"
+  )
 })

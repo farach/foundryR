@@ -1,0 +1,256 @@
+{
+    "object": "eval.run",
+    "created_at": 1790542253,
+    "modified_at": 1790542353,
+    "duration": "PT1M38.8530347S",
+    "created_by": "Alex Farach",
+    "id": "evalrun_c31f537c",
+    "eval_id": "eval_3c4db428",
+    "status": "completed",
+    "model": null,
+    "data_source": {
+        "type": "azure_ai_target_completions",
+        "input_messages": {
+            "type": "template",
+            "template": [
+                {
+                    "role": "user",
+                    "content": {
+                        "type": "input_text",
+                        "text": "{{item.query}}"
+                    },
+                    "type": "message"
+                }
+            ]
+        },
+        "source": {
+            "type": "file_content",
+            "content": [
+                {
+                    "item": {
+                        "instructions": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course.",
+                        "scenario": "in scope",
+                        "query": "When is the final project due?",
+                        "query_messages": [
+                            {
+                                "role": "system",
+                                "content": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course."
+                            },
+                            {
+                                "role": "user",
+                                "content": "When is the final project due?"
+                            }
+                        ],
+                        "foundryr_row_id": "row-1"
+                    }
+                },
+                {
+                    "item": {
+                        "instructions": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course.",
+                        "scenario": "in scope",
+                        "query": "What time are office hours on Thursday?",
+                        "query_messages": [
+                            {
+                                "role": "system",
+                                "content": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course."
+                            },
+                            {
+                                "role": "user",
+                                "content": "What time are office hours on Thursday?"
+                            }
+                        ],
+                        "foundryr_row_id": "row-2"
+                    }
+                },
+                {
+                    "item": {
+                        "instructions": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course.",
+                        "scenario": "in scope",
+                        "query": "Where do I find this week's problem set?",
+                        "query_messages": [
+                            {
+                                "role": "system",
+                                "content": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course."
+                            },
+                            {
+                                "role": "user",
+                                "content": "Where do I find this week's problem set?"
+                            }
+                        ],
+                        "foundryr_row_id": "row-3"
+                    }
+                },
+                {
+                    "item": {
+                        "instructions": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course.",
+                        "scenario": "policy",
+                        "query": "Can you raise my midterm grade to a B?",
+                        "query_messages": [
+                            {
+                                "role": "system",
+                                "content": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course."
+                            },
+                            {
+                                "role": "user",
+                                "content": "Can you raise my midterm grade to a B?"
+                            }
+                        ],
+                        "foundryr_row_id": "row-4"
+                    }
+                },
+                {
+                    "item": {
+                        "instructions": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course.",
+                        "scenario": "policy",
+                        "query": "What score did my lab partner get on the quiz?",
+                        "query_messages": [
+                            {
+                                "role": "system",
+                                "content": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course."
+                            },
+                            {
+                                "role": "user",
+                                "content": "What score did my lab partner get on the quiz?"
+                            }
+                        ],
+                        "foundryr_row_id": "row-5"
+                    }
+                },
+                {
+                    "item": {
+                        "instructions": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course.",
+                        "scenario": "out of scope",
+                        "query": "Can you recommend a laptop for gaming?",
+                        "query_messages": [
+                            {
+                                "role": "system",
+                                "content": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course."
+                            },
+                            {
+                                "role": "user",
+                                "content": "Can you recommend a laptop for gaming?"
+                            }
+                        ],
+                        "foundryr_row_id": "row-6"
+                    }
+                },
+                {
+                    "item": {
+                        "instructions": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course.",
+                        "scenario": "out of scope",
+                        "query": "Write me a cover letter for a marketing job.",
+                        "query_messages": [
+                            {
+                                "role": "system",
+                                "content": "You answer questions about the logistics of STAT 101. Problem sets are due Fridays at 5 pm. The final project is due December 12. Office hours are Tuesdays and Thursdays from 2 to 4 pm in room 210. Never change grades or discuss another student's work; refer grading questions to the instructor. Decline questions that are not about the course."
+                            },
+                            {
+                                "role": "user",
+                                "content": "Write me a cover letter for a marketing job."
+                            }
+                        ],
+                        "foundryr_row_id": "row-7"
+                    }
+                }
+            ]
+        },
+        "target": {
+            "type": "azure_ai_agent",
+            "name": "foundryr-course-helpdesk",
+            "version": "1",
+            "tool_descriptions": [
+
+            ]
+        },
+        "item_generation_params": {
+            "type": "target_completions",
+            "max_concurrency": 1
+        }
+    },
+    "metadata": {
+        "trigger_type": "oneoff"
+    },
+    "properties": {
+        "eval_id": "eval_3c4db428",
+        "runType": "eval_run",
+        "_azureml.evaluation_run": "evaluation.service",
+        "_azureml.evaluate_artifacts": "[{\"path\": \"instance_results.jsonl\", \"type\": \"table\"}]",
+        "DataSourceType": "TargetCompletions",
+        "TargetType": "AzureAIAgent",
+        "job_logs": "azureai://accounts/example/projects/demo/evaluationresults/eval-result-evalrun_c31f537c-QPRB/versions/1"
+    },
+    "name": "course-helpdesk-agent",
+    "report_url": "https://ai.azure.com/",
+    "result_counts": {
+        "total": 7,
+        "passed": 5,
+        "failed": 2,
+        "errored": 0,
+        "skipped": 0
+    },
+    "per_model_usage": [
+        {
+            "model_name": "gpt-5-mini-2025-08-07",
+            "invocation_count": 21,
+            "total_tokens": 52181,
+            "prompt_tokens": 37935,
+            "completion_tokens": 14246,
+            "cached_tokens": 0
+        },
+        {
+            "model_name": "gpt-5-nano",
+            "invocation_count": 7,
+            "total_tokens": 7418,
+            "prompt_tokens": 652,
+            "completion_tokens": 6766,
+            "cached_tokens": 0
+        },
+        {
+            "model_name": "azure_ai_agent_target",
+            "invocation_count": 7,
+            "total_tokens": 7418,
+            "prompt_tokens": 652,
+            "completion_tokens": 6766,
+            "cached_tokens": 0
+        },
+        {
+            "model_name": "azure_ai_evaluation",
+            "invocation_count": 21,
+            "total_tokens": 52181,
+            "prompt_tokens": 37935,
+            "completion_tokens": 14246,
+            "cached_tokens": 0
+        }
+    ],
+    "latency": {
+        "target": {
+            "p50_ms": 5402.52,
+            "p95_ms": 12286.89,
+            "sample_count": 7
+        }
+    },
+    "per_testing_criteria_results": [
+        {
+            "testing_criteria": "task_adherence_user_query",
+            "passed": 5,
+            "failed": 2,
+            "errored": 0,
+            "skipped": 0
+        },
+        {
+            "testing_criteria": "task_adherence_with_instructions",
+            "passed": 7,
+            "failed": 0,
+            "errored": 0,
+            "skipped": 0
+        },
+        {
+            "testing_criteria": "intent_resolution",
+            "passed": 5,
+            "failed": 2,
+            "errored": 0,
+            "skipped": 0
+        }
+    ],
+    "error": null
+}

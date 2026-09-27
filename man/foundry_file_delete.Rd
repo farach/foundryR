@@ -9,7 +9,8 @@ foundry_file_delete(
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  project_endpoint = NULL
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ foundry_file_delete(
 \item{endpoint}{Character. Optional endpoint override.}
 
 \item{api_version}{Character. Optional API version query value.}
+
+\item{project_endpoint}{Character. Optional project endpoint. When supplied,
+the call uses the project endpoint instead of the resource endpoint.}
 }
 \value{
 A tibble with deletion status.

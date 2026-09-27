@@ -1,68 +1,44 @@
 ---
-title: "Working with Embeddings"
+title: "Embeddings for research"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Working with Embeddings}
+  %\VignetteIndexEntry{Embeddings for research}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
-# This vignette runs against recorded, credential-free API fixtures. When the
-# fixtures are present (they are recorded once with data-raw/record-doc-outputs.R
-# and committed under vignettes/embeddings/), every foundry_*() call below is
-# executed and its real output is shown. When they are absent, the API chunks are
-# not evaluated so the vignette still builds anywhere without Azure credentials.
 fixture_dir <- "embeddings"
 recording <- nzchar(Sys.getenv("FOUNDRY_RECORD_DOCS"))
 have_fixtures <- dir.exists(fixture_dir) && length(list.files(fixture_dir)) > 0
 run_api <- requireNamespace("httptest2", quietly = TRUE) &&
   (recording || have_fixtures)
-
-# Attach foundryR before start_vignette(): httptest2 only sources the package's
-# inst/httptest2/start-vignette.R (which sets replay placeholders) from attached
-# packages.
 library(foundryR)
-
 if (run_api) {
   httptest2::start_vignette(fixture_dir)
 }
-
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  eval = run_api
-)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = run_api,
+  fig.width = 7, fig.height = 4.5, out.width = "100%")
 ```
+
+Calls to Azure show output recorded from a live run, and setup code is shown but not run.
 
 ## What embeddings are for
 
-Embeddings are numerical representations of text that capture semantic meaning.
-When you convert text to an embedding, you get a vector of numbers (often 1,536
-or 3,072 dimensions depending on the model). Texts with similar meanings tend to
-have similar vectors.
+Embeddings are numeric vectors that represent text. Texts with similar meanings tend to have vectors that point in similar directions, so cosine similarity becomes a useful way to compare responses, documents, or queries.
 
-Use embeddings when you need to:
+Use embeddings when you need to find related documents by meaning, measure similarity between texts, cluster open-ended responses, detect near duplicates, or turn text into numeric predictors for a model. Keyword matching still has value when exact terms matter. Embeddings help when two texts use different wording for a similar idea, such as "automobile" and "car".
 
-- Find documents related to a query by meaning, not only keywords.
-- Measure how similar two pieces of text are.
-- Cluster open-ended responses into themes.
-- Find near-duplicate responses or records.
-- Feed text-derived numeric predictors into downstream models.
+## Generate embeddings
 
-Unlike keyword matching, embeddings understand that "automobile" and "car" are
-semantically similar, even though they share no letters.
+`foundry_embed()` returns one row per input text. The `embedding` column is a list-column of numeric vectors, and `n_dims` reports the length of each vector. Metadata columns keep the original input index, row-level errors, error messages, and per-row response metadata.
 
-## Generating embeddings with foundry_embed()
-
-The examples below embed real sentences from Jane Austen's *Pride and Prejudice*,
-available in the `janeaustenr` package. Using a well-known public-domain text
-makes the output easy to reason about: the opening lines share vocabulary and
-sentiment, so their embeddings should sit close together.
+```{r libraries, message = FALSE}
+library(foundryR)
+library(dplyr)
+```
 
 ```{r austen-lines}
-library(foundryR)
-
 austen_lines <- c(
   "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
   "However little known the feelings or views of such a man may be on his first entering a neighbourhood.",
@@ -70,29 +46,17 @@ austen_lines <- c(
 )
 
 embedding <- foundry_embed(austen_lines[1], model = "text-embedding-3-small")
-embedding
+embedding[, c("text", "n_dims", ".input_idx", ".error", ".error_msg")]
 ```
 
-The result is a tibble with:
-
-- `text`: the original input text.
-- `embedding`: a list-column holding the numeric vector.
-- `n_dims`: the dimensionality of the embedding.
-
-### Embedding multiple texts
-
-Pass a character vector to embed several texts in one call:
+Pass a character vector to embed several texts in one request.
 
 ```{r multiple-embed}
 doc_embeddings <- foundry_embed(austen_lines, model = "text-embedding-3-small")
-doc_embeddings
+doc_embeddings[, c("text", "n_dims", ".input_idx", ".error")]
 ```
 
-### Controlling dimensions
-
-The `text-embedding-3-small` and `text-embedding-3-large` models can return
-shorter vectors. Smaller dimensions mean faster similarity computations and less
-storage, with some trade-off in precision:
+Some embedding deployments can return shorter vectors. That can reduce storage and speed up comparisons, with some loss of detail.
 
 ```{r reduced-dims}
 compact <- foundry_embed(
@@ -100,15 +64,12 @@ compact <- foundry_embed(
   model = "text-embedding-3-small",
   dimensions = 256
 )
-compact$n_dims
+compact[, c("text", "n_dims")]
 ```
 
-## Computing similarity with foundry_similarity()
+## Compare same-source and cross-source pairs
 
-Cosine similarity measures how close two embeddings are, from -1 (opposite) to 1
-(identical). `foundry_similarity()` computes every pairwise similarity in a tibble
-of embeddings. Here we contrast the Austen lines with two sentences from a
-different domain so the split is visible.
+`foundry_similarity()` computes pairwise cosine similarity for a tibble with an `embedding` list-column. The next example mixes two Austen-style lines with two finance sentences, so the useful check is whether same-source pairs score above cross-source pairs.
 
 ```{r similarity}
 mixed <- c(
@@ -123,10 +84,20 @@ similarities <- foundry_embed(mixed, model = "text-embedding-3-small") |>
 similarities
 ```
 
-Results are sorted by similarity. The two Austen lines pair together and the two
-finance lines pair together, while cross-domain pairs score lower.
-The plots in this vignette are shown when the suggested `ggplot2` package is
-installed.
+```{r similarity-summary, echo = FALSE, results = "asis"}
+pair_score <- function(a, b) {
+  hit <- (similarities$text_1 == a & similarities$text_2 == b) |
+    (similarities$text_1 == b & similarities$text_2 == a)
+  similarities$similarity[hit][[1]]
+}
+finance_pair <- pair_score(mixed[3], mixed[4])
+austen_pair <- pair_score(mixed[1], mixed[2])
+cross_max <- max(setdiff(similarities$similarity, c(finance_pair, austen_pair)))
+cat(sprintf(
+  "In this recording the two finance sentences score %.2f and the two Austen lines %.2f, while no cross-source pair scores above %.2f. The Austen lines have no content words in common, so their score comes from meaning and style rather than shared vocabulary.\n",
+  finance_pair, austen_pair, cross_max
+))
+```
 
 ```{r similarity-pairs-data, include = FALSE, eval = run_api && requireNamespace("ggplot2", quietly = TRUE)}
 label_for <- function(x) {
@@ -156,9 +127,9 @@ pair_data$pair <- factor(pair_data$pair, levels = pair_data$pair)
 same_scores <- pair_data$similarity[pair_data$source_match == "same"]
 cross_scores <- pair_data$similarity[pair_data$source_match == "different"]
 similarity_chart_title <- if (min(same_scores) > max(cross_scores)) {
-  "Same-source pairs outscore every cross-source pair"
+  "Same-source pairs score above all cross-source pairs"
 } else {
-  "Same-source pairs tend to outscore cross-source pairs"
+  "Same-source pairs tend to score above cross-source pairs"
 }
 wrap_text <- function(lines, width) {
   wrapped <- vapply(
@@ -214,7 +185,7 @@ ggplot2::ggplot(
     caption = wrap_text(
       c(
         "Blue bars pair sentences from the same source.",
-        "Scores from foundry_similarity() on text-embedding-3-small embeddings."
+        "Scores come from foundry_similarity() on text-embedding-3-small embeddings."
       ),
       101
     )
@@ -232,14 +203,11 @@ ggplot2::ggplot(
   )
 ```
 
-## Use case: finding similar documents
+## Rank documents for a query
 
-A common application is ranking documents by relevance to a query. Embed the
-documents and the query, then sort by cosine similarity:
+For a query-versus-corpus comparison, combine the query and documents in one embedding tibble, compute pairwise similarities, and keep the rows that include the query label. This uses `foundry_similarity()` for the cosine calculation and only a small amount of reshaping to return document text.
 
 ```{r semantic-search}
-library(dplyr)
-
 documents <- c(
   "How to install R packages using install.packages()",
   "Data visualization with ggplot2 in R",
@@ -248,27 +216,32 @@ documents <- c(
   "Building web applications with Shiny",
   "Deep learning with TensorFlow and Keras"
 )
+query <- "How do I create charts and graphs in R?"
 
-doc_embeddings <- foundry_embed(documents, model = "text-embedding-3-small")
-query_embedding <- foundry_embed(
-  "How do I create charts and graphs in R?",
-  model = "text-embedding-3-small"
-)
+search_embeddings <- foundry_embed_batch(
+  c(query, documents),
+  model = "text-embedding-3-small",
+  batch_size = 4,
+  max_active = 2
+) |>
+  mutate(label = c("query", paste0("doc_", seq_along(documents))))
 
-cosine <- function(a, b) sum(a * b) / (sqrt(sum(a^2)) * sqrt(sum(b^2)))
-query_vec <- query_embedding$embedding[[1]]
+search_pairs <- foundry_similarity(search_embeddings, text_col = "label")
 
-doc_embeddings |>
-  mutate(similarity = vapply(embedding, cosine, numeric(1), b = query_vec)) |>
-  arrange(desc(similarity)) |>
+search_pairs |>
+  filter(text_1 == "query" | text_2 == "query") |>
+  mutate(
+    label = if_else(text_1 == "query", text_2, text_1),
+    text = documents[match(label, paste0("doc_", seq_along(documents)))]
+  ) |>
   select(text, similarity) |>
-  head(3)
+  arrange(desc(similarity)) |>
+  slice_head(n = 3)
 ```
 
-## Use case: clustering text
+## Cluster text responses
 
-Embeddings work well as features for clustering. Here `stats::kmeans()` groups a
-mix of programming, food, and sports sentences without any labels:
+Embeddings also work as features for local methods such as `stats::kmeans()`. The example groups a mix of programming, food, and sports sentences without using the topic labels.
 
 ```{r clustering}
 texts <- c(
@@ -291,8 +264,8 @@ clusters <- kmeans(embedding_matrix, centers = 3, nstart = 10)
 
 cluster_embeddings |>
   mutate(cluster = clusters$cluster) |>
-  arrange(cluster) |>
-  select(text, cluster)
+  select(text, cluster) |>
+  arrange(cluster)
 ```
 
 ```{r projection-data, include = FALSE, eval = run_api && requireNamespace("ggplot2", quietly = TRUE)}
@@ -326,17 +299,9 @@ cluster_shapes <- c(16, 17, 15)
 clusters_are_pure <- all(cluster_labels$top_count == cluster_labels$n_points) &&
   dplyr::n_distinct(cluster_labels$label_text) == nrow(cluster_labels)
 projection_title <- if (clusters_are_pure) {
-  "k-means recovers the three topics from the embeddings alone"
+  "k-means separates the three topics in embedding space"
 } else {
   "k-means clusters mostly follow the three topics"
-}
-wrap_text <- function(lines, width) {
-  wrapped <- vapply(
-    lines,
-    function(line) paste(strwrap(line, width), collapse = "\n"),
-    character(1)
-  )
-  paste(wrapped, collapse = "\n")
 }
 projection_alt <- paste0(
   projection_title,
@@ -380,7 +345,7 @@ ggplot2::ggplot(
     subtitle = wrap_text(
       c(
         "Nine sentences on the first two principal components of their embeddings",
-        "Color and shape show the k-means cluster (k = 3)"
+        "Color and shape show the k-means cluster with k = 3"
       ),
       84
     ),
@@ -388,7 +353,7 @@ ggplot2::ggplot(
     y = "Principal component 2",
     caption = wrap_text(
       c(
-        "Embeddings from text-embedding-3-small via foundry_embed().",
+        "Embeddings come from text-embedding-3-small via foundry_embed().",
         "Axis positions are relative, so tick values are omitted."
       ),
       101
@@ -406,47 +371,33 @@ ggplot2::ggplot(
   )
 ```
 
-The clusters recover the three topics from the raw text alone.
+The cluster assignments are an inspection tool, not proof that the labels are correct. Review the text in each cluster before using the groups as measurements.
 
-## Tips for working with embeddings
+## Work with larger collections
 
-### Choosing a model
+Use `foundry_embed_batch()` when you have many texts. It accepts `batch_size` and `max_active`, returns the same embedding list-column shape, and records row-level errors instead of stopping the whole job for one failed text.
 
-| Model | Dimensions | Notes |
-|-------|-----------|-------|
-| text-embedding-ada-002 | 1,536 | Previous generation, widely used |
-| text-embedding-3-small | 1,536 (configurable) | Newer, supports dimension reduction |
-| text-embedding-3-large | 3,072 (configurable) | Highest quality, more expensive |
+```{r batch-example}
+many_texts <- c(
+  "The login page rejects my password reset link.",
+  "The invoice total does not match the purchase order.",
+  "The chart export button is missing from the report.",
+  "The password reset email arrived after it expired.",
+  "The billing address changed but the invoice did not update.",
+  "The dashboard chart uses the wrong date range."
+)
 
-For most use cases, `text-embedding-3-small` balances quality and cost.
+many_embeddings <- foundry_embed_batch(
+  many_texts,
+  model = "text-embedding-3-small",
+  batch_size = 3,
+  max_active = 2
+)
 
-### Dimension trade-offs
-
-Higher dimensions capture more nuance but need more storage, take longer to
-compare, and may not improve simple tasks. Consider reduced dimensions (256-512)
-for large-scale applications where speed matters more than precision.
-
-### Handling large collections
-
-1. **Batch processing**: embed documents in batches to respect rate limits.
-2. **Caching**: store embeddings in a database rather than regenerating them.
-3. **Approximate nearest neighbors**: use libraries like `RcppAnnoy` for fast
-   similarity search on large datasets.
-
-```{r batch-example, eval = TRUE}
-# Defining this helper is local; calling it requires Azure credentials.
-batch_embed <- function(texts, model, batch_size = 100) {
-  n_batches <- ceiling(length(texts) / batch_size)
-  results <- vector("list", n_batches)
-  for (i in seq_len(n_batches)) {
-    start_idx <- (i - 1) * batch_size + 1
-    end_idx <- min(i * batch_size, length(texts))
-    results[[i]] <- foundry_embed(texts[start_idx:end_idx], model = model)
-    Sys.sleep(0.5)
-  }
-  dplyr::bind_rows(results)
-}
+many_embeddings[, c("text", "n_dims", ".error", ".error_msg")]
 ```
+
+For production use, store embeddings instead of regenerating them, keep the model and dimension settings with the stored data, and use approximate-nearest-neighbor indexes when a full pairwise comparison is too slow.
 
 ```{r cleanup, include = FALSE}
 if (run_api) {

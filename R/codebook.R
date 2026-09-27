@@ -68,26 +68,34 @@ foundry_codebook <- function(
 
 #' Codebook schema helpers
 #'
-#' These light wrappers reuse foundryR's existing strict JSON Schema
-#' constructors while following the measurement-layer codebook vocabulary.
+#' @description
+#' `r lifecycle::badge("deprecated")`
+#'
+#' `type_boolean()`, `type_enum()`, `type_number()`, and `type_string()` are
+#' deprecated because they mask ellmer's functions of the same names when both
+#' packages are attached. Use [schema_boolean()], [schema_enum()],
+#' [schema_number()], and [schema_string()] instead; they take the description
+#' as `description`. If you already describe fields with `ellmer::type_*()`,
+#' pass the ellmer type object to [as_foundry_schema()].
 #'
 #' @param desc Character. Optional field description.
 #' @param values Character vector of allowed values for `type_enum()`.
 #'
 #' @return A JSON Schema fragment represented as an R list.
 #' @name codebook_schema_helpers
+#' @keywords internal
 #'
 #' @examples
-#' type_boolean("Whether AI could materially assist the task")
-#' type_enum("Priority label", values = c("low", "medium", "high"))
-#' type_number("Confidence score")
-#' type_string("Short rationale")
+#' # Use the schema_*() helpers instead:
+#' schema_boolean(description = "Whether AI could materially assist the task")
+#' schema_enum(c("low", "medium", "high"), description = "Priority label")
 NULL
 
 
 #' @rdname codebook_schema_helpers
 #' @export
 type_boolean <- function(desc = NULL) {
+  foundry_deprecate_type("type_boolean()", "schema_boolean()")
   schema_boolean(description = desc)
 }
 
@@ -95,6 +103,7 @@ type_boolean <- function(desc = NULL) {
 #' @rdname codebook_schema_helpers
 #' @export
 type_enum <- function(desc = NULL, values) {
+  foundry_deprecate_type("type_enum()", "schema_enum()")
   schema_enum(values = values, description = desc)
 }
 
@@ -102,6 +111,7 @@ type_enum <- function(desc = NULL, values) {
 #' @rdname codebook_schema_helpers
 #' @export
 type_number <- function(desc = NULL) {
+  foundry_deprecate_type("type_number()", "schema_number()")
   schema_number(description = desc)
 }
 
@@ -109,7 +119,20 @@ type_number <- function(desc = NULL) {
 #' @rdname codebook_schema_helpers
 #' @export
 type_string <- function(desc = NULL) {
+  foundry_deprecate_type("type_string()", "schema_string()")
   schema_string(description = desc)
+}
+
+
+foundry_deprecate_type <- function(what, with) {
+  lifecycle::deprecate_soft(
+    when = "0.2.0",
+    what = what,
+    with = with,
+    details = "foundryR's type_*() helpers mask ellmer's functions of the same names.",
+    env = rlang::caller_env(),
+    user_env = rlang::caller_env(2)
+  )
 }
 
 
@@ -362,7 +385,7 @@ foundry_named_list_diff <- function(old, new) {
     return("  (none)")
   }
 
-  lines <- vapply(
+  lines <- unlist(lapply(
     all_names,
     function(field) {
       old_has <- field %in% names(old)
@@ -381,22 +404,87 @@ foundry_named_list_diff <- function(old, new) {
       ) {
         return(paste0("  ", field, ": no change"))
       }
-      paste0(
-        "~ ",
-        field,
-        ": ",
-        foundry_json_summary(old[[field]]),
-        " -> ",
-        foundry_json_summary(new[[field]])
-      )
-    },
-    character(1)
-  )
+      foundry_changed_field_diff(field, old[[field]], new[[field]])
+    }
+  ), use.names = FALSE)
 
   if (all(grepl(": no change$", lines))) {
     return("  (no changes)")
   }
   lines
+}
+
+
+foundry_changed_field_diff <- function(field, old, new) {
+  nested <- foundry_nested_list_diffs(old, new)
+  if (length(nested) > 0L) {
+    return(paste0("~ ", field, ".", nested))
+  }
+  paste0(
+    "~ ",
+    field,
+    ": ",
+    foundry_json_summary(old),
+    " -> ",
+    foundry_json_summary(new)
+  )
+}
+
+
+foundry_nested_list_diffs <- function(old, new, prefix = NULL) {
+  if (
+    !is.list(old) ||
+      !is.list(new) ||
+      is.null(names(old)) ||
+      is.null(names(new))
+  ) {
+    return(character())
+  }
+
+  all_names <- union(names(old), names(new))
+  out <- unlist(lapply(all_names, function(name) {
+    path <- paste(c(prefix, name), collapse = ".")
+    old_has <- name %in% names(old)
+    new_has <- name %in% names(new)
+    if (!old_has) {
+      return(paste0(path, ": +", foundry_json_summary(new[[name]])))
+    }
+    if (!new_has) {
+      return(paste0(path, ": -", foundry_json_summary(old[[name]])))
+    }
+    if (
+      identical(
+        foundry_canonical_json(old[[name]]),
+        foundry_canonical_json(new[[name]])
+      )
+    ) {
+      return(character())
+    }
+    if (identical(name, "enum")) {
+      added <- setdiff(unclass(new[[name]]), unclass(old[[name]]))
+      removed <- setdiff(unclass(old[[name]]), unclass(new[[name]]))
+      lines <- c(
+        if (length(added) > 0L) paste0(path, ": +", added),
+        if (length(removed) > 0L) paste0(path, ": -", removed)
+      )
+      if (length(lines) == 0L) {
+        lines <- paste0(path, ": reordered")
+      }
+      return(lines)
+    }
+    nested <- foundry_nested_list_diffs(old[[name]], new[[name]], path)
+    if (length(nested) > 0L) {
+      return(nested)
+    }
+    paste0(
+      path,
+      ": ",
+      foundry_json_summary(old[[name]]),
+      " -> ",
+      foundry_json_summary(new[[name]])
+    )
+  }), use.names = FALSE)
+  out[nzchar(out)]
 }
 
 

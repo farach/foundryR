@@ -1,10 +1,10 @@
 {
-    "id": "resp_0261f1632f6d1510006a46ae895c1081949e31b2748b09113c",
+    "id": "resp_083254d4c0c03253006ab97c3be8b8819785b9176d8e9fa19f",
     "object": "response",
-    "created_at": 1783017097,
+    "created_at": 1790540859,
     "status": "completed",
     "background": false,
-    "completed_at": 1783017101,
+    "completed_at": 1790540861,
     "content_filters": [
         {
             "blocked": false,
@@ -74,7 +74,7 @@
             },
             "content_filter_offsets": {
                 "start_offset": 0,
-                "end_offset": 2120,
+                "end_offset": 2103,
                 "check_offset": 0
             }
         }
@@ -89,17 +89,18 @@
     "moderation": null,
     "output": [
         {
-            "id": "rs_0261f1632f6d1510006a46ae89ba9881948b8b34cad2257b04",
+            "id": "rs_083254d4c0c03253006ab97c3c9500819799dfb9d22ba8052e",
             "type": "reasoning",
             "content": [
 
             ],
+            "encrypted_content": "gAAAAABquXw-BZ5PGlQGbw8CYIqJ0GVrLNpejgRKJGcNh3JF_1CqnCchqG6hy-Tgd2lDaaKLclfsU4623ESfOFBWNLxzQF-zNMVSRoWVUFOYGUlfAIIyDt_sQcjHTxrbSONptG-KUc8xy9QqRqTjQjrjUj-PVGVDw9aKBKBCzYrE7pWRZ-YSFVDOxTLPWkJc3JyOPMOEr7gOvMvt2qyOwQjzQdiTtN195hKZiDh1wrP7hNCIK8Q2dX4qjYi4c0ko4QwPNb-QE9X7qURmtvqWLbe0ITsViIJLmhW_MJzRUn1e7hlwzl0BPTgKg-1_csnFdh47zAF1z0bnGNuCZGfMVkU-YexJwSDIA-1gxPwWF7R0lrjwOXvjSyjOCbFKuFte03wuO5k8SHIy19-sc-rn4LrSkriAvAc36xv1swfQmNj44W9rNfjHKqB6u3oG-EWrSq5SyqNatNMBIS8gPmlZRC5ASiGUCL4vuke8prVAT7gV1i6ewT8HqbCawE-kCZ5YcsSs3_a5gIkZyXg6BZF-TDEO70Nk2cSR-Ja0Z2R7zhF93VZkOz0rBDuzFgyPlBn6k8xpHNeDGEYcNtQdFdphg1RmDpMZyyyhNnO0hUHVM2G61O0ldrh9XDsOyHm2gt6V8sdrbTlFf9_l3O-Vm-cq53VUJTIjAtbdD_89PauLmYgvjpfNpKSWOwdeyWkROZg2CEWIvnfBM1ddkj9DDl88YV5rEVdOhVze5Pv55ZhdI_SYCKqxUImrIouE1K19UmZGpywJORDxhtIMt2O_JPh17QPJ577Nxyv1zh9AtC0s7ml6MjdXuRFx6KvL4_25V3t5RmQNpnZkBoIA80oNmF9yYrKc6djthjOQdoWnUiIwghgG1VAgyRvx_M6ugvNtl0pQW2HXoQ4kz5X4QeoL8ltq_Iq_sI_dM5uoroVXaW4wneqGCi1Bcx9uJ8E2uxxLhsd4NP0vLVjrAUIUoddT80Z--oliJuuzZHoV4fhOHrFxE9uIfIdzCnqtcZ98Zw8mbfNSqOBKN5ApEqjTxp_6v8DVvsHFnlUnERGKxZ4Pa_jSWIcrTGyCRs51k1fbIfSJ3Rq3uEYAo6tITauVv0SS3p_AQdwvZ5OGs4jucYaEZFJlQ_Qwanw7BkUhu13k0afq_t8mckLD4YbUQbuGNpze6d4ApHoBcOuytP8qfQYC3O4_nWvUkXCAy1HQI87xd0ZChoSH8dAY5HOVplkwrGrC_7wj5Osm2xF3D2Eq3V1_k1TDiVQqCWZ-6LfqCIEFF19kTWAIGE97EKO-DYttugbzBN6qHq06men-AqzxpTs7m-UoVRiZD-E_U_1ASPIL-M-fEu2gWQk3mn4QV_gGgCRB0epbE3J69sUR22A95lLAOAVl5ewu2Q90ZJvbsUKI56AunM4texT8-3EbgcIH4u1ertlzzpvTtA5TSaey1zr6JTOibza0_kB4dSlKjQr05ZQ7TZkGA8q3pINsK42xEAzs6oQzGmkGqBHZTcp1la8I3OhnLXTtkdiUJ8Zql5hgidlBJUYe4_JE2NsbMoEZPSPcdV8W1NKMRhroyUIfnB3oYsiJJ5tGF0SYFNYvWg9UzxVtPP_kFCUnQ1ZiFtjxuIEw0_--klb7AUDeGEM922VViU_9PxY8OSaUUvNVUM__08uj30eR4Z22r9oU3HEpcPN0a6KWEW_3vYjQipzeCT8CmOlYxKkMSZtPVRae92ImQ8xxn1b_uk3y5f58Rp_3XVjpl-qNx1JdxWOEING9kJlxfWGZ0d0sBhTLjgR20zKxr38NFqWxNy-3bNBtQe1to8bz-t6xCbrcHi3u7KhEc-7JKn05eOSRU-zdObZ6PDXZm_5clN9wgnFD9tHYMTyV3cheJjN1d5T6MXgGQF7RoYVeUvyNYQj7JkA4u3h1U501VpjhL5YnZHurzdz1eh0JOBAb927LuOxsimazlXLFgsk2dDJ5ZGxZaY-rUqqEbB-PPHxULI5gqsqzFOSzd2SqVkHedjugT_MRn_fpkPTRD0d1xqPRa8EfjvI2kJOZ-Et3a_XwKvErIJQkQqZGKsoHjoKn1430YTpq4WD4qQPvZTkNliQ4g_kVtNEXE0lmJ7SAtFf7OUwxIZSoGfS2ltzrlSWgOz8--iQBmUFIBQjic9ZvVCGvF-x9--S5J1oGC33tcdEO55W9vmL72raZwtiFyCUFqq8Mo5ykkRTsG14d5PfpI1HrQfL6i4vjANUo5-VbBp9v2PbNlbHxpTum2f99Ly8pVGwemW8B8Z_ubDLZi_B8Ph0cid6FSXXFoUroBTzTwmgipH6qOKPsCaaaeMnLyHi8D13O0a-5g0omvrSnK-eNY0Pn2oBVCjmG66lOLRsGR76mkubwh_tTwjqafPWNdTAnYS93d9cvxseakvYH4keHPFS9DdSeok7qsuMUb1HR6FmuQutDzutNBUhm7uATPjZYwI0eslmraY3WA8eAeDnCIRfNKFOS9FamYANimHrLcwcMpN9Y8Rpg8N4isFAkZJ76SEaGd2Ae5iU-doT_5FacAktJnXNiEhTMQay86c2wj3RDKMJSM0GsTwrgiRc4TeWYEUuhD8o-ltd6z1rVaEX8Tbp3c1DoKkZo2C9YSa0NmwRIFGJyB66Y1_DvufvGCVlb3a1JO_wfs3QV0k82UVnoltxCnRVstxNbtsw9uoMhS251BBtkkx7jJbU_WFbNtknNhyu3xpJ-fFHstvPtfEe0cZGBnSx06ahNqVxwQ1HWWCW_lz9hi-BGgsgfK_RDUNd2bvTj88BK5Sx8hzRNDBL8OlSzg5hruzz4fVkCHpd6zgUgc8gRPEQPXFNj7Qbj7R7gV04fTrCAVl4C0n5ZnMusuGTubdjvL6V8RIlXR3W2QVTWMKnKN-G2cS2hTI6iUEe1E-r_9FG-W9nJezC173mEzlPZg6M0_YjK6sN-OKNkIhltGHxV9QfjtE2_hG_TK-vRMg0DvQUVmiX6qwyl1duu4BqrJOgDv9Ugshk93ejWKkWnUefdhB6RKjIrWX-rm-CS1wOWyF55BorF9OTW7aMWeSl5WfRakA_86sFVVjkxqdXvbSvD_cuGZnumWDfATyBYMHGP5wDIFecQdrMrksxnhg6FhjDlrTxaI6Zao_OS0BDFlalRlOR4c91jjW9rSNuDobFXu3XqysR8Z2tCnWVG30ZwW4sF_tX_D12KTYwN7r_FWnsr55GkUOV-WHqOjVa7hqmmcp_EwxQyKXv0x6kbbEHFe9ai60FA4VUE7fLvrLqScf8x2DYF8FPfk3R7pFIDh3NNmBDwWZGPrFJdULkrZm5V7be7QYW2wG2CoXb_vTWiwE81gTUtT4K5c30bJ4vsP_sVvVg1jAMp3IK7TrVQzli_RXnbxa5igreW8gD4DiCpgCWU008YlMS3_r2t9xLePeVBkENExVdNQvAylKxh__PybIZEFsDHWuAGgEGV_3sv_4XO1BCdASwhCSVi8wFgxxVtFZ48BUnw5P3hsnGWth7q3TfIVpkOpJiKIWZBgVT0MJySdx0PoBA4YefYpwbrbJju0hNI_kBYfW-jntQbYpvaN9t5uyfSXP4JZkN_JIuY077uUQLekqtg0mv1k3XZUoGR4NCf4BYajpKF0ihLpi9k8usPsMX8xXN10aQ=",
             "summary": [
 
             ]
         },
         {
-            "id": "msg_0261f1632f6d1510006a46ae8d1ce08194bd697e15eaf4bdd5",
+            "id": "msg_083254d4c0c03253006ab97c3db35481979a1f19e2b0fa6b5d",
             "type": "message",
             "status": "completed",
             "content": [
@@ -111,7 +112,7 @@
                     "logprobs": [
 
                     ],
-                    "text": "Catastrophic forgetting is the drastic loss of performance on previously learned tasks that occurs when a model is trained on new tasks, because the latest updates overwrite the previously learned knowledge."
+                    "text": "Catastrophic forgetting is the drastic loss of performance on previously learned tasks that occurs when a model is trained sequentially on new tasks, because the updates for the new tasks overwrite the parameters needed to perform the earlier tasks."
                 }
             ],
             "role": "assistant"
@@ -125,6 +126,7 @@
     "reasoning": {
         "context": "current_turn",
         "effort": "medium",
+        "mode": "standard",
         "summary": null
     },
     "safety_identifier": null,
@@ -138,6 +140,24 @@
         "verbosity": "medium"
     },
     "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
     "tools": [
 
     ],
@@ -147,13 +167,14 @@
     "usage": {
         "input_tokens": 13,
         "input_tokens_details": {
+            "cache_write_tokens": 0,
             "cached_tokens": 0
         },
-        "output_tokens": 395,
+        "output_tokens": 387,
         "output_tokens_details": {
             "reasoning_tokens": 320
         },
-        "total_tokens": 408
+        "total_tokens": 400
     },
     "user": null,
     "metadata": {

@@ -223,6 +223,71 @@ test_that("foundry_embed_batch returns tibble with mocked response", {
   expect_equal(result$text, c("Hello world", "Test message"))
 })
 
+test_that("foundry_embed_batch stores only row-level raw responses", {
+  setup_mock_env()
+
+  make_response <- function(n) {
+    list(
+      object = "list",
+      model = "text-embedding-ada-002",
+      data = lapply(seq_len(n), function(i) {
+        list(
+          index = i - 1L,
+          object = "embedding",
+          embedding = as.list(rep(i, 100))
+        )
+      }),
+      usage = list(prompt_tokens = n, total_tokens = n)
+    )
+  }
+
+  testthat::local_mocked_bindings(
+    req_perform_parallel = function(reqs, ...) {
+      n <- length(reqs[[1]]$body$data$input)
+      list(mock_httr2_response(make_response(n)))
+    },
+    .package = "httr2"
+  )
+
+  small <- foundry_embed_batch(
+    c("one", "two", "three"),
+    model = "text-embedding-ada-002",
+    batch_size = 3,
+    progress = FALSE
+  )
+  large <- foundry_embed_batch(
+    paste("text", 1:6),
+    model = "text-embedding-ada-002",
+    batch_size = 6,
+    progress = FALSE
+  )
+
+  raw <- small$raw_response[[1]]
+  expect_equal(length(raw$data), 1L)
+  expect_equal(raw$data[[1]]$index, 0L)
+  expect_equal(raw$data[[1]]$object, "embedding")
+  expect_null(raw$data[[1]]$embedding)
+  expect_equal(raw$model, "text-embedding-ada-002")
+  expect_equal(raw$usage$total_tokens, 3)
+  expect_lt(as.numeric(object.size(large)), as.numeric(object.size(small)) * 3)
+})
+
+test_that("foundry_embed_batch suppresses progress by default in tests", {
+  setup_mock_env()
+  mock_response <- list(
+    object = "list",
+    model = "text-embedding-ada-002",
+    data = list(list(index = 0, object = "embedding", embedding = as.list(1:3))),
+    usage = list(prompt_tokens = 1, total_tokens = 1)
+  )
+  testthat::local_mocked_bindings(
+    req_perform_parallel = function(reqs, ...) list(mock_httr2_response(mock_response)),
+    .package = "httr2"
+  )
+
+  expect_silent(foundry_embed_batch("one", model = "text-embedding-ada-002"))
+})
+
 test_that("foundry_embed_batch preserves original order", {
   setup_mock_env()
 

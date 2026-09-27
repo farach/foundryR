@@ -143,6 +143,7 @@ step_foundry_embed <- function(
       cache = cache,
       cache_dir = cache_dir,
       columns = columns,
+      embedding_state = new.env(parent = emptyenv()),
       skip = skip,
       id = id
     )
@@ -176,6 +177,7 @@ step_foundry_embed_new <- function(
   cache,
   cache_dir,
   columns,
+  embedding_state,
   skip,
   id
 ) {
@@ -191,6 +193,7 @@ step_foundry_embed_new <- function(
     cache = cache,
     cache_dir = cache_dir,
     columns = columns,
+    embedding_state = embedding_state %||% new.env(parent = emptyenv()),
     skip = skip,
     id = id
   )
@@ -208,6 +211,13 @@ step_foundry_embed_new <- function(
 #' @exportS3Method recipes::prep
 prep.step_foundry_embed <- function(x, training, info = NULL, ...) {
   col_names <- recipes::recipes_eval_select(x$terms, training, info)
+  model <- x$model %||% Sys.getenv("AZURE_FOUNDRY_EMBED_MODEL")
+  if (identical(model, "")) {
+    cli::cli_abort(c(
+      "Embedding model/deployment name is required when preparing {.fn step_foundry_embed}.",
+      "i" = "Specify {.arg model} or set the {.envvar AZURE_FOUNDRY_EMBED_MODEL} environment variable."
+    ))
+  }
 
   # Validate that selected columns are text-like
   recipes::check_type(
@@ -219,13 +229,14 @@ prep.step_foundry_embed <- function(x, training, info = NULL, ...) {
     terms = x$terms,
     role = x$role,
     trained = TRUE,
-    model = x$model,
+    model = model,
     dimensions = x$dimensions,
     prefix = x$prefix,
     keep_original = x$keep_original,
     cache = x$cache %||% "none",
     cache_dir = x$cache_dir,
     columns = col_names,
+    embedding_state = x$embedding_state,
     skip = x$skip,
     id = x$id
   )
@@ -249,6 +260,7 @@ bake.step_foundry_embed <- function(object, new_data, ...) {
   for (col_name in col_names) {
     # Convert factor to character (recipes formula interface converts char to factor)
     text_data <- as.character(new_data[[col_name]])
+    text_data[text_data == ""] <- NA_character_
 
     # Generate embeddings (one array call per API request, disk cache optional)
     embeddings <- foundry_embed_cached(
@@ -264,6 +276,12 @@ bake.step_foundry_embed <- function(object, new_data, ...) {
       function(e) !is.null(e) && length(e) > 0,
       logical(1)
     )
+    n_failed <- sum(!valid_idx)
+    if (n_failed > 0L && any(valid_idx)) {
+      cli::cli_warn(
+        "{n_failed} row{?s} failed to embed for column {.field {col_name}}."
+      )
+    }
 
     if (!any(valid_idx)) {
       cli::cli_abort(
@@ -273,6 +291,8 @@ bake.step_foundry_embed <- function(object, new_data, ...) {
 
     # Build the embedding matrix in one shot instead of a per-scalar fill loop.
     n_dims <- length(embeddings[[which(valid_idx)[1]]])
+    object$embedding_state <- object$embedding_state %||% new.env(parent = emptyenv())
+    object$embedding_state$n_dims <- n_dims
     emb_matrix <- matrix(NA_real_, nrow = length(text_data), ncol = n_dims)
     emb_matrix[valid_idx, ] <- do.call(rbind, embeddings[valid_idx])
 
@@ -304,9 +324,21 @@ foundry_embed_cached <- function(
   cache = "none",
   cache_dir = NULL
 ) {
+  invalid <- is.na(text) | text == ""
+  embeddings <- vector("list", length(text))
+
   if (!identical(cache, "disk")) {
-    result <- foundry_embed(text = text, model = model, dimensions = dimensions)
-    return(result$embedding)
+    valid_idx <- which(!invalid)
+    if (length(valid_idx) == 0L) {
+      return(embeddings)
+    }
+    result <- foundry_embed(
+      text = text[valid_idx],
+      model = model,
+      dimensions = dimensions
+    )
+    embeddings[valid_idx] <- result$embedding
+    return(embeddings)
   }
 
   cache_dir <- foundry_cache_dir(cache_dir)
@@ -319,20 +351,21 @@ foundry_embed_cached <- function(
     )
   }
 
-  keys <- vapply(
-    text,
-    function(t) rlang::hash(list(t, model, dimensions)),
+  endpoint <- foundry_get_endpoint(required = FALSE) %||% ""
+  keys <- rep(NA_character_, length(text))
+  keys[!invalid] <- vapply(
+    text[!invalid],
+    function(t) rlang::hash(list(t, model, endpoint, dimensions)),
     character(1)
   )
   paths <- file.path(cache_dir, paste0(keys, ".rds"))
 
-  embeddings <- vector("list", length(text))
-  cached <- file.exists(paths)
+  cached <- !invalid & file.exists(paths)
   for (i in which(cached)) {
     embeddings[[i]] <- readRDS(paths[[i]])
   }
 
-  missing_idx <- which(!cached)
+  missing_idx <- which(!invalid & !cached)
   if (length(missing_idx) > 0) {
     unique_missing <- unique(text[missing_idx])
     fetched <- foundry_embed(
@@ -423,18 +456,19 @@ print.step_foundry_embed <- function(
 #' @importFrom generics tidy
 #' @exportS3Method generics::tidy
 tidy.step_foundry_embed <- function(x, ...) {
+  dimensions <- x$dimensions %||% x$embedding_state$n_dims %||% NA_integer_
   if (recipes::is_trained(x)) {
     res <- tibble::tibble(
       terms = x$columns,
       model = x$model %||% NA_character_,
-      dimensions = x$dimensions %||% NA_integer_
+      dimensions = dimensions
     )
   } else {
     term_names <- recipes::sel2char(x$terms)
     res <- tibble::tibble(
       terms = term_names,
       model = x$model %||% NA_character_,
-      dimensions = x$dimensions %||% NA_integer_
+      dimensions = dimensions
     )
   }
   res$id <- x$id

@@ -1,0 +1,64 @@
+{
+    "object": "eval",
+    "created_at": 1790542132,
+    "modified_at": 1790542136,
+    "created_by": "Alex Farach",
+    "id": "eval_eb5dbe17",
+    "name": "course-feedback-themes",
+    "metadata": {
+
+    },
+    "properties": {
+        "evals_run_type": "azure_ai"
+    },
+    "data_source_config": {
+        "type": "custom",
+        "item_schema": {
+
+        },
+        "include_sample_schema": true,
+        "schema": {
+            "item": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "comment": {
+                        "type": "string"
+                    },
+                    "theme": {
+                        "type": "string"
+                    },
+                    "foundryr_row_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "comment",
+                    "theme",
+                    "foundryr_row_id"
+                ]
+            },
+            "sample": {
+                "type": "object",
+                "properties": {
+                    "output_text": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "testing_criteria": [
+        {
+            "type": "string_check",
+            "id": "theme-match_15e43fff-f127-4aa3-93cc-9f5cf7a7b5b1",
+            "name": "theme-match",
+            "input": "{{sample.output_text}}",
+            "operation": "eq",
+            "reference": "{{item.theme}}"
+        }
+    ]
+}

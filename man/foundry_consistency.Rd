@@ -23,6 +23,16 @@ Run the same extraction multiple times and summarize how often each input
 receives the same structured result. Use batch execution externally for large
 jobs; this helper intentionally keeps the local loop simple.
 }
+\details{
+The comparison covers the whole structured record after canonical JSON
+serialization: object names are sorted recursively, arrays keep their order,
+and numbers are serialized with \code{digits = NA}. Only successful runs count
+toward \code{modal_share} and entropy; failed runs are reported separately. With
+\code{n} runs, \code{modal_share} can only take values \code{k / n}. Entropy is the plug-in
+estimate in bits, has maximum \code{log2(n)}, and is biased low for small \code{n}.
+Sampling settings passed through \code{...} define what a repeat means. Stability
+is not accuracy: a model can be consistently wrong.
+}
 \examples{
 \dontrun{
 # Requires a configured Azure endpoint, credentials, and AZURE_FOUNDRY_MODEL

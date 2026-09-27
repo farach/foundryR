@@ -1,6 +1,6 @@
 Package: foundryR
 Title: Data Frame Workflows for 'Microsoft Foundry'
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R:
     person("Alex", "Farach", , "alexfarach@microsoft.com", role = c("aut", "cre", "cph"))
 Description: Work with 'Microsoft Foundry' from data-frame-oriented
@@ -28,7 +28,7 @@ Imports:
     digest,
     dplyr,
     generics,
-    httr2 (>= 1.0.0),
+    httr2 (>= 1.1.1),
     jsonlite,
     lifecycle,
     magrittr,
@@ -43,7 +43,6 @@ Suggests:
     gt,
     httptest2,
     irlba,
-    irr,
     janeaustenr,
     knitr,
     recipes,
@@ -55,5 +54,6 @@ Suggests:
     withr,
     yardstick
 Config/testthat/edition: 3
+Config/Needs/website: farach/onet2r
 VignetteBuilder: knitr
 Config/roxygen2/version: 8.1.0

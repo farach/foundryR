@@ -1,0 +1,236 @@
+{
+    "id": "resp_040113031cc162da016ab996be22b081938f38e2e14cb815d6",
+    "object": "response",
+    "created_at": 1790547646,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1790547649,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 2208,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 2359,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": "Pick the one candidate occupation that best matches the job description. Choose only from the candidates listed with the description.",
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_040113031cc162da016ab996beb3f481938f4b3847b15b1e6d",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "encrypted_content": "gAAAAABquZbB3FcPa8LxwAn82O3LeQ5w0jEVoVyEsITgi42ynt2_KuCfCh018-v_1hUH3Vun_J2GqogIxcDH3wh0a7uVdDT6IveMLw4gs11lIUW61k1xD9dVLvntHFEPJqHZVlDWgPGz4PViq_IYZssoKQHbZuCsrjP22Z2WtyymvCc63M0qvz14_hN0UYs4JvZh_QBwWFZ9j9VqGja-dO0b7ZHmmJXwRm6tYNVeV2pqHIvouhlgRjsnmnjD9lavdSLtl76m0CpWFToiHaXzo9Bk5BVRA2Zt_r3YZvcF0MkU_VZSQWKq9WybTV_iKTiM7UMbQWLfBVuX_wB6284f1e82weS3fbz81h_G3iE2nlQIyCFSq90VQK1IQY8ejylGtqgKbRuSkvBBI4BbQpapW9nuU39tEnVRtoI_tuy3N14ACrKSCbvfjgXyaiJawvrDO-Ry-ZFC1yY5ULlHWyo9Q7m22lFuOaMQxdeNaiscq2-dl8_gN-Dhi4eD392rpSU2C7VfbsrFuv8gmTdq5AUCHGHRxH9d9bGhI5b-dBV37czxMWZJGD5zJe0eftyChWKmA30BS5dwdX0Ty5eSbFqbtsyP8ouvJwLWry7HFOKdXhWViDmoZ-Dunv_4Jgbqeu8Sbxn45EcB5xgmUxJHKYXB5fZzuVqp9BaGWMz-NX6Cy5oaLL38FEC3r7GR4EbuK3I6djsGbyqtON3jY4ADZFtpQOPKfD-dDzoEiVCvPo8SaSqeofPOm6N9g_hKZhkQFmOPgm7AhjRqu2lPEmbmO9-b6kCDTbI9UYvz0UfNnHAGHDLKBnVCUwCyHLltiBJwegArnt0ds-slRBdCi0Wbssv9WEak1hFHOzQ-9mnPfuu52BxSmO8-l4qm7WT4nVqcEQx2lDOoUkHrkOJgbLtzoNnZE3bv3FOkvhtnK1PndeMxZpweznl2OK7yJo5LhqohOZACvSYaDV4mqzu1y0lZIkinCK_N_9VtWtRM1BvYbj88dP2a2RkCMdAe0V28Y1sDjMu12fLdtSz-Ua131bU8u5I6FEIdJ9SfR-6A4c97lzltRdQ2XDK4TUauIi8ArqOOZrzHjVyUIRCt06gsKdrxhenEyuvgfbV7yz8Kaf6yxjmtgJedsS6i4A1pGaasJx24rxOyloCyq261w6M-yJ_YYnl_uE1rPQWobck10TxcrcR1IFoE4LJeCXWjtCf2uSPEbRs8HC8Nx2tsIzbTubjGpsjImnbbnXHxkCtR46yOs15t2-3VbPB5WlN9zjTkSgMn8eehbMT6X7xrFW-WIsSDrMpfT2zjb4CO8myhaBkZjMszyZruqdG4VhQGep0VF-132NGobRDhDGohlmctHxMom9sKHj8Wx0SkiPPoIZ49D7KSw3Idvt11Bq7CIMeIP4IbbEEM61k_mBHrrT84VoN1x8Ts7sDhIoKeIUNTxIEIxKvlPDO68jNCzTwdTDiSTiOfab-0yUIWmWRmj1GIhYR7dCfTLpBjk52wRdUI-y-CHxRRjV4PqviPyM8zB2WP0UQbub4fJLJfaVaK4YkAWmwigq7cUBTs-d7bjVelB7bi2Sxa8zdm_EzqqkYVVCtxzCtM1tobSe8c7Wz0lOGuCYTNZo53Ptpe5PqQVjuCgTd3O1yQv2tR9mnz5qgHrv-TN-kQkU_85mxZZU-nhiEtYeMCwpbWowp3HRl6rEUIc-URv27HKSFAQ6klL75t9na5c_kJmGTucdDFebgl5DzMJeV-NGGvtBxaNq0G-FNrytJb5-PztTTIZvROfG4Ehfk2v2WfzMXZbdYIDnD1N240RPcbXCYGJBz-BkG1P8Kgs14pNLnNcAFlgcJqjeFibjDzB3wUZun4wvI_TszwYtyYTfOgk-nb9RN_HgOlkzV5oFkbU5i0clo3LgEeT63mq7doamU232eD3XUT8v7GJs7wZ4FoMoy4Rm2i8A0ttp8paA0xUCuzmwnljfMappfJM9eYf1Gq2JF401Eil5hjb097SQaWppy8CBg8JSvzQWqdBJK49V-D4qtZEXsFbXpUaJRPsZJIBHUC7v6QPxkNI3WakEwyDvAsKqMV0-PgOXe17m1mi_veMPkgqeSJCGOcODsd2jyq-YkanrKJ_aTWsRXGxVrAPC9tkU8ywp1vY6apeFDdXM-hmgl4g6UsYyIU7vO_1aaVRmPoEZCr4JzxvPV3bAxb5y17CyuJCMaH9u26H_lNycFmofrNjOsLZmrs1hhcUvqvV637sPkuJPzlfCEzf6Xra0qA-Qvmd90rivJVQR1pW-_bbnnPpT_P3qKwwHG9vqav-9znuzWgtJYnfBHZlM9d6SnngA9lMDGpZ2JW424a00M7zBpiHLQS5KLl5tJXBDaRMAg9jy8BHt0Xfe3eCd_Lm-zfZQSybMQjBEXzjOu6Wr1DbTYJ83TuoTkf-lMicP2DLKS2Eqx2WOugodq9hV0G3dDD8Rj2sAmBnbwPuJEPwlgbywcG0-s4EwNoPPM1cV8U9spbSjb-AO2327PFhSxzNVMAsHxAboMd-BRurR8UWzGO8xs4UDei9HsuWefjYpCtnJgzJixwH06yPSYOY26XQoLh0OJabcRbAEoxhDpx2wW3mJaHerZa30gTFDHSS35-4ZykTnhFpe9VNPqHx7ZMllYunMRO4vazAYkv6pit6zuJteeikb3c5X5piJlORo_7mOnmK85BwUOI_UpYuMSoTWc_AayY7gm24GdA-Zi5isf4K8jQ5B2xlbd2WEZvrG-YTc7d2379nCZqZm-6OQXgp4Kzcf-abz192UZcQioNp5m7EZGn_C4YCE-QpaHm3yOKn0YulUnPBFNHXDzPvTLd2VWEClgp9i8KDREk-Uk834LLqm7Gis9opbENegkp1gSmJ4w4EbYpni__hmkAvgZP7u20JtaOoHFtGLmOmLyA1jEJYAmgiMFbGSGvY8pQdcvbWrqiJgABUCgY-fAzPhTrq8mu7DXy3DGDyb2QUQE6xTwh8-XSegk_ij53C-3claB3Fag_S19A7sdAQlZxoluPI4emDCdUaODqwHxj_l_OtCD_JSyaB3PPRsr9Nti8fdoFI_Xq-OZ7_IPS8v_a3mx7Kn5nfwOGLAURhimQCiurjN0W1QtPa9aw5G9JITfiW5AuObtx6MyIFdVHwKyltgDC9U8dEwI5HMRSjIQiHXBgTdZaDTJ80k4v7lN9iENEHqLyxCacREBsg_egBKjuOXYNyUh0wbQ-aeHQKL-lNPDrDQwyhfD1Gha_yFksvLnTCiMgIGbk3iwiMrVH7o0qDC0HiGHmj8uy2ba25E9VTST2y7JcipFMINg6_4Hlt9uB1vjqMAJAtUtdYUyemDpWI_PP2q6l3vdx7lWrGzkWX-Sshnu3DiJY2XcejufMsQnlXgQzoFBGW_wXfYooTAGy5kv1yNTmzWhJvDfejg7FOkHKSWF6Hoj_y_NkO30TECXMjD4HCaHIzlL4VgEtfpmjn2vsqjP7kH_CA7OfVKjbgOkdTT5GhQujxXIucwrnzyr2Ndthd26kkl0v8AS-ECoATaT8DQjX00kyju7x4eeicfwO6UPZIl-IGGuhMQDikLxQIhyjhMwShGxJrhx7AjkkFinKquMOGjx7ZG_oOPBrjyf2Xgon5vOLWIxJMzVCntsZx17dS2hUdoRqj3pCdSJFdWUjYnA8VFMP-V7EntbtwLSxmFEeVqfWdDy21in-J0JAndgjgTzUbnM7phOs_jQixINlUVPU_ax7M4FMiiVIJzKTy2bOCNAEssWlt0EKCap52ck9qMOODPc70QWMMlHgPA5cewr6PzSPGhX6SmJUAnBMcRSbGfcMcv85_7E7_zTrFQt7TT8WmZGBEHFJ_saR31UXnDCXP3-kzCZrID_VmrcP56SdNR_ndGiEzgkkmoeG3EzZ1_c_ehkaSvXLETYWDDwaAbKM8Sfm0zsU0fIjvjHDM6jUpNwRDIgP0Bh03tCH2NsGzk8BAjc9kBlJ-J-rtnHMmhRjWZVxiV3bt8m9664F8Ckiw_shWFmX54HbMYc3N7yFx1_BkAVBQfSazYle-0mbnxCrfSha0wLJ6vJtKE5q9EAwXH2jsW9z1e-X9yJo756qBwRSAtKw4OInm-kBEXmMaZrJ8HX1s_HEY5UuufS3hRla9KGZx_EGZ9Xlh58_m2KPt6DtSrRDwZ8ul0vJ_rjroDs4CdK3cmcrmPZNGHSDTYQPYnwuIMd_QJFYjHVELba8S_7GRnpMgrv_NEZml9_dFGU_Ge6IyWiNS6cNSX5g41-5076VRijt2uRMwHTlyTCcvgascAGPvoq6P-Jgl3eRSW1_zBxDz9k1HhXEFA==",
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "msg_040113031cc162da016ab996c0b52481939ae8f076e3a03fde",
+            "type": "message",
+            "status": "completed",
+            "content": [
+                {
+                    "type": "output_text",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ],
+                    "text": "{\"choice\":\"43-3031.00\"}"
+                }
+            ],
+            "role": "assistant"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "mode": "standard",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "json_schema",
+            "description": null,
+            "name": "ExtractedData",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "choice": {
+                        "type": "string",
+                        "description": "Code of the candidate occupation that best matches the job description.",
+                        "enum": [
+                            "15-1212.00",
+                            "15-1231.00",
+                            "15-1244.00",
+                            "15-1299.01",
+                            "15-1299.05",
+                            "25-1022.00",
+                            "25-1054.00",
+                            "25-1064.00",
+                            "25-1067.00",
+                            "25-1072.00",
+                            "25-1082.00",
+                            "25-2012.00",
+                            "25-2057.00",
+                            "25-4031.00",
+                            "29-1021.00",
+                            "29-1023.00",
+                            "29-1029.00",
+                            "29-1071.01",
+                            "29-1141.01",
+                            "29-1141.02",
+                            "29-1141.03",
+                            "29-1229.02",
+                            "29-1292.00",
+                            "43-2011.00",
+                            "43-3011.00",
+                            "43-3021.00",
+                            "43-3031.00",
+                            "43-3061.00",
+                            "43-4071.00",
+                            "43-4081.00",
+                            "43-4121.00",
+                            "43-4131.00",
+                            "43-4141.00",
+                            "43-4171.00",
+                            "43-9061.00"
+                        ]
+                    }
+                },
+                "required": [
+                    "choice"
+                ],
+                "additionalProperties": false
+            },
+            "strict": true
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
+    "tools": [
+
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 411,
+        "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+        },
+        "output_tokens": 544,
+        "output_tokens_details": {
+            "reasoning_tokens": 512
+        },
+        "total_tokens": 955
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

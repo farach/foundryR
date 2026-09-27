@@ -1,0 +1,13 @@
+{
+    "userPromptAnalysis": {
+        "attackDetected": true
+    },
+    "documentsAnalysis": [
+        {
+            "attackDetected": false
+        },
+        {
+            "attackDetected": true
+        }
+    ]
+}

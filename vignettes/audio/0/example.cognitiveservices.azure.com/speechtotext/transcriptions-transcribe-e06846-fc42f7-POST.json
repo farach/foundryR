@@ -1,0 +1,129 @@
+{
+    "durationMilliseconds": 11000,
+    "combinedPhrases": [
+        {
+            "text": "And so, my fellow Americans, ask not what your country can do for you, ask what you can do for your country."
+        }
+    ],
+    "phrases": [
+        {
+            "offsetMilliseconds": 320,
+            "durationMilliseconds": 10160,
+            "text": "And so, my fellow Americans, ask not what your country can do for you, ask what you can do for your country.",
+            "words": [
+                {
+                    "text": "And",
+                    "offsetMilliseconds": 320,
+                    "durationMilliseconds": 320
+                },
+                {
+                    "text": "so,",
+                    "offsetMilliseconds": 640,
+                    "durationMilliseconds": 320
+                },
+                {
+                    "text": "my",
+                    "offsetMilliseconds": 960,
+                    "durationMilliseconds": 320
+                },
+                {
+                    "text": "fellow",
+                    "offsetMilliseconds": 1280,
+                    "durationMilliseconds": 360
+                },
+                {
+                    "text": "Americans,",
+                    "offsetMilliseconds": 1640,
+                    "durationMilliseconds": 600
+                },
+                {
+                    "text": "ask",
+                    "offsetMilliseconds": 3280,
+                    "durationMilliseconds": 480
+                },
+                {
+                    "text": "not",
+                    "offsetMilliseconds": 3920,
+                    "durationMilliseconds": 560
+                },
+                {
+                    "text": "what",
+                    "offsetMilliseconds": 5360,
+                    "durationMilliseconds": 240
+                },
+                {
+                    "text": "your",
+                    "offsetMilliseconds": 5600,
+                    "durationMilliseconds": 240
+                },
+                {
+                    "text": "country",
+                    "offsetMilliseconds": 5840,
+                    "durationMilliseconds": 640
+                },
+                {
+                    "text": "can",
+                    "offsetMilliseconds": 6480,
+                    "durationMilliseconds": 240
+                },
+                {
+                    "text": "do",
+                    "offsetMilliseconds": 6720,
+                    "durationMilliseconds": 240
+                },
+                {
+                    "text": "for",
+                    "offsetMilliseconds": 6960,
+                    "durationMilliseconds": 160
+                },
+                {
+                    "text": "you,",
+                    "offsetMilliseconds": 7120,
+                    "durationMilliseconds": 160
+                },
+                {
+                    "text": "ask",
+                    "offsetMilliseconds": 8160,
+                    "durationMilliseconds": 440
+                },
+                {
+                    "text": "what",
+                    "offsetMilliseconds": 8600,
+                    "durationMilliseconds": 280
+                },
+                {
+                    "text": "you",
+                    "offsetMilliseconds": 8880,
+                    "durationMilliseconds": 320
+                },
+                {
+                    "text": "can",
+                    "offsetMilliseconds": 9200,
+                    "durationMilliseconds": 240
+                },
+                {
+                    "text": "do",
+                    "offsetMilliseconds": 9440,
+                    "durationMilliseconds": 240
+                },
+                {
+                    "text": "for",
+                    "offsetMilliseconds": 9680,
+                    "durationMilliseconds": 160
+                },
+                {
+                    "text": "your",
+                    "offsetMilliseconds": 9840,
+                    "durationMilliseconds": 160
+                },
+                {
+                    "text": "country.",
+                    "offsetMilliseconds": 10000,
+                    "durationMilliseconds": 480
+                }
+            ],
+            "locale": "en-US",
+            "confidence": 0.8194331
+        }
+    ]
+}

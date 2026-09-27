@@ -1,0 +1,236 @@
+{
+    "id": "resp_0db4e6bea32b8777016ab996a483a88195a8b9041594fb0101",
+    "object": "response",
+    "created_at": 1790547620,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1790547622,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 2188,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1251,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": "Pick the one candidate occupation that best matches the job description. Choose only from the candidates listed with the description.",
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_0db4e6bea32b8777016ab996a4cf388195bb5a1c2a23fdf73f",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "encrypted_content": "gAAAAABquZamfwBK9KoQBBNALcrVeEb9ViAqeaeCFHmXcy1Oz3lTzdCP86VCGIiUxcwVWNJCcGpqnL5JP8UWOE018MybvurzpyYhc8lwnon6tRctoL62m-dbFcXlFYWM4--wxx57rr64_aGMTOamze1Xsfw4Dnx_5qxe-pNz2jQ1gRkcjQsHHlv5xEgfC4ielhQ5ovjq2MMs4RQ13uypFIq_pqcIKYWUhVozfZ0xvjr1a_eWK2bqz8y7sGm7CRtQWK-VUWqjGiRROvv_h3EBkLi1LshXJv7gpCaPCyEZMtx3RDGuRrwcqbQeqsmTsviDtpECPsocWD67wrnZHwht83XtjDq-0cectlNwm3WtX0a0zHxFB0mBHSXD0skYSTkUHAqJuxCeF2swr3t5exsxBDjRa3Q8PH4wv6s1xacdTC2C7ce1tkSDu2u00deYRzhiaPa5xaGfQgTJ-eJ0zjr3cKCw7BSsb6xX6qrjCDm1fOSdKIbIOhEetHDpkxJsKPJBmUjTP1K9mKwmF-r3Gtva6OWnj2dXbf0YDdPkrtEB6VkVg_gFD9KEUENRpJczQz9ZbIlzG1rPR1S3dD9aIRxK91CGOfcOzvb5W05_jLwwOzPXb-6wJIf5rzwgAAj8h-rVw_7FSV949Ka9D6BdS1a2nH8iyzUbtoNw0ONhJLqlrRnR03BUU8Tp7rWOqszxhTUNHvkuRFWvDZu_cNPI-8zS0kf5Odir4teypARfv9vvnakXUnUYPpAV0cVpJQ2lrbWogCP3QGORVFiaJYVNGSMc7Ztu5uGGjyTq0MnwEKxSdr98KFUSuf6PMcO0jKA5CAN7rHVv8YDZaZ57jo-LdixNAo3wvg_s4GlC4UAxOGsxCPwmri35r_8qiSJ_3TkLhl4giSVDm5drjMlK0ilPHAwStQylqYbm5dqgooOpUyzd_5e3MZyV3m5cxoTYuk4PHFw1__8PJ7Djx6G2jvzpKOIP3NEHh4gzp9qFcuiZCBizyVXOqreQ1eRkWEhZdnmbJLyk5NIrmfucFVORQ6Dwx3auoMUamVMB5Wb8Qr7_3Rqx_uI-tCagWI7mVuSLmuMgiOHbTXNsH5IU6tpx2STVF9t4f_SKcpmtZW0Ejb5p2HlpPwlPWL3nMF_KR1a47xJDCDNN22ulA67b8sOfL5_XSRjp_i7NoNf7gkgDd1Tgt2putsswGNp6NbuDgSVRznJuw6CiXugxxeRooxfm0APV11p9HIe4zBwN-nZo16F6xhaSm9KoOOjt7gwWHAzu0K-GCjqw2SJCDct3MHcmXWR6BphL2vUS_EnWDKhFlD2OuMdoYZO2untUc-zVBfOmgajikNccdntlPp_8bHP6EPq5Eav7O4viehB9gZZyJHvDA1k8u0zn1IuQBlaixbMF6IyWMaBE-u8jzlHk6BtP0S71KUEQt6Thz6SfaKjvyKrrQ1OCwL8Mx-RLSzjNO0eYDiy5pb9XgnfCTUmr8Rxtk90nO6APYJQnXf74HXaXDpT-xITzpX6otsh4TwTH34_I1-4EO0U4TNIlDlXKAP6ZgpM-l00OKVSlTSFwdqaq2zjHiA_riL-0maxFI4bx4uTIpefrX7BP19DeCdcPC5EJw1z2pT9CY_D0RhQc0cm0X2rwRCQonYCAlf-tWe2T2BzAd0XKukUMreO-JMEm1EG0xghyC6FkNAGk_aojFMEt2VVyS2g-XuhrfpwvXUtADHN2DMsBp6SZAKsx-wvyWWf-glIyZ67FknPB6a0qVTqaTQXTxfFsb9nnLL2lUHCjEIDprZqZaUYoAwNcDVMA9glxi639xYmQhndLboyBLHelqt4LvRkBV0sQ_qzGvsChPmc_MJZN7aoItmTV_x7y25xQPg3PA0rImaerKDf9HeYn2IXgguaDizfmzv9rGcI11DeLW2H2lilRqr6ff-qAvPn4eog1_OHGb3blVH1oqpPKAs3GDAJSZezPyQ9qewovFhOvK-e-jpRONU4dDqI2mk1Tqmdjw30D-76tHLbh9htz7rKQXk7EkV61f1wJwNPKxlfGokV3Mu7lT9wFgvzQj5FM5o4ae7RpO_DxacvJwiiGgbNuCOKdF3xyYcf37LXpjkOesg-cunZddvRVucg05yH3h2QpkrZh0Z_p88tzB3jY1avJVBl9rC6bf4StcjjpzUhgPyYwpfyVosdQpawlhZkiq-4zoMESud8ip5VsxIW5Kd7E0yo8EFTA_FaJBJHungcBECHIn2g1tT65zdgkEFy6o2XYnAx2fIt6bgahBgKi5GcqQjj3tglSelw1dpfUUKK-pJN8EiE_zrA5GJbcUdttQjOmWsl4jqo6JBc5o40V1BqRYhMNQPnvhZQQ2qmrhPMMCRgQaX1D_2I9YfJalWzN8v9KL5Zu-sdQJTZ5W4wFZ-pxCXl7Q0zTHX3Q-nz60oyfxmezFZPZB_rZ0pDwSrvghZHR1Q7sl5b1DENElj7st-RkCzZzU441TC9qqVmR7yhBNV2cGyJzyCpUNz-rFeNSzU1bd54lbzlAbdcQLa1xB5W1D1T8oAo0k2JiUaZOn5Ym_ofHNnGi_OTxPLLB_mMqd0KMGCk_-OVO0Il1DhxRTY2pn-wMC8PjxsOAOSc2evVeu1PUgCw_aFekMwCBNmZAcaRpPmPDBRlZ89QhvB3bYuBbqXiHBMNincEhTjhDONBaLm6cSq4VT5FPOwFritCka0yDCc8cbNLzzYcHIqybxLjCPMjcjyzRoW1KkElvWBhv8G_-a3x7IXKQCtChEFdt5R3vfaRereB1t3IbIWbLOBhqbkqbAgoKDioDaH--XwhUnfIOQQt9hqoYc4ULqv0W",
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "msg_0db4e6bea32b8777016ab996a5da2c819585852ebdcecb44c4",
+            "type": "message",
+            "status": "completed",
+            "content": [
+                {
+                    "type": "output_text",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ],
+                    "text": "{\"choice\":\"15-1231.00\"}"
+                }
+            ],
+            "role": "assistant"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "mode": "standard",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": false,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "json_schema",
+            "description": null,
+            "name": "ExtractedData",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "choice": {
+                        "type": "string",
+                        "description": "Code of the candidate occupation that best matches the job description.",
+                        "enum": [
+                            "15-1212.00",
+                            "15-1231.00",
+                            "15-1244.00",
+                            "15-1299.01",
+                            "15-1299.05",
+                            "25-1022.00",
+                            "25-1054.00",
+                            "25-1064.00",
+                            "25-1067.00",
+                            "25-1072.00",
+                            "25-1082.00",
+                            "25-2012.00",
+                            "25-2057.00",
+                            "25-4031.00",
+                            "29-1021.00",
+                            "29-1023.00",
+                            "29-1029.00",
+                            "29-1071.01",
+                            "29-1141.01",
+                            "29-1141.02",
+                            "29-1141.03",
+                            "29-1229.02",
+                            "29-1292.00",
+                            "43-2011.00",
+                            "43-3011.00",
+                            "43-3021.00",
+                            "43-3031.00",
+                            "43-3061.00",
+                            "43-4071.00",
+                            "43-4081.00",
+                            "43-4121.00",
+                            "43-4131.00",
+                            "43-4141.00",
+                            "43-4171.00",
+                            "43-9061.00"
+                        ]
+                    }
+                },
+                "required": [
+                    "choice"
+                ],
+                "additionalProperties": false
+            },
+            "strict": true
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
+    "tools": [
+
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 407,
+        "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+        },
+        "output_tokens": 284,
+        "output_tokens_details": {
+            "reasoning_tokens": 256
+        },
+        "total_tokens": 691
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

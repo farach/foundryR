@@ -7,11 +7,12 @@
 foundry_file_upload(
   path,
   purpose = c("assistants", "batch", "fine-tune", "evals"),
-  expires_after_seconds = 30 * 24 * 60 * 60,
+  expires_after_seconds = NULL,
   api_key = NULL,
   token = NULL,
   endpoint = NULL,
-  api_version = NULL
+  api_version = NULL,
+  project_endpoint = NULL
 )
 }
 \arguments{
@@ -21,8 +22,9 @@ foundry_file_upload(
 \code{"fine-tune"}, or \code{"evals"}.}
 
 \item{expires_after_seconds}{Integer. Optional number of seconds after
-creation when the file should expire. Azure's v1 Files API accepts this as
-an \code{expires_after} object.}
+creation when the file should expire, sent as an \code{expires_after} object.
+Default \code{NULL} sends no expiry. The service rejects an expiry for
+\code{purpose = "assistants"}.}
 
 \item{api_key}{Character. Optional API key override.}
 
@@ -31,6 +33,9 @@ an \code{expires_after} object.}
 \item{endpoint}{Character. Optional endpoint override.}
 
 \item{api_version}{Character. Optional API version query value.}
+
+\item{project_endpoint}{Character. Optional project endpoint. When supplied,
+the call uses the project endpoint instead of the resource endpoint.}
 }
 \value{
 A one-row tibble with file metadata.
@@ -38,6 +43,11 @@ A one-row tibble with file metadata.
 \description{
 Upload a local file for use with Foundry APIs such as Batch, fine-tuning,
 evals, or assistants/file-search workflows.
+}
+\details{
+Files live on the endpoint where you upload them. Server-side agents search
+files on the project endpoint, so upload files for an agent's vector store
+with \code{project_endpoint} (or after \code{foundry_set_route("project")}).
 }
 \examples{
 \dontrun{

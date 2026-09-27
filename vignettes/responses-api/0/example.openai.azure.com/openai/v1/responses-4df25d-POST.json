@@ -1,0 +1,192 @@
+{
+    "id": "resp_0315ab319b274150006ab97c487dd08196a38d22e3bd1c1004",
+    "object": "response",
+    "created_at": 1790540872,
+    "status": "completed",
+    "background": false,
+    "completed_at": 1790540874,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "detected": false,
+                    "filtered": false
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 70,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_raw": [
+
+            ],
+            "content_filter_results": {
+                "protected_material_code": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "protected_material_text": {
+                    "detected": false,
+                    "filtered": false
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                }
+            },
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1256,
+                "check_offset": 0
+            }
+        }
+    ],
+    "error": null,
+    "frequency_penalty": 0.0,
+    "incomplete_details": null,
+    "instructions": null,
+    "max_output_tokens": null,
+    "max_tool_calls": null,
+    "model": "gpt-5-nano",
+    "moderation": null,
+    "output": [
+        {
+            "id": "rs_0315ab319b274150006ab97c493dbc8196b920457c74d6803c",
+            "type": "reasoning",
+            "content": [
+
+            ],
+            "encrypted_content": "gAAAAABquXxKQapxGbGNlOpccTt6ux_5QXsSSKLMWIjbaXNoGPME9y3PtzMZLGrTewqObg8IsHREcIvz3A3wr6T1xAFZiSKiuI-7dOPOojKg1M7NTUluutXPAqopdbSIQzS-SlSkWE1rr-vP1NPKZfuTWjbN2Ic3bawA7T6PZjons0LEBtOTtcL80DI-NHF-IXMbNZ9MUc_zXnCWVe_aXT2zt4XEYC63tUPu8fkc_G9ARw88EHxOSQhq8JKfmo4grOIOjhPYEzEw7ukRgs2S8uvH2g402pVSmYLddIOdj7Ck4gyiYKrgkPuqHxQC15UWBXhq7tydwNYA9o5WjKbxWuFbkucJkMssnr9cDBfAJemoYbSMArXmuQ6Wzv4xFP769z33OEZdJgS53br3s_1jE1936fQmXn1vcuLGxTGqrUO6V5ALRcu-DOh3yGT3fdFUaN6YsHJLEH19v-YCQxBR_w_Iv5qCl949ZXjpEcGht4cZpKAerebNWbg9cUYUXNlG3UpPw87H7fxstwfTdOXQRfe3IMDENGIJeRcuMy2c7sI63bhbAuF8HdrsHY_rPTMO_rZZvUwnsYDL5c8Jhxplc6G90sb9DB8yYObdZfVKMjj1A5QNe2Wy8Q1ZCNY8YXKxbGpOVqJNbCqXm5uMblGK4-oyXIz8S6Tm-SsaX7uPyUo0l6EH9b_audN0M1C34KjOP6tvW5Oap3fUhOCPwdSBER58ebUCOfvLudJkJWVJeV8kzbkIEhkZ_6YqHm_Qfo-iPenN_6cjz-sVaMgelpJq3O2d12krmNK8wIGdYbJfzFDHDKlJUWGT0m16-4ykmiWnwc9VLuSkLHEozD9BeJY5f1PVsYlTF6JN18bAE5E9WCjhqsJDEPiVjyZJox9nI4k8YaB4BM2DWTYEj9Ep4nUqxsew_RH_qEoZJeTQzNgx77B_u2eBESDslVYxCPegC_fxnbauR34GpYk6Ds82IwQ8yZt2J1d418LnwAgGYnqpZxcqC0la2H_AK3zy8IV_6F8MU2GSVHT6WYdbq3HFP1rkNUHD0LyQcNInxqpp2qtd2jYwTIPRnXMBwPU8hpfEDllcwBWNAX3yWaPFyey-zNRQJ44bJfAY_z2sWw4px-uLuCfkJfiO9mBOcsluPpcxP5b5HWomd5g56Pn2xJVUtJhJ7dFoLwuUKCBH0ko_DiTW5skT4pdt0KhBnbwXvtTzvxEOuS6UuoqRkN3kISnBXTKRx6jPxEgPwJogTDmiI4GlJU405l5kJzeuXu23mfyXhwZOsAH7maX11AP7Ph2W9GT-8WezvPWazcalhbmWWDm_qAwwGBuG3EjoHyuVtF72MQp5QaiaEa3UzQfnoQGRpu8u2cIb6MzEYvQnvdGndIe45CkwjHO6x4iLgE8vFtm75B9Im2le6YC-j0eFqCNoZrhD5qtSES4UNT6GN3numnRYYAh7spC8f2lohq-W_1-KxKV1EOyOVqLe5bIT0e-Cq1BaZKUNonYylUuRIRNaTOCjiNneVROtutM8EhWND-yx51s0aTVErvunctCUBteIVJADC58J7Hy4tE1Cp_sAruOJv8sEeojea4rPbCCMK8uhnnK4_xAEVvbay5rnpRrnt-cnGzFpiozELCsp3d2I4qgRZlMmv73PbFcm01gCrjtpjD4XCifuraLzOLHJryWXe9UA4Sy7AGMG-JEJfb2zsOtvSqaRSkxpO69bt9mzyN91FT_XZkqzILZshKgqZOIkDI8sAeLVN1CLLYOC_THKjK7ClWRGkCCkhIPpVMA14u5a1CE3w-B8_oQbc7gFDEkNc49bDERskbFW37dSXLYgcXOzAYU9Q3C3oQ_QSGw_Jx7-5DXit6NuGNFrV0v8vYv-bcAkBdeZZqlXxGg47PubzcxZkAtz-9c6-Nwc2pGpGIDScbZ-J1Ev98IutNyP5Q25laQHWxY-CAIMH292xQQuMwVOSCj7K55cDvJD8kdG8DkSII355X-0tGarnzzSQyXtO4OjZYvMpd0LaB1I30LEOaJE2EzPZiYMy_k5ESWNMvpE4NXc4YvxwzGzZWCP-cmv9RCV6GlDX6cBBznoCpzq6mtRausnZ4j9WeNcKbt0NIFzG7pkJ6AG7Jsk5kkb_d6fSXi8G4d2T99513ziwQqkqtTDeHoOjPkfFhlDaaybazu5M2PnKA6nndK7-PABAOjcP2oZxBKgL6TJSIh7sjBXH2HMrYc6eXBAJR18WndSqb9OLM3BEjTAoinUZ0F-fdF1TkbEgunUf6jWZdC-fgj4ogaypeJryzEx-JuUB2YdIoxpPpN3_0IJVV9CY_sxR0djyiJqGTx-FgkiyfTh-qukUkC-8Ob2iu4OuhmxVTfQ-KZHA2rOSP4WDYFtFCsCnwKXJ9EflHpHAZXeUk_dey4Grc0XW4aXlWWbA1zLqxTkt5w63jdbcX3wwrbIpK_qVVlRIYakHYy_fHfT8ITfkyQcZUJxr6cJ6Eqz9SYMRbBwhcrhxrtZpbQAAfTCYVL9yZByOnFjOl-lIy0vNxiwpaPfNEkn8lj79F0ZSI02OMPg81pasOF6CpB95DL3xd2D3za-I6boXRYbmuLC-pNWWVhpOKVyjnwAyWAbbckAQn-IUjy-tqli5wuaciMIix9aN8Z-UikgM2KohN5vUqj2upss0w52R9ZPa5r3o5aaI7TaFOgBzEFse8AzZBU8ARXbwbBuDQaE7D6W-64DSI0t6vIZH1uCzeN4Ett8Izs1RnrGdjdZOJP-sYFVfdfMQo0fcDa_rRfgZLRCHjdyhdmhbxkEeniKYj4jUEBURmhDSquel9D8We92_IS5PicAY9Qx",
+            "summary": [
+
+            ]
+        },
+        {
+            "id": "fc_0315ab319b274150006ab97c4a51c08196aada93ae1c885109",
+            "type": "function_call",
+            "status": "completed",
+            "arguments": "{\"location\":\"San Francisco, CA\"}",
+            "call_id": "call_5b7vLutyQoRGmPdZTjSsHIRd",
+            "name": "get_weather"
+        }
+    ],
+    "parallel_tool_calls": true,
+    "presence_penalty": 0.0,
+    "previous_response_id": null,
+    "prompt_cache_key": null,
+    "prompt_cache_retention": "in_memory",
+    "reasoning": {
+        "context": "current_turn",
+        "effort": "medium",
+        "mode": "standard",
+        "summary": null
+    },
+    "safety_identifier": null,
+    "service_tier": "default",
+    "store": true,
+    "temperature": 1.0,
+    "text": {
+        "format": {
+            "type": "text"
+        },
+        "verbosity": "medium"
+    },
+    "tool_choice": "auto",
+    "tool_usage": {
+        "image_gen": {
+            "input_tokens": 0,
+            "input_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "output_tokens": 0,
+            "output_tokens_details": {
+                "image_tokens": 0,
+                "text_tokens": 0
+            },
+            "total_tokens": 0
+        },
+        "web_search": {
+            "num_requests": 0
+        }
+    },
+    "tools": [
+        {
+            "type": "function",
+            "description": "Get weather for a location",
+            "name": "get_weather",
+            "output_schema": null,
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "City and state."
+                    }
+                },
+                "required": [
+                    "location"
+                ],
+                "additionalProperties": false
+            },
+            "strict": true
+        }
+    ],
+    "top_logprobs": 0,
+    "top_p": 1.0,
+    "truncation": "disabled",
+    "usage": {
+        "input_tokens": 55,
+        "input_tokens_details": {
+            "cache_write_tokens": 0,
+            "cached_tokens": 0
+        },
+        "output_tokens": 288,
+        "output_tokens_details": {
+            "reasoning_tokens": 256
+        },
+        "total_tokens": 343
+    },
+    "user": null,
+    "metadata": {
+
+    }
+}

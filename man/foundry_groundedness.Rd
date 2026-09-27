@@ -40,17 +40,20 @@ the response should be grounded in.}
 }}
 
 \item{reasoning}{Logical. If \code{TRUE}, includes reasoning for ungrounded
-segments in the response. Default: \code{FALSE}.}
+segments in the response. Default: \code{FALSE}. This bring-your-own-LLM
+option is deprecated and requires an Azure OpenAI GPT-4o deployment.}
 
 \item{correction}{Logical. If \code{TRUE}, requests corrected text that is
-consistent with the grounding sources (the Content Safety "mitigating"
-feature). Requires \code{llm_resource} and \code{api_version >= "2024-09-15-preview"}.
+consistent with the grounding sources. Requires \code{llm_resource} and
+\code{api_version >= "2024-09-15-preview"}.
 The corrected text is returned in the \code{correction_text} column. Default:
-\code{FALSE}.}
+\code{FALSE}. This bring-your-own-LLM option is deprecated and requires an
+Azure OpenAI GPT-4o deployment.}
 
 \item{llm_resource}{List or \code{NULL}. Connection details for a bring-your-own
 Azure OpenAI deployment, used when \code{correction = TRUE}. Build it with
-\code{\link[=foundry_llm_resource]{foundry_llm_resource()}}. Default: \code{NULL}.}
+\code{\link[=foundry_llm_resource]{foundry_llm_resource()}}. Default: \code{NULL}. This option is deprecated; the
+service currently accepts only GPT-4o versions 0513 and 0806.}
 
 \item{endpoint}{Character. Optional. The Azure Content Safety endpoint URL.
 
@@ -122,7 +125,8 @@ groundedness requirements.
 \examples{
 \dontrun{
 # Requires a configured Azure Content Safety endpoint and credentials.
-# Reasoning and correction also need an authorized Azure OpenAI deployment.
+# Deprecated reasoning and correction also need an authorized Azure OpenAI
+# GPT-4o deployment.
 # Check groundedness of a QnA response
 result <- foundry_groundedness(
   text = "The capital of France is Paris. It has a population of 12 million.",

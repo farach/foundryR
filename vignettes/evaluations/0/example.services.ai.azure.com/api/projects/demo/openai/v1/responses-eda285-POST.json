@@ -1,0 +1,157 @@
+{
+    "metadata": {
+
+    },
+    "top_logprobs": 0,
+    "temperature": 1,
+    "top_p": 1,
+    "service_tier": "default",
+    "prompt_cache_retention": "in_memory",
+    "model": "gpt-5-nano",
+    "reasoning": {
+        "effort": "medium",
+        "context": "current_turn",
+        "mode": "standard"
+    },
+    "background": false,
+    "text": {
+        "format": {
+            "type": "text"
+        },
+        "verbosity": "medium"
+    },
+    "tools": [
+
+    ],
+    "tool_choice": "auto",
+    "truncation": "disabled",
+    "id": "resp_029a6bb9a707702a006ab9821e278c819591ff98fc7b45b299",
+    "object": "response",
+    "status": "completed",
+    "created_at": 1790542366,
+    "completed_at": 1790542373,
+    "error": null,
+    "incomplete_details": null,
+    "output": [
+        {
+            "type": "reasoning",
+            "id": "rs_029a6bb9a707702a006ab9821ed044819597ca3aff0edec6b6",
+            "response_id": "resp_029a6bb9a707702a006ab9821e278c819591ff98fc7b45b299",
+            "encrypted_content": "gAAAAABquYIl3p8q4p3hhvYCvlNO_a8OVEwEkHru3Btwwmu7DFTJTMR1qJpTHI_gGIvjz6a9UnCkKV4v7Ziy4keYVIhzXjEJl9fC8NSEFPlAwfWWWis4f3hrafnez6s0mU-XY_e54ZYHU0qgLR5zHDi8-0TumRw4Xra3vJaT9ODV_tEupIs2uhEz9eguXt5RZZMFZkrH6GvUd8W7zY47Tvj8fJuAyIzCeqx46rkJwNsQMhlLutIkzqDAswU3dil5kkvsypJFLc1KbiO68o_b791DDZAwlUqqbM0dVbfCWIFri_mHnDvto2s6ncVCph29TDMSydbnXwwoGThBiFi07_9PeODUETOeXU_BqVOEuJ_HjQT0pemfJHmtw6Y-hWYrkvfsy4w3nb7pX-JomRctIJn9JhSEP7AdEjzAJAOSg15VgG5WLnS6ARznRWFEQtxXSvDVI4nRzBHXg4_WqUf-Zb4ztnMsrO5Q45MVPtkCsCKy2Bj1l9fRtjlhGDoddvMh_EDV0xG9BOD7ESjnvigICZPvJ1LArmvwEd-_fZ1oRouXBBCMrD_AGtBkxy5cM2rv57zDpZIHMZSPoCU-JAjtqi5Swhma-xIT4BdagK6IUcsaWjeD9uRAKY0Xk93Jab_DnQ345uCSehhXbhQ9KTijX90lbp6iuKRTtT1T5t_DRG4lytf2BSx6LeWUl4Od2WdLzF61DjuxgU9kDGk99S6cMHZoWWjNxyiCKEHAxyZ_rAPdAqOnprLFNNaOJs1C7WiQ1a0PJKWl5Y3Q-QLmtzgqH-VmpY8TMij63uaILzSMzj20dLUdJZpPU-lasbWFnWzQMklif9E9PnnfU6FqS0NtaJLWbzz3cZl4m2iq2JAK_Ti3WvXNf3M0GIFMs7yEd3VUuY8Yq26v1ZvKA2TdvxQK4IYwz1AftMp5xDyi3BTnfzlxlqTR0M339CBebdoMtK_X_pXq841MJ-0PqewdT_zILmcrgF-uDk4-WwyXVFNXS1Z8HrkMKTONCFiC3EcgLm8NBcJogVzdhnY1DLYUcU4iOVs4reS-3ZNsdNRGhTjZHD0O55S5Uwp8eET0vKDrQNRZWiK6FuBuz70uHU5Q-6AahYQ9dpjX3gtVGrjfsyrq9Wm5fIwSJFB6lMnHEwL8xsQAVYtKYKO-7KE_EBBgANStXd_XMyl8iMnbBvXK-acfRxHyuWH2ehDeYWk8MBfopKBdT5CKqxAZBI1E6Z6hNDX21w9v5DMlC1iOM6kRMMbZ-phOsEILZmIrQ23FfTKUBkCfERNk5_2is-oUZEU_XdwBP-wwbew8awUU4pHkANGgn4Gu5G4ligXWMAln5bJyo0UcSmz5KxeG2Vm8tm__KJLWT9F1Vf3xGNoQaSOy2BDFzkkD4HT3awC5iVeAFi14tuO1a_doauQCi6S8mq2UFCRA4HtLfLY5XoFy1h8jJfmnAExzWRWzCBh1lb81qez8wdWMzzIJhduM8V7iJa-wnRaMx2AfmZPvZjUbEN1DwkkHQyY1EM7IItJ1dZx6I2mQqAQFHKdB9BGhRr2HJ9bKQDWc5pv-Mw8lEyeV7jU4fuh4oVJqe-x-vgB4-U2n6WGqdb_Ocs70SbmwU1Vd2ZgaSzRorkaywneUIQ2dwbA4nXcju8rg5AJEKY1JFJkcHw0Kvkslkst8qVaTKSFRKlXdoOcJ9PKpXEHGTLDCHI94D7EO7fGvUL-SVym8TgYy_q2ZLLWWRYoDyBUyl-KY1XPnlUJHRwRpy1NszMMZGo3yzDK9WoA598SgY2tVQ4rHqKjSxlRzUg2nuUNPu9PIR6WSSJS_Uohc1qwl087uomHLe_SXxYWsMIHkVq90Lsv0qWxaer98b4RXPxOAj0dXelvn0etu8ULdh_VuQ7lQscZOoqFrBR6qAbxlJeCW_U1sEccQ1KVoFaOxA01r_Ws1e6ibG0BjGrIunl4TsyijTg1q4-0x1qCX0lcKi36M4eYUk_BCSrNYKHvls0Rl63zEHi0XXTkPGVZzMxL3nkhKUJj43Ek5Btj0y-Q7M-8vJtpmXF7UIq6d8NWIPwr4zsUICMBRjqc375nMAI50KPgVEOxvEVY6XpJjasyaQ4FkyTzq_mvPVkc1EUCNOIFtR-C7_oMMQsFbQ8ckDa6zZarAVOpzBu7s_XRGutw5jMsEWP8DGFDrpDrc-dY22qaJ0Y3Au2zUvLCwtzQnVwxAbX5sQaF2IhuReupcGGbaNZq9_Kw56CJ8-daIjHjq1InjFgefHwmsdBrcf2joOoHLKZprrENr3Ab_XC4wWVuho1MTUtqQIwR1-Il64Vfu5pgf13UrsjfjAFAFUjxQDby0D8ZxgOnsDf7DXBCXrnjOp7I8vsjeAmBTbdpRvzLqthRRZRONB8SvRJkvSHFz4XIZ_2pQIGGxSxK1Znly5X0H5sfYfrbrHUdExLepgw2OgAEtlRoSUK85HwkAX0vf0Ftv7XErUJ0vahRMi6uVJGB-cAJ-yhzdXGiC8oI-bZa8ZDRpWhB4k2JHLeO9nIbsrvW9tmwr-SwUAqR8gWN5bLXasG-DCDP-K-C_SSHZS7cpAHw1zm_2wiTPHFaktJrzC7DA8tb5lS526h3UAiky4bsZwBSa-AEHLkuIn3chvOIsgrwtib7KQ6vSEBQLGafWgM8wFgrWoqyi1851QfQg0Va6IHMwinRb-y9HSb0AVR9BOoGlocBMsuc1gq7Yl5PxwoUvcdCKVXGb6CsJHBQXuoFdV-jUt2bN7XPRjYESV_pBJZiY4QS7x0--B3-MSs_wKuh_qTw-t_g4zJIpmuXKmwAtQj9eo8au5uXoshsSljiS5ci_ZDtcd7gPBj7Z9qnJB6Wng0xP5TbqFMR469VqeWggMnnBNWdUMa_0-p-gyqpwu_6wCfw5qfwBeDo--qCP9lLwCp7s8Y29Is06WvKU_wqvjHeSMoECdVtmzJyM8ErzKpQVBSarwzuVF5_tXVfwMycFHp99_hHdZox4XoPpLZ14XtdG9E53uwSz0MJL1LW8xMTij9-Er-w1MPx8OsBPK_XTLfBCd7ABVJBPoGnvyGaggSj7wM_TZ0WfFpDhVZypdKLcWUILSRZ7C_rYWk0iL4W4W-tM1veKLSj23Rcv5qL1MkRz6SDG313HzkQ8llkg5k0vOJlkHWJh9kWxe5BxPCYdwdQcqAeWjEifmCBgiSJUCLenRySD-dnujcYsfIFhvXYyZQbNrT1itXEI3gFRpx3FFTe2w_XMD5YS1pVYw22JyEb9ULA53r9q70MNf7V-ju9wCvxj9TL6nNbKf2skEBQFpclKSXdhK6_jLVdbgTb1PblCfaxhKpNDyqOR6jaZC4U2zn3MVJ_-woYQCyALiJlNnvN-8QIHvmclpC8VNyQcwOZvoTdCh4QPE1UBAealAsfrPjvuIpND5Ttavi05aYQgCMm_GVyxbnNuOp5chhx2FcS7bfEZ9xvLfkVmAF4kMWis3pZQjc_2f1z2XcLIcsNIH665ViFyIZ9sX0bGTM1q5tr04JyHFKBdzOSxV4dUSqWbB151Ao1UzBSWow8Mr_9YyMVK5Uxr9JoyS9XbHfcGIBJsuj3kEAvw-KHjVcPWAoHE5PSOPYGw8kbOo1HE8VPM5zEHJvoTsYnt9dAf3_DnUSNlemfz1qb2qfeqPQyIChANLYy7ItKJKYXU8_u96lHEA0B-rjXQjTEqVFseWJ1lYLaC-ozKvO2a8BJSsj5M_wpU9J2YSNDOOpFpcquCzsy9AgJWyh7ze2ZRiWGp9zIL8PGapsdVcMxLmg3YGDdM3v9DLRqS7qHEPb_BaFKs6CQsgKxFVPAXRHylJ-UolKF9j7ve3JIfVqnFy938iVUH1MPUH2HwEAPI-lqQC1Vp_MHnFwH48NUTTgUlTVADMy6mRf44EWcbnC8Qn1RtIq8fqn-FcfZOsq3KxJapmWO0DuZ8QYovPBsh9gdemlwM7J-DpyNejPSE2EBEevW9dbB2daWWKiqAbx4j0WQFBcTm9Oqa7Ghtos0vl8rCBFB73uOiKhl8aV1nT4KZGKRPY4eSq6cJYy_Lbh6lRZqJrsyES2MIk9DB83r2MQcJfUAgc2WsGoWtc2jAB-efkwU4glFsqWgzdTiDejcMKaRiBUUBykWH03va5c1U_NQ0DrW6azyDkl5NrcUacY4-42FiISekc2DR4npMJXJ85Xdf4c_1I4-l0M52NPY_8J_Lsq5Vt-lW2ScAk4GhFUu4qhJfubvFG6sPGfrYySLl3cDKijduhDcPo0DlEosHNrFNBDP__L5mRjt9TGOB6-6eR_fozx9wjvRFTApbuwmi0dVrQDIkcmBD4CGd8DVFMtYwDqqTtKHN1ZqMYygj3A8cH7LtktxULaa9co_o6qFh_GmhUmTPs8BCmIH_F_1hnJGO0WMNLSBG2P_Xa8fmOWuz6mb0Sx-dHNg9xS_LJNiJxULuVgZ_k9Fd-txHPGA3JYcpWUqzArCGLIipGngAbUy-35EbcvW7oHdqXS2253T4ixoTqnPHxYPabbBexKNT5rzp4B0yTJtwQ0ylqHMYAkLYQ5Fi46NmsgZbm7dUFbUqeN-hTB-lN7Bw6SlWcZvUgEl4uyi6AiWenvpOAVDuv9-XCZ5PtZFx3IvVa_VLIB_TQmZuFxLgMtlahFjfFvaf9HUsRv0YqIiSu3A_LfWlnzEEEzQL45fnl9MQ-Na37VU2V0o8eRKaeU8bbtZnq3pBZVzzpS2d67Xiiv_XLR2GZmmfW864VR7_jVER4YeecvCtMfv1wUUTzWs5Diu_PEXZ3DO4pFxIM1257IjFaww2esC8U0THIx83lt0EiFKvj1XYiMoNqPOFYHA4JU3DN6XQ3WDD8FyZxq3i14bPKBEX6cbEz4DbNgxPGkQVvg4FM31g9Kprq2VJwZ0cgXQkhColkaXLfEvjtSLLaIoZaAOviw7p4F8C5m01qgbvFJSQGaSqACdtlG-ohv1oFeXtcgkxxIMMu4KXKqA6CJFbglicI9IfOVCyUBHTUe3FhoOe5FJNDdtFQhxy320gYS19JgGzIatYC4Ao0xOhAqqMImt3jSmm34Hv4wRKoUU_tTm1UD5oUAgCLean8pCf-oWM7WPpGYvSxuNj77j9d14oBLJdTRS7iC406Ha_qEY_NNbgfPzCfAyWkFAjItF73PluLVoydzQPZD8lfXvKGuBWPakmumBZK5vaYQLOHXeYOaAiNzn4mAKpFRMpqoqOoTSC-1z9vSua8vQgTosrmxVFksO_5wySKnK8gfba-Phogyxa5xHt7CuHsI34N6AZukeolpSwxuzVMvnN04-jA4hJNfceUc1ierp0mN0e17AaViqS7MK6vREbv7AiiUknmDTPKYzZhrgGv01hVuHjuLuAyny6xXoa5kOWhn-1i59QjzMGPAwZc1xpmOhKD2YTOGd1zG-r3kd9_4clc6bFljYjZaHWDXq-ORcUF4rmJ6nV2_F8mhXOnCOtUMlI1VWeTwGS1Hh9Q-eY5g7vYAJwHYH1Cs8wnXYr5Gf7v2oFKGN4MZn9FQBWhZfh49iqgoGax3OvT_bgrmFhGbFJGMRgEQav3NmCv2mRCPxFeitG8zc4trtYD2Nj36eYpotzVLon1GPAHHf3-PqLJmSZcNzd6UxpIVcZu4G_f-VrojA3GDlUUgbavltf2Mm3S2_i7G3BYkFbZUeTRyg6mn_HzS_Ugl2TtwqtebsdWfZnQTNe1e2OusGs-29do4IKRycBgKkOXP2UKjdDvGrHzGTLwZlj28qw-B6I5pkfN4FLkJVrDhmviay-xeO-gmDQJbye9k4Ilszgo88gsRgvxg4Tz7yhrC6qUeHwmq4XbwgXyxtQbFHVwyEnRogHYzOvhzxs-Cp5buKdtkC5thecDEBZXgI6znqtEBgU45YTnXmFyAPuzLV2brIYZWmpJhmLo2VzHbsAr7a9a5sTtHPZsxHSYhjx0WCVYCV5Aum0m6LZjjJ4nYMmJ7bxM9XMwN0DAindThsL6TRvsJjEQMqXA2k5umaoprmFvuvnFW45DhDoP8OgskeYeNwWclQoCDgi46TN6BEFJrZo5IzQ4pjsWE0QNpi__HVpt3e4ssq4iwp0blkIYj4emCh4DtLBJNRzPA9XRNjsSokOeCB6d7Fd6piyoSjZpv7dNv1L5wBdmf2HwGcwV0H-jtvXGSyWA6gu5WWpRRYNuWeGfLRrYIsVLKnIV_uDftAQJMd2cuNO8uV7ibMFyjhoiWw6jPMB-yM6k1TcnSJjK1zUUqFi67hdBK87Im8g6cQJUPB8mkdINLV1rBLDBNXZ1p9rJbnhY4Yo_RGhe2zc61v4kEJ79ByZnWPug8UozHM0KhaaiSKyAgrVt_f7xk46Okyz0tDkBgtk3avcqNRZZU28SdwqB0H9w8t1CqhHN76VHd6BxMLK5i5ytMnskAcsf8rqgt2_2XOkh0EWSOuT3aMC8FSwQRQOgz5yH7EIr1tvib-GfTfdpkOYbKQDCVzhUwwl33zrwWqbicamV2r_JBF4Wobi6TMmunmRVG18oyBFKF48WHOMbYCT-pnnUZ4LpTU1pGWzeLm2g0EV_dwnqE9Du26x3jj7PpiZcUDpy4K6wjI2W1KgkR8mgw8hccmZXHZh7M0Cp26QVV9TsSxWzteC8J3r-j3vuNWrCDFrlGjar6xlmUDElh1h2NW7rc_nlc4s3_kwA_idoAF1vhW3ARkQXM200yWvzkE9tct9yx8Fg9537PO1gEL36brU6Cxhh9tJlg_-2oUaKiNPpaxJ5aKxcJ2_bP3tlFV-ixNXEtO5l_850pFNOv529z0I672t0sUuxqnwpDebMs0L4m5m-At51CqYYvKpqxrEBI0QcxKfoaPNiNGiwuDp5klfmTCHa6FGUiq9jg1mRoHx3OXYniKCrKk9AE5eZnh01KcMy3wWAFPbic1UABv4C4kiSyA-1wCKlXEmhLN-kZNeSTlaRYDxqcFm7__7x9zhqnfkRrNBPmn-jZzmiCy7iG-ftTnrCemNr8ZFic3JUC_6hzmCdEH3Wx8WJP-XmiJnWvE_Gqp4J09zvbzPU16qbMEzNkgVAgFFSrzxsJdnoIfUPXquq1L8yulx0D4DmJtAj_OIKaFuVI9ZfmN_tmYFQYlMvRRbFcUOudn0C0NhfMvac3XmJrGs9s-Ttximr8LO4dE4yY2Yw1SmFPzuq8Kt7NpBPKuEA8DPKDfct64bsUasJYq2tvf_jQIxn_f7O5jfpVR5CP1dh_hRJj0oUM_WYNmZy-NUys4K3kbO345JI69mOR7cH7TdGqC9kcOteAm1oySR1_4H5auTO8SLGWTrsQ0gODMBAsGX",
+            "summary": [
+
+            ],
+            "content": [
+
+            ]
+        },
+        {
+            "type": "message",
+            "id": "msg_029a6bb9a707702a006ab98222489881959cce5068383272a1",
+            "response_id": "resp_029a6bb9a707702a006ab9821e278c819591ff98fc7b45b299",
+            "role": "assistant",
+            "content": [
+                {
+                    "type": "output_text",
+                    "text": "Here’s a practical way to ask for an extension, plus ready-to-use templates you can adapt.\n\nKey tips\n- Ask early. Don’t wait until the last minute.\n- Check the course policy first (late policies, allowable extensions, any forms).\n- Be specific. Propose a new deadline you can meet.\n- Show progress. Mention what you’ve completed and what remains.\n- Keep it concise and respectful. Acknowledge you understand extensions aren’t always possible.\n- Offer alternatives if an extension isn’t allowed (partial submission, different assignment, etc.).\n\nWhat to include in your message\n- A clear subject line (if email)\n- A brief greeting\n- A short reason for the request (without oversharing)\n- A proposed new deadline\n- What you’ve already completed and your plan to finish\n- Acknowledgement of policy and appreciation\n\nTemplates\n\n1) Formal email to professor\nSubject: Request for extension on Problem Set [number] for [Course name]\n\nDear Professor [Last Name],\n\nI hope you’re well. I am writing to request a short extension for Problem Set [number], which is currently due on [original due date].\n\nThe reason for this request is [brief reason, e.g., a heavy workload this week / illness / a personal matter]. I want to ensure I can submit work that reflects my best effort. If possible, could the deadline be extended to [proposed new due date]?\n\nSo far, I have completed [briefly describe progress, e.g., problems 1–3 and part of 4] and plan to complete [what remains] by the extended date. If an extension isn’t possible, I will submit by the original deadline, but I would be grateful for any alternative you might suggest (e.g., partial credit for the portion completed).\n\nThank you for considering this request.\n\nBest regards,\n[Your Name]\n[Course and section]\n[Student ID] (optional)\n\n2) Short/concise message to TA or via course platform\nHi [TA’s name], I’m requesting a short extension for Problem Set [number], due [date]. Due to [reason], I’d be able to submit by [new date]. I’ve completed [brief progress]. If an extension isn’t possible, I’ll submit by the original deadline. Thanks for considering.\n\n3) In-person or quick chat\n“Hey Professor [Last Name], do you have a moment? I wanted to ask about possibly getting a brief extension on Problem Set [number]. I’m behind a bit due to [reason], and I think I could produce a stronger submission if I could move the due date to [new date]. I’ve already completed [brief progress]. I understand if extensions aren’t possible, but I wanted to check.”\n\nIf you have documentation\n- If you have a medical note or official documentation, mention you can provide it if needed.\n- Keep a simple line: “I can share documentation if that would help.”\n\nWhat to avoid\n- Don’t push for extensions repeatedly or after being denied.\n- Don’t fabricate reasons; be honest.\n- Don’t imply you’ll do worse unless you’re granted more time.\n- Don’t demand a specific outcome; be polite and flexible.\n\nIf an extension is denied\n- Ask about the policy for partial credit or alternative assignments.\n- Consider requesting a smaller extension or a revised deadline for a subset of the problems.\n- Plan to submit by the original deadline with the best quality you can achieve.\n\nIf you want, tell me your course, assignment details, and your reason. I can tailor a precise email for you.",
+                    "annotations": [
+
+                    ],
+                    "logprobs": [
+
+                    ]
+                }
+            ],
+            "status": "completed"
+        }
+    ],
+    "instructions": null,
+    "usage": {
+        "input_tokens": 18,
+        "input_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0
+        },
+        "output_tokens": 1698,
+        "output_tokens_details": {
+            "reasoning_tokens": 960
+        },
+        "total_tokens": 1716
+    },
+    "parallel_tool_calls": true,
+    "agent_reference": null,
+    "content_filters": [
+        {
+            "blocked": false,
+            "source_type": "prompt",
+            "content_filter_results": {
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "jailbreak": {
+                    "filtered": false,
+                    "detected": false
+                }
+            },
+            "content_filter_raw": [
+
+            ],
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 1180,
+                "check_offset": 0
+            }
+        },
+        {
+            "blocked": false,
+            "source_type": "completion",
+            "content_filter_results": {
+                "sexual": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "hate": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "violence": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "self_harm": {
+                    "filtered": false,
+                    "severity": "safe"
+                },
+                "protected_material_text": {
+                    "filtered": false,
+                    "detected": false
+                },
+                "protected_material_code": {
+                    "filtered": false,
+                    "detected": false
+                }
+            },
+            "content_filter_raw": [
+
+            ],
+            "content_filter_offsets": {
+                "start_offset": 0,
+                "end_offset": 7781,
+                "check_offset": 0
+            }
+        }
+    ]
+}

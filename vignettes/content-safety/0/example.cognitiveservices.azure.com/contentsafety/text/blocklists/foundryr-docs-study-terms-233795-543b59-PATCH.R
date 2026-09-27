@@ -1,0 +1,11 @@
+structure(list(method = "PATCH", url = "https://example.cognitiveservices.azure.com/contentsafety/text/blocklists/foundryr-docs-study-terms?api-version=2024-09-01", 
+    status_code = 201L, headers = structure(list(`content-type` = "application/json; charset=utf-8", 
+        date = "Sun, 27 Sep 2026 20:27:12 GMT", server = "istio-envoy", 
+        location = "https://example.cognitiveservices.azure.com:443/contentsafety/text/blocklists/foundryr-docs-study-terms?api-version=2024-09-01", 
+        `apim-request-id` = "44806441-4dcf-4dd3-bcc4-d127a640a41d", 
+        `api-supported-versions` = "2023-04-30-preview,2023-10-01,2023-10-15-preview,2023-10-30-preview,2024-02-15-preview,2024-03-10-preview,2024-03-30-preview,2024-09-01,2024-09-15-preview,2024-09-30-preview,2025-09-15-preview,2026-07-01-preview", 
+        `azureml-served-by-cluster` = "hyena-eastus-01", `strict-transport-security` = "max-age=31536000; includeSubDomains; preload", 
+        `x-content-type-options` = "nosniff", `x-ms-region` = "East US"), class = "httr2_headers"), 
+    body = charToRaw("{\"blocklistName\":\"foundryr-docs-study-terms\",\"description\":\"Temporary blocklist for the content-safety vignette\"}"), 
+    timing = c(redirect = 0, namelookup = 0, connect = 0, pretransfer = 0.000178, 
+    starttransfer = 3.778214, total = 3.779195), cache = new.env(parent = emptyenv())), class = "httr2_response")

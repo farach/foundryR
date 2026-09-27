@@ -30,6 +30,15 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
   if (!file.exists("DESCRIPTION")) {
     stop("Run this from the foundryR package root (DESCRIPTION not found).", call. = FALSE)
   }
+  # A non-UTF-8 session writes characters such as a right single quote into the
+  # fixtures as "<U+2019>" escapes, which then show up in the rendered pages.
+  if (!isTRUE(l10n_info()[["UTF-8"]])) {
+    stop(
+      "Record documentation in a UTF-8 R session. On Windows, unset LC_CTYPE ",
+      "(in PowerShell: Remove-Item Env:LC_CTYPE) and start R again.",
+      call. = FALSE
+    )
+  }
   for (pkg in c("pkgload", "rmarkdown", "httptest2", "withr")) {
     if (!requireNamespace(pkg, quietly = TRUE)) {
       stop("Package '", pkg, "' is required to record documentation.", call. = FALSE)
@@ -70,7 +79,9 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
   # Documentation targets and the optional services each one exercises. A target
   # is recorded only when all of its services are configured.
   docs <- list(
-    list(name = "README",              path = "README.Rmd",                        dir = "tools/readme-fixtures", services = c("content_safety")),
+    # httptest2 prepends "vignettes/" to README.Rmd's fixture path because a
+    # vignettes/ directory exists at the package root.
+    list(name = "README",              path = "README.Rmd",                        dir = "vignettes/tools/readme-fixtures", services = character()),
     list(name = "getting-started",     path = "vignettes/getting-started.Rmd",     dir = "vignettes/getting-started",     services = character()),
     list(name = "embeddings",          path = "vignettes/embeddings.Rmd",          dir = "vignettes/embeddings",          services = character()),
     list(name = "content-safety",      path = "vignettes/content-safety.Rmd",      dir = "vignettes/content-safety",      services = c("content_safety")),
@@ -80,9 +91,11 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
     list(name = "media-generation",    path = "vignettes/media-generation.Rmd",    dir = "vignettes/media-generation",    services = c("image")),
     list(name = "files-batches",       path = "vignettes/files-batches.Rmd",       dir = "vignettes/files-batches",       services = character()),
     list(name = "tidymodels",          path = "vignettes/tidymodels.Rmd",          dir = "vignettes/tidymodels",          services = character()),
-    list(name = "foundryr-vs-ellmer",  path = "vignettes/foundryr-vs-ellmer.Rmd",  dir = "vignettes/foundryr-vs-ellmer",  services = character()),
+    list(name = "evaluations",         path = "vignettes/evaluations.Rmd",         dir = "vignettes/evaluations",         services = c("project")),
     list(name = "onet2r-integration",  path = "vignettes/articles/onet2r-integration.Rmd", dir = "vignettes/articles/onet2r-integration", services = c("onet"))
   )
+  # The onet2r article is withdrawn to data-raw/drafts/ until it can be
+  # re-recorded with onet2r installed and an O*NET API key.
 
   if (!is.null(only)) {
     docs <- Filter(function(d) d$name %in% only, docs)
@@ -116,6 +129,16 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
     recorded <- c(recorded, doc$name)
   }
 
+  leaks <- find_fixture_leaks(vapply(Filter(function(d) d$name %in% recorded, docs), `[[`, "", "dir"))
+  if (length(leaks)) {
+    stop(
+      "Recorded fixtures still contain resource identifiers:\n  ",
+      paste(leaks, collapse = "\n  "),
+      "\nFix the redactor in inst/httptest2/start-vignette.R and record again.",
+      call. = FALSE
+    )
+  }
+
   message("\nRecorded: ", if (length(recorded)) paste(recorded, collapse = ", ") else "(none)")
   if (length(skipped)) {
     message("Skipped:  ", paste(skipped, collapse = ", "))
@@ -127,6 +150,43 @@ record_doc_outputs <- function(only = NULL, refresh = FALSE) {
   invisible(list(recorded = recorded, skipped = skipped))
 }
 
+# Scan fixture files for real hosts, the real project path, and subscription
+# paths that the redactor should have removed. Returns "file: pattern" strings.
+find_fixture_leaks <- function(dirs) {
+  host_of <- function(url) sub("/.*$", "", sub("^https?://", "", url))
+  endpoints <- Sys.getenv(c(
+    "AZURE_FOUNDRY_ENDPOINT",
+    "AZURE_FOUNDRY_IMAGE_ENDPOINT",
+    "AZURE_FOUNDRY_SPEECH_ENDPOINT",
+    "AZURE_CONTENT_SAFETY_ENDPOINT",
+    "AZURE_FOUNDRY_PROJECT_ENDPOINT"
+  ))
+  hosts <- unique(host_of(endpoints[nzchar(endpoints)]))
+  hosts <- hosts[!grepl("^example\\.", hosts)]
+  project <- sub("/+$", "", sub("^https?://", "", Sys.getenv("AZURE_FOUNDRY_PROJECT_ENDPOINT")))
+  project_name <- if (grepl("/api/projects/", project)) sub("^.*/api/projects/", "", project) else ""
+  literals <- unique(c(hosts, if (nzchar(project_name) && project_name != "demo") paste0("projects/", project_name)))
+
+  files <- unlist(lapply(dirs[dir.exists(dirs)], list.files, recursive = TRUE, full.names = TRUE))
+  leaks <- character()
+  for (file in files) {
+    text <- paste(readLines(file, warn = FALSE), collapse = "\n")
+    found <- literals[vapply(literals, grepl, logical(1), x = text, fixed = TRUE)]
+    if (grepl("/subscriptions/[0-9a-fA-F-]{8,}", text)) {
+      found <- c(found, "/subscriptions/<id>")
+    }
+    if (grepl("<U\\+[0-9A-Fa-f]{4,}>", text)) {
+      found <- c(found, "<U+XXXX> escape (recorded in a non-UTF-8 session)")
+    }
+    if (length(found)) {
+      leaks <- c(leaks, paste0(file, ": ", paste(found, collapse = ", ")))
+    }
+  }
+  leaks
+}
+
 if (identical(environment(), globalenv()) && !interactive()) {
   record_doc_outputs()
+} else if (interactive()) {
+  message("Loaded record_doc_outputs(). Call it to record, for example record_doc_outputs(only = \"embeddings\").")
 }

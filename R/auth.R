@@ -190,10 +190,44 @@ foundry_set_token_provider <- function(provider,
   if (!is.null(provider) && !is.function(provider)) {
     cli::cli_abort("{.arg provider} must be a function or NULL.")
   }
+  foundry_check_provider_audience(provider, scope)
 
   old <- foundry_auth_state$token_providers[[scope]]
   foundry_auth_state$token_providers[[scope]] <- provider
   invisible(old)
+}
+
+
+# Warn when an Azure CLI provider requests tokens for the other endpoint
+# family: project endpoints reject Cognitive Services tokens, and the reverse.
+foundry_check_provider_audience <- function(provider, scope) {
+  if (!is.function(provider)) {
+    return(invisible(NULL))
+  }
+  audience <- tryCatch(
+    get("resource", envir = environment(provider), inherits = FALSE),
+    error = function(e) NULL
+  )
+  if (!is.character(audience) || length(audience) != 1L) {
+    return(invisible(NULL))
+  }
+  expected <- if (identical(scope, "project")) {
+    "https://ai.azure.com"
+  } else {
+    "https://cognitiveservices.azure.com"
+  }
+  mismatch <- if (identical(scope, "project")) {
+    grepl("cognitiveservices\\.azure\\.com", audience)
+  } else {
+    grepl("(^|//)ai\\.azure\\.com", audience)
+  }
+  if (mismatch) {
+    cli::cli_warn(c(
+      "This provider requests tokens for {.url {audience}}, but {scope} endpoints need {.url {expected}}.",
+      "i" = "Use {.code foundry_token_azure_cli(\"{expected}\")} with {.code scope = \"{scope}\"}."
+    ))
+  }
+  invisible(NULL)
 }
 
 
