@@ -12,7 +12,7 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/foundryR)](https://CRAN.R-project.org/package=foundryR)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![R-CMD-check](https://github.com/farach/foundryR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/farach/foundryR/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 

@@ -1,5 +1,7 @@
 # foundryR (development version)
 
+foundryR's lifecycle stage is now stable instead of experimental. After this release, breaking changes to exported functions will go through a deprecation cycle. Functions marked experimental in their documentation, and operations that use preview APIs, can still change without one; see `vignette("api-support")`.
+
 ## Breaking changes
 
 These changes can alter the output of code written for 0.1.0. Most fix behavior that was wrong or that the service rejected.
