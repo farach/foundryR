@@ -60,7 +60,7 @@ foundry_video_download <- function(...) {
 
 foundry_video_defunct <- function(what) {
   lifecycle::deprecate_stop(
-    when = "0.2.0",
+    when = "1.0.0",
     what = what,
     details = paste(
       "Azure OpenAI retires its last Sora video model (sora-2, version",

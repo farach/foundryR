@@ -126,7 +126,7 @@ type_string <- function(desc = NULL) {
 
 foundry_deprecate_type <- function(what, with) {
   lifecycle::deprecate_soft(
-    when = "0.2.0",
+    when = "1.0.0",
     what = what,
     with = with,
     details = "foundryR's type_*() helpers mask ellmer's functions of the same names.",

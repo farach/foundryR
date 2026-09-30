@@ -18,7 +18,7 @@ deadlines:
       replacement. foundryR 0.1.0 on CRAN still exports video functions that
       will fail after that date; the development version makes them defunct.
     tasks:
-      - Bump the version to 0.2.0 and turn the NEWS.md development heading into the release heading.
+      - Bump the version to 1.0.0 and turn the NEWS.md development heading into the release heading.
       - Run R CMD check --as-cran and devtools::check_win_devel().
       - Update cran-comments.md and submit with devtools::submit_cran().
       - Confirm the CRAN submission email (maintainer only).

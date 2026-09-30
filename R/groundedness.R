@@ -175,7 +175,7 @@ foundry_groundedness <- function(text,
   }
   if (!is.null(deprecated_groundedness_arg)) {
     lifecycle::deprecate_soft(
-      when = "0.2.0",
+      when = "1.0.0",
       what = paste0("foundry_groundedness(", deprecated_groundedness_arg, ")"),
       details = deprecated_groundedness_details
     )
@@ -349,7 +349,7 @@ foundry_llm_resource <- function(endpoint,
                                  deployment_name,
                                  resource_type = "AzureOpenAI") {
   lifecycle::deprecate_soft(
-    when = "0.2.0",
+    when = "1.0.0",
     what = "foundry_llm_resource()",
     details = paste(
       "This feature requires an Azure OpenAI GPT-4o deployment",
