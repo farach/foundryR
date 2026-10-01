@@ -44,5 +44,5 @@ local({
   })
 })
 #> ✔ Endpoint set to <https://example.openai.azure.com>
-#> ✔ Endpoint stored in /tmp/RtmpvMyLOE/foundryR-config-1b5554d13b6d.json
+#> ✔ Endpoint stored in /tmp/RtmpWFMpEC/foundryR-config-193b57ae6035.json
 ```
