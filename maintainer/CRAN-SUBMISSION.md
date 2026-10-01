@@ -120,7 +120,9 @@ release.
 | Version | Submitted | Published on CRAN | Source commit |
 |---|---|---|---|
 | 0.1.0 | 2026-09-14 (resubmission after manual review) | 2026-09-24 | `3322acf6bdd28a63f6e8e6154dd4e0a71b5a37a0` |
-| 1.0.0 | 2026-10-01 | Pending | `3ebc1fe24e731311e0487a1c1bfbda03efc46152` |
+| 1.0.0 | 2026-10-01 | 2026-10-01 | `3ebc1fe24e731311e0487a1c1bfbda03efc46152` |
 
 The published 0.1.0 tarball matches the checked upload except for the `MD5`
-file and the `Repository` and `Date/Publication` fields that CRAN adds.
+file and the `Repository` and `Date/Publication` fields that CRAN adds. The
+published 1.0.0 tarball also matches its checked upload, except that CRAN adds
+the same metadata and drops the `Roxygen` field from `DESCRIPTION`.
