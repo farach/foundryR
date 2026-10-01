@@ -7,16 +7,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/farach/foundryR/blob/v1.0.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/farach/foundryR/blob/main/DESCRIPTION)
 
 Farach A (2026). *foundryR: Data Frame Workflows for 'Microsoft
-Foundry'*. R package version 1.0.0,
+Foundry'*. R package version 1.0.0.9000,
 <https://github.com/farach/foundryR>.
 
     @Manual{,
       title = {foundryR: Data Frame Workflows for 'Microsoft Foundry'},
       author = {Alex Farach},
       year = {2026},
-      note = {R package version 1.0.0},
+      note = {R package version 1.0.0.9000},
       url = {https://github.com/farach/foundryR},
     }

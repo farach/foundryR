@@ -1,5 +1,7 @@
 # Changelog
 
+## foundryR (development version)
+
 ## foundryR 1.0.0
 
 foundryR’s lifecycle stage is now stable instead of experimental. After
