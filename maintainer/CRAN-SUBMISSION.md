@@ -47,10 +47,10 @@ are absent from the tarball.
 
 ## 4. Run CRAN-style checks
 
-Check the tarball:
+Check the tarball, where `<version>` is the `Version` field in `DESCRIPTION`:
 
 ```powershell
-R CMD check foundryR_0.1.0.tar.gz --as-cran
+R CMD check foundryR_<version>.tar.gz --as-cran
 ```
 
 Also run with `--run-donttest --timings`. The `Build CRAN source` workflow

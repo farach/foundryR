@@ -9,6 +9,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      tarball: ${{ steps.build.outputs.tarball }}
     env:
       FOUNDRYR_RUN_LIVE_TESTS: "false"
       FOUNDRY_RECORD_DOCS: ""
@@ -28,12 +30,18 @@ jobs:
           needs: check
 
       - name: Build CRAN source tarball
-        run: R CMD build . --compact-vignettes=gs+qpdf
+        id: build
+        run: |
+          R CMD build . --compact-vignettes=gs+qpdf
+          version="$(sed -n 's/^Version:[[:space:]]*//p' DESCRIPTION)"
+          tarball="foundryR_${version}.tar.gz"
+          test -f "$tarball"
+          echo "tarball=$tarball" >> "$GITHUB_OUTPUT"
 
       - name: Audit source archive and record checksum
         run: |
           python .github/scripts/test-audit-source.py
-          python .github/scripts/audit-source.py foundryR_0.1.0.tar.gz
+          python .github/scripts/audit-source.py "${{ steps.build.outputs.tarball }}"
           git rev-parse HEAD > SOURCE_COMMIT.txt
 
       - name: Upload CRAN source tarball
@@ -92,7 +100,7 @@ jobs:
           path: cran-source
 
       - name: Verify the downloaded source archive
-        run: python .github/scripts/audit-source.py cran-source/foundryR_0.1.0.tar.gz
+        run: python .github/scripts/audit-source.py "cran-source/${{ needs.build.outputs.tarball }}"
 
       - name: Check the exact source tarball
         run: |
@@ -101,7 +109,7 @@ jobs:
             args <- c(args, "--no-manual")
           }
           rcmdcheck::rcmdcheck(
-            "cran-source/foundryR_0.1.0.tar.gz",
+            file.path("cran-source", Sys.getenv("TARBALL")),
             args = args,
             check_dir = "cran-check",
             error_on = "warning"
@@ -109,6 +117,7 @@ jobs:
         shell: Rscript {0}
         env:
           CHECK_MANUAL: ${{ matrix.config.os == 'ubuntu-latest' && matrix.config.r == 'release' }}
+          TARBALL: ${{ needs.build.outputs.tarball }}
 
       - name: Upload source check results
         if: always()
