@@ -33,5 +33,5 @@ local({
   saveRDS(c(1, 0, 0), file.path(cache_dir, "example.rds"))
   foundry_cache_clear(cache_dir)
 })
-#> Removed 1 cached embedding from /tmp/RtmpxCzHQU/foundryR-cache-1a4e7877a33d.
+#> Removed 1 cached embedding from /tmp/RtmpvMyLOE/foundryR-cache-1b55249f7ef9.
 ```
