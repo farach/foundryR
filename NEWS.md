@@ -1,3 +1,5 @@
+# foundryR (development version)
+
 # foundryR 1.0.0
 
 foundryR's lifecycle stage is now stable instead of experimental. After this release, breaking changes to exported functions will go through a deprecation cycle. Functions marked experimental in their documentation, and operations that use preview APIs, can still change without one; see `vignette("api-support")`.
