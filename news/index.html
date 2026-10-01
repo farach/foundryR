@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">foundryR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,9 +65,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="foundryr-development-version">foundryR (development version)<a class="anchor" aria-label="anchor" href="#foundryr-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.0.0" id="foundryr-100">foundryR 1.0.0<a class="anchor" aria-label="anchor" href="#foundryr-100"></a></h2>
+<p>foundryR’s lifecycle stage is now stable instead of experimental. After this release, breaking changes to exported functions will go through a deprecation cycle. Functions marked experimental in their documentation, and operations that use preview APIs, can still change without one; see <code><a href="../articles/api-support.html">vignette("api-support")</a></code>.</p>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<h3 id="breaking-changes-1-0-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-1-0-0"></a></h3>
 <p>These changes can alter the output of code written for 0.1.0. Most fix behavior that was wrong or that the service rejected.</p>
 <ul><li>
 <code><a href="../reference/foundry_transcribe.html">foundry_transcribe()</a></code> now uses standard Speech fast transcription by default, with no enhanced mode and no model. The old default, enhanced mode with <code>mai-transcribe-1.5</code>, is rejected in many regions, including East US 2. Pass <code>model = "mai-transcribe-2"</code> or the new <code>enhanced = TRUE</code> to use MAI-Transcribe or LLM Speech where they are available.</li>
@@ -100,7 +101,7 @@
 <code><a href="../reference/step_foundry_embed.html">step_foundry_embed()</a></code> resolves the embedding model at <code>prep()</code> and keeps it, so changing <code>AZURE_FOUNDRY_EMBED_MODEL</code> later no longer changes the model <code>bake()</code> uses. The disk cache key now includes the model and the endpoint.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-1-0-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0"></a></h3>
 <ul><li>
 <code><a href="../reference/foundry_evaluate.html">foundry_evaluate()</a></code> runs a Microsoft Foundry cloud evaluation from a data frame. It creates the evaluation and run, waits for the run, and returns one row per input row and grader with the input columns kept. It grades existing columns, or has Foundry generate responses with a model deployment or agent first (<code>target</code>), and <code>eval_id</code> adds a run to an existing evaluation so runs can be compared. Rows are matched to results through a reserved <code>foundryr_row_id</code> field (<code>"row-1"</code>, <code>"row-2"</code>, …) that the service echoes back, never by position. This function and the two below are experimental.</li>
 <li>
@@ -124,14 +125,14 @@
 <li>The articles are rewritten around research tasks, and each shows output recorded from live Microsoft Foundry resources. New articles cover evaluations (<code><a href="../articles/evaluations.html">vignette("evaluations")</a></code>) and the analysis of evaluation results (<code><a href="../articles/evaluation-analysis.html">vignette("evaluation-analysis")</a></code>). The comparison with ellmer now lives in the README and <code><a href="../articles/responses-api.html">vignette("responses-api")</a></code>. The O<em>NET article is rewritten as a worked example of matching free-text job descriptions to O</em>NET-SOC occupations, with its output recorded live.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="deprecated-and-defunct-development-version">Deprecated and defunct<a class="anchor" aria-label="anchor" href="#deprecated-and-defunct-development-version"></a></h3>
+<h3 id="deprecated-and-defunct-1-0-0">Deprecated and defunct<a class="anchor" aria-label="anchor" href="#deprecated-and-defunct-1-0-0"></a></h3>
 <ul><li>The video functions <code><a href="../reference/foundry_video_defunct.html">foundry_video_job_create()</a></code>, <code><a href="../reference/foundry_video_defunct.html">foundry_video_jobs()</a></code>, <code><a href="../reference/foundry_video_defunct.html">foundry_video_job_get()</a></code>, <code><a href="../reference/foundry_video_defunct.html">foundry_video_job_delete()</a></code>, <code><a href="../reference/foundry_video_defunct.html">foundry_video_get()</a></code>, and <code><a href="../reference/foundry_video_defunct.html">foundry_video_download()</a></code> are defunct and raise an error. Azure OpenAI retires its last Sora model (<code>sora-2</code>, version 2025-12-08) on 2026-10-15 and has announced no replacement.</li>
 <li>
 <code><a href="../reference/codebook_schema_helpers.html">type_boolean()</a></code>, <code><a href="../reference/codebook_schema_helpers.html">type_enum()</a></code>, <code><a href="../reference/codebook_schema_helpers.html">type_number()</a></code>, and <code><a href="../reference/codebook_schema_helpers.html">type_string()</a></code> are deprecated in favor of <code><a href="../reference/schema_constructors.html">schema_boolean()</a></code>, <code><a href="../reference/schema_constructors.html">schema_enum()</a></code>, <code><a href="../reference/schema_constructors.html">schema_number()</a></code>, and <code><a href="../reference/schema_constructors.html">schema_string()</a></code>, because they mask ellmer’s functions of the same names. To reuse ellmer types, pass them to <code><a href="../reference/as_foundry_schema.html">as_foundry_schema()</a></code>.</li>
 <li>The bring-your-own-LLM options of <code><a href="../reference/foundry_groundedness.html">foundry_groundedness()</a></code> (<code>reasoning</code>, <code>correction</code>, and <code>llm_resource</code>) and <code><a href="../reference/foundry_llm_resource.html">foundry_llm_resource()</a></code> are deprecated. They require an Azure OpenAI GPT-4o deployment, and the core groundedness check does not need them.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-1-0-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-0-0"></a></h3>
 <ul><li>API errors now keep the service’s own message. The old handler replaced any message containing “key” with “Invalid API key” and labeled any 404 “Deployment not found”. The hint now depends on the HTTP status and on the endpoint called; for example, a 404 on the resource endpoint mentions that objects created on a project endpoint are not visible there. Empty error bodies and string-valued <code>error</code> fields no longer break error handling.</li>
 <li>
 <code><a href="../reference/foundry_blocklists.html">foundry_blocklist_delete()</a></code> and <code><a href="../reference/foundry_blocklists.html">foundry_blocklist_remove_items()</a></code> no longer fail after a successful call; the service answers 204 with no body.</li>

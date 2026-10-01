@@ -60,7 +60,7 @@ if (requireNamespace("base64enc", quietly = TRUE)) {
     file.exists(path)
   })
 }
-#> ✔ Image saved to /tmp/Rtmpt5mniL/file1a0e30b54715.png (from base64)
+#> ✔ Image saved to /tmp/RtmpxCzHQU/file1a4e1a4221d9.png (from base64)
 #> [1] TRUE
 
 if (FALSE) { # \dontrun{

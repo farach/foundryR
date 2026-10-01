@@ -48,7 +48,7 @@ old <- foundry_codebook(
   instructions = "Label the sentiment of support tickets.",
   schema = foundry_schema(sentiment = type_enum(values = c("pos", "neg")))
 )
-#> Warning: `type_enum()` was deprecated in foundryR 0.2.0.
+#> Warning: `type_enum()` was deprecated in foundryR 1.0.0.
 #> ℹ Please use `schema_enum()` instead.
 #> ℹ foundryR's type_*() helpers mask ellmer's functions of the same names.
 new <- foundry_codebook(
@@ -60,7 +60,7 @@ new <- foundry_codebook(
     urgent = type_boolean()
   )
 )
-#> Warning: `type_boolean()` was deprecated in foundryR 0.2.0.
+#> Warning: `type_boolean()` was deprecated in foundryR 1.0.0.
 #> ℹ Please use `schema_boolean()` instead.
 #> ℹ foundryR's type_*() helpers mask ellmer's functions of the same names.
 diff <- codebook_diff(old, new)

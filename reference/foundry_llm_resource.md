@@ -42,7 +42,7 @@ foundry_llm_resource(
   endpoint = "https://your-openai.openai.azure.com",
   deployment_name = "gpt-4o"
 )
-#> Warning: `foundry_llm_resource()` was deprecated in foundryR 0.2.0.
+#> Warning: `foundry_llm_resource()` was deprecated in foundryR 1.0.0.
 #> ℹ This feature requires an Azure OpenAI GPT-4o deployment (the service
 #>   currently accepts only GPT-4o versions 0513 and 0806) and will be removed in
 #>   a future release; the core groundedness check (ungrounded detection and
