@@ -1,0 +1,84 @@
+---
+title: "Document results as analysis data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Document results as analysis data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(foundryR)
+```
+
+`foundry_document_pages()` and `foundry_document_cells()` import a completed Azure AI Document Intelligence REST result. They run locally. They do not upload documents, submit analysis jobs, or replace a PDF parser. Both functions are experimental.
+
+Use them when your existing Document Intelligence workflow produces JSON and you need text or table cells in a data frame. Keep the source document and the full result JSON. The returned rows retain source identifiers and locations, but they do not contain every field in the service response.
+
+## Import a result
+
+Read saved JSON without simplifying its arrays into data frames. Use an identifier from your document inventory so the result can be joined back to the source.
+
+```{r saved-result, eval=FALSE}
+result <- jsonlite::fromJSON("analysis-result.json", simplifyVector = FALSE)
+pages <- foundry_document_pages(result, document_id = "report-001")
+cells <- foundry_document_cells(result, document_id = "report-001")
+```
+
+The functions accept either `analyzeResult` itself or a polling response with `status = "succeeded"` and `analyzeResult`. Failed or unfinished responses raise an error.
+
+This synthetic result shows the data shape without calling Azure:
+
+```{r local-result}
+result <- list(
+  modelId = "prebuilt-layout",
+  apiVersion = "2024-11-30",
+  stringIndexType = "unicodeCodePoint",
+  contentFormat = "text",
+  content = "Hours: 12\nHours: 18",
+  pages = list(
+    list(pageNumber = 1L, spans = list(list(offset = 0L, length = 9L))),
+    list(pageNumber = 2L, spans = list(list(offset = 10L, length = 9L)))
+  ),
+  tables = list(list(cells = list(list(
+    rowIndex = 0L, columnIndex = 0L, content = "12",
+    spans = list(list(offset = 7L, length = 2L)),
+    boundingRegions = list(list(pageNumber = 1L))
+  ))))
+)
+pages <- foundry_document_pages(result, document_id = "report-001")
+pages[, c("document_id", "page_number", "text", "review_status")]
+
+cells <- foundry_document_cells(result, document_id = "report-001")
+cells[, c("document_id", "table_index", "row_index", "column_index",
+          "text", "service_confidence")]
+```
+
+Table output has one row per layout cell. It keeps merged-cell spans and all bounding regions for cells that cross pages. Table indices are one-based. Row and column indices stay zero-based, matching the REST response. Custom-model fields under `documents` are not imported.
+
+## Keep source locations through annotation
+
+Page text is a normal character column. Pass it to `foundry_extract()` with a schema for the variables you need. The original columns, including `document_id`, `page_number`, and `spans`, stay in the output.
+
+```{r annotate-pages, eval=FALSE}
+# This step calls your configured Foundry deployment.
+coded <- foundry_extract(
+  pages,
+  text_col = "text",
+  schema = foundry_schema(
+    hours = schema_number("The reported number of hours, or null if absent.")
+  ),
+  model = "your-deployment"
+)
+```
+
+Spans always refer to the original result's top-level `content`, not to an extracted variable. Page-text slicing supports Unicode code-point, UTF-16 code-unit, and grapheme-cluster offsets. It rejects out-of-range page spans and offsets that split UTF-16 surrogate pairs. Disjoint page spans are joined without an added separator. If the service returned Markdown, the page text retains that format.
+
+## Review before analysis
+
+`review_status` starts as `"unreviewed"` for every row. Word confidence stays in the `words` list-column. A cell's confidence is copied to `service_confidence` when supplied, and is `NA` otherwise. The importer does not average word scores into a page confidence or interpret missing confidence as success.
+
+A service confidence score does not validate the variables produced by a later model call. Review a sample of the source documents and annotations, record your decisions, and compare model labels with human labels using `foundry_agreement()`. See [From text to defensible estimates](annotation-workflow.html) for the annotation workflow.
+
+The [Document Intelligence response reference](https://learn.microsoft.com/azure/ai-services/document-intelligence/concept/analyze-document-response) describes the source objects and index conventions. Microsoft's [confidence guidance](https://learn.microsoft.com/azure/ai-services/document-intelligence/concept/accuracy-confidence) explains where service scores are available.

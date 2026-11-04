@@ -51,6 +51,8 @@ navbar:
         - text: "Measure text"
         - text: From text to defensible estimates
           href: articles/annotation-workflow.html
+        - text: Document results as analysis data
+          href: articles/documents.html
         - text: Annotate at scale with the Batch API
           href: articles/files-batches.html
         - text: Embeddings for research
@@ -73,6 +75,8 @@ navbar:
           href: articles/responses-api.html
         - text: API support matrix
           href: articles/api-support.html
+        - text: Performance and C comparisons
+          href: articles/performance.html
         - text: "---"
         - text: "Other modalities (experimental)"
         - text: Transcribe and translate audio
@@ -156,6 +160,14 @@ reference:
       - schema_array
       - schema_object
       - as_foundry_schema
+
+  - title: Document result import
+    desc: >
+      Import completed Document Intelligence REST results locally, preserving
+      document identity, page spans, table-cell locations, and service confidence.
+    contents:
+      - foundry_document_pages
+      - foundry_document_cells
 
   - title: Agents
     desc: >

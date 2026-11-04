@@ -221,6 +221,25 @@ test_that("foundry_similarity can limit rows or return a matrix", {
   expect_equal(mat["a", "b"], 1, tolerance = 1e-10)
 })
 
+test_that("similarity selection preserves ties, missing scores and label types", {
+  data <- tibble::tibble(
+    text = factor(c("same", "same", "zero", "opposite", "missing")),
+    embedding = list(c(1, 0), c(1, 0), c(0, 0), c(-1, 0), c(NA_real_, 0))
+  )
+  mat <- foundry_similarity(data, as_matrix = TRUE)
+  pairs <- which(upper.tri(mat), arr.ind = TRUE)
+  expected <- tibble::tibble(
+    text_1 = data$text[pairs[, 1]],
+    text_2 = data$text[pairs[, 2]],
+    similarity = mat[pairs]
+  ) |>
+    dplyr::arrange(dplyr::desc(similarity))
+  expect_identical(foundry_similarity(data), expected)
+  for (k in c(1L, 3L, 9L, 20L)) {
+    expect_identical(foundry_similarity(data, top_k = k), utils::head(expected, k))
+  }
+})
+
 # ============================================================================
 # Integration Test (requires real credentials)
 # ============================================================================

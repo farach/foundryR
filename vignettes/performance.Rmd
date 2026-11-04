@@ -1,0 +1,53 @@
+---
+title: "Performance and the limits of C comparisons"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Performance and the limits of C comparisons}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+foundryR spends time both on local computation and waiting for Azure. Optimizing R code can reduce the first cost. It cannot remove network latency, model inference, service queues, or rate limits.
+
+## Measured local improvements
+
+The development version replaces repeated embedding-index searches with one `match()` per batch and fills output columns before constructing a tibble. The old code searched the response again for every input and built a separate tibble for each row. At large batch sizes, those searches did quadratic work.
+
+For `foundry_similarity(top_k = ...)`, sorting now happens before text columns are allocated. The returned pairs, tie order, missing scores, and label types are unchanged. The similarity matrix still requires quadratic memory, even when `top_k` is small. This is not an approximate nearest-neighbor search.
+
+These measurements were taken on November 4, 2026 with R 4.6.1 for Windows x64, default matrix products, and GCC 14.3.0. They compare this development implementation with commit `a771a0b`. Each time is the median of five runs after a warm-up. Timings are machine-specific and rounded to the timer's precision.
+
+| Offline workload | Before | After | Allocated before | Allocated after |
+|---|---:|---:|---:|---:|
+| Embedding batch, 100 texts, 256 dimensions, cached JSON | 0.41 s | 0.02 s | 0.30 MB | 0.23 MB |
+| Embedding batch, 1,000 texts, 256 dimensions, cached JSON | 7.13 s | 0.03 s | 2.94 MB | 2.28 MB |
+| Embedding batch, 1,000 texts, 256 dimensions, fresh JSON | 7.82 s | 1.05 s | 6.61 MB | 4.39 MB |
+| Similarity, 1,000 vectors, 256 dimensions, top 20 pairs | 0.19 s | 0.16 s | 94.70 MB | 56.22 MB |
+| Similarity, same inputs, full matrix | 0.11 s | 0.11 s | 16.24 MB | 16.24 MB |
+
+Embedding requests were mocked and responses were shuffled by index. The cached-JSON rows isolate request construction and result assembly. The fresh-JSON row also decodes the response on every call, giving a roughly 7.4-fold local speedup on this workload. None of these rows include Azure latency. Allocations are bytes allocated during a call, measured with `Rprofmem()`, not peak resident memory. Before and after outputs were checked for exact equality.
+
+The matrix code did not change. Repeated runs vary, especially at the timer's precision.
+
+## Is it as fast as C?
+
+There is no single C equivalent of the package against which to guarantee parity. foundryR already delegates HTTP transfers to curl and numerical matrix products to compiled R or BLAS routines. The outer R code still pays for validation, object allocation, and conversion to data frames.
+
+A benchmark-only C implementation of cosine similarity took **0.19 seconds** on the same 1,000-by-256 input, compared with **0.11 seconds** for `foundry_similarity(as_matrix = TRUE)`. Results agreed to a tolerance of `1e-12`. The C routine normalizes vectors, computes each unique dot product with a direct loop, fills both halves of the matrix, and returns it to R. It allocates about 10.05 MB. It is compiled with the R toolchain's `-O2` setting.
+
+That comparison shows that rewriting an already compiled numerical operation in a direct C loop need not make it faster. It does not show parity with an optimized SIMD, multithreaded, or BLAS-based C application. The reference also omits most public-API validation and supports only equal-length double vectors. No end-to-end C HTTP client was benchmarked.
+
+For an API call, total time is local preparation plus transfer, remote computation, and local result processing. Even eliminating local processing cannot make the call faster than the remaining transfer and service time. For local workloads, a C implementation may avoid allocations or fuse operations that R cannot. Whether that gain justifies a compiler dependency needs a benchmark of the actual workload.
+
+## Reproduce the comparison
+
+The repository includes `maintainer/benchmark-performance.R` and `maintainer/similarity-reference.c`. They are excluded from the installed package. The C file is a comparison tool, not a new runtime dependency. Run from a repository checkout with the package's development dependencies and R build tools installed:
+
+```{r benchmark, eval=FALSE}
+# Command line, with an existing directory for the output:
+# Rscript --vanilla maintainer/benchmark-performance.R a771a0b <output-directory>
+```
+
+On Windows, remove `LC_CTYPE` from the process environment if it is set to the unsupported value `C.UTF-8`. When running x64 R under ARM64 emulation, set `CLI_NO_THREAD=true` in that process to avoid the cli tick-thread failure. The script makes no network requests and writes timing, allocation, profiling, and session-information files to the output directory.
+
+For real workloads, measure the full call separately. Keep the deployment, inputs, batch size, concurrency, retry policy, and output shape fixed. Raising concurrency can increase throughput, but it can also trigger throttling. Do not remove validation or retry handling merely to improve a microbenchmark.

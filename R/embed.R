@@ -175,16 +175,16 @@ foundry_similarity <- function(data,
   # Extract the upper triangle (i < j) as the unique pairs.
   pairs <- which(upper.tri(sim_mat), arr.ind = TRUE)
 
-  out <- tibble::tibble(
-    text_1 = labels[pairs[, "row"]],
-    text_2 = labels[pairs[, "col"]],
-    similarity = sim_mat[pairs]
-  ) |>
-    dplyr::arrange(dplyr::desc(similarity))
-
+  similarities <- sim_mat[pairs]
+  selected <- order(similarities, decreasing = TRUE, na.last = TRUE, method = "radix")
   if (!is.null(top_k)) {
-    out <- utils::head(out, top_k)
+    selected <- utils::head(selected, top_k)
   }
 
-  out
+  # Subset before allocating text columns, especially for small top_k.
+  tibble::tibble(
+    text_1 = labels[pairs[selected, "row"]],
+    text_2 = labels[pairs[selected, "col"]],
+    similarity = similarities[selected]
+  )
 }

@@ -81,6 +81,10 @@ estimates](https://farach.github.io/foundryR/articles/annotation-workflow.html).
 
 - Strict JSON Schema extraction with one row per input and metadata
   columns for audit trails.
+- Local import of completed Document Intelligence results, with page
+  text, table cells, and source locations (experimental). See [Document
+  results as analysis
+  data](https://farach.github.io/foundryR/articles/documents.html).
 - Agreement and consistency helpers for measurement workflows with human
   labels.
 - Batch annotation through Azure Files and Batch APIs when you need
@@ -135,6 +139,13 @@ deployment can be named `course-coder` even when it runs base model
 Streaming is an intentional scope choice. foundryR focuses on
 reproducible, tibble-returning analytical workflows; use ellmer when an
 interactive streaming chat interface is the main product.
+
+Local embedding-response processing is optimized without changing its
+output. HTTP transfers and similarity-matrix calculations already use
+compiled libraries. See [Performance and C
+comparisons](https://farach.github.io/foundryR/articles/performance.html)
+for measured improvements and why they do not guarantee C-level speed
+for every workload.
 
 ## When to use foundryR
 

@@ -159,34 +159,36 @@ foundry_embed_batch <- function(text,
     progress = progress,
     max_active = max_active
   )
+  if (length(responses) != length(batches)) {
+    cli::cli_abort("Expected one embedding response per request batch.")
+  }
 
-  # Process responses and combine results
-  results <- purrr::imap_dfr(responses, function(resp, batch_idx) {
-    batch_info <- batches[[batch_idx]]
-    indices <- batch_info$indices
-    values <- batch_info$values
+  # Fill output columns by original position, without one-row tibble allocation.
+  n <- length(text)
+  embeddings <- vector("list", n)
+  n_dims <- rep(NA_integer_, n)
+  errors <- rep(FALSE, n)
+  error_msg <- rep(NA_character_, n)
+  raw_response <- vector("list", n)
+
+  for (batch_idx in seq_along(responses)) {
+    resp <- responses[[batch_idx]]
+    indices <- batches[[batch_idx]]$indices
 
     # Check if response is an error (check class first, before calling resp_is_error)
     is_error_obj <- inherits(resp, "error") || inherits(resp, "httr2_failure")
     is_http_error <- !is_error_obj && httr2::resp_is_error(resp)
 
     if (is_error_obj || is_http_error) {
-      error_msg <- if (is_error_obj) {
+      message <- if (is_error_obj) {
         conditionMessage(resp)
       } else {
         foundry_error_message(resp)
       }
 
-      # Return error rows for all texts in this batch
-      return(tibble::tibble(
-        .input_idx = indices,
-        text = values,
-        embedding = replicate(length(indices), NULL, simplify = FALSE),
-        n_dims = rep(NA_integer_, length(indices)),
-        .error = rep(TRUE, length(indices)),
-        .error_msg = rep(error_msg, length(indices)),
-        raw_response = replicate(length(indices), NULL, simplify = FALSE)
-      ))
+      errors[indices] <- TRUE
+      error_msg[indices] <- message
+      next
     }
 
     # Parse successful response
@@ -196,74 +198,47 @@ foundry_embed_batch <- function(text,
     )
 
     if (is.null(result) || is.null(result$data)) {
-      return(tibble::tibble(
-        .input_idx = indices,
-        text = values,
-        embedding = replicate(length(indices), NULL, simplify = FALSE),
-        n_dims = rep(NA_integer_, length(indices)),
-        .error = rep(TRUE, length(indices)),
-        .error_msg = rep("Failed to parse response", length(indices)),
-        raw_response = replicate(length(indices), NULL, simplify = FALSE)
-      ))
+      errors[indices] <- TRUE
+      error_msg[indices] <- "Failed to parse response"
+      next
     }
 
-    # Extract embeddings from response
-    # Azure returns embeddings in order with index field
     emb_data <- result$data
-
-    # Create output tibble for this batch
-    purrr::map_dfr(seq_along(indices), function(i) {
-      idx <- indices[i]
-      txt <- values[i]
-
-      # Find matching embedding by index (Azure returns 0-based index)
-      emb_entry <- purrr::detect(emb_data, ~ .x$index == (i - 1))
-
-      if (is.null(emb_entry)) {
-        return(tibble::tibble(
-          .input_idx = idx,
-          text = txt,
-          embedding = list(NULL),
-          n_dims = NA_integer_,
-          .error = TRUE,
-          .error_msg = "Embedding not found in response",
-          raw_response = list(foundry_embedding_row_response(result, NULL))
-        ))
-      }
-
-      emb_vec <- unlist(emb_entry$embedding)
-
-      tibble::tibble(
-        .input_idx = idx,
-        text = txt,
-        embedding = list(emb_vec),
-        n_dims = length(emb_vec),
-        .error = FALSE,
-        .error_msg = NA_character_,
-        raw_response = list(foundry_embedding_row_response(result, emb_entry))
-      )
-    })
-  })
+    # Match the zero-based indices once. Repeated detect() scans were quadratic
+    # in batch size; match() also preserves the first match for duplicate indices.
+    response_indices <- vapply(emb_data, function(entry) {
+      index <- entry$index
+      if (is.numeric(index) && length(index) == 1L) index else NA_real_
+    }, numeric(1), USE.NAMES = FALSE)
+    matches <- match(seq_along(indices) - 1L, response_indices)
+    entries <- emb_data[matches]
+    vectors <- lapply(entries, function(entry) unlist(entry$embedding))
+    missing <- is.na(matches)
+    embeddings[indices] <- vectors
+    n_dims[indices] <- lengths(vectors)
+    n_dims[indices[missing]] <- NA_integer_
+    errors[indices] <- missing
+    error_msg[indices[missing]] <- "Embedding not found in response"
+    raw_response[indices] <- lapply(entries, foundry_embedding_row_response, result = result)
+  }
 
   if (length(invalid_idx) > 0L) {
     invalid_msg <- vapply(text[invalid_idx], function(value) {
       if (is.na(value)) "Input text is NA." else "Input text is empty."
     }, character(1), USE.NAMES = FALSE)
-    invalid_rows <- tibble::tibble(
-      .input_idx = invalid_idx,
-      text = text[invalid_idx],
-      embedding = replicate(length(invalid_idx), NULL, simplify = FALSE),
-      n_dims = rep(NA_integer_, length(invalid_idx)),
-      .error = rep(TRUE, length(invalid_idx)),
-      .error_msg = invalid_msg,
-      raw_response = replicate(length(invalid_idx), NULL, simplify = FALSE)
-    )
-    results <- dplyr::bind_rows(results, invalid_rows)
+    errors[invalid_idx] <- TRUE
+    error_msg[invalid_idx] <- invalid_msg
   }
 
-  # Sort by original index and return
-  results %>%
-    dplyr::arrange(.input_idx)
+  tibble::tibble(
+    .input_idx = seq_along(text),
+    text = text,
+    embedding = embeddings,
+    n_dims = n_dims,
+    .error = errors,
+    .error_msg = error_msg,
+    raw_response = raw_response
+  )
 }
 
 

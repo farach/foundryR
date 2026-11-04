@@ -1,5 +1,9 @@
 # foundryR (development version)
 
+- `foundry_document_pages()` and `foundry_document_cells()` import completed Azure AI Document Intelligence REST results locally. These experimental adapters keep document identifiers, page or cell locations, model metadata, and available service confidence. Rows start as unreviewed. They do not submit or poll analysis jobs. See `vignette("documents")`.
+- `foundry_embed()` and `foundry_embed_batch()` match response indices once per batch and construct the output tibble once, instead of repeatedly scanning the response and binding one-row tibbles. Row order, errors, and row-level response metadata are preserved.
+- `foundry_similarity(top_k = ...)` selects pairs before allocating the output text columns, reducing local allocations. It still computes the full similarity matrix. Reproducible offline benchmarks and the limits of comparisons with C are described in `vignette("performance")`.
+
 # foundryR 1.0.0
 
 foundryR's lifecycle stage is now stable instead of experimental. After this release, breaking changes to exported functions will go through a deprecation cycle. Functions marked experimental in their documentation, and operations that use preview APIs, can still change without one; see `vignette("api-support")`.

@@ -417,6 +417,65 @@ test_that("foundry_embed_batch returns n_dims for successful embeddings", {
   expect_equal(length(result$embedding[[1]]), n_dims)
 })
 
+test_that("batch assembly matches shuffled indices and keeps first duplicate", {
+  setup_mock_env()
+  entry <- function(index, value) {
+    list(index = index, object = "embedding", embedding = as.list(c(value, 0)))
+  }
+  payload <- list(
+    model = "test", object = "list", usage = list(total_tokens = 4L),
+    data = list(entry(2L, 30), entry(0L, 10), entry(0L, 99), entry(99L, 99))
+  )
+  mock_parallel_request(list(payload))
+  out <- foundry_embed_batch(c("first", NA, "missing", "", "third"), model = "test")
+  expect_identical(out$.input_idx, 1:5)
+  expect_equal(out$embedding, list(c(10, 0), NULL, NULL, NULL, c(30, 0)))
+  expect_identical(out$n_dims, c(2L, NA_integer_, NA_integer_, NA_integer_, 2L))
+  expect_identical(out$.error, c(FALSE, TRUE, TRUE, TRUE, FALSE))
+  expect_match(out$.error_msg[3], "not found")
+  expect_identical(out$raw_response[[3]]$data, list(list()))
+  expect_equal(out$raw_response[[5]]$data[[1]]$index, 2L)
+  expect_null(out$raw_response[[5]]$data[[1]]$embedding)
+})
+
+test_that("invalid inputs do not call the transport and retain typed output", {
+  testthat::local_mocked_bindings(
+    foundry_req_perform_many = function(reqs, ...) {
+      expect_length(reqs, 0L)
+      list()
+    }
+  )
+  out <- foundry_embed_batch(c(NA_character_, "", NA_character_), model = "test")
+  expect_identical(out$.input_idx, 1:3)
+  expect_identical(out$embedding, rep(list(NULL), 3L))
+  expect_identical(out$n_dims, rep(NA_integer_, 3L))
+  expect_true(all(out$.error))
+  expect_identical(out$.error_msg, c("Input text is NA.", "Input text is empty.", "Input text is NA."))
+})
+
+test_that("malformed JSON and HTTP failures mark the whole batch", {
+  setup_mock_env()
+  bad_json <- httr2::response(
+    200L, headers = list(`content-type` = "application/json"), body = charToRaw("{")
+  )
+  http_failure <- mock_httr2_response(list(error = list(message = "Service unavailable")), 503L)
+  testthat::local_mocked_bindings(
+    foundry_req_perform_many = function(...) list(bad_json, http_failure)
+  )
+  out <- foundry_embed_batch(letters[1:4], model = "test", batch_size = 2L)
+  expect_true(all(out$.error))
+  expect_true(all(is.na(out$n_dims)))
+  expect_identical(out$.error_msg[1:2], rep("Failed to parse response", 2L))
+  expect_match(out$.error_msg[3], "Service unavailable")
+  expect_identical(out$raw_response, rep(list(NULL), 4L))
+})
+
+test_that("a missing batch response cannot produce success-shaped rows", {
+  setup_mock_env()
+  testthat::local_mocked_bindings(foundry_req_perform_many = function(...) list())
+  expect_error(foundry_embed_batch("text", model = "test"), "one embedding response")
+})
+
 # ============================================================================
 # Integration Test (requires real credentials)
 # ============================================================================

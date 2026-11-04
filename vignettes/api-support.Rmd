@@ -92,6 +92,8 @@ foundry_translate_audio(
 
 ## Current omissions
 
+Document Intelligence support is limited to local import of completed REST results with `foundry_document_pages()` and `foundry_document_cells()`. These experimental adapters do not submit analysis jobs, poll results, or configure a Document Intelligence endpoint. See [Document results as analysis data](documents.html).
+
 The Microsoft Foundry project reference also exposes connections, datasets, deployments, evaluation taxonomies and rules, evaluator catalogs, indexes, insights, red-team schedules and runs, schedules, memory stores, and agent containers. foundryR does not wrap those surfaces in this release.
 
 ## Compatibility policy
