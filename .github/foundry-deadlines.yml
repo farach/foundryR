@@ -1,6 +1,6 @@
 # Azure model retirements that affect foundryR's defaults and documentation.
 #
-# Dates come from Azure's model metadata, checked 2026-09-27:
+# Dates come from Azure's model metadata, checked 2026-11-06:
 #   az cognitiveservices model list -l eastus2
 # When Microsoft moves a date, update the entry here. The foundry-deadlines
 # workflow opens one issue per entry once `date - remind_days` has passed and
@@ -24,7 +24,7 @@ deadlines:
       - Confirm the CRAN submission email (maintainer only).
 
   - id: whisper-001-retirement
-    date: 2026-12-15
+    date: 2027-02-26
     remind_days: 45
     models: [whisper 001]
     title: Replace the Whisper examples before whisper 001 retires
