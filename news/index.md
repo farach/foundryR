@@ -4,6 +4,8 @@
 
 ## foundryR 1.0.0
 
+CRAN release: 2026-10-01
+
 foundryR’s lifecycle stage is now stable instead of experimental. After
 this release, breaking changes to exported functions will go through a
 deprecation cycle. Functions marked experimental in their documentation,

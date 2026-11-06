@@ -393,7 +393,7 @@ run_provenance |>
 #> # A tibble: 1 × 4
 #>   model      schema_hash                     package_version captured_at        
 #>   <chr>      <chr>                           <chr>           <dttm>             
-#> 1 gpt-5-nano c5ee5dc66f90546f2c3f053bd61847… 1.0.0.9000      2026-10-01 19:12:22
+#> 1 gpt-5-nano c5ee5dc66f90546f2c3f053bd61847… 1.0.0.9000      2026-11-06 14:03:12
 ```
 
 The codebook hash and schema hash are not substitutes for archiving the
