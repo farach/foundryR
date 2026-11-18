@@ -1,5 +1,9 @@
 # foundryR (development version)
 
+- `step_foundry_embed(cache = "disk")` hashes, reads, and writes each distinct
+  text only once per column per bake, then restores the original row order.
+  Failed embeddings keep their row positions and are retried on later bakes.
+
 # foundryR 1.0.0
 
 foundryR's lifecycle stage is now stable instead of experimental. After this release, breaking changes to exported functions will go through a deprecation cycle. Functions marked experimental in their documentation, and operations that use preview APIs, can still change without one; see `vignette("api-support")`.
