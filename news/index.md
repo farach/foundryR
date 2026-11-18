@@ -2,6 +2,11 @@
 
 ## foundryR (development version)
 
+- `step_foundry_embed(cache = "disk")` hashes, reads, and writes each
+  distinct text only once per column per bake, then restores the
+  original row order. Failed embeddings keep their row positions and are
+  retried on later bakes.
+
 ## foundryR 1.0.0
 
 CRAN release: 2026-10-01
