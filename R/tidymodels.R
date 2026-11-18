@@ -351,38 +351,43 @@ foundry_embed_cached <- function(
     )
   }
 
+  valid_idx <- which(!invalid)
+  if (length(valid_idx) == 0L) {
+    return(embeddings)
+  }
+  unique_text <- unique(text[valid_idx])
+  unique_embeddings <- vector("list", length(unique_text))
   endpoint <- foundry_get_endpoint(required = FALSE) %||% ""
-  keys <- rep(NA_character_, length(text))
-  keys[!invalid] <- vapply(
-    text[!invalid],
+  keys <- vapply(
+    unique_text,
     function(t) rlang::hash(list(t, model, endpoint, dimensions)),
     character(1)
   )
   paths <- file.path(cache_dir, paste0(keys, ".rds"))
 
-  cached <- !invalid & file.exists(paths)
+  cached <- file.exists(paths)
   for (i in which(cached)) {
-    embeddings[[i]] <- readRDS(paths[[i]])
+    unique_embeddings[i] <- list(readRDS(paths[[i]]))
   }
 
-  missing_idx <- which(!invalid & !cached)
+  missing_idx <- which(!cached)
   if (length(missing_idx) > 0) {
-    unique_missing <- unique(text[missing_idx])
     fetched <- foundry_embed(
-      text = unique_missing,
+      text = unique_text[missing_idx],
       model = model,
       dimensions = dimensions
     )
     fetched_by_text <- stats::setNames(fetched$embedding, fetched$text)
     for (i in missing_idx) {
-      emb <- fetched_by_text[[text[[i]]]]
-      embeddings[[i]] <- emb
+      emb <- fetched_by_text[[unique_text[[i]]]]
+      unique_embeddings[i] <- list(emb)
       if (!is.null(emb) && length(emb) > 0) {
         saveRDS(emb, paths[[i]])
       }
     }
   }
 
+  embeddings[valid_idx] <- unique_embeddings[match(text[valid_idx], unique_text)]
   embeddings
 }
 

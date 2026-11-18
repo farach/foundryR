@@ -777,6 +777,103 @@ test_that("bake.step_foundry_embed with disk cache reuses stored embeddings", {
   expect_true(all(paste0("emb_text_", seq_len(n_dims)) %in% names(baked)))
 })
 
+test_that("disk caching reads and writes each distinct text only once", {
+  setup_mock_env()
+  cache_dir <- withr::local_tempdir()
+  requested <- character()
+  local_mocked_bindings(
+    foundry_embed = function(text, ...) {
+      requested <<- c(requested, text)
+      tibble::tibble(
+        text = text,
+        embedding = lapply(text, function(x) as.numeric(nchar(x)))
+      )
+    }
+  )
+
+  reads <- writes <- 0L
+  cached_embed <- foundry_embed_cached
+  env <- new.env(parent = environment(cached_embed))
+  env$readRDS <- function(...) {
+    reads <<- reads + 1L
+    base::readRDS(...)
+  }
+  env$saveRDS <- function(...) {
+    writes <<- writes + 1L
+    base::saveRDS(...)
+  }
+  environment(cached_embed) <- env
+
+  text <- c("World!", "Hello", "World!", NA_character_, "", "Hello")
+  expected <- list(6, 5, 6, NULL, NULL, 5)
+  expect_identical(
+    cached_embed(text, "test", NULL, "disk", cache_dir),
+    expected
+  )
+  expect_identical(requested, c("World!", "Hello"))
+  expect_equal(writes, 2L)
+  expect_equal(reads, 0L)
+
+  requested <- character()
+  expect_identical(
+    cached_embed(text, "test", NULL, "disk", cache_dir),
+    expected
+  )
+  expect_length(requested, 0L)
+  expect_equal(writes, 2L)
+  expect_equal(reads, 2L)
+
+  requested <- character()
+  expect_identical(
+    cached_embed(c("Hello", "new", "Hello", "new"), "test", NULL, "disk", cache_dir),
+    list(5, 3, 5, 3)
+  )
+  expect_identical(requested, "new")
+  expect_equal(writes, 3L)
+  expect_equal(reads, 3L)
+})
+
+test_that("disk caching keeps failed and invalid rows aligned and retries failures", {
+  setup_mock_env()
+  cache_dir <- withr::local_tempdir()
+  requested <- character()
+  local_mocked_bindings(
+    foundry_embed = function(text, ...) {
+      requested <<- c(requested, text)
+      tibble::tibble(
+        text = text,
+        embedding = lapply(text, function(x) if (x == "bad") NULL else c(1, 0))
+      )
+    }
+  )
+  text <- c("bad", "good", "bad", NA_character_, "", "good")
+  expected <- list(NULL, c(1, 0), NULL, NULL, NULL, c(1, 0))
+  expect_identical(
+    foundry_embed_cached(text, "test", NULL, "disk", cache_dir),
+    expected
+  )
+  expect_identical(requested, c("bad", "good"))
+  expect_length(list.files(cache_dir), 1L)
+
+  requested <- character()
+  expect_identical(
+    foundry_embed_cached(text, "test", NULL, "disk", cache_dir),
+    expected
+  )
+  expect_identical(requested, "bad")
+
+  requested <- character()
+  expect_identical(
+    foundry_embed_cached(c(NA_character_, ""), "test", NULL, "disk", cache_dir),
+    list(NULL, NULL)
+  )
+  expect_identical(
+    foundry_embed_cached(character(), "test", NULL, "disk", cache_dir),
+    list()
+  )
+  expect_length(requested, 0L)
+})
+
 test_that("foundry_cache_clear removes cached embedding files", {
   skip_if_not_installed("withr")
 
